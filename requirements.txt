@@ -1,5 +1,9 @@
 asgiref==3.10.0
 Django==5.2.7
+dnspython==2.8.0
 gunicorn==23.0.0
+mongoengine==0.29.1
 packaging==25.0
+pymongo==4.15.5
 sqlparse==0.5.3
+tzdata==2025.3
