@@ -218,9 +218,9 @@ class DataEntryLineModel(models.Model):
                     return self.POWER_HIGH
                 if self.morning_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
                     return self.POWER_LOW
-            return 0.1
+            return self.FALLBACK_COST
         except(TypeError, ZeroDivisionError):
-            return 0.0
+            return self.FALLBACK_COST
 
     def _calculate_full_day_cost(self):
         try:
@@ -251,9 +251,9 @@ class DataEntryLineModel(models.Model):
                     return self.DEFAULT_COST_LOW
                 if self.morning_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
                     return self.DEFAULT_COST_HIGH
-            return 0.1
+            return self.FALLBACK_COST
         except(TypeError, ZeroDivisionError):
-            return 0.0
+            return self.FALLBACK_COST
 
     def get_empty_day_message(self):
         if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
