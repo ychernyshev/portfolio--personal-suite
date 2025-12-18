@@ -199,7 +199,7 @@ class DataEntryLineModel(models.Model):
             if 0 < self.afternoon_data_charge > self.evening_data_charge:
                 if self.afternoon_data_charge - self.evening_data_charge <= 10:
                     return 200
-                if self.afternoon_data_charge - self.afternoon_data_charge > 10:
+                if self.afternoon_data_charge - self.evening_data_charge > 10:
                     return 100
             if self.afternoon_data_charge == 0:
                 if self.morning_data_charge < self.evening_data_charge:
