@@ -58,7 +58,6 @@ class DataEntryLineModel(models.Model):
     full_day_cost = models.FloatField(blank=True, null=True, verbose_name='Вартість виробленої енергії за день')
     power_tariff = models.FloatField(verbose_name='Вартість за Кв')
 
-
     def _calculate_power_delta_based_on_price(self, start_cost, end_cost):
         price_diff = end_cost - start_cost
 
@@ -192,22 +191,25 @@ class DataEntryLineModel(models.Model):
             if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
                 return 0
             if self.afternoon_data_price == self.evening_data_price or self.morning_data_price == self.evening_data_price:
-                return (self.evening_data_charge - self.afternoon_data_charge) * 20.48
+                return (self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR
             if 0 < self.afternoon_data_charge < self.evening_data_charge:
-                return (self.evening_data_charge - self.afternoon_data_charge) * 20.48 + round(
+                return (self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR + round(
                     (((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100, 2)
             if 0 < self.afternoon_data_charge > self.evening_data_charge:
-                if self.afternoon_data_charge - self.evening_data_charge <= 10:
+                if self.afternoon_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
                     return 200
-                if self.afternoon_data_charge - self.evening_data_charge > 10:
+                if self.afternoon_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
                     return 100
             if self.afternoon_data_charge == 0:
                 if self.morning_data_charge < self.evening_data_charge:
-                    return (self.evening_data_charge - self.morning_data_charge - 6) * 20.48 + round(
-                        (((self.evening_data_price - self.morning_data_price - .6) * 100) / 43.2) * 100, 2)
-                if self.morning_data_charge - self.evening_data_charge <= 10:
+                    return (
+                                       self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE) * self.UNIT_CONVERSION_FACTOR + round(
+                        (((
+                                      self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE) * 100) / 43.2) * 100,
+                        2)
+                if self.morning_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
                     return 200
-                if self.morning_data_charge - self.evening_data_charge > 10:
+                if self.morning_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
                     return 100
             return 0.1
         except(TypeError, ZeroDivisionError):
@@ -218,25 +220,29 @@ class DataEntryLineModel(models.Model):
             if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
                 return 0.0
             if self.afternoon_data_price == self.evening_data_price or self.morning_data_price == self.evening_data_price:
-                return (((self.evening_data_charge - self.afternoon_data_charge) * 20.48) / 1000) * 4.32
+                return (((
+                                     self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * 4.32
             if 0 < self.afternoon_data_charge < self.evening_data_charge:
-                return (((self.evening_data_charge - self.afternoon_data_charge) * 20.48) / 1000) * 4.32 + (
-                        self.evening_data_price - self.afternoon_data_price)
+                return (((
+                                     self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * 4.32 + (
+                               self.evening_data_price - self.afternoon_data_price)
             if 0 < self.afternoon_data_charge > self.evening_data_charge and self.default_day_energy_formula:
-                if self.afternoon_data_charge - self.evening_data_charge <= 10:
+                if self.afternoon_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
                     return 0.86
-                if self.afternoon_data_charge - self.evening_data_charge > 10:
+                if self.afternoon_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
                     return 0.43
             if 0 < self.afternoon_data_charge > self.evening_data_charge:
-                return (((self.evening_data_charge - self.afternoon_data_charge) * 20.48) / 1000) * 4.32 + (
-                        self.evening_data_price - self.afternoon_data_price)
+                return (((
+                                     self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * 4.32 + (
+                               self.evening_data_price - self.afternoon_data_price)
             if self.afternoon_data_price == 0:
                 if self.morning_data_charge < self.evening_data_charge:
-                    return (((self.evening_data_charge - self.morning_data_charge - 6) * 20.48) / 1000) * 4.32 + (
-                            self.evening_data_price - self.morning_data_price - 0.6)
-                if self.morning_data_charge - self.evening_data_charge <= 10:
+                    return (((
+                                         self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE) * self.UNIT_CONVERSION_FACTOR) / 1000) * 4.32 + (
+                                   self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE)
+                if self.morning_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
                     return 0.86
-                if self.morning_data_charge - self.evening_data_charge > 10:
+                if self.morning_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
                     return 0.43
             return 0.1
         except(TypeError, ZeroDivisionError):
