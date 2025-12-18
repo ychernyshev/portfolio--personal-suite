@@ -228,10 +228,10 @@ class DataEntryLineModel(models.Model):
                 return 0.0
             if self.afternoon_data_price == self.evening_data_price or self.morning_data_price == self.evening_data_price:
                 return (((
-                                 self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * 4.32
+                                 self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * self.power_tariff
             if 0 < self.afternoon_data_charge < self.evening_data_charge:
                 return (((
-                                 self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * 4.32 + (
+                                 self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * self.power_tariff + (
                                self.evening_data_price - self.afternoon_data_price)
             if 0 < self.afternoon_data_charge > self.evening_data_charge and self.default_day_energy_formula:
                 if self.afternoon_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
@@ -240,12 +240,12 @@ class DataEntryLineModel(models.Model):
                     return self.DEFAULT_COST_HIGH
             if 0 < self.afternoon_data_charge > self.evening_data_charge:
                 return (((
-                                 self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * 4.32 + (
+                                 self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * self.power_tariff + (
                                self.evening_data_price - self.afternoon_data_price)
             if self.afternoon_data_price == 0:
                 if self.morning_data_charge < self.evening_data_charge:
                     return (((
-                                     self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE) * self.UNIT_CONVERSION_FACTOR) / 1000) * 4.32 + (
+                                     self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE) * self.UNIT_CONVERSION_FACTOR) / 1000) * self.power_tariff + (
                                    self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE)
                 if self.morning_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
                     return self.DEFAULT_COST_LOW
