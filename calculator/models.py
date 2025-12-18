@@ -53,9 +53,11 @@ class DataEntryLineModel(models.Model):
     afternoon_data_price = models.FloatField(verbose_name='Вартість використаної енергії на день', default=0)
     evening_data_charge = models.IntegerField(verbose_name='Вечірній рівень заряду')
     evening_data_price = models.FloatField(verbose_name='Вартість використаної енергії на вечір')
+    default_day_energy_formula = models.BooleanField(default=False)
     full_day_power = models.FloatField(blank=True, verbose_name='Вироблена потужність за день')
     full_day_cost = models.FloatField(blank=True, null=True, verbose_name='Вартість виробленої енергії за день')
     power_tariff = models.FloatField(verbose_name='Вартість за Кв')
+
 
     def _calculate_power_delta_based_on_price(self, start_cost, end_cost):
         price_diff = end_cost - start_cost
@@ -220,11 +222,14 @@ class DataEntryLineModel(models.Model):
             if 0 < self.afternoon_data_charge < self.evening_data_charge:
                 return (((self.evening_data_charge - self.afternoon_data_charge) * 20.48) / 1000) * 4.32 + (
                         self.evening_data_price - self.afternoon_data_price)
-            if 0 < self.afternoon_data_charge > self.evening_data_charge:
+            if 0 < self.afternoon_data_charge > self.evening_data_charge and self.default_day_energy_formula:
                 if self.afternoon_data_charge - self.evening_data_charge <= 10:
                     return 0.86
                 if self.afternoon_data_charge - self.evening_data_charge > 10:
                     return 0.43
+            if 0 < self.afternoon_data_charge > self.evening_data_charge:
+                return (((self.evening_data_charge - self.afternoon_data_charge) * 20.48) / 1000) * 4.32 + (
+                        self.evening_data_price - self.afternoon_data_price)
             if self.afternoon_data_price == 0:
                 if self.morning_data_charge < self.evening_data_charge:
                     return (((self.evening_data_charge - self.morning_data_charge - 6) * 20.48) / 1000) * 4.32 + (
