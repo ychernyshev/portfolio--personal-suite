@@ -44,6 +44,13 @@ class DataEntryLineModel(models.Model):
     MORNING_CORRECTION_CHARGE = 6  # Корекція ранкового заряду
     MORNING_CORRECTION_PRICE = 0.6  # Корекція ранкової ціни
 
+    DEFAULT_COST_LOW = 0.86  # дефолтна формула при низькій різниці
+    DEFAULT_COST_HIGH = 0.43  # дефолтна формула при високій різниці
+    FALLBACK_COST = 0.0  # запасне значення
+
+    POWER_LOW = 200  # дефолтна потужність при низькій різниці
+    POWER_HIGH = 100  # дефолтна потужність при високій різниці
+
     date = models.DateField(verbose_name='Дата')
     power = models.CharField(choices=POWER, max_length=3, default='600', verbose_name='Потужність системи')
     weather = models.ManyToManyField('WeatherCondition', db_index=True, related_name='weather', verbose_name='Погода')
@@ -71,9 +78,9 @@ class DataEntryLineModel(models.Model):
     def _handle_charge_difference(self, charge_diff):
         """This calculates when the solar charge decreased (afternoon > evening or morning > evening)."""
         if charge_diff <= self.CHARGE_DIFFERENCE_THRESHOLD:
-            return 200
+            return self.POWER_HIGH
         else:
-            return 100
+            return self.POWER_LOW
 
     # def _calculate_full_day_power(self):
     #     try:
@@ -197,20 +204,20 @@ class DataEntryLineModel(models.Model):
                     (((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100, 2)
             if 0 < self.afternoon_data_charge > self.evening_data_charge:
                 if self.afternoon_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return 200
+                    return self.POWER_HIGH
                 if self.afternoon_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return 100
+                    return self.POWER_LOW
             if self.afternoon_data_charge == 0:
                 if self.morning_data_charge < self.evening_data_charge:
                     return (
-                                       self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE) * self.UNIT_CONVERSION_FACTOR + round(
+                                   self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE) * self.UNIT_CONVERSION_FACTOR + round(
                         (((
-                                      self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE) * 100) / 43.2) * 100,
+                                  self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE) * 100) / 43.2) * 100,
                         2)
                 if self.morning_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return 200
+                    return self.POWER_HIGH
                 if self.morning_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return 100
+                    return self.POWER_LOW
             return 0.1
         except(TypeError, ZeroDivisionError):
             return 0.0
@@ -221,29 +228,29 @@ class DataEntryLineModel(models.Model):
                 return 0.0
             if self.afternoon_data_price == self.evening_data_price or self.morning_data_price == self.evening_data_price:
                 return (((
-                                     self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * 4.32
+                                 self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * 4.32
             if 0 < self.afternoon_data_charge < self.evening_data_charge:
                 return (((
-                                     self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * 4.32 + (
+                                 self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * 4.32 + (
                                self.evening_data_price - self.afternoon_data_price)
             if 0 < self.afternoon_data_charge > self.evening_data_charge and self.default_day_energy_formula:
                 if self.afternoon_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return 0.86
+                    return self.DEFAULT_COST_LOW
                 if self.afternoon_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return 0.43
+                    return self.DEFAULT_COST_HIGH
             if 0 < self.afternoon_data_charge > self.evening_data_charge:
                 return (((
-                                     self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * 4.32 + (
+                                 self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * 4.32 + (
                                self.evening_data_price - self.afternoon_data_price)
             if self.afternoon_data_price == 0:
                 if self.morning_data_charge < self.evening_data_charge:
                     return (((
-                                         self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE) * self.UNIT_CONVERSION_FACTOR) / 1000) * 4.32 + (
+                                     self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE) * self.UNIT_CONVERSION_FACTOR) / 1000) * 4.32 + (
                                    self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE)
                 if self.morning_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return 0.86
+                    return self.DEFAULT_COST_LOW
                 if self.morning_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return 0.43
+                    return self.DEFAULT_COST_HIGH
             return 0.1
         except(TypeError, ZeroDivisionError):
             return 0.0
