@@ -33,11 +33,25 @@ frontend/.eslintcache
 *.pid
 *.sock
 docker-compose.override.yml
+.docker/
+Dockerfile.*
+*.dockerfile
+*.tar
+*.img
 
 # === VSCode / IDEs ===
 .vscode/
 .idea/
 *.swp
+
+# === Atom / Pulsar ===
+.atom/
+.pulsar/
+storage/
+compile-cache/
+recovery/
+packages/
+blob-store/
 
 # === OS ===
 Thumbs.db
