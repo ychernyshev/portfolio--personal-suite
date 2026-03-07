@@ -1,7 +1,11 @@
 <script setup>
-// import HelloWorld from "./components/HelloWorld.vue";
+// import HelloWorld from './components/HelloWorld.vue'
 </script>
 
-<template></template>
+<template>
+  <div class="container">
+    <p class="display-4">klmn</p>
+  </div>
+</template>
 
 <style scoped></style>
