@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
-import mongoengine
+# import mongoengine
 
 from pathlib import Path
 from django.conf.global_settings import STATICFILES_DIRS, MEDIA_ROOT
@@ -39,12 +39,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'calculator.apps.CalculatorConfig',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
+    'djoser',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -81,13 +86,13 @@ DATABASES = {
     }
 }
 
-mongoengine.connect(
-    db=os.environ.get("MONGO_DB_NAME"),
-    host=os.environ.get("MONGO_DB_URI"),
-    username=os.environ.get("MONGO_DB_USER"),
-    password=os.environ.get("MONGO_DB_PASS"),
-    alias="default"
-)
+# mongoengine.connect(
+#     db=os.environ.get("MONGO_DB_NAME"),
+#     host=os.environ.get("MONGO_DB_URI"),
+#     username=os.environ.get("MONGO_DB_USER"),
+#     password=os.environ.get("MONGO_DB_PASS"),
+#     alias="default"
+# )
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
