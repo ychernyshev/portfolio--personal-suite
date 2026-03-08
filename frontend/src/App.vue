@@ -1,11 +1,21 @@
 <script setup>
-// import HelloWorld from './components/HelloWorld.vue'
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+import MainLayout from "./components/layouts/_DefaultExtended.vue";
+
+const route = useRoute();
+
+const layouts = {
+  MainLayout,
+};
+
+const currentLayout = computed(() => layouts[route.meta.layout] || MainLayout);
 </script>
 
 <template>
-  <div class="container">
-    <p class="display-4">klmn</p>
-  </div>
+  <component :is="currentLayout">
+    <router-view />
+  </component>
 </template>
 
 <style scoped></style>
