@@ -1,7 +1,9 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import backendApi from "../services/backendApi";
 import pagination from "../components/Pagination.vue";
+import PowerChart from "../components/charts/PowerChart.vue";
+import SavingsChart from "../components/charts/SavingsChart.vue";
 
 const currentPage = ref(1);
 const totalPages = ref(1);
@@ -24,29 +26,108 @@ const fetchEntries = async (page = 1) => {
   }
 };
 
+const chartLabels = computed(() => {
+  return entries.value.map((item) => item.date);
+});
+
+const chartValues = computed(() => {
+  return entries.value.map((item) => item.full_day_power);
+});
+
+const chartCosts = computed(() => {
+  return entries.value.map((item) => item.full_day_cost);
+});
+
 onMounted(fetchEntries);
 </script>
 
 <template>
   <div class="container-fliud p-4">
     <div class="row">
-      <div class="col-xxl-6">
+      <div class="col-xxl-9">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="home-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#home-tab-pane"
+              type="button"
+              role="tab"
+              aria-controls="home-tab-pane"
+              aria-selected="true"
+            >
+              Power generation
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="profile-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#profile-tab-pane"
+              type="button"
+              role="tab"
+              aria-controls="profile-tab-pane"
+              aria-selected="false"
+            >
+              Cost sevings
+            </button>
+          </li>
+        </ul>
         <div class="card rounded-3 p-4">
-          <h4 class="text-info">
-            TOTAL GENERATED POWER:
-            <span class="badge p-2 bg-success text-light">30195.35WATT</span>
-          </h4>
-          Graph
+          <div class="tab-content" id="myTabContent">
+            <div
+              class="tab-pane fade show active"
+              id="home-tab-pane"
+              role="tabpanel"
+              aria-labelledby="home-tab"
+              tabindex="0"
+            >
+              <h4 class="text-info">
+                TOTAL GENERATED POWER:
+                <span class="badge p-2 bg-success text-light"
+                  >30195.35WATT</span
+                >
+              </h4>
+              <power-chart
+                :labels="chartLabels"
+                :power="chartValues"
+                @goToPage="fetchEntries"
+              />
+              <pagination
+                :current="currentPage"
+                :total="totalPages"
+                @goToPage="fetchEntries"
+              />
+            </div>
+            <div
+              class="tab-pane fade"
+              id="profile-tab-pane"
+              role="tabpanel"
+              aria-labelledby="profile-tab"
+              tabindex="0"
+            >
+              <h4 class="text-info">
+                COST OF GENERATED POWER:
+                <span class="badge p-2 bg-info text-light">131.90UAH</span>
+              </h4>
+              <savings-chart
+                :labels="chartLabels"
+                :cost="chartCosts"
+                @goToPage="fetchEntries"
+              />
+              <pagination
+                :current="currentPage"
+                :total="totalPages"
+                @goToPage="fetchEntries"
+              />
+            </div>
+          </div>
         </div>
       </div>
-      <div class="col-xxl-6">
-        <div class="card rounded-3 p-4">
-          <h4 class="text-info">
-            COST OF GENERATED POWER:
-            <span class="badge p-2 bg-info text-light">131.90UAH</span>
-          </h4>
-          Graph
-        </div>
+      <div class="col-xxl-3">
+        <div class="card rounded-3 p-4">Weather widget</div>
       </div>
     </div>
     <div class="row mt-4">
