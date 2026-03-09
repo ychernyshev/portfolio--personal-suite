@@ -26,6 +26,7 @@ const fetchEntries = async (page = 1) => {
   }
 };
 
+// Charts
 const chartLabels = computed(() => {
   return entries.value.map((item) => item.date);
 });
@@ -38,7 +39,22 @@ const chartCosts = computed(() => {
   return entries.value.map((item) => item.full_day_cost);
 });
 
-onMounted(fetchEntries);
+// Total data (all time)
+const stats = ref({ total_power: 0, total_cost: 0 });
+
+const fetchStats = async () => {
+  try {
+    const response = await backendApi.get("stats/");
+    stats.value = response.data;
+  } catch (error) {
+    console.error("Помилка при завантаженні статистики:", error);
+  }
+};
+
+onMounted(() => {
+  fetchEntries();
+  fetchStats();
+});
 </script>
 
 <template>
@@ -84,20 +100,10 @@ onMounted(fetchEntries);
               aria-labelledby="home-tab"
               tabindex="0"
             >
-              <h4 class="text-info">
-                TOTAL GENERATED POWER:
-                <span class="badge p-2 bg-success text-light"
-                  >30195.35WATT</span
-                >
-              </h4>
+              <h4 class="text-info">TOTAL GENERATED POWER:</h4>
               <power-chart
                 :labels="chartLabels"
                 :power="chartValues"
-                @goToPage="fetchEntries"
-              />
-              <pagination
-                :current="currentPage"
-                :total="totalPages"
                 @goToPage="fetchEntries"
               />
             </div>
@@ -117,17 +123,47 @@ onMounted(fetchEntries);
                 :cost="chartCosts"
                 @goToPage="fetchEntries"
               />
-              <pagination
-                :current="currentPage"
-                :total="totalPages"
-                @goToPage="fetchEntries"
-              />
             </div>
           </div>
+          <pagination
+            :current="currentPage"
+            :total="totalPages"
+            @goToPage="fetchEntries"
+          />
         </div>
       </div>
       <div class="col-xxl-3">
-        <div class="card rounded-3 p-4">Weather widget</div>
+        <div class="row">
+          <div class="col-xxl-6">
+            <div class="card rounded-3 p-4">
+              <h4 class="text-info">
+                TOTAL GENERATED POWER:
+                <span
+                  class="badge p-2 bg-success text-light"
+                  :title="stats.total_power.toFixed(2) + ' Watt'"
+                  style="cursor: help"
+                >
+                  {{ (stats.total_power / 1000).toFixed(2) }} kWt
+                </span>
+              </h4>
+            </div>
+          </div>
+          <div class="col-xxl-6">
+            <div class="card rounded-3 p-4">
+              <h4 class="text-info">
+                COST OF GENERATED POWER:
+                <span class="badge p-2 bg-info text-light">
+                  {{ stats.total_cost.toFixed(2) }} UAH
+                </span>
+              </h4>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-xxl-12">
+            <div class="card rounded-3 p-4">Weather widget</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="row mt-4">

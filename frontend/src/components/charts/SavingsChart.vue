@@ -33,7 +33,7 @@ const chartData = computed(() => ({
   labels: props.labels,
   datasets: [
     {
-      label: "Power generation (Wh)",
+      label: "Cost savings (UAH)",
       backgroundColor: "rgba(75, 192, 192, 0.2)",
       borderColor: "#4bc0c0",
       data: props.cost,

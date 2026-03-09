@@ -1,4 +1,7 @@
 from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from calculator.models import DataEntryLineModel, CurrentTariffModel
 from calculator.api.serializers import DataEntrySerializer, CurrentTariffSerializer
 
@@ -15,3 +18,11 @@ class CurrentTariffViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_object(self):
         return CurrentTariffModel.load()
+
+
+class StatsViewApiView(APIView):
+    def get(self, request):
+        return Response({
+            "total_power": DataEntryLineModel.total_generated_power(),
+            "total_cost": DataEntryLineModel.total_cost_power(),
+        })
