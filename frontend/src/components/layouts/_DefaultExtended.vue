@@ -13,7 +13,7 @@ import TopNav from "../navs/_TopNav.vue";
     </main>
 
     <footer>
-      <p class="text-muted mb-0 small">
+      <p class="text-muted mb-0 small text-center p-5">
         &copy; 2026 Solar Power Calculator. Based on Django + Vue 3.
       </p>
     </footer>

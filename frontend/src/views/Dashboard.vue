@@ -4,6 +4,7 @@ import backendApi from "../services/backendApi";
 import pagination from "../components/Pagination.vue";
 import PowerChart from "../components/charts/PowerChart.vue";
 import SavingsChart from "../components/charts/SavingsChart.vue";
+import WeatherIcon from "../components/WeatherIcon.vue";
 
 const currentPage = ref(1);
 const totalPages = ref(1);
@@ -100,7 +101,7 @@ onMounted(() => {
               aria-labelledby="home-tab"
               tabindex="0"
             >
-              <h4 class="text-info">TOTAL GENERATED POWER:</h4>
+              <h4 class="text-info">GENERATED POWER</h4>
               <power-chart
                 :labels="chartLabels"
                 :power="chartValues"
@@ -114,10 +115,7 @@ onMounted(() => {
               aria-labelledby="profile-tab"
               tabindex="0"
             >
-              <h4 class="text-info">
-                COST OF GENERATED POWER:
-                <span class="badge p-2 bg-info text-light">131.90UAH</span>
-              </h4>
+              <h4 class="text-info">COST OF GENERATED POWER</h4>
               <savings-chart
                 :labels="chartLabels"
                 :cost="chartCosts"
@@ -209,7 +207,18 @@ onMounted(() => {
                 <th scope="row" class="text-center">{{ entry.date }}</th>
                 <td class="text-center">{{ entry.power }}</td>
                 <td class="text-center">
-                  <WeatherIcon :type="entry.weather_type" />
+                  <template
+                    v-if="
+                      entry.weather_details && entry.weather_details.length > 0
+                    "
+                  >
+                    <WeatherIcon
+                      v-for="condition in entry.weather_details"
+                      :key="condition.id"
+                      :name="condition.name"
+                    />
+                  </template>
+                  <span v-else class="text-muted">- -</span>
                 </td>
                 <td
                   class="text-center"

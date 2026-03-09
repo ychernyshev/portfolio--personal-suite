@@ -65,6 +65,7 @@ class DataEntryLineModel(models.Model):
     full_day_cost = models.FloatField(blank=True, null=True, verbose_name='Вартість виробленої енергії за день')
     power_tariff = models.FloatField(verbose_name='Вартість за Кв')
 
+
     def _calculate_power_delta_based_on_price(self, start_cost, end_cost):
         price_diff = end_cost - start_cost
 
