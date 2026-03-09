@@ -4,7 +4,7 @@ from calculator.api.serializers import DataEntrySerializer, CurrentTariffSeriali
 
 
 class DataEntryViewSet(viewsets.ModelViewSet):
-    queryset = DataEntryLineModel.objects.all()
+    queryset = DataEntryLineModel.objects.all().order_by('-date')
     serializer_class = DataEntrySerializer
 
 

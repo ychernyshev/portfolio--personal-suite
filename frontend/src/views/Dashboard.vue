@@ -1,4 +1,31 @@
-<script setup></script>
+<script setup>
+import { ref, onMounted } from "vue";
+import backendApi from "../services/backendApi";
+import pagination from "../components/Pagination.vue";
+
+const currentPage = ref(1);
+const totalPages = ref(1);
+const entries = ref([]);
+const loading = ref(true);
+const error = ref(null);
+
+const fetchEntries = async (page = 1) => {
+  try {
+    loading.value = true;
+    const response = await backendApi.get(`entries/?page=${page}`);
+    entries.value = response.data.results;
+    currentPage.value = page;
+    totalPages.value = Math.ceil(response.data.count / 10);
+  } catch (error) {
+    error.value = "Cannot load data from backend";
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(fetchEntries);
+</script>
 
 <template>
   <div class="container-fliud p-4">
@@ -61,9 +88,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row" class="text-center">21.09.2025</th>
-                <td class="text-center">400</td>
+              <tr v-for="entry in entries" :key="entry.id">
+                <th scope="row" class="text-center">{{ entry.date }}</th>
+                <td class="text-center">{{ entry.power }}</td>
                 <td class="text-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -105,96 +132,91 @@
                     />
                   </svg>
                 </td>
-                <td class="text-center">56% - 78.71 UAH</td>
-                <td class="text-center">--</td>
-                <td class="text-center">58% - 82.15 UAH</td>
-                <td class="text-center">
-                  <span class="badge text-bg-secondary">575.49W</span>
+                <td
+                  class="text-center"
+                  v-if="
+                    entry.morning_data_charge > 0 || entry.morning_data_price
+                  "
+                >
+                  {{ entry.morning_data_charge }}% -
+                  {{ entry.morning_data_price }} UAH
                 </td>
-                <td class="text-center">
-                  <span class="badge text-bg-secondary">2.49UAH</span>
+                <td class="text-center" v-else>- -</td>
+                <td
+                  class="text-center"
+                  v-if="
+                    entry.afternoon_data_charge > 0 ||
+                    entry.afternoon_data_price
+                  "
+                >
+                  {{ entry.afternoon_data_charge }}% -
+                  {{ entry.afternoon_data_price }}
                 </td>
-                <td class="text-center">{{ power_tariff }}</td>
-              </tr>
-
-              <tr>
-                <th scope="row" class="text-center">21.09.2025</th>
-                <td class="text-center">400</td>
-                <td class="text-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    class="bi bi-sun-fill"
-                    viewBox="0 0 16 16"
+                <td class="text-center" v-else>- -</td>
+                <td
+                  class="text-center"
+                  v-if="
+                    entry.evening_data_charge > 0 || entry.evening_data_price
+                  "
+                >
+                  {{ entry.evening_data_charge }}% -
+                  {{ entry.evening_data_price }} UAH
+                </td>
+                <td class="text-center" v-else>- -</td>
+                <td class="text-center" v-if="entry.full_day_power > 0">
+                  <span class="badge text-bg-secondary"
+                    >{{ entry.full_day_power.toFixed(2) }}W</span
                   >
-                    <path
-                      d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"
-                    />
-                  </svg>
                 </td>
-                <td class="text-center">30% - 75.57 UAH</td>
-                <td class="text-center">- -</td>
-                <td class="text-center">56% - 78.71 UAH</td>
-                <td class="text-center">
-                  <span class="badge text-bg-secondary">997.56W</span>
-                </td>
-                <td class="text-center">
-                  <span class="badge text-bg-secondary">4.31UAH</span>
-                </td>
-                <td class="text-center">4.32 UAH</td>
-              </tr>
-              <tr>
-                <th scope="row" class="text-center">20.09.2025</th>
-                <td class="text-center">400</td>
-                <td class="text-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    class="bi bi-cloud-fill"
-                    viewBox="0 0 16 16"
+                <td class="text-center" v-else>- -</td>
+                <td class="text-center" v-if="entry.full_day_cost > 0">
+                  <span class="badge text-bg-secondary"
+                    >{{ entry.full_day_cost.toFixed(2) }}UAH</span
                   >
-                    <path
-                      d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383"
-                    />
-                  </svg>
                 </td>
-                <td class="text-center">21% - 71.18 UAH</td>
-                <td class="text-center">- -</td>
-                <td class="text-center">30% - 75.57 UAH</td>
-                <td class="text-center">
-                  <span class="badge text-bg-secondary">938.75W</span>
-                </td>
-                <td class="text-center">
-                  <span class="badge text-bg-secondary">4.06UAH</span>
-                </td>
-                <td class="text-center">4.32 UAH</td>
+                <td class="text-center" v-else>- -</td>
+                <td class="text-center">{{ entry.power_tariff }}</td>
               </tr>
             </tbody>
           </table>
-          <nav
+          <!-- <nav
             aria-label="Page navigation example"
             class="d-flex justify-content-center mt-2"
           >
             <ul class="pagination">
-              <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                  <span aria-hidden="true">&laquo;</span>
-                </a>
-              </li>
-              <li class="page-item"><a class="page-link" href="#">1</a></li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
-              <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                  <span aria-hidden="true">&raquo;</span>
-                </a>
-              </li>
+              <ul class="pagination">
+                <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                  <button
+                    class="page-link"
+                    @click="changePage(currentPage - 1)"
+                  >
+                    &laquo;
+                  </button>
+                </li>
+                <li class="page-item">
+                  <span class="page-link"
+                    >{{ currentPage }} / {{ totalPages }}</span
+                  >
+                </li>
+                <li
+                  class="page-item"
+                  :class="{ disabled: currentPage === totalPages }"
+                >
+                  <button
+                    class="page-link"
+                    @click="changePage(currentPage + 1)"
+                  >
+                    &raquo;
+                  </button>
+                </li>
+              </ul>
             </ul>
-          </nav>
+          </nav> -->
+          <pagination
+            :current="currentPage"
+            :total="totalPages"
+            @goToPage="fetchEntries"
+          />
         </div>
       </div>
     </div>
