@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
-from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherCondition
+from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel
 
 class WeatherConditionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = WeatherCondition
+        model = WeatherConditionModel
         fields = ['id', 'name']
 
 class CurrentTariffSerializer(serializers.ModelSerializer):

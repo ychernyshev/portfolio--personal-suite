@@ -2,8 +2,8 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from calculator.models import DataEntryLineModel, CurrentTariffModel
-from calculator.api.serializers import DataEntrySerializer, CurrentTariffSerializer
+from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel
+from calculator.api.serializers import DataEntrySerializer, CurrentTariffSerializer, WeatherConditionSerializer
 
 
 class DataEntryViewSet(viewsets.ModelViewSet):
@@ -26,3 +26,8 @@ class StatsViewApiView(APIView):
             "total_power": DataEntryLineModel.total_generated_power(),
             "total_cost": DataEntryLineModel.total_cost_power(),
         })
+
+
+class WeatherConditionViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = WeatherConditionModel.objects.all()
+    serializer_class = WeatherConditionSerializer

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import DataEntryLineModel, WeatherCondition
+from .models import DataEntryLineModel, WeatherConditionModel
 
 
 # Register your models here.
@@ -84,6 +84,6 @@ class DataEntryLineAdmin(admin.ModelAdmin):
     display_power_tariff.short_description = 'Вартість за Кв'
 
 
-@admin.register(WeatherCondition)
+@admin.register(WeatherConditionModel)
 class WeatherConditionAdmin(admin.ModelAdmin):
     list_display = ['name']

@@ -12,6 +12,7 @@ const entries = ref([]);
 const loading = ref(true);
 const error = ref(null);
 
+// Entries and pagination
 const fetchEntries = async (page = 1) => {
   try {
     loading.value = true;
