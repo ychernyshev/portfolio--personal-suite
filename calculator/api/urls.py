@@ -8,6 +8,6 @@ router.register(r'weather-conditions', WeatherConditionViewSet, basename='weathe
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('current-tariff/', CurrentTariffViewSet.as_view({'get': 'retrieve'})),
+    path('current-tariff/', CurrentTariffViewSet.as_view({'get': 'retrieve'}), name='current-tariff'),
     path('stats/', StatsViewApiView.as_view(), name='stats'),
 ]
