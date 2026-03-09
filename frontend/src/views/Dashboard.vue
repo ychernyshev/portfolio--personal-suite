@@ -32,18 +32,18 @@ onMounted(fetchEntries);
     <div class="row">
       <div class="col-xxl-6">
         <div class="card rounded-3 p-4">
-          <h4>
+          <h4 class="text-info">
             TOTAL GENERATED POWER:
-            <span class="badge text-bg-secondary">30195.35WATT</span>
+            <span class="badge p-2 bg-success text-light">30195.35WATT</span>
           </h4>
           Graph
         </div>
       </div>
       <div class="col-xxl-6">
         <div class="card rounded-3 p-4">
-          <h4>
+          <h4 class="text-info">
             COST OF GENERATED POWER:
-            <span class="badge text-bg-secondary">131.90UAH</span>
+            <span class="badge p-2 bg-info text-light">131.90UAH</span>
           </h4>
           Graph
         </div>
@@ -164,54 +164,23 @@ onMounted(fetchEntries);
                 </td>
                 <td class="text-center" v-else>- -</td>
                 <td class="text-center" v-if="entry.full_day_power > 0">
-                  <span class="badge text-bg-secondary"
+                  <span class="badge p-2 bg-success"
                     >{{ entry.full_day_power.toFixed(2) }}W</span
                   >
                 </td>
                 <td class="text-center" v-else>- -</td>
                 <td class="text-center" v-if="entry.full_day_cost > 0">
-                  <span class="badge text-bg-secondary"
+                  <span class="badge p-2 bg-info"
                     >{{ entry.full_day_cost.toFixed(2) }}UAH</span
                   >
                 </td>
                 <td class="text-center" v-else>- -</td>
-                <td class="text-center">{{ entry.power_tariff }}</td>
+                <td class="text-center">
+                  <small>{{ entry.power_tariff }}</small>
+                </td>
               </tr>
             </tbody>
           </table>
-          <!-- <nav
-            aria-label="Page navigation example"
-            class="d-flex justify-content-center mt-2"
-          >
-            <ul class="pagination">
-              <ul class="pagination">
-                <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                  <button
-                    class="page-link"
-                    @click="changePage(currentPage - 1)"
-                  >
-                    &laquo;
-                  </button>
-                </li>
-                <li class="page-item">
-                  <span class="page-link"
-                    >{{ currentPage }} / {{ totalPages }}</span
-                  >
-                </li>
-                <li
-                  class="page-item"
-                  :class="{ disabled: currentPage === totalPages }"
-                >
-                  <button
-                    class="page-link"
-                    @click="changePage(currentPage + 1)"
-                  >
-                    &raquo;
-                  </button>
-                </li>
-              </ul>
-            </ul>
-          </nav> -->
           <pagination
             :current="currentPage"
             :total="totalPages"
