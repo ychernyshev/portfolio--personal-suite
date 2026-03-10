@@ -62,7 +62,149 @@ onMounted(() => {
 <template>
   <div class="container-fliud p-4">
     <div class="row">
-      <div class="col-xxl-9">
+      <div class="col-xxl-12">
+        <div class="row">
+          <div class="col-xxl-2">
+            <div class="card p-4 right-angle-bottom">
+              <h4 class="text-info">
+                TOTAL GENERATED POWER:
+                <span
+                  class="badge p-2 bg-success text-light"
+                  :title="stats.total_power.toFixed(2) + ' Watt'"
+                  style="cursor: help"
+                >
+                  {{ (stats.total_power / 1000).toFixed(2) }} kWt
+                </span>
+              </h4>
+            </div>
+          </div>
+          <div class="col-xxl-2">
+            <div class="card rounded-3 p-4">
+              <h4 class="text-info">
+                COST OF GENERATED POWER:
+                <span class="badge p-2 bg-info text-light">
+                  {{ stats.total_cost.toFixed(2) }} UAH
+                </span>
+              </h4>
+            </div>
+          </div>
+          <div class="col-xxl-2">
+            <div class="card rounded-3 p-4">Weather widget</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row bg-light mt-4">
+      <div class="col-xxl-8 mt-3">
+        <div class="row">
+          <div class="col-xxl-8 border-end my-auto">
+            <!-- <label for="formFileSm" class="form-label">Import data</label> -->
+            <form action="" class="d-flex flex-row">
+              <input
+                class="form-control form-control border-top border-start border-bottom right-angle-end"
+                style="border: none"
+                id="formFileSm"
+                type="file"
+                placeholder="Select the CSV file to import"
+              />
+              <button
+                class="btn btn-light w-50 border-top border-end border-bottom right-angle-start"
+              >
+                Import data
+              </button>
+            </form>
+          </div>
+          <div class="col-xxl-2 my-auto">
+            <button type="button" class="btn btn-primary w-100">
+              Export data
+            </button>
+          </div>
+          <div class="col-xxl-2 my-auto">
+            <pagination
+              :current="currentPage"
+              :total="totalPages"
+              @goToPage="fetchEntries"
+            />
+          </div>
+        </div>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col" class="text-center">Date</th>
+              <th scope="col" class="text-center">Power</th>
+              <th scope="col" class="text-center">Weather indicators</th>
+              <th scope="col" class="text-center">Morning indicators</th>
+              <th scope="col" class="text-center">Afternoon indicators</th>
+              <th scope="col" class="text-center">Evening indicators</th>
+              <th scope="col" class="text-center">Energy generated</th>
+              <th scope="col" class="text-center">Total cost</th>
+              <th scope="col" class="text-center">Tariff</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="entry in entries" :key="entry.id">
+              <th scope="row" class="text-center">{{ entry.date }}</th>
+              <td class="text-center">{{ entry.power }}</td>
+              <td class="text-center">
+                <template
+                  v-if="
+                    entry.weather_details && entry.weather_details.length > 0
+                  "
+                >
+                  <WeatherIcon
+                    v-for="condition in entry.weather_details"
+                    :key="condition.id"
+                    :name="condition.name"
+                  />
+                </template>
+                <span v-else class="text-muted">- -</span>
+              </td>
+              <td
+                class="text-center"
+                v-if="entry.morning_data_charge > 0 || entry.morning_data_price"
+              >
+                {{ entry.morning_data_charge }}% -
+                {{ entry.morning_data_price }} UAH
+              </td>
+              <td class="text-center" v-else>- -</td>
+              <td
+                class="text-center"
+                v-if="
+                  entry.afternoon_data_charge > 0 || entry.afternoon_data_price
+                "
+              >
+                {{ entry.afternoon_data_charge }}% -
+                {{ entry.afternoon_data_price }}
+              </td>
+              <td class="text-center" v-else>- -</td>
+              <td
+                class="text-center"
+                v-if="entry.evening_data_charge > 0 || entry.evening_data_price"
+              >
+                {{ entry.evening_data_charge }}% -
+                {{ entry.evening_data_price }} UAH
+              </td>
+              <td class="text-center" v-else>- -</td>
+              <td class="text-center" v-if="entry.full_day_power > 0">
+                <span class="badge p-2 bg-success"
+                  >{{ entry.full_day_power.toFixed(2) }}W</span
+                >
+              </td>
+              <td class="text-center" v-else>- -</td>
+              <td class="text-center" v-if="entry.full_day_cost > 0">
+                <span class="badge p-2 bg-info"
+                  >{{ entry.full_day_cost.toFixed(2) }}UAH</span
+                >
+              </td>
+              <td class="text-center" v-else>- -</td>
+              <td class="text-center">
+                <small>{{ entry.power_tariff }}</small>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-xxl-4 mt-4">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
           <li class="nav-item" role="presentation">
             <button
@@ -75,7 +217,7 @@ onMounted(() => {
               aria-controls="home-tab-pane"
               aria-selected="true"
             >
-              Power generation
+              Generated power
             </button>
           </li>
           <li class="nav-item" role="presentation">
@@ -89,20 +231,19 @@ onMounted(() => {
               aria-controls="profile-tab-pane"
               aria-selected="false"
             >
-              Cost sevings
+              Cost of generated power
             </button>
           </li>
         </ul>
-        <div class="card rounded-3 p-4">
+        <div>
           <div class="tab-content" id="myTabContent">
             <div
-              class="tab-pane fade show active"
+              class="tab-pane fade show active mt-2"
               id="home-tab-pane"
               role="tabpanel"
               aria-labelledby="home-tab"
               tabindex="0"
             >
-              <h4 class="text-info">GENERATED POWER</h4>
               <power-chart
                 :labels="chartLabels"
                 :power="chartValues"
@@ -110,13 +251,12 @@ onMounted(() => {
               />
             </div>
             <div
-              class="tab-pane fade"
+              class="tab-pane fade mt-2"
               id="profile-tab-pane"
               role="tabpanel"
               aria-labelledby="profile-tab"
               tabindex="0"
             >
-              <h4 class="text-info">COST OF GENERATED POWER</h4>
               <savings-chart
                 :labels="chartLabels"
                 :cost="chartCosts"
@@ -124,160 +264,6 @@ onMounted(() => {
               />
             </div>
           </div>
-          <pagination
-            :current="currentPage"
-            :total="totalPages"
-            @goToPage="fetchEntries"
-          />
-        </div>
-      </div>
-      <div class="col-xxl-3">
-        <div class="row">
-          <div class="col-xxl-6">
-            <div class="card rounded-3 p-4">
-              <h4 class="text-info">
-                TOTAL GENERATED POWER:
-                <span
-                  class="badge p-2 bg-success text-light"
-                  :title="stats.total_power.toFixed(2) + ' Watt'"
-                  style="cursor: help"
-                >
-                  {{ (stats.total_power / 1000).toFixed(2) }} kWt
-                </span>
-              </h4>
-            </div>
-          </div>
-          <div class="col-xxl-6">
-            <div class="card rounded-3 p-4">
-              <h4 class="text-info">
-                COST OF GENERATED POWER:
-                <span class="badge p-2 bg-info text-light">
-                  {{ stats.total_cost.toFixed(2) }} UAH
-                </span>
-              </h4>
-            </div>
-          </div>
-        </div>
-        <div class="row mt-3">
-          <div class="col-xxl-12">
-            <div class="card rounded-3 p-4">Weather widget</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row mt-4">
-      <div class="col-xxl-12">
-        <div class="card rounded-3 p-4">
-          <div class="row">
-            <div class="col-xxl-4 mb-3 border-end">
-              <!-- <label for="formFileSm" class="form-label">Import data</label> -->
-              <form action="" class="d-flex flex-row">
-                <input
-                  class="form-control form-control-sm border-top border-start border-bottom right-angle-end"
-                  style="border: none"
-                  id="formFileSm"
-                  type="file"
-                  placeholder="Select the CSV file to import"
-                />
-                <button
-                  class="btn btn-sm btn-light w-50 border-top border-end border-bottom right-angle-start"
-                >
-                  Import data
-                </button>
-              </form>
-            </div>
-            <div class="col-xxl-2">
-              <button type="button" class="btn btn-sm btn-primary w-75">
-                Export data
-              </button>
-            </div>
-          </div>
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col" class="text-center">Date</th>
-                <th scope="col" class="text-center">Power</th>
-                <th scope="col" class="text-center">Weather indicators</th>
-                <th scope="col" class="text-center">Morning indicators</th>
-                <th scope="col" class="text-center">Afternoon indicators</th>
-                <th scope="col" class="text-center">Evening indicators</th>
-                <th scope="col" class="text-center">Energy generated</th>
-                <th scope="col" class="text-center">Total cost</th>
-                <th scope="col" class="text-center">Tariff</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="entry in entries" :key="entry.id">
-                <th scope="row" class="text-center">{{ entry.date }}</th>
-                <td class="text-center">{{ entry.power }}</td>
-                <td class="text-center">
-                  <template
-                    v-if="
-                      entry.weather_details && entry.weather_details.length > 0
-                    "
-                  >
-                    <WeatherIcon
-                      v-for="condition in entry.weather_details"
-                      :key="condition.id"
-                      :name="condition.name"
-                    />
-                  </template>
-                  <span v-else class="text-muted">- -</span>
-                </td>
-                <td
-                  class="text-center"
-                  v-if="
-                    entry.morning_data_charge > 0 || entry.morning_data_price
-                  "
-                >
-                  {{ entry.morning_data_charge }}% -
-                  {{ entry.morning_data_price }} UAH
-                </td>
-                <td class="text-center" v-else>- -</td>
-                <td
-                  class="text-center"
-                  v-if="
-                    entry.afternoon_data_charge > 0 ||
-                    entry.afternoon_data_price
-                  "
-                >
-                  {{ entry.afternoon_data_charge }}% -
-                  {{ entry.afternoon_data_price }}
-                </td>
-                <td class="text-center" v-else>- -</td>
-                <td
-                  class="text-center"
-                  v-if="
-                    entry.evening_data_charge > 0 || entry.evening_data_price
-                  "
-                >
-                  {{ entry.evening_data_charge }}% -
-                  {{ entry.evening_data_price }} UAH
-                </td>
-                <td class="text-center" v-else>- -</td>
-                <td class="text-center" v-if="entry.full_day_power > 0">
-                  <span class="badge p-2 bg-success"
-                    >{{ entry.full_day_power.toFixed(2) }}W</span
-                  >
-                </td>
-                <td class="text-center" v-else>- -</td>
-                <td class="text-center" v-if="entry.full_day_cost > 0">
-                  <span class="badge p-2 bg-info"
-                    >{{ entry.full_day_cost.toFixed(2) }}UAH</span
-                  >
-                </td>
-                <td class="text-center" v-else>- -</td>
-                <td class="text-center">
-                  <small>{{ entry.power_tariff }}</small>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <pagination
-            :current="currentPage"
-            :total="totalPages"
-            @goToPage="fetchEntries"
-          />
         </div>
       </div>
     </div>
