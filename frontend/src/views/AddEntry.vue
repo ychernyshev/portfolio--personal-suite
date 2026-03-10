@@ -57,112 +57,118 @@ onMounted(fetchWeather);
 </script>
 
 <template>
-  <div class="card shadow-sm">
-    <div class="card-header bg-primary text-white">
-      <h5 class="mb-0">Add New Solar Record</h5>
-    </div>
-    <div class="card-body">
-      <form @submit.prevent="submitForm">
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label class="form-label">Date</label>
-            <input
-              type="date"
-              v-model="formData.date"
-              class="form-control"
-              required
-            />
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-xxl-12">
+        <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Add New Solar Record</h5>
           </div>
-          <div class="col-md-6 mb-3">
-            <label class="form-label">System Power</label>
-            <select v-model="formData.power" class="form-select">
-              <option value="200">200</option>
-              <option value="400">400</option>
-              <option value="600">600</option>
-              <option value="800">800</option>
-            </select>
+          <div class="card-body">
+            <form @submit.prevent="submitForm">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Date</label>
+                  <input
+                    type="date"
+                    v-model="formData.date"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">System Power</label>
+                  <select v-model="formData.power" class="form-select">
+                    <option value="200">200</option>
+                    <option value="400">400</option>
+                    <option value="600">600</option>
+                    <option value="800">800</option>
+                  </select>
+                </div>
+              </div>
+
+              <hr />
+
+              <div class="row text-center mb-3">
+                <div class="col-md-4 border-end">
+                  <h6>Morning</h6>
+                  <input
+                    type="number"
+                    v-model="formData.morning_data_charge"
+                    class="form-control mb-2"
+                    placeholder="Charge level"
+                  />
+                  <input
+                    type="number"
+                    step="0.01"
+                    v-model="formData.morning_data_price"
+                    class="form-control"
+                    placeholder="Price"
+                  />
+                </div>
+                <div class="col-md-4 border-end">
+                  <h6>Afternoon</h6>
+                  <input
+                    type="number"
+                    v-model="formData.afternoon_data_charge"
+                    class="form-control mb-2"
+                    placeholder="Charge level"
+                  />
+                  <input
+                    type="number"
+                    step="0.01"
+                    v-model="formData.afternoon_data_price"
+                    class="form-control"
+                    placeholder="Price"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <h6>Evening</h6>
+                  <input
+                    type="number"
+                    v-model="formData.evening_data_charge"
+                    class="form-control mb-2"
+                    placeholder="Charge level"
+                  />
+                  <input
+                    type="number"
+                    step="0.01"
+                    v-model="formData.evening_data_price"
+                    class="form-control"
+                    placeholder="Price"
+                  />
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label d-block text-center"
+                  >Weather Indicators</label
+                >
+                <div class="d-flex justify-content-center gap-2">
+                  <div
+                    v-for="opt in weatherOptions"
+                    :key="opt.id"
+                    @click="toggleWeather(opt.id)"
+                    class="p-2 border rounded text-center cursor-pointer weather-btn"
+                    :class="{
+                      'bg-primary text-white border-primary shadow':
+                        formData.weather.includes(opt.id),
+                    }"
+                    style="min-width: 80px"
+                  >
+                    <WeatherIcon :name="opt.name" />
+                    <div class="small text-capitalize">{{ opt.name }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-success w-100 py-2">
+                Save Record
+              </button>
+            </form>
           </div>
         </div>
-
-        <hr />
-
-        <div class="row text-center mb-3">
-          <div class="col-md-4 border-end">
-            <h6>Morning</h6>
-            <input
-              type="number"
-              v-model="formData.morning_data_charge"
-              class="form-control mb-2"
-              placeholder="Charge level"
-            />
-            <input
-              type="number"
-              step="0.01"
-              v-model="formData.morning_data_price"
-              class="form-control"
-              placeholder="Price"
-            />
-          </div>
-          <div class="col-md-4 border-end">
-            <h6>Afternoon</h6>
-            <input
-              type="number"
-              v-model="formData.afternoon_data_charge"
-              class="form-control mb-2"
-              placeholder="Charge level"
-            />
-            <input
-              type="number"
-              step="0.01"
-              v-model="formData.afternoon_data_price"
-              class="form-control"
-              placeholder="Price"
-            />
-          </div>
-          <div class="col-md-4">
-            <h6>Evening</h6>
-            <input
-              type="number"
-              v-model="formData.evening_data_charge"
-              class="form-control mb-2"
-              placeholder="Charge level"
-            />
-            <input
-              type="number"
-              step="0.01"
-              v-model="formData.evening_data_price"
-              class="form-control"
-              placeholder="Price"
-            />
-          </div>
-        </div>
-
-        <div class="mb-4">
-          <label class="form-label d-block text-center"
-            >Weather Indicators</label
-          >
-          <div class="d-flex justify-content-center gap-2">
-            <div
-              v-for="opt in weatherOptions"
-              :key="opt.id"
-              @click="toggleWeather(opt.id)"
-              class="p-2 border rounded text-center cursor-pointer weather-btn"
-              :class="{
-                'bg-primary text-white border-primary shadow':
-                  formData.weather.includes(opt.id),
-              }"
-              style="min-width: 80px"
-            >
-              <WeatherIcon :name="opt.name" />
-              <div class="small text-capitalize">{{ opt.name }}</div>
-            </div>
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-success w-100 py-2">
-          Save Record
-        </button>
-      </form>
+      </div>
     </div>
   </div>
 </template>
