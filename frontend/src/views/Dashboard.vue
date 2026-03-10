@@ -169,22 +169,25 @@ onMounted(() => {
       <div class="col-xxl-12">
         <div class="card rounded-3 p-4">
           <div class="row">
-            <div class="col-xxl-3">
-              <div class="mb-3">
-                <label for="formFileSm" class="form-label">Import data</label>
+            <div class="col-xxl-4 mb-3 border-end">
+              <!-- <label for="formFileSm" class="form-label">Import data</label> -->
+              <form action="" class="d-flex flex-row">
                 <input
-                  class="form-control form-control-sm"
+                  class="form-control form-control-sm border-top border-start border-bottom right-angle-end"
+                  style="border: none"
                   id="formFileSm"
                   type="file"
+                  placeholder="Select the CSV file to import"
                 />
-              </div>
+                <button
+                  class="btn btn-sm btn-light w-50 border-top border-end border-bottom right-angle-start"
+                >
+                  Import data
+                </button>
+              </form>
             </div>
-            <div class="col-xxl-3">
-              <button
-                type="button"
-                class="btn btn-light"
-                style="margin-top: 1.8rem"
-              >
+            <div class="col-xxl-2">
+              <button type="button" class="btn btn-sm btn-primary w-75">
                 Export data
               </button>
             </div>

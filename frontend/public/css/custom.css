@@ -107,3 +107,27 @@ body {
 .bg-c-sunrise {
   background: #ffc107;
 }
+
+.right-angle {
+  border-radius: 0;
+}
+
+.right-angle-top {
+  border-top-left-radius: none;
+  border-top-right-radius: none;
+}
+
+.right-angle-bottom {
+  border-bottom-left-radius: none;
+  border-bottom-right-radius: none;
+}
+
+.right-angle-start {
+  border-top-left-radius: none;
+  border-bottom-left-radius: none;
+}
+
+.right-angle-end {
+  border-top-right-radius: none;
+  border-bottom-right-radius: none;
+}
