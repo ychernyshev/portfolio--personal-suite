@@ -1,0 +1,22 @@
+/* Для мобільного режиму */
+@media (max-width: 991px) {
+  .navbar-nav {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .nav-link {
+    font-size: 25px;
+    padding: 0 55px !important;
+    text-align: center;
+  }
+
+  .navbar-brand {
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+}

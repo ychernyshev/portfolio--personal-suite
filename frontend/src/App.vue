@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import MainLayout from "./components/layouts/_DefaultExtended.vue";
+import MainLayout from "./components/calculator/layouts/_DefaultExtended.vue";
 
 const route = useRoute();
 

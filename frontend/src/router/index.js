@@ -1,29 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
-import dashboard from "../views/Dashboard.vue";
-import add_entry from "../views/AddEntry.vue";
-import settings from "../views/Settings.vue";
+import calculatorRoutes from "./CalculatorRoutes.js";
 
 const routes = [
-  {
-    path: "/",
-    component: dashboard,
-    meta: { layout: "_DefaultExtended" },
-  },
-  {
-    path: "/dashboard",
-    component: dashboard,
-    meta: { layout: "_DefaultExtended" },
-  },
-  {
-    path: "/add_entry",
-    component: add_entry,
-    meta: { layout: "_DefaultExtended" },
-  },
-  {
-    path: "/settings",
-    component: settings,
-    meta: { layout: "_DefaultExtended" },
-  },
+  calculatorRoutes,
 ];
 
 const router = createRouter({

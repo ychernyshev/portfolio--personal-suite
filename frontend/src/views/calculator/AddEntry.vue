@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import backendApi from "../services/backendApi";
-import WeatherIcon from "../components/WeatherIcon.vue"; // Переконайся, що шлях правильний
+import backendApi from "../../services/calculator/backendApi.js";
+import WeatherIcon from "../../components/calculator/WeatherIcon.vue"; // Переконайся, що шлях правильний
 
 const emit = defineEmits(["entry-added"]);
 

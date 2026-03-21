@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import backendApi from "../services/backendApi";
+import backendApi from "../../services/calculator/backendApi.js";
 
 const tariff = ref(0);
 const lastUpdated = ref("");

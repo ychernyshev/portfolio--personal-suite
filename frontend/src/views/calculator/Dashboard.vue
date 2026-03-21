@@ -1,10 +1,10 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import backendApi from "../services/backendApi";
-import pagination from "../components/Pagination.vue";
-import PowerChart from "../components/charts/PowerChart.vue";
-import SavingsChart from "../components/charts/SavingsChart.vue";
-import WeatherIcon from "../components/WeatherIcon.vue";
+import backendApi from "../../services/calculator/backendApi.js";
+import pagination from "../../components/calculator/Pagination.vue";
+import PowerChart from "../../components/calculator/charts/PowerChart.vue";
+import SavingsChart from "../../components/calculator/charts/SavingsChart.vue";
+import WeatherIcon from "../../components/calculator/WeatherIcon.vue";
 
 const currentPage = ref(1);
 const totalPages = ref(1);
