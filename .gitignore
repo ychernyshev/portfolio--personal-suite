@@ -13,14 +13,14 @@ __pycache__/
 # === Python / Django ===
 .venv/
 venv/
-calculator/__pycache__/
-calculator/db.sqlite3
-calculator/media/
-calculator/staticfiles/
-calculator/.pytest_cache/
-calculator/.mypy_cache/
-calculator/.coverage
-calculator/coverage.xml
+backend/calculator/__pycache__/
+backend/calculator/db.sqlite3
+backend/calculator/media/
+backend/calculator/staticfiles/
+backend/calculator/.pytest_cache/
+backend/calculator/.mypy_cache/
+backend/calculator/.coverage
+backend/calculator/coverage.xml
 
 # === Node / Vue ===
 frontend/node_modules/
