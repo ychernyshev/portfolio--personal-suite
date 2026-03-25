@@ -8,9 +8,6 @@
     </div>
     <div class="col-xxl-8 col-xs-12 col-sm-12 col-md-6">
       <nav class="nav-links">
-        <div class="card border-0 neomorphic text-purple text-center w-50">
-          Developed with Django & Vue 3
-        </div>
         <!-- <a href="#" class="nav-item">Dashboard</a> -->
         <a href="https://github.com/ychernyshev/Solar-Power-Calculator"
            target="_blank" class="nav-item my-auto text-primary d-flex align-items-center">
@@ -34,6 +31,9 @@
           </svg>
           Contact me
         </a>
+        <div class="card border-0 neomorphic text-purple text-center w-50">
+          Developed with Django & Vue 3
+        </div>
       </nav>
     </div>
   </header>

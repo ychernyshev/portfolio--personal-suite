@@ -13,24 +13,22 @@ const changePage = (page) => {
 <template>
   <nav
     aria-label="Page navigation example"
-    class="d-flex justify-content-center mb-0"
+    class="mb-0"
   >
     <ul class="pagination">
-      <ul class="pagination w-100">
-        <li class="page-item" :class="{ disabled: current === 1 }">
-          <button class="page-link card-light p-2 border-0" @click="changePage(current - 1)">
-            &laquo;
-          </button>
-        </li>
-        <li class="page-item">
-          <span class="page-link card-light p-2 border-0">{{ current }} / {{ total }}</span>
-        </li>
-        <li class="page-item" :class="{ disabled: current === total }">
-          <button class="page-link card-light p-2 border-0" @click="changePage(current + 1)">
-            &raquo;
-          </button>
-        </li>
-      </ul>
+      <li class="page-item" :class="{ disabled: current === 1 }">
+        <button class="page-link card-light p-2 border-0" @click="changePage(current - 1)">
+          &laquo;
+        </button>
+      </li>
+      <li class="page-item w-75">
+        <span class="page-link card-light p-2 border-0 text-center">{{ current }} / {{ total }}</span>
+      </li>
+      <li class="page-item" :class="{ disabled: current === total }">
+        <button class="page-link card-light p-2 border-0" @click="changePage(current + 1)">
+          &raquo;
+        </button>
+      </li>
     </ul>
   </nav>
 </template>
