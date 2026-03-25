@@ -11,6 +11,7 @@ const totalPages = ref(1);
 const entries = ref([]);
 const loading = ref(true);
 const error = ref(null);
+const activeTab = ref('power');
 
 // Entries and pagination
 const fetchEntries = async (page = 1) => {
@@ -87,47 +88,52 @@ onMounted(() => {
     </div>
 
     <section class="table-section neomorphic">
-      <div class="row">
-        <div class="col-xxl-8 card-light">
+      <div class="row align-items-center">
+        <div class="col-xxl-8">
           <div class="input-group">
-            <form action="" class="d-flex flex-row w-100">
-              <input
-                  class="form-control form-control border-top border-start border-bottom right-angle-end"
-                  style="border: none"
-                  id="formFileSm"
-                  type="file"
-                  placeholder="Select the CSV file to import"
-              />
-              <div class="btn-group" role="group" aria-label="Basic example">
-                <button class="btn btn-c-light c-border" id="inputGroupFileAddon04">Import data</button>
-                <button class="btn btn-c-light c-border">Export data</button>
+            <form action="" class="w-100">
+              <div class="row">
+                <div class="col-xxl-8 pl-0 pr-0 pl-1 pt-1">
+                  <input
+                      class="form-control form-control border-top border-start border-bottom right-angle-end"
+                      style="border: none"
+                      id="formFileSm"
+                      type="file"
+                      placeholder="Select the CSV file to import"
+                  />
+                </div>
+                <div class="col-xxl-4 pl-0 pt-1">
+                  <div class="btn-group w-100" role="group" aria-label="Basic example">
+                    <button class="btn btn-secondary c-border" id="inputGroupFileAddon04">Import data</button>
+                    <button class="btn btn-success c-border">Export data</button>
+                  </div>
+                </div>
               </div>
             </form>
           </div>
         </div>
         <div class="col-xxl-2 card-light">
-          <button class="btn btn-primary text-light w-100">Add record</button>
+          <button class="btn btn-primary text-light w-100 mb-1">Add record</button>
         </div>
         <div class="col-xxl-2">
-          <div class="row p-1">
-            <div class="col-xxl-9 align-items-baseline pe-0">
+          <div class="row pt-1 pr-1 justify-content-between">
+            <div class="col-xxl-10 align-items-center pr-2">
               <pagination
                   :current="currentPage"
                   :total="totalPages"
                   @goToPage="fetchEntries"
               />
+
             </div>
-            <div class="col-xxl-3 d-flex justify-content-end align-items-baseline pe-0">
-              <div class="">
-                <button class="btn card-light text-purple p-2 btn-sm">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                       class="bi bi-wrench-adjustable-circle" viewBox="0 0 16 16">
-                    <path d="M12.496 8a4.5 4.5 0 0 1-1.703 3.526L9.497 8.5l2.959-1.11q.04.3.04.61" />
-                    <path
-                        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-1 0a7 7 0 1 0-13.202 3.249l1.988-1.657a4.5 4.5 0 0 1 7.537-4.623L7.497 6.5l1 2.5 1.333 3.11c-.56.251-1.18.39-1.833.39a4.5 4.5 0 0 1-1.592-.29L4.747 14.2A7 7 0 0 0 15 8m-8.295.139a.25.25 0 0 0-.288-.376l-1.5.5.159.474.808-.27-.595.894a.25.25 0 0 0 .287.376l.808-.27-.595.894a.25.25 0 0 0 .287.376l1.5-.5-.159-.474-.808.27.596-.894a.25.25 0 0 0-.288-.376l-.808.27z" />
-                  </svg>
-                </button>
-              </div>
+            <div class="col-xxl-2 d-flex justify-content-end align-items-baseline pe-0">
+              <button class="btn card-light text-purple p-2 btn-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                     class="bi bi-wrench-adjustable-circle" viewBox="0 0 16 16">
+                  <path d="M12.496 8a4.5 4.5 0 0 1-1.703 3.526L9.497 8.5l2.959-1.11q.04.3.04.61" />
+                  <path
+                      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-1 0a7 7 0 1 0-13.202 3.249l1.988-1.657a4.5 4.5 0 0 1 7.537-4.623L7.497 6.5l1 2.5 1.333 3.11c-.56.251-1.18.39-1.833.39a4.5 4.5 0 0 1-1.592-.29L4.747 14.2A7 7 0 0 0 15 8m-8.295.139a.25.25 0 0 0-.288-.376l-1.5.5.159.474.808-.27-.595.894a.25.25 0 0 0 .287.376l.808-.27-.595.894a.25.25 0 0 0 .287.376l1.5-.5-.159-.474-.808.27.596-.894a.25.25 0 0 0-.288-.376l-.808.27z" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
@@ -228,28 +234,40 @@ onMounted(() => {
   </main>
 
   <aside class="sidebar neomorphic">
-    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Home</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link bg-dark-blue text-light" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</button>
-      </li>
-    </ul>
-    <div class="tab-content" id="pills-tabContent">
-      <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
-        <power-chart
-            :labels="chartLabels"
-            :power="chartValues"
-            @goToPage="fetchEntries"
-        />
-      </div>
-      <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
-        <savings-chart
-            :labels="chartLabels"
-            :cost="chartCosts"
-            @goToPage="fetchEntries"
-        />
+    <div class="row" style="height: 22.5%">
+      <div class="col-xxl-12"></div>
+    </div>
+    <div class="row">
+      <div class="col-xxl-12">
+        <ul class="nav nav-pills mb-1" id="pills-tab" role="tablist">
+          <li class="nav-item w-50" role="presentation">
+            <button
+                class="nav-link btn btn-sm w-100"
+                :class="{ active: activeTab === 'power', 'btn-light text-sky-blue-4': activeTab !== 'power', 'bg-gradient-blue-2 text-light': activeTab === 'power' }"
+                @click="activeTab = 'power'"
+            >
+              Power
+            </button>
+          </li>
+          <li class="nav-item w-50" role="presentation">
+            <button
+                class="nav-link btn btn-sm w-100"
+                :class="{ active: activeTab === 'cost', 'btn-light text-sky-blue-4': activeTab !== 'cost', 'bg-gradient-blue-2 text-light': activeTab === 'cost' }"
+                @click="activeTab = 'cost'"
+            >
+              Profile
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <div v-show="activeTab === 'power'" class="tab-pane fade show active card-light">
+            <power-chart :labels="chartLabels" :power="chartValues" @goToPage="fetchEntries" />
+          </div>
+          <div v-show="activeTab === 'cost'" class="tab-pane fade show active card-light">
+            <savings-chart :labels="chartLabels" :cost="chartCosts" @goToPage="fetchEntries" />
+          </div>
+        </div>
       </div>
     </div>
   </aside>

@@ -34,11 +34,16 @@ const chartData = computed(() => ({
   datasets: [
     {
       label: "Power generation (Wh)",
-      backgroundColor: "rgba(75, 192, 192, 0.2)",
-      borderColor: "#4bc0c0",
+      backgroundColor: "rgba(52, 86, 173, 0.1)",
+      borderColor: "#3456AD",
       data: props.power,
       fill: true,
       tension: 0.4,
+      borderWidth: 3,
+      pointRadius: 4,
+      pointBackgroundColor: "#3456AD",
+      pointBorderColor: "#fff",
+      pointHoverRadius: 6,
     },
   ],
 }));
@@ -48,19 +53,36 @@ const chartOptions = {
   maintainAspectRatio: false,
   plugins: {
     legend: {
-      display: true,
-      labels: { color: "#ffffff" },
+      display: false,
     },
+    tooltip: {
+      backgroundColor: "rgba(255, 255, 255, 0.8)",
+      titleColor: "#3456AD",
+      bodyColor: "#3456AD",
+      borderColor: "rgba(52, 86, 173, 0.2)",
+      borderWidth: 1,
+      padding: 10,
+      displayColors: false,
+    }
   },
   scales: {
     y: {
       beginAtZero: true,
-      grid: { color: "rgba(255, 255, 255, 0.1)" },
-      ticks: { color: "#ffffff" },
+      grid: {
+        color: "rgba(52, 86, 173, 0.05)",
+        drawBorder: false
+      },
+      ticks: {
+        color: "rgba(52, 86, 173, 0.7)",
+        font: { size: 11 }
+      },
     },
     x: {
       grid: { display: false },
-      ticks: { color: "#ffffff" },
+      ticks: {
+        color: "rgba(52, 86, 173, 0.7)",
+        font: { size: 11 }
+      },
     },
   },
 };
@@ -74,8 +96,8 @@ const chartOptions = {
 
 <style scoped>
 .chart-container {
-  height: 400px;
-  background: #1a1a2e;
+  height: 452px;
+  background: transparent;
   padding: 20px;
   border-radius: 12px;
 }

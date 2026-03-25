@@ -284,6 +284,10 @@ body {
     color: var(--purple);
 }
 
+.text-sky-blue-4 {
+    color: var(--sky-blue-4);
+}
+
 .table td {
     color: var(--purple) !important;
 }

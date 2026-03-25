@@ -15,13 +15,13 @@ const changePage = (page) => {
     aria-label="Page navigation example"
     class="mb-0"
   >
-    <ul class="pagination">
+    <ul class="pagination mb-0">
       <li class="page-item" :class="{ disabled: current === 1 }">
         <button class="page-link card-light p-2 border-0" @click="changePage(current - 1)">
           &laquo;
         </button>
       </li>
-      <li class="page-item w-75">
+      <li class="page-item w-100">
         <span class="page-link card-light p-2 border-0 text-center">{{ current }} / {{ total }}</span>
       </li>
       <li class="page-item" :class="{ disabled: current === total }">

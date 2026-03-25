@@ -14,14 +14,14 @@ import {
 } from "chart.js";
 
 ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+    Filler,
 );
 
 const props = defineProps({
@@ -34,11 +34,17 @@ const chartData = computed(() => ({
   datasets: [
     {
       label: "Cost savings (UAH)",
-      backgroundColor: "rgba(75, 192, 192, 0.2)",
-      borderColor: "#4bc0c0",
+      // Використовуємо трохи насиченіший синій для фону, щоб підкреслити "фінансову" частину
+      backgroundColor: "rgba(52, 86, 173, 0.15)",
+      borderColor: "#3456AD",
       data: props.cost,
       fill: true,
       tension: 0.4,
+      borderWidth: 3,
+      pointRadius: 4,
+      pointBackgroundColor: "#3456AD",
+      pointBorderColor: "#fff",
+      pointHoverRadius: 6,
     },
   ],
 }));
@@ -48,19 +54,41 @@ const chartOptions = {
   maintainAspectRatio: false,
   plugins: {
     legend: {
-      display: true,
-      labels: { color: "#ffffff" },
+      display: false, // Рекомендую приховати, оскільки назва зазвичай є в заголовку картки
+    },
+    tooltip: {
+      backgroundColor: "rgba(255, 255, 255, 0.9)",
+      titleColor: "#3456AD",
+      bodyColor: "#3456AD",
+      borderColor: "rgba(52, 86, 173, 0.2)",
+      borderWidth: 1,
+      padding: 12,
+      displayColors: false,
+      callbacks: {
+        // Додаємо символ валюти у підказку
+        label: (context) => ` ${context.parsed.y} UAH`,
+      },
     },
   },
   scales: {
     y: {
       beginAtZero: true,
-      grid: { color: "rgba(255, 255, 255, 0.1)" },
-      ticks: { color: "#ffffff" },
+      grid: {
+        color: "rgba(52, 86, 173, 0.08)", // Тонка сітка в тон основного синього
+        drawBorder: false
+      },
+      ticks: {
+        color: "rgba(52, 86, 173, 0.8)", // Темно-синій, але напівпрозорий
+        font: { size: 11 },
+        callback: (value) => `${value} ₴` // Символ гривні на осі
+      },
     },
     x: {
       grid: { display: false },
-      ticks: { color: "#ffffff" },
+      ticks: {
+        color: "rgba(52, 86, 173, 0.8)",
+        font: { size: 11 }
+      },
     },
   },
 };
@@ -74,8 +102,8 @@ const chartOptions = {
 
 <style scoped>
 .chart-container {
-  height: 400px;
-  background: #1a1a2e;
+  height: 452px;
+  background: transparent;
   padding: 20px;
   border-radius: 12px;
 }
