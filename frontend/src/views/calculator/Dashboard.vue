@@ -94,7 +94,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <section class="table-section neomorphic pt-3 pb-3 pl-4 pr-4">
+    <section class="table-section neomorphic pt-2 pb-3 pl-4 pr-4">
       <div class="row align-items-center">
         <div class="col-xxl-8">
           <div class="input-group">
@@ -147,7 +147,7 @@ onMounted(() => {
       </div>
       <div class="row">
         <div class="col-xxl-12 card-light">
-          <table class="table table-borderless table-responsive">
+          <table class="table table-borderless table-responsive mb-1">
             <colgroup>
               <col style="width: 10%;">
               <col style="width: 10%;">
@@ -187,7 +187,7 @@ onMounted(() => {
                         v-for="condition in entry.weather_details"
                         :key="condition.id"
                         :wmo-code="condition.name"
-                        style="width: 32px; height: 32px; opacity: 0.8"
+                        style="width: 22px; height: 22px; opacity: 0.8"
                     />
 <!--                    <WeatherIcon-->
 <!--                        v-for="condition in entry.weather_details"-->
