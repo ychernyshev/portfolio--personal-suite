@@ -6,9 +6,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from calculator.services.handle_entry_form import handle_entry_form
 from calculator.models import DataEntryLineModel, CurrentTariffModel
 from calculator.forms import TariffUpdateForm
+
+from calculator.services.handle_entry_form import handle_entry_form
 
 
 # Create your views here.

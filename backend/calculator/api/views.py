@@ -1,9 +1,11 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel
 from calculator.api.serializers import DataEntrySerializer, CurrentTariffSerializer, WeatherConditionSerializer
+
+from calculator.services.weather_service import WeatherForecastService
 
 
 class DataEntryViewSet(viewsets.ModelViewSet):
@@ -31,3 +33,17 @@ class StatsViewApiView(APIView):
 class WeatherConditionViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = WeatherConditionModel.objects.all()
     serializer_class = WeatherConditionSerializer
+
+
+class SolarForecastAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        service = WeatherForecastService()
+        forecast_data = service.get_solar_forecast()
+
+        if forecast_data.get("status") == "success":
+            return Response(forecast_data, status=status.HTTP_200_OK)
+
+        return Response(
+            {"error": forecast_data.get("message", "Unknown error")},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )

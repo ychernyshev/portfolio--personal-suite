@@ -5,6 +5,7 @@ import pagination from "../../components/calculator/Pagination.vue";
 import PowerChart from "../../components/calculator/charts/PowerChart.vue";
 import SavingsChart from "../../components/calculator/charts/SavingsChart.vue";
 import WeatherIcon from "../../components/calculator/WeatherIcon.vue";
+import WeatherWidget from "../../components/calculator/wingets/WeatherWidget.vue";
 
 const currentPage = ref(1);
 const totalPages = ref(1);
@@ -83,7 +84,9 @@ onMounted(() => {
           </span>
         </h3>
       </div>
-      <div class="card border-0 neomorphic">Картка 3 (Widget)</div>
+      <div class="card border-0 neomorphic">
+        <weather-widget />
+      </div>
       <div class="card border-0 neomorphic">Картка 4 (Widget)</div>
     </div>
 
