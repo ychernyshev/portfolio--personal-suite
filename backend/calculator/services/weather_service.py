@@ -3,7 +3,7 @@ from datetime import datetime
 import requests
 from django.core.cache import cache
 
-from calculator.models import CurrentTariffModel
+from calculator.models import CurrentTariffModel, SolarForecastRecord
 
 
 class WeatherForecastService:
@@ -75,7 +75,24 @@ class WeatherForecastService:
             }
 
             cache.set(cache_key, result_dict, 3600)
+            self.save_forecast_to_db(result_dict)
 
             return result_dict
         except Exception as e:
             return {"status": "error", "message": str(e)}
+
+
+    def save_forecast_to_db(self, forecast_data):
+        try:
+            obj, created = SolarForecastRecord.objects.update_or_create(
+                date=datetime.now().date(),
+                defaults={
+                    'predicted_kwh': forecast_data['predicted_total_kwh'],
+                    'predicted_savings': forecast_data['predicted_savings'],
+                    'peak_hour': forecast_data['peak_hour'],
+                }
+            )
+            return created
+        except Exception as e:
+            print(f"Помилка збереження в БД: {e}")
+            return False
