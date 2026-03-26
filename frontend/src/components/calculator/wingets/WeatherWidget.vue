@@ -71,6 +71,7 @@ onMounted(() => {
       <icons-map
           v-if="forecast"
           :wmoCode="forecast.weather_code"
+          style="width: 82px; height: 52px; opacity: 0.8;"
       />
     </div>
   </div>

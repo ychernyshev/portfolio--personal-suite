@@ -329,3 +329,10 @@ body {
     text-shadow: 0 0 1px var(--purple);
     letter-spacing: 0.5px;
 }
+
+.weather-icon {
+    transition: transform 0.3s ease-in-out;
+}
+.weather-icon:hover {
+    transform: scale(1.1); /* Легке збільшення при наведенні */
+}

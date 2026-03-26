@@ -7,6 +7,7 @@ import SavingsChart from "../../components/calculator/charts/SavingsChart.vue";
 import WeatherIcon from "../../components/calculator/WeatherIcon.vue";
 import WeatherWidget from "../../components/calculator/wingets/WeatherWidget.vue";
 import Productivity from "../../components/calculator/wingets/Productivity.vue";
+import IconsMap from "../../components/calculator/IconsMap.vue";
 
 const currentPage = ref(1);
 const totalPages = ref(1);
@@ -182,11 +183,17 @@ onMounted(() => {
                     entry.weather_details && entry.weather_details.length > 0
                   "
                   >
-                    <WeatherIcon
+                    <icons-map
                         v-for="condition in entry.weather_details"
                         :key="condition.id"
-                        :name="condition.name"
+                        :wmo-code="condition.name"
+                        style="width: 32px; height: 32px; opacity: 0.8"
                     />
+<!--                    <WeatherIcon-->
+<!--                        v-for="condition in entry.weather_details"-->
+<!--                        :key="condition.id"-->
+<!--                        :name="condition.name"-->
+<!--                    />-->
                   </template>
                   <span v-else class="text-muted text-center d-none d-md-table-cell c-border">- -</span>
                 </td>
