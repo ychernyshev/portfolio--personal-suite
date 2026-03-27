@@ -39,53 +39,51 @@ onMounted(fetchTariff);
 </script>
 
 <template>
-  <div class="container mt-5">
+  <div class="card shadow-sm border-0 p-3">
     <div class="row">
-      <div class="col-xxl-12">
-        <div class="card shadow-sm border-0">
-          <div class="card-header bg-warning text-dark fw-bold">
-            <i class="bi bi-lightning-charge-fill me-2"></i>Налаштування тарифу
-          </div>
-          <div class="card-body">
-            <div
+      <div class="col-xxl-6">
+          <div
               v-if="message.text"
               :class="['alert', 'alert-' + message.type, 'py-2 small']"
-            >
-              {{ message.text }}
-            </div>
+          >
+            {{ message.text }}
+          </div>
 
-            <div class="form-group">
-              <label class="form-label small text-muted"
-                >Поточна вартість (UAH/кВт)</label
-              >
-              <div class="input-group mb-2">
-                <input
-                  type="number"
-                  step="0.01"
-                  v-model="tariff"
-                  class="form-control form-control-lg fw-bold text-primary"
-                />
-                <span class="input-group-text">₴</span>
+          <div class="form-group">
+            <label class="form-label pt-3"
+            >Налаштування тарифу | Поточна вартість (UAH/кВт)</label
+            >
+            <div class="row">
+              <div class="col-xxl-8">
+                <div class="input-group mb-2">
+                  <input
+                      type="number"
+                      step="0.01"
+                      v-model="tariff"
+                      class="form-control text-purple"
+                  />
+                  <span class="input-group-text">₴</span>
+                </div>
+                <p class="text-muted" style="font-size: 0.75rem">
+                  Останнє оновлення: {{ lastUpdated }}
+                </p>
               </div>
-              <p class="text-muted" style="font-size: 0.75rem">
-                Останнє оновлення: {{ lastUpdated }}
-              </p>
+              <div class="col-xxl-4">
+                <button
+                    @click="updateTariff"
+                    :disabled="loading"
+                    class="btn btn-c-warning text-light w-100 fw-bold"
+                >
+                  <span
+                      v-if="loading"
+                      class="spinner-border spinner-border-sm me-2"
+                  ></span>
+                  Оновити тариф
+                </button>
+              </div>
             </div>
-
-            <button
-              @click="updateTariff"
-              :disabled="loading"
-              class="btn btn-warning w-100 fw-bold"
-            >
-              <span
-                v-if="loading"
-                class="spinner-border spinner-border-sm me-2"
-              ></span>
-              Оновити тариф
-            </button>
           </div>
         </div>
       </div>
     </div>
-  </div>
 </template>

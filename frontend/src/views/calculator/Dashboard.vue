@@ -9,6 +9,7 @@ import WeatherWidget from "../../components/calculator/wingets/WeatherWidget.vue
 import Productivity from "../../components/calculator/wingets/Productivity.vue";
 import IconsMap from "../../components/calculator/IconsMap.vue";
 import NewRecord from "../../components/calculator/NewRecord.vue";
+import Settings from "../../components/calculator/Settings.vue";
 
 const currentPage = ref(1);
 const totalPages = ref(1);
@@ -16,6 +17,7 @@ const entries = ref([]);
 const loading = ref(true);
 const error = ref(null);
 const activeTab = ref('power');
+const currentView = ref('table');
 
 // Entries and pagination
 const fetchEntries = async (page = 1) => {
@@ -128,7 +130,9 @@ onMounted(() => {
           </div>
         </div>
         <div class="col-xxl-2 card-light">
-          <button class="btn btn-primary text-light w-100 mb-1" @click="toggleAddRecord">{{ isAddingRecord ? 'Records table' : 'Add record' }}</button>
+          <button class="btn btn-primary text-light w-100 mb-1" @click="currentView = currentView === 'form' ? 'table' : 'form'"
+          >
+            {{ currentView === 'form' ? 'Records table' : 'Add Record' }}</button>
         </div>
         <div class="col-xxl-2">
           <div class="row pt-1 pr-1 justify-content-between">
@@ -141,13 +145,19 @@ onMounted(() => {
 
             </div>
             <div class="col-xxl-2 d-flex justify-content-end align-items-baseline pe-0">
-              <button class="btn card-light text-purple p-2 btn-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+
+              <button class="btn card-light text-purple p-2 btn-sm" @click="currentView = currentView === 'settings' ? 'table' : 'settings'"
+                      :title="currentView === 'settings' ? 'Back to Table' : 'Settings'"
+              >
+                <svg v-if="currentView === 'settings'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-table" viewBox="0 0 16 16">
+                <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 2h-4v3h4zm0 4h-4v3h4zm0 4h-4v3h3a1 1 0 0 0 1-1zm-5 3v-3H6v3zm-5 0v-3H1v2a1 1 0 0 0 1 1zm-4-4h4V8H1zm0-4h4V4H1zm5-3v3h4V4zm4 4H6v3h4z"/>
+              </svg>
+
+                <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                      class="bi bi-wrench-adjustable-circle" viewBox="0 0 16 16">
                   <path d="M12.496 8a4.5 4.5 0 0 1-1.703 3.526L9.497 8.5l2.959-1.11q.04.3.04.61" />
                   <path
-                      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-1 0a7 7 0 1 0-13.202 3.249l1.988-1.657a4.5 4.5 0 0 1 7.537-4.623L7.497 6.5l1 2.5 1.333 3.11c-.56.251-1.18.39-1.833.39a4.5 4.5 0 0 1-1.592-.29L4.747 14.2A7 7 0 0 0 15 8m-8.295.139a.25.25 0 0 0-.288-.376l-1.5.5.159.474.808-.27-.595.894a.25.25 0 0 0 .287.376l.808-.27-.595.894a.25.25 0 0 0 .287.376l1.5-.5-.159-.474-.808.27.596-.894a.25.25 0 0 0-.288-.376l-.808.27z" />
-                </svg>
+                      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-1 0a7 7 0 1 0-13.202 3.249l1.988-1.657a4.5 4.5 0 0 1 7.537-4.623L7.497 6.5l1 2.5 1.333 3.11c-.56.251-1.18.39-1.833.39a4.5 4.5 0 0 1-1.592-.29L4.747 14.2A7 7 0 0 0 15 8m-8.295.139a.25.25 0 0 0-.288-.376l-1.5.5.159.474.808-.27-.595.894a.25.25 0 0 0 .287.376l.808-.27-.595.894a.25.25 0 0 0 .287.376l1.5-.5-.159-.474-.808.27.596-.894a.25.25 0 0 0-.288-.376l-.808.27z" /></svg>
               </button>
             </div>
           </div>
@@ -159,7 +169,7 @@ onMounted(() => {
         <div class="col-xxl-12 p-0">
           <transition name="fade-slide" mode="out-in">
 
-            <div v-if="!isAddingRecord" class="table-container card-light" key="table">
+            <div v-if="currentView === 'table'" class="table-container card-light" key="table">
               <table class="table table-borderless table-responsive mb-1">
                 <colgroup>
                   <col style="width: 10%;">
@@ -202,11 +212,6 @@ onMounted(() => {
                           :wmo-code="condition.name"
                           style="width: 22px; height: 22px; opacity: 0.8"
                       />
-                      <!--                    <WeatherIcon-->
-                      <!--                        v-for="condition in entry.weather_details"-->
-                      <!--                        :key="condition.id"-->
-                      <!--                        :name="condition.name"-->
-                      <!--                    />-->
                     </template>
                     <span v-else class="text-muted text-center d-none d-md-table-cell c-border">- -</span>
                   </td>
@@ -256,9 +261,13 @@ onMounted(() => {
               </table>
             </div>
 
-            <div v-else class="form-container" key="form">
+            <div v-else-if="currentView === 'form'" class="form-container" key="form">
               <AddSolarRecordForm @saved="toggleAddRecord" @cancel="toggleAddRecord" />
               <new-record />
+            </div>
+
+            <div v-else-if="currentView === 'settings'" key="settings" class="settings-containe" style="height: 49vh">
+              <settings />
             </div>
 
           </transition>
