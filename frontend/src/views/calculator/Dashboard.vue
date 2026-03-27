@@ -8,6 +8,7 @@ import WeatherIcon from "../../components/calculator/WeatherIcon.vue";
 import WeatherWidget from "../../components/calculator/wingets/WeatherWidget.vue";
 import Productivity from "../../components/calculator/wingets/Productivity.vue";
 import IconsMap from "../../components/calculator/IconsMap.vue";
+import NewRecord from "../../components/calculator/NewRecord.vue";
 
 const currentPage = ref(1);
 const totalPages = ref(1);
@@ -30,6 +31,13 @@ const fetchEntries = async (page = 1) => {
   } finally {
     loading.value = false;
   }
+};
+
+// Switching "records table" and "add new record" cards
+const isAddingRecord = ref(false);
+
+const toggleAddRecord = () => {
+  isAddingRecord.value = !isAddingRecord.value;
 };
 
 // Charts
@@ -120,7 +128,7 @@ onMounted(() => {
           </div>
         </div>
         <div class="col-xxl-2 card-light">
-          <button class="btn btn-primary text-light w-100 mb-1">Add record</button>
+          <button class="btn btn-primary text-light w-100 mb-1" @click="toggleAddRecord">{{ isAddingRecord ? 'Records table' : 'Add record' }}</button>
         </div>
         <div class="col-xxl-2">
           <div class="row pt-1 pr-1 justify-content-between">
@@ -146,34 +154,35 @@ onMounted(() => {
         </div>
       </div>
       <div class="row">
-        <div class="col-xxl-12 card-light">
-          <table class="table table-borderless table-responsive mb-1">
-            <colgroup>
-              <col style="width: 10%;">
-              <col style="width: 10%;">
-              <col style="width: 10%;">
-              <col style="width: 15%;">
-              <col style="width: 15%;">
-              <col style="width: 15%;">
-              <col style="width: 10%;">
-              <col style="width: 10%;">
-              <col style="width: 10%;">
-              <col style="width: 10%;">
-            </colgroup>
-            <thead>
-            <tr>
-              <th scope="col">Date</th>
-              <th scope="col" class="text-center d-none d-md-table-cell">Power</th>
-              <th scope="col" class="w-10 text-center">Weather indicators</th>
-              <th scope="col" class="text-center">Morning indicators</th>
-              <th scope="col" class="text-center d-none d-md-table-cell">Afternoon indicators</th>
-              <th scope="col" class="text-center">Evening indicators</th>
-              <th scope="col" class="text-center">Energy generated</th>
-              <th scope="col" class="text-center d-none d-md-table-cell">Tital cost</th>
-              <th scope="col" class="text-center d-none d-md-table-cell">Tariff</th>
-            </tr>
-            </thead>
-            <tbody>
+        <div class="col-xxl-12 p-0">
+          <div v-if="!isAddingRecord" class="table-container card-light">
+            <table class="table table-borderless table-responsive mb-1">
+              <colgroup>
+                <col style="width: 10%;">
+                <col style="width: 10%;">
+                <col style="width: 10%;">
+                <col style="width: 15%;">
+                <col style="width: 15%;">
+                <col style="width: 15%;">
+                <col style="width: 10%;">
+                <col style="width: 10%;">
+                <col style="width: 10%;">
+                <col style="width: 10%;">
+              </colgroup>
+              <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col" class="text-center d-none d-md-table-cell">Power</th>
+                <th scope="col" class="w-10 text-center">Weather indicators</th>
+                <th scope="col" class="text-center">Morning indicators</th>
+                <th scope="col" class="text-center d-none d-md-table-cell">Afternoon indicators</th>
+                <th scope="col" class="text-center">Evening indicators</th>
+                <th scope="col" class="text-center">Energy generated</th>
+                <th scope="col" class="text-center d-none d-md-table-cell">Tital cost</th>
+                <th scope="col" class="text-center d-none d-md-table-cell">Tariff</th>
+              </tr>
+              </thead>
+              <tbody>
               <tr v-for="entry in entries" :key="entry.id">
                 <th scope="row" class="c-border">{{ entry.date }}</th>
                 <td class="text-center d-none d-md-table-cell c-border">{{ entry.power }}</td>
@@ -189,11 +198,11 @@ onMounted(() => {
                         :wmo-code="condition.name"
                         style="width: 22px; height: 22px; opacity: 0.8"
                     />
-<!--                    <WeatherIcon-->
-<!--                        v-for="condition in entry.weather_details"-->
-<!--                        :key="condition.id"-->
-<!--                        :name="condition.name"-->
-<!--                    />-->
+                    <!--                    <WeatherIcon-->
+                    <!--                        v-for="condition in entry.weather_details"-->
+                    <!--                        :key="condition.id"-->
+                    <!--                        :name="condition.name"-->
+                    <!--                    />-->
                   </template>
                   <span v-else class="text-muted text-center d-none d-md-table-cell c-border">- -</span>
                 </td>
@@ -239,8 +248,14 @@ onMounted(() => {
                   <small>{{ entry.power_tariff }}</small>
                 </td>
               </tr>
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
+
+          <div v-else class="form-container">
+            <AddSolarRecordForm @saved="toggleAddRecord" @cancel="toggleAddRecord" />
+            <new-record />
+          </div>
         </div>
       </div>
     </section>

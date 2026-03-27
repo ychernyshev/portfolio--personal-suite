@@ -263,6 +263,10 @@ body {
     background: radial-gradient(var(--lighter-blue-0), var(--lighter-blue-2));
 }
 
+.btn-c-warning {
+    background: linear-gradient(to bottom, var(--sunrise-yelow), var(--sunset-yelow));
+}
+
 .c-border {
     border: .1rem solid var(--dark-gray-rgba);
 }
@@ -302,6 +306,10 @@ body {
 
 .bg-gradient-blue-2 {
     background: radial-gradient(#76B5FB, #67B1FB);
+}
+
+.bg-gradient-blue-3 {
+    background: linear-gradient(#ffffff, #EAF0FE);
 }
 
 .bg-gradient-green {
