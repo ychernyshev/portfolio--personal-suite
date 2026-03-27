@@ -344,3 +344,21 @@ body {
 .weather-icon:hover {
     transform: scale(1.1); /* Легке збільшення при наведенні */
 }
+
+/* Анімація переходу */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Стан перед появою */
+.fade-slide-enter-from {
+    opacity: 0;
+    transform: translateY(15px); /* Легке піднімання знизу */
+}
+
+/* Стан під час зникнення */
+.fade-slide-leave-to {
+    opacity: 0;
+    transform: translateY(-15px); /* Легке "відпливання" вгору */
+}
