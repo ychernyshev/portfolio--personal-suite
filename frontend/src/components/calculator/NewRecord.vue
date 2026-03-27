@@ -196,7 +196,7 @@ onMounted(fetchWeather);
 
         <div class="row">
           <div class="col-xxl-4">
-            <div class="time-section mb-4 pl-3 pr-3">
+            <div class="time-section mb-1 pl-3 pr-3">
               <label class="form-label d-block text-center">
                 Extra power (from USB)
               </label>
@@ -244,8 +244,8 @@ onMounted(fetchWeather);
               >Form controllers</label
               >
               <div class="btn-group my-3" role="group" aria-label="Basic example">
-                <button type="button" class="btn btn-light mb-2 w-10 py-2">Clear form</button>
-                <button type="submit" class="btn btn-success mb-2 w-10 py-2">
+                <button type="button" class="btn btn-light mb-1 w-10 py-2">Clear form</button>
+                <button type="submit" class="btn btn-success mb-1 w-10 py-2">
                   Add Record
                 </button>
               </div>
@@ -256,33 +256,3 @@ onMounted(fetchWeather);
     </div>
   </div>
 </template>
-
-<style scoped>
-.weather-btn {
-  transition: all 0.2s;
-  cursor: pointer;
-}
-.weather-btn:hover {
-  border-color: #0d6efd;
-}
-
-.weather-option {
-  transition: all 0.3s ease;
-  border: 1px solid transparent;
-  border-radius: 12px;
-  padding: 8px;
-  cursor: pointer;
-}
-
-/* Стан при наведенні */
-.weather-option:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-/* Стан, коли іконка обрана */
-.weather-option.selected {
-  border-color: #3498db;
-  background: rgba(52, 152, 219, 0.1);
-  transform: translateY(-3px); /* Легкий підйом вгору */
-}
-</style>

@@ -269,7 +269,7 @@ onMounted(() => {
   </main>
 
   <aside class="sidebar neomorphic">
-    <div class="row" style="height: 22.5%">
+    <div class="row" style="height: 30.5%">
       <div class="col-xxl-12"></div>
     </div>
     <div class="row">
@@ -281,7 +281,7 @@ onMounted(() => {
                 :class="{ active: activeTab === 'power', 'btn-light text-sky-blue-4': activeTab !== 'power', 'bg-gradient-blue-2 text-light': activeTab === 'power' }"
                 @click="activeTab = 'power'"
             >
-              Power
+              Power generated
             </button>
           </li>
           <li class="nav-item w-50" role="presentation">
@@ -290,7 +290,7 @@ onMounted(() => {
                 :class="{ active: activeTab === 'cost', 'btn-light text-sky-blue-4': activeTab !== 'cost', 'bg-gradient-blue-2 text-light': activeTab === 'cost' }"
                 @click="activeTab = 'cost'"
             >
-              Profile
+              Power cost
             </button>
           </li>
         </ul>
