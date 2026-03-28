@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import backendApi from "../../services/calculator/backendApi.js";
+import {useNumberAnimation} from "../../services/calculator/useNumberAnimation.js";
 import pagination from "../../components/calculator/Pagination.vue";
 import PowerChart from "../../components/calculator/charts/PowerChart.vue";
 import SavingsChart from "../../components/calculator/charts/SavingsChart.vue";
@@ -10,6 +11,7 @@ import Productivity from "../../components/calculator/wingets/Productivity.vue";
 import IconsMap from "../../components/calculator/IconsMap.vue";
 import NewRecord from "../../components/calculator/NewRecord.vue";
 import Settings from "../../components/calculator/Settings.vue";
+import StatWidget from "../../components/calculator/wingets/StatWidget.vue";
 
 const currentPage = ref(1);
 const totalPages = ref(1);
@@ -18,6 +20,8 @@ const loading = ref(true);
 const error = ref(null);
 const activeTab = ref('power');
 const currentView = ref('table');
+const { animatedNumber: displayCost, animate: animateCost } = useNumberAnimation();
+const { animatedNumber: displayEnergy, animate: animateEnergy } = useNumberAnimation();
 
 // Entries and pagination
 const fetchEntries = async (page = 1) => {
@@ -32,6 +36,22 @@ const fetchEntries = async (page = 1) => {
     console.error(error);
   } finally {
     loading.value = false;
+  }
+};
+
+// Number animate
+const handleSave = async (newData) => {
+  try {
+    const response = await backendApi.get('entries/', newData);
+
+    const { total_cost, total_power } = response.data;
+
+    animateCost(total_cost);
+    animateEnergy(total_power);
+
+    currentView.value = 'table';
+  } catch (error) {
+    console.error("Error during loading:", error);
   }
 };
 
@@ -68,6 +88,10 @@ const fetchStats = async () => {
 };
 
 onMounted(() => {
+  // const response = await backendApi.get('entries/');
+  //
+  // animateCost(response.data.total_cost);
+  // animateEnergy(response.data.total_power);
   fetchEntries();
   fetchStats();
 });
@@ -76,25 +100,22 @@ onMounted(() => {
 <template>
   <main class="main-content">
     <div class="cards-row-grid">
-      <div class="card border-0 neomorphic d-flex">
-        <h3 class="text-purple text-center my-auto">
-          Total generated power
-          <span
-              class="badge bg-gradient-blue-2 text-light"
-              :title="stats.total_power.toFixed(2) + ' Watt'"
-              style="cursor: help"
-          >
-            {{ (stats.total_power / 1000).toFixed(2) }} kWt
-          </span>
-        </h3>
+      <div class="card border-0 neomorphic">
+        <stat-widget
+            title="Total generated"
+            label="power"
+            :value="stats.total_power"
+            unit="kWt"
+        />
       </div>
       <div class="card border-0 neomorphic d-flex">
-        <h3 class="text-purple text-center my-auto">
-          Cost of generated power
-          <span class="badge bg-gradient-blue-2 text-light">
-            {{ stats.total_cost.toFixed(2) }} UAH
-          </span>
-        </h3>
+        <stat-widget
+            title="Total earnings"
+            label="cost"
+            :value="stats.total_cost"
+            unit="UAH"
+            colorClass="text-primary"
+        />
       </div>
       <div class="card border-0 neomorphic">
         <weather-widget />

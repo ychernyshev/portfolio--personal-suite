@@ -1,11 +1,10 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import backendApi from "../../services/calculator/backendApi.js";
-import WeatherIcon from "./WeatherIcon.vue"; // Переконайся, що шлях правильний
+import WeatherIcon from "./WeatherIcon.vue";
 
 const emit = defineEmits(["entry-added"]);
 
-// 1. Початковий стан форми (копія AddEntryForm з Django)
 const formData = ref({
   date: new Date().toISOString().split("T")[0],
   power: "600",
@@ -15,12 +14,11 @@ const formData = ref({
   afternoon_data_price: 0,
   evening_data_charge: 0,
   evening_data_price: 0,
-  weather: [], // Сюди підуть ID обраних погодних умов
+  weather: [],
 });
 
 const weatherOptions = ref([]);
 
-// 2. Завантажуємо типи погоди для кнопок
 const fetchWeather = async () => {
   try {
     const res = await backendApi.get("weather-conditions/");
@@ -30,7 +28,6 @@ const fetchWeather = async () => {
   }
 };
 
-// 3. Логіка вибору погоди (Multiple Choice)
 const toggleWeather = (id) => {
   const index = formData.value.weather.indexOf(id);
   if (index > -1) {
@@ -40,13 +37,11 @@ const toggleWeather = (id) => {
   }
 };
 
-// 4. Відправка форми
 const submitForm = async () => {
   try {
-    // Django очікує ManyToMany як список ID, formData.weather вже є таким списком
     await backendApi.post("entries/", formData.value);
     alert("Запис успішно додано!");
-    emit("entry-added"); // Оновити таблицю на Дашборді
+    emit("entry-added");
   } catch (e) {
     console.error(e.response?.data);
     alert("Помилка: " + JSON.stringify(e.response?.data));
@@ -58,7 +53,7 @@ onMounted(fetchWeather);
 
 <template>
   <div class="card shadow-sm border-0">
-    <div class="card-body card-light p-3">
+    <div class="card-body card-light pl-3 pr-3 pb-2">
       <form @submit.prevent="submitForm">
         <div class="row mt-1">
           <div class="col-md-6 mt-3 mb-2">
@@ -96,6 +91,7 @@ onMounted(fetchWeather);
                   </span>
                   <input
                       type="number"
+                      step="any"
                       class="form-control border-start-0 rounded-end-3"
                       placeholder="0"
                       v-model="formData.morning_data_charge"
@@ -112,6 +108,7 @@ onMounted(fetchWeather);
                     </span>
                   <input
                       type="number"
+                      step="any"
                       class="form-control border-start-0 rounded-end-3"
                       placeholder="0.00"
                       v-model="formData.morning_data_price"
@@ -132,6 +129,7 @@ onMounted(fetchWeather);
                   </span>
                 <input
                     type="number"
+                    step="any"
                     class="form-control border-start-0 rounded-end-3"
                     placeholder="0"
                     v-model="formData.afternoon_data_charge"
@@ -148,6 +146,7 @@ onMounted(fetchWeather);
                     </span>
                 <input
                     type="number"
+                    step="any"
                     class="form-control border-start-0 rounded-end-3"
                     placeholder="0.00"
                     v-model="formData.afternoon_data_price"
@@ -168,6 +167,7 @@ onMounted(fetchWeather);
                   </span>
                 <input
                     type="number"
+                    step="any"
                     class="form-control border-start-0 rounded-end-3"
                     placeholder="0"
                     v-model="formData.evening_data_charge"
@@ -184,6 +184,7 @@ onMounted(fetchWeather);
                     </span>
                 <input
                     type="number"
+                    step="any"
                     class="form-control border-start-0 rounded-end-3"
                     placeholder="0.00"
                     v-model="formData.evening_data_price"
@@ -209,6 +210,7 @@ onMounted(fetchWeather);
                   </span>
                 <input
                     type="number"
+                    step="any"
                     class="form-control border-start-0 rounded-end-3"
                     placeholder="0"
 
