@@ -117,12 +117,7 @@ onMounted(() => {
             colorClass="text-primary"
         />
       </div>
-      <div class="card border-0 neomorphic">
-        <weather-widget />
-      </div>
-      <div class="card border-0 neomorphic">
-        Widget 4
-      </div>
+      <weather-widget />
     </div>
 
     <section class="table-section neomorphic pt-2 pb-3 pl-4 pr-4">
