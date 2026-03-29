@@ -2,7 +2,8 @@
 import { ref, onMounted, computed } from "vue";
 import backendApi from "../../services/calculator/backendApi.js";
 import {useNumberAnimation} from "../../services/calculator/useNumberAnimation.js";
-import {downloadExportedData} from "../../services/calculator/DataExport.js";
+import {importData, handleFileChange} from "../../services/calculator/DataImport.js";
+import {exportData} from "../../services/calculator/DataExport.js";
 import MessagesStack from "../../components/calculator/MessagesStack.vue";
 import pagination from "../../components/calculator/Pagination.vue";
 import PowerChart from "../../components/calculator/charts/PowerChart.vue";
@@ -140,14 +141,19 @@ onMounted(() => {
                       class="form-control form-control border-top border-start border-bottom right-angle-end"
                       style="border: none"
                       id="formFileSm"
-                      type="file"
                       placeholder="Select the CSV file to import"
+                      type="file"
+                      @change="handleFileChange"
+                      accept=".csv"
                   />
                 </div>
                 <div class="col-xxl-4 pl-0 pt-1">
                   <div class="btn-group w-100" role="group" aria-label="Basic example">
-                    <button class="btn btn-secondary c-border" id="inputGroupFileAddon04">Import data</button>
-                    <button type="button" @click="downloadExportedData" class="btn btn-success c-border">Export data</button>
+                    <button class="btn btn-secondary c-border"
+                            id="inputGroupFileAddon04"
+                            type="button"
+                            @click="importData">Import data</button>
+                    <button type="button" @click="exportData" class="btn btn-success c-border">Export data</button>
                   </div>
                 </div>
               </div>

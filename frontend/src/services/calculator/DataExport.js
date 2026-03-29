@@ -2,7 +2,7 @@ import backendApi from "./backendApi.js";
 
 const api_url = backendApi.defaults.baseURL + 'data_export/';
 
-export const downloadExportedData = async () => {
+export const exportData = async () => {
     try {
         const response = await backendApi.get('data-export/', {
             responseType: 'blob',
