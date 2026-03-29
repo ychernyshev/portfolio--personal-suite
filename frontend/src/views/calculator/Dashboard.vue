@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from "vue";
 import backendApi from "../../services/calculator/backendApi.js";
 import {useNumberAnimation} from "../../services/calculator/useNumberAnimation.js";
+import {downloadExportedData} from "../../services/calculator/DataExport.js";
 import pagination from "../../components/calculator/Pagination.vue";
 import PowerChart from "../../components/calculator/charts/PowerChart.vue";
 import SavingsChart from "../../components/calculator/charts/SavingsChart.vue";
@@ -138,7 +139,7 @@ onMounted(() => {
                 <div class="col-xxl-4 pl-0 pt-1">
                   <div class="btn-group w-100" role="group" aria-label="Basic example">
                     <button class="btn btn-secondary c-border" id="inputGroupFileAddon04">Import data</button>
-                    <button class="btn btn-success c-border">Export data</button>
+                    <button type="button" @click="downloadExportedData" class="btn btn-success c-border">Export data</button>
                   </div>
                 </div>
               </div>
