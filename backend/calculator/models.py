@@ -206,3 +206,48 @@ class SolarForecastRecord(models.Model):
         diff = abs(self.predicted_kwh - (actual.full_day_power / 1000))
         accuracy = max(0, 100 - (diff / (actual.full_day_power / 1000) * 100))
         return round(accuracy, 1)
+
+
+class WeatherData(models.Model):
+    # Дата та час виміру/прогнозу
+    timestamp = models.DateTimeField(db_index=True)
+
+    # Основні показники для Pandas
+    temperature = models.FloatField(help_text="Celsius")
+    cloud_cover = models.IntegerField(help_text="Cloud percentage 0-100")
+    pressure = models.FloatField(null=True, blank=True)
+    humidity = models.IntegerField(null=True, blank=True)
+
+    # Опади (важливо для очищення панелей або їх забруднення)
+    precipitation_prob = models.FloatField(default=0, help_text="Chance of precipitation")
+    condition_code = models.CharField(max_length=20, help_text="For example: 'sunny', 'rain'")
+
+    class Meta:
+        ordering = ['-timestamp']
+        verbose_name_plural = "Weather Data Records"
+
+    def __str__(self):
+        return f"{self.timestamp.strftime('%d.%m %H:%M')} - {self.temperature}°C"
+
+
+class SystemMessage(models.Model):
+    LEVEL_CHOICES = (
+        ('info', 'Info'),
+        ('warning', 'Warning'),
+        ('danger', 'Danger'),
+        ('success', 'Success'),
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    level = models.CharField(max_length=10, choices=LEVEL_CHOICES, default='info')
+    title = models.CharField(max_length=150)
+    text = models.TextField()
+
+    # Зв'язок з конкретним типом події (для іконок у Vue)
+    msg_type = models.CharField(max_length=50, default='weather')
+
+    # Поле для зв'язку з календарем (щоб швидко фільтрувати повідомлення за день)
+    event_date = models.DateField(db_index=True, auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']

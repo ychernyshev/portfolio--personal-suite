@@ -2,8 +2,16 @@
 import { ref, onMounted } from "vue";
 import backendApi from "../../services/calculator/backendApi.js";
 import WeatherIcon from "./WeatherIcon.vue";
+import {useNotificationStore} from "../../../store/useNotificationStore.js";
 
 const emit = defineEmits(["entry-added"]);
+
+// Messages
+const messageRef = ref(null);
+const notificationStore = useNotificationStore();
+const handleMessage = (payload) => {
+  notificationStore.addNotification(payload);
+};
 
 const formData = ref({
   date: new Date().toISOString().split("T")[0],
@@ -17,6 +25,7 @@ const formData = ref({
   weather: [],
 });
 
+// Weather
 const weatherOptions = ref([]);
 
 const fetchWeather = async () => {
@@ -40,11 +49,23 @@ const toggleWeather = (id) => {
 const submitForm = async () => {
   try {
     await backendApi.post("entries/", formData.value);
-    alert("Запис успішно додано!");
-    emit("entry-added");
+    notificationStore.addNotification({
+      title: 'Дані збережено',
+      text: 'Показники потужності успішно оновлені в базі.',
+      level: 'success',
+      msg_type: 'success'
+    });
+    emit("entry-added", {
+      title: "New solar power generation data for the day has been added"
+    });
   } catch (e) {
-    console.error(e.response?.data);
-    alert("Помилка: " + JSON.stringify(e.response?.data));
+    notificationStore.addNotification({
+      title: 'Помилка',
+      text: 'Не вдалося зберегти дані.',
+      level: 'danger',
+      msg_type: 'warning'
+    });
+    emit("entry-added", { title: "Error", level: "danger", error: e });
   }
 };
 

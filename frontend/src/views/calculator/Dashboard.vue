@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from "vue";
 import backendApi from "../../services/calculator/backendApi.js";
 import {useNumberAnimation} from "../../services/calculator/useNumberAnimation.js";
 import {downloadExportedData} from "../../services/calculator/DataExport.js";
+import MessagesStack from "../../components/calculator/MessagesStack.vue";
 import pagination from "../../components/calculator/Pagination.vue";
 import PowerChart from "../../components/calculator/charts/PowerChart.vue";
 import SavingsChart from "../../components/calculator/charts/SavingsChart.vue";
@@ -13,6 +14,7 @@ import IconsMap from "../../components/calculator/IconsMap.vue";
 import NewRecord from "../../components/calculator/NewRecord.vue";
 import Settings from "../../components/calculator/Settings.vue";
 import StatWidget from "../../components/calculator/wingets/StatWidget.vue";
+import {useNotificationStore} from "../../../store/useNotificationStore.js";
 
 const currentPage = ref(1);
 const totalPages = ref(1);
@@ -86,6 +88,12 @@ const fetchStats = async () => {
   } catch (error) {
     console.error("Помилка при завантаженні статистики:", error);
   }
+};
+
+// Messages
+const notificationStore = useNotificationStore();
+const handleMessage = (payload) => {
+  notificationStore.addNotification(payload);
 };
 
 onMounted(() => {
@@ -280,7 +288,7 @@ onMounted(() => {
 
             <div v-else-if="currentView === 'form'" class="form-container" key="form">
               <AddSolarRecordForm @saved="toggleAddRecord" @cancel="toggleAddRecord" />
-              <new-record />
+              <new-record @entry-added="() => { fetchEntries(); fetchStats(); }" />
             </div>
 
             <div v-else-if="currentView === 'settings'" key="settings" class="settings-containe" style="height: 49vh">
@@ -296,7 +304,9 @@ onMounted(() => {
 
   <aside class="sidebar neomorphic">
     <div class="row" style="height: 30.5%">
-      <div class="col-xxl-12"></div>
+      <div class="col-xxl-12">
+        <messages-stack ref="messagesRef" />
+      </div>
     </div>
     <div class="row">
       <div class="col-xxl-12">
