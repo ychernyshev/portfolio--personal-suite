@@ -1,4 +1,5 @@
 import io
+import os
 
 import pandas as pd
 from django.http import HttpResponse
@@ -8,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from calculator.api.serializers import DataEntrySerializer, CurrentTariffSerializer, WeatherConditionSerializer
-from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel, SolarForecastRecord
+from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel, SolarForecastRecordModel
 from calculator.services.data_export import export_data_logic
 from calculator.services.data_import import import_data_logic
 from calculator.services.weather_service import WeatherForecastService
@@ -45,6 +46,20 @@ class StatsViewApiView(APIView):
         })
 
 
+class WeatherUpdateTaskView(APIView):
+    def get(self, request):
+        auth_header = request.headers.get('Authorization')
+        cron_secret = os.environ.get('CRON_SECRET')
+
+        if auth_header != f"Bearer {cron_secret}":
+            return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        service = WeatherForecastService()
+        result = service.get_solar_forecast()
+
+        return Response({"status": "success", "data": result})
+
+
 class WeatherConditionViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = WeatherConditionModel.objects.all()
     serializer_class = WeatherConditionSerializer
@@ -66,7 +81,7 @@ class SolarForecastAPIView(APIView):
 
 class SolarComparisonAPIView(APIView):
     def get(self, request):
-        records = SolarForecastRecord.objects.all()[:7]
+        records = SolarForecastRecordModel.objects.all()[:7]
         data = []
 
         for r in records:

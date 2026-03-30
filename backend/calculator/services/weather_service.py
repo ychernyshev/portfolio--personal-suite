@@ -1,9 +1,10 @@
-from datetime import datetime
+import datetime
 
 import requests
 from django.core.cache import cache
+from django.utils import timezone
 
-from calculator.models import CurrentTariffModel, SolarForecastRecord
+from calculator.models import CurrentTariffModel, SolarForecastRecordModel, WeatherDataModel
 
 
 class WeatherForecastService:
@@ -24,7 +25,14 @@ class WeatherForecastService:
         params = {
             "latitude": self.LAT,
             "longitude": self.LON,
-            "hourly": ["shortwave_radiation", "temperature_2m", "weather_code"],  # Додали нове
+            "hourly": [
+                "shortwave_radiation",
+                "temperature_2m",
+                "weather_code",
+                "cloud_cover",
+                "relative_humidity_2m",  # Вологість
+                "surface_pressure"  # Тиск
+            ],
             "timezone": "auto",
             "forecast_days": 1
         }
@@ -55,7 +63,7 @@ class WeatherForecastService:
             system_factor = total_area * panel_efficiency * performance_ratio
             hourly_gen_wh = [round(rad * system_factor, 2) for rad in radiation_data]
 
-            current_hour = datetime.now().hour
+            current_hour = datetime.datetime.now().hour
             weather_data = data.get('hourly', {})
 
             total_kwh = sum(hourly_gen_wh) / 1000
@@ -71,28 +79,52 @@ class WeatherForecastService:
                 "tariff_used": current_tariff,
                 "current_temp": round(weather_data.get('temperature_2m', [])[current_hour], 1),
                 "weather_condition": wmo_codes.get(weather_data.get('weather_code', [])[current_hour], "Unknown"),
-                "weather_code": weather_data.get('weather_code', [])[current_hour],  # Для іконок на фронті
+                "weather_code": weather_data.get('weather_code', [])[current_hour],
             }
 
             cache.set(cache_key, result_dict, 3600)
-            self.save_forecast_to_db(result_dict)
+            self.save_forecast_to_db(result_dict, data)
 
             return result_dict
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
-
-    def save_forecast_to_db(self, forecast_data):
+    def save_forecast_to_db(self, forecast_data, raw_api_data):
         try:
-            obj, created = SolarForecastRecord.objects.update_or_create(
-                date=datetime.now().date(),
+            today = datetime.date.today()
+
+            SolarForecastRecordModel.objects.update_or_create(
+                date=today,
                 defaults={
                     'predicted_kwh': forecast_data['predicted_total_kwh'],
                     'predicted_savings': forecast_data['predicted_savings'],
                     'peak_hour': forecast_data['peak_hour'],
                 }
             )
-            return created
+
+            hourly = raw_api_data.get('hourly', {})
+            timestamps = hourly.get('time', [])
+            temps = hourly.get('temperature_2m', [])
+            codes = hourly.get('weather_code', [])
+            clouds = hourly.get('cloud_cover', [])
+            humidities = hourly.get('relative_humidity_2m', [])  # Нове
+            pressures = hourly.get('surface_pressure', [])  # Нове
+
+            for i in range(len(timestamps)):
+                naive_dt = datetime.datetime.strptime(timestamps[i], '%Y-%m-%dT%H:%M')
+                aware_dt = timezone.make_aware(naive_dt)
+
+                WeatherDataModel.objects.update_or_create(
+                    timestamp=aware_dt,
+                    defaults={
+                        'temperature': temps[i],
+                        'condition_code': str(codes[i]),
+                        'cloud_cover': clouds[i],
+                        'humidity': humidities[i],  # Заповнюємо вологість
+                        'pressure': pressures[i],  # Заповнюємо тиск
+                    }
+                )
+            return True
         except Exception as e:
-            print(f"Помилка збереження в БД: {e}")
+            print(f"DB loading error: {e}")
             return False

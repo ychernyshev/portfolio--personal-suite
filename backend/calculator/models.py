@@ -179,7 +179,7 @@ class WeatherConditionModel(models.Model):
         return self.name
 
 
-class SolarForecastRecord(models.Model):
+class SolarForecastRecordModel(models.Model):
     date = models.DateField(verbose_name="Forecast date", unique=True, default=timezone.now)
     predicted_kwh = models.FloatField(verbose_name="Forecast (kWh)")
     predicted_savings = models.FloatField(verbose_name="Projected savings (UAH)")
@@ -208,7 +208,7 @@ class SolarForecastRecord(models.Model):
         return round(accuracy, 1)
 
 
-class WeatherData(models.Model):
+class WeatherDataModel(models.Model):
     # Дата та час виміру/прогнозу
     timestamp = models.DateTimeField(db_index=True)
 
