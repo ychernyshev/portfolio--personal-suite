@@ -23,6 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-ca6vhl+q1@xtrtnb*xez+u5nhl%+pef702(2a2=3!a+&u*043x'
+CRON_SECRET=os.getenv('CRON_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,8 +38,6 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:5173',
     'http://localhost:8000',
     'http://127.0.0.1:8000',
-    'http://localhost:8080',
-    'http://127.0.0.1:8080',
 ]
 
 # Application definition

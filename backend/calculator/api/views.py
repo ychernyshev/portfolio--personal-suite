@@ -1,16 +1,31 @@
+import io
+
+import pandas as pd
+from django.http import HttpResponse
 from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel, SolarForecastRecord
 from calculator.api.serializers import DataEntrySerializer, CurrentTariffSerializer, WeatherConditionSerializer
-
+from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel, SolarForecastRecord
+from calculator.services.data_export import export_data_logic
+from calculator.services.data_import import import_data_logic
 from calculator.services.weather_service import WeatherForecastService
 
 
 class DataEntryViewSet(viewsets.ModelViewSet):
     queryset = DataEntryLineModel.objects.all().order_by('-date')
     serializer_class = DataEntrySerializer
+
+    @action(detail=False, methods=['post'], url_path='import')
+    def import_data(self, request):
+        result = import_data_logic(request.FILES.get('file'))
+        return Response(result, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=['get'], url_path='export')
+    def export_data(self, request):
+        return export_data_logic(request)
 
 
 class CurrentTariffViewSet(viewsets.ReadOnlyModelViewSet):

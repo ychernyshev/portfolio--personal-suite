@@ -3,8 +3,7 @@ import pandas as pd
 from django.http import HttpResponse
 from calculator.models import DataEntryLineModel
 
-
-def data_export(request):
+def export_data_logic(request):
     data_entries = DataEntryLineModel.objects.all().values()
     entries = pd.DataFrame(data_entries)
 

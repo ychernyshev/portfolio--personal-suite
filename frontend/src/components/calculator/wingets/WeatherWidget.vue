@@ -11,7 +11,7 @@ const showCalendar = ref(false);
 
 const fetchForecast = async () => {
   try {
-    const response = await backendApi.get('solar-forecast/');
+    const response = await backendApi.get('forecast/');
     forecast.value = response.data;
   } catch (error) {
     console.error("Error retrieving forecast:", error);

@@ -6,8 +6,6 @@ from calculator.api.views import (DataEntryViewSet,
                                   WeatherConditionViewSet,
                                   SolarForecastAPIView,
                                   SolarComparisonAPIView)
-from calculator.services.data_import import data_import
-from calculator.services.data_export import data_export
 
 router = DefaultRouter()
 router.register(r'entries', DataEntryViewSet, basename='entries')
@@ -17,8 +15,8 @@ urlpatterns = [
     path('', include(router.urls)),
     path('current-tariff/', CurrentTariffViewSet.as_view({'get': 'retrieve'}), name='current-tariff'),
     path('stats/', StatsViewApiView.as_view(), name='stats'),
-    path('solar-forecast/', SolarForecastAPIView.as_view(), name='solar-forecast'),
-    path('solar-comparison/', SolarComparisonAPIView.as_view(), name='solar-comparison'),
-    path('data-export/', data_export, name='data-export'),
-    path('data-import/', data_import, name='data-import'),
+    path('forecast/', SolarForecastAPIView.as_view(), name='forecast'),
+    path('forecast/comparison/', SolarComparisonAPIView.as_view(), name='comparison'),
+    path('data-export/', SolarForecastAPIView.as_view(), name='data-export'),
+    path('data-import/', SolarForecastAPIView.as_view(), name='data-import'),
 ]
