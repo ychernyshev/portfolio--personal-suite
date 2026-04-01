@@ -166,7 +166,7 @@ onMounted(() => {
             {{ currentView === 'form' ? 'Records table' : 'Add Record' }}</button>
         </div>
         <div class="col-xxl-2">
-          <div class="row pt-1 pr-1 justify-content-between">
+          <div class="row pt-1 pr-1 justify-content-between setup-data-section">
             <div class="col-xxl-10 col-sm-11 align-items-center pr-2">
               <pagination
                   :current="currentPage"
@@ -197,9 +197,8 @@ onMounted(() => {
 
 
       <div class="row">
-        <div class="col-xxl-12 p-0">
+        <div class="col-xxl-12 p-0 records-data-table">
           <transition name="fade-slide" mode="out-in">
-
             <div v-if="currentView === 'table'" class="table-container card-light" key="table">
               <table class="table table-borderless table-responsive mb-1">
                 <colgroup>
@@ -309,7 +308,7 @@ onMounted(() => {
   </main>
 
   <aside class="sidebar neomorphic">
-    <div class="row" style="height: 30.5%">
+    <div class="row messages-section" style="height: 30.5%">
       <div class="col-xxl-12">
         <messages-stack ref="messagesRef" />
       </div>
