@@ -167,7 +167,7 @@ onMounted(() => {
         </div>
         <div class="col-xxl-2">
           <div class="row pt-1 pr-1 justify-content-between">
-            <div class="col-xxl-10 align-items-center pr-2">
+            <div class="col-xxl-10 col-sm-11 align-items-center pr-2">
               <pagination
                   :current="currentPage"
                   :total="totalPages"
@@ -175,14 +175,14 @@ onMounted(() => {
               />
 
             </div>
-            <div class="col-xxl-2 d-flex justify-content-end align-items-baseline pe-0">
+            <div class="col-xxl-2 col-sm-1 d-flex justify-content-end align-items-baseline pe-0">
 
               <button class="btn card-light text-purple p-2 btn-sm" @click="currentView = currentView === 'settings' ? 'table' : 'settings'"
                       :title="currentView === 'settings' ? 'Back to Table' : 'Settings'"
               >
                 <svg v-if="currentView === 'settings'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-table" viewBox="0 0 16 16">
-                <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 2h-4v3h4zm0 4h-4v3h4zm0 4h-4v3h3a1 1 0 0 0 1-1zm-5 3v-3H6v3zm-5 0v-3H1v2a1 1 0 0 0 1 1zm-4-4h4V8H1zm0-4h4V4H1zm5-3v3h4V4zm4 4H6v3h4z"/>
-              </svg>
+                  <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 2h-4v3h4zm0 4h-4v3h4zm0 4h-4v3h3a1 1 0 0 0 1-1zm-5 3v-3H6v3zm-5 0v-3H1v2a1 1 0 0 0 1 1zm-4-4h4V8H1zm0-4h4V4H1zm5-3v3h4V4zm4 4H6v3h4z"/>
+                </svg>
 
                 <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                      class="bi bi-wrench-adjustable-circle" viewBox="0 0 16 16">
@@ -255,7 +255,7 @@ onMounted(() => {
                   </td>
                   <td class="text-center" v-else>- -</td>
                   <td
-                      class="text-center"
+                      class="text-center d-none d-md-table-cell"
                       v-if="
                   entry.afternoon_data_charge > 0 || entry.afternoon_data_price
                 "
@@ -263,7 +263,7 @@ onMounted(() => {
                     {{ entry.afternoon_data_charge }}% -
                     {{ entry.afternoon_data_price }}
                   </td>
-                  <td class="text-center" v-else>- -</td>
+                  <td class="text-center d-none d-md-table-cell" v-else>- -</td>
                   <td
                       class="text-center"
                       v-if="entry.evening_data_charge > 0 || entry.evening_data_price"
@@ -284,7 +284,7 @@ onMounted(() => {
                 >
                   </td>
                   <td class="text-center" v-else>- -</td>
-                  <td class="text-center">
+                  <td class="text-center d-none d-md-table-cell">
                     <small>{{ entry.power_tariff }}</small>
                   </td>
                 </tr>

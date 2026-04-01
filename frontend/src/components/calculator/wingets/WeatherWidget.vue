@@ -35,9 +35,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="card border-0 neomorphic" style="width: 45rem">
+  <div class="card border-0 neomorphic">
     <div class="row" v-if="!loading && forecast">
-      <div class="col-xxl-6 border-right">
+      <div class="col-xxl-6 col-sm-6 border-right">
         <h4 class="text-muted" style="font-weight: 200">Forecast: Today</h4>
 <!--        <small class="text-muted">Click a date to see comparison</small>-->
         <div class="d-flex justify-content-between align-items-center">
@@ -117,7 +117,7 @@ onMounted(() => {
           />
         </div>
       </div>
-      <div class="col-xxl-6">
+      <div class="col-xxl-6 col-sm-6">
         <div class="flex-grow-1 ps-4 position-relative d-flex align-items-center justify-content-center">
           <div v-if="!showDetailChart" class="w-100 text-center">
             <div id="mini-calendar"></div>

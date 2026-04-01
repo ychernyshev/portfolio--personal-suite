@@ -23,15 +23,19 @@ const formatted = computed(() => {
 <template>
   <div class="row h-100 align-items-center justify-content-center">
     <div class="d-inline-flex flex-column align-items-start">
-      <span class="text-purple" style="font-size: 2.3rem; font-weight: 300">
+      <h4 data-v-80000e9e="" class="text-muted" style="font-weight: 200;">
         {{ title }}
-      </span>
+      </h4>
+<!--      <span class="text-purple" style="font-size: 2.3rem; font-weight: 300">-->
+<!--        -->
+<!--        -->
+<!--      </span>-->
       <div class="d-flex flex-row align-items-end" style="margin-top: -.5rem">
         <span :class="colorClass" style="font-size: 6rem; font-weight: 200; line-height: 1;">
           {{ formatted.int }}
         </span>
         <div class="d-flex flex-column align-items-start ms-2" style="line-height: 1.1;">
-          <span class="text-purple" style="font-size: 1.8rem; line-height: 1; font-weight: 300">{{ label }}</span>
+          <h4 class="text-muted" style="line-height: 1; font-weight: 300">{{ label }}</h4>
           <span class="text-secondary" style="font-size: 1.8rem; font-weight: 300;">.{{ formatted.dec }}</span>
           <span class="text-sky-blue-4" style="font-size: 1.2rem; font-weight: 400;">{{ unit }}</span>
         </div>
