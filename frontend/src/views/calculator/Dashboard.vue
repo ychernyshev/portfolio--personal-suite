@@ -131,12 +131,12 @@ onMounted(() => {
     </div>
 
     <section class="table-section neomorphic pt-2 pb-3 pl-4 pr-4">
-      <div class="row align-items-center">
+      <div class="row align-items-center data-navigation-group">
         <div class="col-xxl-8">
           <div class="input-group">
             <form action="" class="w-100">
               <div class="row">
-                <div class="col-xxl-8 pl-0 pr-0 pl-1 pt-1">
+                <div class="col-xxl-8 col-md-8 pl-0 pr-0 pl-1 pt-1">
                   <input
                       class="form-control form-control border-top border-start border-bottom right-angle-end"
                       style="border: none"
@@ -147,7 +147,7 @@ onMounted(() => {
                       accept=".csv"
                   />
                 </div>
-                <div class="col-xxl-4 pl-0 pt-1">
+                <div class="col-xxl-4 col-md-4 pl-0 pr-0 pt-1">
                   <div class="btn-group w-100" role="group" aria-label="Basic example">
                     <button class="btn btn-secondary c-border"
                             id="inputGroupFileAddon04"
@@ -160,12 +160,12 @@ onMounted(() => {
             </form>
           </div>
         </div>
-        <div class="col-xxl-2 card-light">
-          <button class="btn btn-primary text-light w-100 mb-1" @click="currentView = currentView === 'form' ? 'table' : 'form'"
+        <div class="col-xxl-2 col-md-3 card-light add-record-section">
+          <button class="btn btn-primary text-light w-100" @click="currentView = currentView === 'form' ? 'table' : 'form'"
           >
             {{ currentView === 'form' ? 'Records table' : 'Add Record' }}</button>
         </div>
-        <div class="col-xxl-2">
+        <div class="col-xxl-2 col-md-9">
           <div class="row pt-1 pr-1 justify-content-between setup-data-section">
             <div class="col-xxl-10 col-sm-11 align-items-center pr-2">
               <pagination
@@ -222,8 +222,8 @@ onMounted(() => {
                   <th scope="col" class="text-center d-none d-md-table-cell">Afternoon indicators</th>
                   <th scope="col" class="text-center">Evening indicators</th>
                   <th scope="col" class="text-center">Energy generated</th>
-                  <th scope="col" class="text-center d-none d-md-table-cell">Tital cost</th>
-                  <th scope="col" class="text-center d-none d-md-table-cell">Tariff</th>
+                  <th scope="col" class="text-center d-none d-md-table-cell td-hide-total-cost">Tital cost</th>
+                  <th scope="col" class="text-center d-none d-md-table-cell td-hide-tariff">Tariff</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -272,18 +272,18 @@ onMounted(() => {
                   </td>
                   <td class="text-center" v-else>- -</td>
                   <td class="text-center" v-if="entry.full_day_power > 0">
-                <span class="badge bg-gradient-blue-1 text-light p-2 w-100"
-                >{{ entry.full_day_power.toFixed(2) }}W</span
-                >
+                    <span class="badge bg-gradient-blue-1 text-light p-2 w-100"
+                    >{{ entry.full_day_power.toFixed(2) }}W</span
+                    >
                   </td>
                   <td class="text-center" v-else>- -</td>
-                  <td class="text-center" v-if="entry.full_day_cost > 0">
-                <span class="badge bg-dark-blue text-light p-2 w-50 d-none d-md-table-cell"
-                >{{ entry.full_day_cost.toFixed(2) }}UAH</span
-                >
+                  <td class="text-center td-hide-total-cost" v-if="entry.full_day_cost > 0">
+                    <span class="badge bg-dark-blue text-light p-2 w-50 d-none d-md-table-cell"
+                    >{{ entry.full_day_cost.toFixed(2) }}UAH</span
+                    >
                   </td>
-                  <td class="text-center" v-else>- -</td>
-                  <td class="text-center d-none d-md-table-cell">
+                  <td class="text-center td-hide-total-cost" v-else>- -</td>
+                  <td class="text-center d-none d-md-table-cell td-hide-tariff">
                     <small>{{ entry.power_tariff }}</small>
                   </td>
                 </tr>
