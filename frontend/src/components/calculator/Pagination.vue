@@ -17,15 +17,15 @@ const changePage = (page) => {
   >
     <ul class="pagination mb-0">
       <li class="page-item" :class="{ disabled: current === 1 }">
-        <button class="page-link card-light p-2 border-0" @click="changePage(current - 1)">
+        <button class="page-link card-light p-0 p-md-3 p-xl-2 border-0" @click="changePage(current - 1)">
           &laquo;
         </button>
       </li>
       <li class="page-item w-100">
-        <span class="page-link card-light p-2 border-0 text-center">{{ current }} / {{ total }}</span>
+        <span class="page-link card-light p-0 p-md-3 p-xl-2 border-0 text-center">{{ current }} / {{ total }}</span>
       </li>
       <li class="page-item" :class="{ disabled: current === total }">
-        <button class="page-link card-light p-2 border-0" @click="changePage(current + 1)">
+        <button class="page-link card-light p-0 p-md-3 p-xl-2 border-0" @click="changePage(current + 1)">
           &raquo;
         </button>
       </li>

@@ -222,8 +222,8 @@ onMounted(() => {
                   <th scope="col" class="text-center d-none d-md-table-cell">Afternoon indicators</th>
                   <th scope="col" class="text-center">Evening indicators</th>
                   <th scope="col" class="text-center">Energy generated</th>
-                  <th scope="col" class="text-center d-none d-md-table-cell td-hide-total-cost">Tital cost</th>
-                  <th scope="col" class="text-center d-none d-md-table-cell td-hide-tariff">Tariff</th>
+                  <th scope="col" class="text-center d-xs-none d-md-table-cell">Tital cost</th>
+                  <th scope="col" class="text-center d-xs-none d-md-table-cell">Tariff</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -277,13 +277,13 @@ onMounted(() => {
                     >
                   </td>
                   <td class="text-center" v-else>- -</td>
-                  <td class="text-center td-hide-total-cost" v-if="entry.full_day_cost > 0">
-                    <span class="badge bg-dark-blue text-light p-2 w-50 d-none d-md-table-cell"
+                  <td class="text-center d-xs-none" v-if="entry.full_day_cost > 0">
+                    <span class="badge bg-dark-blue text-light p-2 w-sm-100 d-md-table-cell"
                     >{{ entry.full_day_cost.toFixed(2) }}UAH</span
                     >
                   </td>
-                  <td class="text-center td-hide-total-cost" v-else>- -</td>
-                  <td class="text-center d-none d-md-table-cell td-hide-tariff">
+                  <td class="text-center d-xs-none" v-else>- -</td>
+                  <td class="text-center d-md-table-cell d-xs-none">
                     <small>{{ entry.power_tariff }}</small>
                   </td>
                 </tr>
@@ -308,7 +308,7 @@ onMounted(() => {
   </main>
 
   <aside class="sidebar neomorphic">
-    <div class="row messages-section" style="height: 30.5%">
+    <div class="row d-lg-none" style="height: 30.5%">
       <div class="col-xxl-12">
         <messages-stack ref="messagesRef" />
       </div>
