@@ -21,25 +21,76 @@ const formatted = computed(() => {
 </script>
 
 <template>
-  <div class="row h-100 align-items-center justify-content-center">
-    <div class="d-inline-flex flex-column align-items-start">
-      <h4 data-v-80000e9e="" class="text-muted" style="font-weight: 200;">
+  <div class="row h-100 align-items-center justify-content-center ">
+    <div class="d-inline-flex flex-column align-items-start widget-item">
+      <p data-v-80000e9e="" class="text-muted widget-title">
         {{ title }}
-      </h4>
-<!--      <span class="text-purple" style="font-size: 2.3rem; font-weight: 300">-->
-<!--        -->
-<!--        -->
-<!--      </span>-->
-      <div class="d-flex flex-row align-items-end" style="margin-top: -.5rem">
-        <span :class="colorClass" style="font-size: 6rem; font-weight: 200; line-height: 1;">
+      </p>
+      <div class="d-flex flex-row align-items-end widget-numbers-container">
+        <span :class="colorClass" class="widget-huge-number">
           {{ formatted.int }}
         </span>
-        <div class="d-flex flex-column align-items-start ms-2" style="line-height: 1.1;">
-          <h4 class="text-muted" style="line-height: 1; font-weight: 300">{{ label }}</h4>
-          <span class="text-secondary" style="font-size: 1.8rem; font-weight: 300;">.{{ formatted.dec }}</span>
-          <span class="text-sky-blue-4" style="font-size: 1.2rem; font-weight: 400;">{{ unit }}</span>
+        <div class="d-flex flex-column align-items-start ms-2 details-column">
+          <p class="text-muted widget-label-text">{{ label }}</p>
+          <span class="text-secondary widget-decimal-part">.{{ formatted.dec }}</span>
+          <span class="text-sky-blue-4 widget-unit-text">{{ unit }}</span>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.widget-item {
+  width: 100%;
+  padding: 10px;
+  height: 6.7rem;
+  margin-top: -1rem;
+}
+
+.widget-title {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.widget-numbers-container {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0;
+}
+
+.widget-huge-number {
+  font-size: clamp(3rem, 10vw, 5.5rem);
+  font-weight: 200;
+  line-height: 0.5;
+}
+
+.details-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  line-height: 1;
+}
+
+.widget-label-text {
+  font-size: 1.2rem;
+  margin: 0;
+  text-transform: lowercase;
+  font-weight: 500;
+  line-height: .2rem;
+}
+
+.widget-decimal-part {
+  font-size: 1.8rem;
+  font-weight: 300;
+  line-height: 3.1rem;
+}
+
+.widget-unit-text {
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 0.1rem;
+}
+</style>

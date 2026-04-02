@@ -9,4 +9,16 @@ import TopNav from "../navs/_TopNav.vue";
   </div>
 </template>
 
-<style></style>
+<style scoped>
+.dashboard-grid {
+  min-width: 100%;
+  padding: 30px 10px 0 10px;
+  display: grid;
+  grid-template-areas:
+    "header"
+    "widgets"
+    "content"
+    "sidebar";
+  ;
+}
+</style>

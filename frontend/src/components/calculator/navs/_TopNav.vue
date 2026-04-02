@@ -3,11 +3,11 @@
 
 <template>
   <header class="header row">
-    <div class="col-xxl-3 col-xs-12 col-sm-12 col-md-6">
+    <div class="col-xxl-3 col-xs-12 col-sm-12 col-md-6 logo-container">
       <div class="logo">Solar Power Calculator</div>
     </div>
     <div class="col-xxl-8 col-xs-12 col-sm-12 col-md-6">
-      <nav class="nav-links">
+      <nav class="nav-links header-links">
         <!-- <a href="#" class="nav-item">Dashboard</a> -->
         <a href="https://github.com/ychernyshev/Solar-Power-Calculator"
            target="_blank" class="nav-item my-auto text-primary d-flex align-items-center">
@@ -38,3 +38,36 @@
     </div>
   </header>
 </template>
+
+<style scoped>
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  grid-area: header;
+  margin-bottom: 1.4rem;
+}
+
+.header-links {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+}
+
+.logo {
+  width: 80%;
+}
+
+@media (min-width: 576px) {}
+@media (min-width: 768px) {}
+@media (min-width: 992px) {}
+@media (min-width: 1200px) {}
+@media (min-width: 1400px) {}
+</style>
