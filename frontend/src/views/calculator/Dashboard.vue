@@ -131,12 +131,12 @@ onMounted(() => {
     </div>
 
     <section class="table-section neomorphic pt-2 pb-3 pl-4 pr-4">
-      <div class="row align-items-center data-navigation-group">
-        <div class="col-xxl-8">
+      <div class="row align-items-end data-navigation-group">
+        <div class="col-xl-7">
           <div class="input-group">
             <form action="" class="w-100">
-              <div class="row">
-                <div class="col-xxl-8 col-md-8 pl-0 pr-0 pl-1 pt-1">
+              <div class="row p-0 pb-2">
+                <div class="col-xl-8 col-md-8 input-group-dynamic-grid pl-0 pr-0 pl-1 pt-1">
                   <input
                       class="form-control form-control border-top border-start border-bottom right-angle-end"
                       style="border: none"
@@ -147,7 +147,7 @@ onMounted(() => {
                       accept=".csv"
                   />
                 </div>
-                <div class="col-xxl-4 col-md-4 pl-0 pr-0 pt-1">
+                <div class="col-xl-4 col-md-4 pl-0 pr-0 pt-1">
                   <div class="btn-group w-100" role="group" aria-label="Basic example">
                     <button class="btn btn-secondary c-border"
                             id="inputGroupFileAddon04"
@@ -160,14 +160,14 @@ onMounted(() => {
             </form>
           </div>
         </div>
-        <div class="col-xxl-2 col-md-3 card-light add-record-section">
+        <div class="col-xl-2 col-md-3 add-record-section card-light p-1 pb-1">
           <button class="btn btn-primary text-light w-100" @click="currentView = currentView === 'form' ? 'table' : 'form'"
           >
             {{ currentView === 'form' ? 'Records table' : 'Add Record' }}</button>
         </div>
-        <div class="col-xxl-2 col-md-9">
-          <div class="row pt-1 pr-1 justify-content-between setup-data-section">
-            <div class="col-xxl-10 col-sm-11 align-items-center pr-2">
+        <div class="col-xl-3 col-md-9">
+          <div class="row pr-1 setup-data-section pb-2">
+            <div class="col-xl-10 col-sm-11 p-0 pr-2">
               <pagination
                   :current="currentPage"
                   :total="totalPages"
@@ -175,12 +175,12 @@ onMounted(() => {
               />
 
             </div>
-            <div class="col-xxl-2 col-sm-1 d-flex justify-content-end align-items-baseline pe-0">
+            <div class="col-xl-2 col-sm-1 d-flex justify-content-end align-items-baseline p-0">
 
               <button class="btn card-light text-purple p-2 btn-sm" @click="currentView = currentView === 'settings' ? 'table' : 'settings'"
                       :title="currentView === 'settings' ? 'Back to Table' : 'Settings'"
               >
-                <svg v-if="currentView === 'settings'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-table" viewBox="0 0 16 16">
+                <svg v-if="currentView === 'settings'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-table" viewBox="0 0 15 15">
                   <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 2h-4v3h4zm0 4h-4v3h4zm0 4h-4v3h3a1 1 0 0 0 1-1zm-5 3v-3H6v3zm-5 0v-3H1v2a1 1 0 0 0 1 1zm-4-4h4V8H1zm0-4h4V4H1zm5-3v3h4V4zm4 4H6v3h4z"/>
                 </svg>
 
@@ -228,7 +228,7 @@ onMounted(() => {
                 </thead>
                 <tbody>
                 <tr v-for="entry in entries" :key="entry.id">
-                  <th scope="row" class="c-border">{{ entry.date }}</th>
+                  <th scope="row" class="c-border small">{{ entry.date }}</th>
                   <td class="text-center d-none d-md-table-cell c-border">{{ entry.power }}</td>
                   <td class="text-center c-border">
                     <template
@@ -307,14 +307,14 @@ onMounted(() => {
     </section>
   </main>
 
-  <aside class="sidebar neomorphic">
-    <div class="row d-lg-none" style="height: 30.5%">
+  <aside class="sidebar ml-xl-3 m-0">
+    <div class="row d-none d-md-block neomorphic" style="height: 27%">
       <div class="col-xxl-12">
         <messages-stack ref="messagesRef" />
       </div>
     </div>
-    <div class="row">
-      <div class="col-xxl-12">
+    <div class="row neomorphic graphics-card">
+      <div class="col-xxl-12 p-0">
         <ul class="nav nav-pills mb-1" id="pills-tab" role="tablist">
           <li class="nav-item w-50" role="presentation">
             <button

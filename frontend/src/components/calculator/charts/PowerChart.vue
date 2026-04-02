@@ -96,7 +96,7 @@ const chartOptions = {
 
 <style scoped>
 .chart-container {
-  height: 452px;
+  height: 430px;
   background: transparent;
   padding: 20px;
   border-radius: 12px;
