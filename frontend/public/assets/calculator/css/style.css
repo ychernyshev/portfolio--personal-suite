@@ -44,10 +44,6 @@ body {
   margin-bottom: 2rem;
 }
 
-.header {
-  grid-area: header;
-}
-
 .main-content {
   grid-area: content;
 }
@@ -70,6 +66,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  grid-area: header;
 }
 
 .card {
@@ -222,10 +219,6 @@ body {
 .dashboard-grid {
   max-width: 100%;
   padding: 30px 10px 0 10px;
-}
-
-.header {
-  margin-bottom: 1rem;
 }
 
 .logo {
