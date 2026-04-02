@@ -31,7 +31,7 @@
           </svg>
           Contact me
         </a>
-        <div class="card border-0 neomorphic text-purple text-center w-50 align-items-center">
+        <div class="card border-0 neomorphic text-purple text-center w-50 align-items-center d-none d-xl-block">
           Developed with Django & Vue 3
         </div>
       </nav>

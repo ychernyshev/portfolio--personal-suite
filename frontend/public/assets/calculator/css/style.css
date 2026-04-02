@@ -228,7 +228,7 @@ body {
   margin-bottom: 1rem;
 }
 
-.header .logo {
+.logo {
   width: 60%;
 }
 
@@ -314,7 +314,7 @@ body {
 
 /* >768px */
 @media (min-width: 768px) {
-  .header .logo {
+  .logo {
     width: 80%;
   }
 
@@ -411,7 +411,7 @@ body {
     justify-content: start;
   }
 
-  .header .logo {
+  .logo {
     width: 30%;
   }
 
