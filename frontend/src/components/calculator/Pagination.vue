@@ -1,34 +1,76 @@
 //
 <script setup>
-const props = defineProps(["current", "total"]);
-const emit = defineEmits(["goToPage"]);
+// import {onMounted} from "vue";
+//
+// const props = defineProps(["current", "total"]);
+// const emit = defineEmits(["goToPage"]);
+//
+// const changePage = (page) => {
+//   if (page >= 1 && page <= props.total) {
+//     emit("goToPage", page);
+//   }
+// };
 
-const changePage = (page) => {
-  if (page >= 1 && page <= props.total) {
-    emit("goToPage", page);
+import backendApi from "../../services/calculator/backendApi.js";
+import {onMounted, ref} from "vue";
+
+const entries = ref([]);
+const totalPages = ref(1);
+const currentPage = ref(1);
+const loading = ref(true);
+
+
+
+// Entries and pagination
+const fetchEntries = async (page = 1) => {
+  try {
+    loading.value = true;
+    const response = await backendApi.get(`entries/?page=${page}`);
+    entries.value = response.data.results;
+    currentPage.value = page;
+    totalPages.value = Math.ceil(response.data.count / 10);
+  } catch (error) {
+    error.value = "Cannot load data from backend";
+    console.error(error);
+  } finally {
+    loading.value = false;
   }
 };
+
+const changePage = (page) => {
+  if (page >= 1 && page <= totalPages) {
+    currentPage.value = page;
+  }
+}
+
+onMounted(() => {
+  fetchEntries();
+})
 </script>
 
 <template>
   <nav
     aria-label="Page navigation example"
-    class="mb-0"
+    class="p-0"
   >
     <ul class="pagination mb-0">
-      <li class="page-item" :class="{ disabled: current === 1 }">
-        <button class="page-link card-light p-0 p-md-3 p-xl-2 border-0" @click="changePage(current - 1)">
+      <li class="page-item" :class="{ disabled: currentPage === 1 }">
+        <button class="page-link card-light p-2 p-md-3 p-xl-2 border-0" @click="changePage(currentPage - 1)">
           &laquo;
         </button>
       </li>
       <li class="page-item w-100">
-        <span class="page-link card-light p-0 p-md-3 p-xl-2 border-0 text-center">{{ current }} / {{ total }}</span>
+        <span class="page-link card-light p-2 p-md-3 p-xl-2 border-0 text-center">{{ currentPage }} / {{ totalPages }}</span>
       </li>
-      <li class="page-item" :class="{ disabled: current === total }">
-        <button class="page-link card-light p-0 p-md-3 p-xl-2 border-0" @click="changePage(current + 1)">
+      <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+        <button class="page-link card-light p-2 p-md-3 p-xl-2 border-0" @click="changePage(currentPage + 1)">
           &raquo;
         </button>
       </li>
     </ul>
   </nav>
 </template>
+
+<style scoped>
+
+</style>
