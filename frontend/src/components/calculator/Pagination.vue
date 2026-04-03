@@ -31,7 +31,6 @@ const fetchEntries = async (page = 1) => {
     totalPages.value = Math.ceil(response.data.count / 10);
   } catch (error) {
     error.value = "Cannot load data from backend";
-    console.error(error);
   } finally {
     loading.value = false;
   }
