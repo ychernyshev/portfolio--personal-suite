@@ -10,7 +10,7 @@ import {ref} from "vue";
 const { animatedNumber: displayCost, animate: animateCost } = useNumberAnimation();
 const { animatedNumber: displayEnergy, animate: animateEnergy } = useNumberAnimation();
 
-const currentView = ref('table');
+
 
 const handleSave = async (newData) => {
   try {

@@ -55,9 +55,9 @@ body {
   /* min-height: 150px; */
 }
 
-.table-section {
-  min-height: 300px;
-}
+/*.table-section {*/
+/*  min-height: 300px;*/
+/*}*/
 
 .border-left-0 {
   border-left: none;
