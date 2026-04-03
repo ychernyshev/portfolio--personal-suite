@@ -37,20 +37,20 @@ onMounted(() => {
 <template>
   <div class="card border-0 neomorphic">
     <div class="row" v-if="!loading && forecast">
-      <div class="col-xxl-6 col-sm-6 border-right">
-        <h4 class="text-muted" style="font-weight: 200">Forecast: Today</h4>
+      <div class="col-xxl-6 col-sm-12 border-sm-end-0">
+        <p class="text-muted title-text">Forecast: Today</p>
 <!--        <small class="text-muted">Click a date to see comparison</small>-->
         <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <h2 class="text-sky-blue-4">{{ forecast.predicted_total_kwh }} kWh</h2>
-            <p class="text-success mb-0">+{{ forecast.predicted_savings }} UAH savings</p>
+          <div class="energy-block">
+            <p class="text-sky-blue-4 huge-number">{{ forecast.predicted_total_kwh }} <span class="unit-text">kWh</span></p>
+            <p class="text-success mb-0 savings-text">+{{ forecast.predicted_savings }} UAH savings</p>
           </div>
-          <div class="text-muted small">
-            <div class="text-end">
+          <div class="text-muted small temp-block">
+            <div class="text-end peak-time">
               Peak: {{ forecast.peak_hour }}:00
             </div>
-            <h2 class="mb-0">{{ forecast.current_temp }}°C</h2>
-            <p class="text-muted small mb-1 text-end">{{ forecast.weather_condition }}</p>
+            <h2 class="mb-0 temperature">{{ forecast.current_temp }}°C</h2>
+            <p class="text-muted small mb-1 text-end sky-condition">{{ forecast.weather_condition }}</p>
           </div>
         </div>
         <div class="d-flex justify-content-between align-items-center mt-2">
@@ -117,7 +117,7 @@ onMounted(() => {
           />
         </div>
       </div>
-      <div class="col-xxl-6 col-sm-6">
+      <div class="col-xxl-6 col-sm-12">
         <div class="flex-grow-1 ps-4 position-relative d-flex align-items-center justify-content-center">
           <div v-if="!showDetailChart" class="w-100 text-center">
             <div id="mini-calendar"></div>
@@ -136,10 +136,55 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.calendar-card {
-  position: relative;
-  overflow: visible;
-  height: 100%;
+.forecast-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.title-text {
+  font-size: clamp(1.2rem, 4vw, 2.5rem);
+  font-weight: 500;
+}
+
+.energy-block {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  line-height: 1rem;
+}
+
+.huge-number {
+  font-size: clamp(3rem, 10vw, 5.5rem);
+}
+
+.unit-text {
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  font-weight: 400;
+}
+
+.savings-text {
+  font-size: clamp(1.2rem, 2vw, 1.4rem);
+  margin: 0;
+  margin-top: -0.2rem;
+}
+
+.temperature {
+  margin: 0;
+  margin-bottom: 2px;
+  text-align: right;
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-weight: 300;
+}
+
+.peak-time {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.sky-condition {
+  font-size: 0.9rem;
+  margin: 0;
 }
 
 .custom-tooltip-box {

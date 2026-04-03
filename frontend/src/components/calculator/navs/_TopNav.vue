@@ -63,6 +63,14 @@
 
 .logo {
   width: 80%;
+  padding: 1rem 2rem 1rem;
+  text-align: center;
+  background: linear-gradient(var(--sunrise-yelow), var(--sunset-yelow));
+  border-radius: 3.3rem;
+  color: var(--shadow-light);
+  font-weight: 300;
+  font-size: 1.2rem;
+  box-shadow: 0.5rem 0.5rem 1.5rem 0 var(--sunset-yelow);
 }
 
 @media (min-width: 576px) {}

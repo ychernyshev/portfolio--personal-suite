@@ -89,7 +89,7 @@ const formatted = computed(() => {
 }
 
 .widget-unit-text {
-  font-size: 1.1rem;
+  font-size: clamp(1.1rem, 3vh, 1.4rem);
   font-weight: 400;
   line-height: 0.1rem;
 }
