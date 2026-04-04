@@ -63,9 +63,9 @@ const handleSave = async (newData) => {
       >
         {{ currentView === 'form' ? 'Records table' : 'Add Record' }}</button>
     </div>
-    <div class="col-xl-3 col-md-9">
+    <div class="col-12 col-md-9 col-xl-3">
       <div class="row pr-1 setup-data-section p-0 pt-2 pb-2">
-        <div class="col-11 col-xl-10 col-sm-8 p-0 pr-2">
+        <div class="col-11 col-xl-10 p-0 pr-2">
           <pagination />
         </div>
         <div class="col-1 col-xl-2 col-sm-1 d-flex justify-content-end align-items-baseline p-0">

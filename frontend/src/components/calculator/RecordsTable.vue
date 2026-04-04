@@ -45,7 +45,7 @@ onMounted(() => {
               <thead>
               <tr>
                 <th scope="col" class="title">Date</th>
-                <th scope="col" class="title text-center d-none">Power</th>
+                <th scope="col" class="title text-center d-none d-sm-table-cell">Power (Wt)</th>
                 <th scope="col" class="title text-center">Weather indicators</th>
                 <th scope="col" class="title d-none">Morning indicators</th>
                 <th scope="col" class="title text-center d-none">Afternoon indicators</th>
@@ -59,7 +59,7 @@ onMounted(() => {
               <tbody>
               <tr v-for="entry in entries" :key="entry.id">
                 <th scope="row" class="c-border small">{{ entry.date }}</th>
-                <td class="text-center d-none c-border">{{ entry.power }}</td>
+                <td class="text-center d-none d-sm-table-cell c-border">{{ entry.power }}</td>
                 <td class="text-center c-border">
                   <template
                       v-if="

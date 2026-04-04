@@ -64,20 +64,20 @@ onMounted(() => {
         <ul class="nav nav-pills mb-1" id="pills-tab" role="tablist">
           <li class="nav-item w-50" role="presentation">
             <button
-                class="nav-link btn btn-sm w-100"
+                class="nav-link btn btn-sm w-100 btn-graphic-tab"
                 :class="{ active: activeTab === 'power', 'btn-light text-sky-blue-4': activeTab !== 'power', 'bg-gradient-blue-2 text-light': activeTab === 'power' }"
                 @click="activeTab = 'power'"
             >
-              Power generated
+              <span class="">Power generated</span>
             </button>
           </li>
           <li class="nav-item w-50" role="presentation">
             <button
-                class="nav-link btn btn-sm w-100"
+                class="nav-link btn btn-sm w-100 btn-graphic-tab"
                 :class="{ active: activeTab === 'cost', 'btn-light text-sky-blue-4': activeTab !== 'cost', 'bg-gradient-blue-2 text-light': activeTab === 'cost' }"
                 @click="activeTab = 'cost'"
             >
-              Power cost
+              <span class="">Power cost</span>
             </button>
           </li>
         </ul>
@@ -96,5 +96,20 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.btn-graphic-tab {
+  padding: 1rem 0.5rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 48px;
+}
 
+@media (min-width: 992px) {
+  .btn-graphic-tab {
+    padding: 0.5rem 1rem;
+    width: auto;
+    min-height: auto;
+  }
+}
 </style>

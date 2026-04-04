@@ -24,7 +24,7 @@ const loading = ref(true);
 // Entries and pagination
 const fetchEntries = async (page = 1) => {
   try {
-    loading.value = true;
+    loading.value = true;col-md-9
     const response = await backendApi.get(`entries/?page=${page}`);
     entries.value = response.data.results;
     currentPage.value = page;
@@ -58,8 +58,8 @@ onMounted(() => {
           &laquo;
         </button>
       </li>
-      <li class="page-item w-100">
-        <span class="page-link card-light p-2 p-md-3 p-xl-2 border-0 text-center">{{ currentPage }} / {{ totalPages }}</span>
+      <li class="page-item w-100 d-flex justify-content-center">
+        <span class="pagecol-md-9-link card-light p-2 p-md-3 p-xl-2 border-0 text-center">{{ currentPage }} / {{ totalPages }}</span>
       </li>
       <li class="page-item" :class="{ disabled: currentPage === totalPages }">
         <button class="page-link card-light p-2 p-md-3 p-xl-2 border-0" @click="changePage(currentPage + 1)">
