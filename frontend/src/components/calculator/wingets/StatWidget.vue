@@ -21,9 +21,9 @@ const formatted = computed(() => {
 </script>
 
 <template>
-  <div class="row h-100 align-items-center justify-content-center ">
+  <div class="row h-100 align-items-start justify-content-center">
     <div class="d-inline-flex flex-column align-items-start widget-item">
-      <p data-v-80000e9e="" class="text-muted widget-title">
+      <p data-v-80000e9e="" class="text-purple widget-title">
         {{ title }}
       </p>
       <div class="d-flex flex-row align-items-end widget-numbers-container">
@@ -31,7 +31,7 @@ const formatted = computed(() => {
           {{ formatted.int }}
         </span>
         <div class="d-flex flex-column align-items-start ms-2 details-column">
-          <p class="text-muted widget-label-text">{{ label }}</p>
+          <p class="text-purple widget-label-text">{{ label }}</p>
           <span class="text-secondary widget-decimal-part">.{{ formatted.dec }}</span>
           <span class="text-sky-blue-4 widget-unit-text">{{ unit }}</span>
         </div>

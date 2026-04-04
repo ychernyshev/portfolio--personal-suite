@@ -90,4 +90,10 @@ onMounted(() => {
   grid-column: span 2;
   width: 100%;
 }
+
+@media (min-width: 1200px) {
+  .widgets-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
 </style>

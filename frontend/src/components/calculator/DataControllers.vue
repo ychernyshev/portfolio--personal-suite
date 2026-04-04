@@ -45,7 +45,7 @@ const handleSave = async (newData) => {
                   accept=".csv"
               />
             </div>
-            <div class="col-12 col-sm-12 col-md-4 pl-0 pr-0 pt-3 pb-3">
+            <div class="col-12 col-sm-12 col-md-4 pl-0 pr-0 pt-3 pb-3 pr-xl-2">
               <div class="btn-group w-100" role="group" aria-label="Basic example">
                 <button class="btn btn-secondary c-border"
                         id="inputGroupFileAddon04"
@@ -58,22 +58,22 @@ const handleSave = async (newData) => {
         </form>
       </div>
     </div>
-    <div class="col-sm-12 col-xl-2 col-md-3 add-record-section card-light p-0">
-      <button class="btn btn-primary text-light w-100 p-md-3" @click="currentView = currentView === 'form' ? 'table' : 'form'"
+    <div class="col-sm-12 col-xl-2 col-md-3 add-record-section card-light p-0 p-xl-2">
+      <button class="btn btn-primary text-light w-100 p-md-3 p-xl-1 mb-xl-2" @click="currentView = currentView === 'form' ? 'table' : 'form'"
       >
         {{ currentView === 'form' ? 'Records table' : 'Add Record' }}</button>
     </div>
     <div class="col-12 col-md-9 col-xl-3">
-      <div class="row pr-1 setup-data-section p-0 pt-2 pb-2 pt-md-0 pb-md-0">
+      <div class="row setup-data-section p-0 pr-1 pt-2 pb-2 pt-md-0 pb-md-0 pb-xl-1">
         <div class="col-11 col-xl-10 p-0 pr-2 pl-md-2">
           <pagination />
         </div>
-        <div class="col-1 col-xl-2 col-sm-1 d-flex justify-content-end align-items-baseline p-0">
+        <div class="col-1 col-xl-2 col-sm-1 p-0 pb-xl-1">
 
-          <button class="btn card-light text-purple p-0 my-auto mx-auto btn-sm" @click="currentView = currentView === 'settings' ? 'table' : 'settings'"
+          <button class="btn card-light card-shadow text-purple w-100 h-100" @click="currentView = currentView === 'settings' ? 'table' : 'settings'"
                   :title="currentView === 'settings' ? 'Back to Table' : 'Settings'"
           >
-            <svg v-if="currentView === 'settings'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-table" viewBox="0 0 15 15">
+            <svg v-if="currentView === 'settings'" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-table" viewBox="0 0 15 15">
               <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 2h-4v3h4zm0 4h-4v3h4zm0 4h-4v3h3a1 1 0 0 0 1-1zm-5 3v-3H6v3zm-5 0v-3H1v2a1 1 0 0 0 1 1zm-4-4h4V8H1zm0-4h4V4H1zm5-3v3h4V4zm4 4H6v3h4z"/>
             </svg>
 
@@ -109,5 +109,19 @@ const handleSave = async (newData) => {
 
   .setup-data-section .card-light {
     padding: 0.7rem;
+  }
+
+  @media (min-width: 1200px) {
+    .card-light {
+      background-color: white;
+      padding: 0.3rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px) saturate(180%);
+      -webkit-backdrop-filter: blur(10px) saturate(180%);
+    }
+
+    .card-shadow {
+      box-shadow: 0.2rem 0.3rem 1rem var(--bg-color);
+    }
   }
 </style>

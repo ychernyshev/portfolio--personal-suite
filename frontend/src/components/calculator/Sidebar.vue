@@ -53,13 +53,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <aside class="sidebar mt-4 m-0 row justify-content-center">
-    <div class="row d-none d-lg-block neomorphic" style="height: 27%">
-      <div class="col-xxl-12">
+  <aside class="sidebar m-0 row justify-content-center">
+    <div class="row neomorphic graphics-card align-items-end">
+      <div class="col-xxl-12 d-none d-lg-block message-card">
         <messages-stack ref="messagesRef" />
       </div>
-    </div>
-    <div class="row neomorphic graphics-card">
       <div class="col-xxl-12 p-0">
         <ul class="nav nav-pills mb-1" id="pills-tab" role="tablist">
           <li class="nav-item w-50" role="presentation">
@@ -96,20 +94,24 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.btn-graphic-tab {
-  padding: 1rem 0.5rem;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 48px;
-}
-
-@media (min-width: 992px) {
   .btn-graphic-tab {
-    padding: 0.5rem 1rem;
-    width: auto;
-    min-height: auto;
+    padding: 1rem 0.5rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 48px;
   }
-}
+
+  .message-card {
+    height:
+  }
+
+  @media (min-width: 992px) {
+    .btn-graphic-tab {
+      padding: 0.5rem 1rem;
+      width: auto;
+      min-height: auto;
+    }
+  }
 </style>

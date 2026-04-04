@@ -24,7 +24,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="row mt-2">
+  <div class="row mt-2 mt-xl-0">
     <div class="col-xxl-12 p-0 records-data-table">
       <transition name="fade-slide" mode="out-in">
         <div v-if="currentView === 'table'" class="table-container card-light" key="table">
@@ -32,15 +32,14 @@ onMounted(() => {
             <table class="table table-borderless mb-1">
 <!--                          <colgroup>-->
 <!--                            <col style="width: 10%;">-->
+<!--                            <col style="width: 10%;" class="d-none d-sm-table-cell">-->
+<!--                            <col style="width: 10%;">-->
+<!--                            <col style="width: 15%;" class="d-none d-md-table-cell">-->
+<!--                            <col style="width: 15%;" class="d-none d-xl-table-cell">-->
+<!--                            <col style="width: 15%;" class="d-none d-md-table-cell">-->
 <!--                            <col style="width: 10%;">-->
 <!--                            <col style="width: 10%;">-->
-<!--                            <col style="width: 15%;">-->
-<!--                            <col style="width: 15%;">-->
-<!--                            <col style="width: 15%;">-->
-<!--                            <col style="width: 10%;">-->
-<!--                            <col style="width: 10%;">-->
-<!--                            <col style="width: 10%;" class="d-none d-lg-block">-->
-<!--                            <col style="width: 10%;" class="d-none d-lg-block">-->
+<!--                            <col style="width: 10%;" class="d-none d-lg-table-cell">-->
 <!--                          </colgroup>-->
               <thead>
               <tr>
@@ -48,11 +47,10 @@ onMounted(() => {
                 <th scope="col" class="title text-center d-none d-sm-table-cell">Power (Wt)</th>
                 <th scope="col" class="title text-center">Weather indicators</th>
                 <th scope="col" class="title d-none d-md-table-cell">Morning indicators</th>
-                <th scope="col" class="title text-center d-none">Afternoon indicators</th>
+                <th scope="col" class="title text-center d-none d-xl-table-cell">Afternoon indicators</th>
                 <th scope="col" class="title text-center d-none d-md-table-cell">Evening indicators</th>
-                <th scope="col" class="title text-center d-none">Energy generated</th>
-                <th scope="col" class="title text-center">Total power</th>
-                <th scope="col" class="title text-center">Total cost</th>
+                <th scope="col" class="title text-center">Energy generated</th>
+                <th scope="col" class="title text-center">Energy cost</th>
                 <th scope="col" class="title text-center d-none d-lg-table-cell">Tariff</th>
               </tr>
               </thead>
@@ -84,7 +82,7 @@ onMounted(() => {
                 </td>
                 <td class="text-center d-none d-md-table-cell" v-else>- -</td>
                 <td
-                    class="text-center d-none"
+                    class="text-center d-none d-xl-table-cell"
                     v-if="
                   entry.afternoon_data_charge > 0 || entry.afternoon_data_price
                 "
@@ -92,7 +90,7 @@ onMounted(() => {
                   {{ entry.afternoon_data_charge }}% -
                   {{ entry.afternoon_data_price }}
                 </td>
-                <td class="text-center d-none" v-else>- -</td>
+                <td class="text-center d-none d-xl-table-cell" v-else>- -</td>
                 <td
                     class="text-center d-none d-md-table-cell"
                     v-if="entry.evening_data_charge > 0 || entry.evening_data_price"
@@ -152,7 +150,7 @@ onMounted(() => {
 }
 
 .title {
-  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-size: clamp(1rem, 2vw, 1.1rem);
   font-weight: 500;
 }
 </style>

@@ -21,4 +21,20 @@ import TopNav from "../navs/_TopNav.vue";
     "sidebar";
   ;
 }
+
+@media (min-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "header header"
+      "content sidebar"
+    ;
+    gap: 30px;
+    padding: 20px;
+  }
+}
+
+@media (min-width: 1400px) {
+}
 </style>
