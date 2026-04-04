@@ -47,9 +47,9 @@ onMounted(() => {
                 <th scope="col" class="title">Date</th>
                 <th scope="col" class="title text-center d-none d-sm-table-cell">Power (Wt)</th>
                 <th scope="col" class="title text-center">Weather indicators</th>
-                <th scope="col" class="title d-none">Morning indicators</th>
+                <th scope="col" class="title d-none d-md-table-cell">Morning indicators</th>
                 <th scope="col" class="title text-center d-none">Afternoon indicators</th>
-                <th scope="col" class="title text-center d-none">Evening indicators</th>
+                <th scope="col" class="title text-center d-none d-md-table-cell">Evening indicators</th>
                 <th scope="col" class="title text-center d-none">Energy generated</th>
                 <th scope="col" class="title text-center">Total power</th>
                 <th scope="col" class="title text-center">Total cost</th>
@@ -76,13 +76,13 @@ onMounted(() => {
                   <span v-else class="text-muted text-center c-border">- -</span>
                 </td>
                 <td
-                    class="text-center c-border d-none"
+                    class="text-center c-border d-none d-md-table-cell"
                     v-if="entry.morning_data_charge > 0 || entry.morning_data_price"
                 >
                   {{ entry.morning_data_charge }}% -
                   {{ entry.morning_data_price }} UAH
                 </td>
-                <td class="text-center d-none" v-else>- -</td>
+                <td class="text-center d-none d-md-table-cell" v-else>- -</td>
                 <td
                     class="text-center d-none"
                     v-if="
@@ -94,13 +94,13 @@ onMounted(() => {
                 </td>
                 <td class="text-center d-none" v-else>- -</td>
                 <td
-                    class="text-center d-none"
+                    class="text-center d-none d-md-table-cell"
                     v-if="entry.evening_data_charge > 0 || entry.evening_data_price"
                 >
                   {{ entry.evening_data_charge }}% -
                   {{ entry.evening_data_price }} UAH
                 </td>
-                <td class="text-center d-none" v-else>- -</td>
+                <td class="text-center d-none d-md-table-cell" v-else>- -</td>
                 <td class="text-center" v-if="entry.full_day_power > 0">
                     <span class="badge bg-gradient-blue-1 text-light p-2 w-100"
                     >{{ entry.full_day_power.toFixed(2) }}W</span

@@ -33,7 +33,7 @@ const handleSave = async (newData) => {
     <div class="col-sm-12 col-xl-7">
       <div class="input-group">
         <form action="" class="w-100">
-          <div class="row p-0">
+          <div class="row p-0 justify-content-center align-items-center">
             <div class="col-sm-12 col-md-8 input-group-dynamic-grid border-bottom right-angle-end p-0">
               <input
                   class="form-control form-control border-top border-start"
@@ -59,13 +59,13 @@ const handleSave = async (newData) => {
       </div>
     </div>
     <div class="col-sm-12 col-xl-2 col-md-3 add-record-section card-light p-0">
-      <button class="btn btn-primary text-light w-100" @click="currentView = currentView === 'form' ? 'table' : 'form'"
+      <button class="btn btn-primary text-light w-100 p-md-3" @click="currentView = currentView === 'form' ? 'table' : 'form'"
       >
         {{ currentView === 'form' ? 'Records table' : 'Add Record' }}</button>
     </div>
     <div class="col-12 col-md-9 col-xl-3">
-      <div class="row pr-1 setup-data-section p-0 pt-2 pb-2">
-        <div class="col-11 col-xl-10 p-0 pr-2">
+      <div class="row pr-1 setup-data-section p-0 pt-2 pb-2 pt-md-0 pb-md-0">
+        <div class="col-11 col-xl-10 p-0 pr-2 pl-md-2">
           <pagination />
         </div>
         <div class="col-1 col-xl-2 col-sm-1 d-flex justify-content-end align-items-baseline p-0">

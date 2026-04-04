@@ -54,7 +54,7 @@ onMounted(() => {
 
 <template>
   <aside class="sidebar mt-4 m-0 row justify-content-center">
-    <div class="row d-none d-md-block neomorphic" style="height: 27%">
+    <div class="row d-none d-lg-block neomorphic" style="height: 27%">
       <div class="col-xxl-12">
         <messages-stack ref="messagesRef" />
       </div>

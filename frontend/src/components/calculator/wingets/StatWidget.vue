@@ -49,7 +49,7 @@ const formatted = computed(() => {
 }
 
 .widget-title {
-  font-size: 1.2rem;
+  font-size: clamp(1.2rem, 2.8vw, 1.5rem);
   font-weight: 500;
   margin-bottom: 0.5rem;
 }
@@ -75,7 +75,7 @@ const formatted = computed(() => {
 }
 
 .widget-label-text {
-  font-size: 1.2rem;
+  font-size: clamp(1.2rem, 2.8vw, 1.5rem);
   margin: 0;
   text-transform: lowercase;
   font-weight: 500;
@@ -92,5 +92,11 @@ const formatted = computed(() => {
   font-size: clamp(1.1rem, 3vh, 1.4rem);
   font-weight: 400;
   line-height: 0.1rem;
+}
+
+@media (min-width: 768px) {
+  .widget-item {
+    height: 7.1rem;
+  }
 }
 </style>

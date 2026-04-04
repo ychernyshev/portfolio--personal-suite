@@ -37,7 +37,7 @@ onMounted(() => {
 <template>
   <div class="card border-0 neomorphic">
     <div class="row" v-if="!loading && forecast">
-      <div class="col-xxl-6 col-sm-12 border-sm-end-0">
+      <div class="col-sm-12 col-md-6 col-xxl-6 border-sm-end-0 border-md-end-1">
         <p class="text-muted title-text">Forecast: Today</p>
 <!--        <small class="text-muted">Click a date to see comparison</small>-->
         <div class="d-flex justify-content-between align-items-center">
@@ -117,7 +117,7 @@ onMounted(() => {
           />
         </div>
       </div>
-      <div class="col-xxl-6 col-sm-12">
+      <div class="col-sm-12 col-md-6 col-xxl-6">
         <div class="flex-grow-1 ps-4 position-relative d-flex align-items-center justify-content-center">
           <div v-if="!showDetailChart" class="w-100 text-center">
             <div id="mini-calendar"></div>
@@ -143,7 +143,7 @@ onMounted(() => {
 }
 
 .title-text {
-  font-size: clamp(1.2rem, 4vw, 2.5rem);
+  font-size: clamp(1.2rem, 2.8vw, 2.5rem);
   font-weight: 500;
 }
 
@@ -155,7 +155,7 @@ onMounted(() => {
 }
 
 .huge-number {
-  font-size: clamp(3rem, 10vw, 5.5rem);
+  font-size: clamp(3rem, 7vw, 5.5rem);
 }
 
 .unit-text {
@@ -173,7 +173,7 @@ onMounted(() => {
   margin: 0;
   margin-bottom: 2px;
   text-align: right;
-  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 300;
 }
 
