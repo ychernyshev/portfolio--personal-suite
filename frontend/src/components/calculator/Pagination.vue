@@ -57,18 +57,18 @@ onMounted(() => {
   >
     <ul class="pagination mb-0">
       <li class="page-item" :class="{ disabled: store.currentPage === 1 }">
-        <button class="page-link card-light p-2 p-md-3 p-xl-3 border-0"
+        <button class="page-link card-light p-3 p-md-3 p-xl-3 border-0"
                 @click="store.setPage(store.currentPage - 1)">
           &laquo;
         </button>
       </li>
       <li class="page-item w-100 d-flex justify-content-center">
-        <span class="pagecol-md-9-link card-light p-2 p-md-3 p-xl-3 border-0 text-center">
+        <span class="pagecol-md-9-link card-light p-3 p-md-3 p-xl-3 border-0 text-center">
           {{ store.currentPage }} / {{ store.totalPages }}
         </span>
       </li>
       <li class="page-item" :class="{ disabled: store.currentPage === store.totalPages }">
-        <button class="page-link card-light p-2 p-md-3 p-xl-3 border-0"
+        <button class="page-link card-light p-3 p-md-3 p-xl-3 border-0"
                 @click="store.setPage(store.currentPage + 1)">
           &raquo;
         </button>

@@ -43,7 +43,7 @@ const handleSave = async (newData) => {
       <div class="input-group">
         <form action="" class="w-100">
           <div class="row p-0 justify-content-center align-items-center">
-            <div class="col-sm-12 col-md-8 input-group-dynamic-grid border-bottom right-angle-end p-0">
+            <div class="col-sm-12 col-md-8 col-xl-6 col-xxl-8 input-group-dynamic-grid border-bottom right-angle-end p-0">
               <input
                   class="form-control form-control border-top border-start"
                   style="border: none"
@@ -54,7 +54,7 @@ const handleSave = async (newData) => {
                   accept=".csv"
               />
             </div>
-            <div class="col-12 col-sm-12 col-md-4 pl-0 pr-0 pt-3 pb-3 pr-xl-2">
+            <div class="col-12 col-sm-12 col-md-4 col-xl-6 col-xxl-4 pl-0 pr-0 pt-3 pb-3 pr-xl-2">
               <div class="btn-group w-100" role="group" aria-label="Basic example">
                 <button class="btn btn-secondary c-border"
                         id="inputGroupFileAddon04"
@@ -67,7 +67,7 @@ const handleSave = async (newData) => {
         </form>
       </div>
     </div>
-    <div class="col-sm-12 col-xl-2 col-md-3 add-record-section card-light p-0 p-xl-2">
+    <div class="col-sm-12 col-xl-2 col-md-3 add-record-section card-light p-0 mb-md-1 p-xl-2">
       <button class="btn btn-primary text-light w-100 p-md-3 p-xl-1 mb-xl-2"
               @click="store.setView(store.currentView === 'form' ? 'table' : 'form')"
       >
@@ -75,10 +75,10 @@ const handleSave = async (newData) => {
     </div>
     <div class="col-12 col-md-9 col-xl-3">
       <div class="row setup-data-section p-0 pr-1 pt-2 pb-2 pt-md-0 pb-md-0 pb-xl-1">
-        <div class="col-11 col-xl-10 p-0 pr-2 pl-md-2">
+        <div class="col-10 col-xl-10 p-0 pr-2 pl-md-2">
           <pagination />
         </div>
-        <div class="col-1 col-xl-2 col-sm-1 p-0 pb-xl-1">
+        <div class="col-2 col-md-2 p-0 pb-md-1 pb-xl-1">
 
           <button class="btn card-light card-shadow text-purple w-100 h-100"
                   @click="store.setView(store.currentView === 'settings' ? 'table' : 'settings')"
@@ -135,6 +135,8 @@ const handleSave = async (newData) => {
   }
 
   @media (min-width: 1200px) {
-
+    .data-button-value {
+      font-size: 0.8rem;
+    }
   }
 </style>
