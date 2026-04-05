@@ -73,11 +73,11 @@ onMounted(fetchWeather);
 </script>
 
 <template>
-  <div class="card shadow-sm border-0">
+  <div class="card row shadow-sm border-0">
     <div class="card-body card-light pl-3 pr-3 pb-2">
       <form @submit.prevent="submitForm">
         <div class="row mt-1">
-          <div class="col-md-6 mt-3 mb-2">
+          <div class="col-12 col-md-6 mt-3 mb-2">
             <label class="form-label">Date</label>
             <input
                 type="date"
@@ -86,7 +86,7 @@ onMounted(fetchWeather);
                 required
             />
           </div>
-          <div class="col-md-6 mt-3 mb-2">
+          <div class="col-12 col-md-6 mt-3 mb-2">
             <label class="form-label">System Power</label>
             <select v-model="formData.power" class="form-select">
               <option value="200">200</option>
@@ -100,7 +100,7 @@ onMounted(fetchWeather);
         <hr />
 
         <div class="row text-center mb-2">
-          <div class="col-md-4 border-end">
+          <div class="col-12 col-md-4 border-md-end p-0">
             <div class="time-section mb-4 p-3">
               <h6 class="text-success fw-bold mb-3">Morning</h6>
                 <div class="input-group w-100 mb-2">
@@ -117,7 +117,7 @@ onMounted(fetchWeather);
                       placeholder="0"
                       v-model="formData.morning_data_charge"
                   >
-                  <span class="input-group-text bg-transparent border-0 small text-muted pe-2" style="width: 1%">%</span>
+                  <span class="input-group-text bg-transparent border-0 small text-muted pe-2 alt-icons">%</span>
                 </div>
                 <div class="input-group w-100">
                   <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted p-0 pl-2">
@@ -134,11 +134,11 @@ onMounted(fetchWeather);
                       placeholder="0.00"
                       v-model="formData.morning_data_price"
                   >
-                  <span class="input-group-text bg-transparent border-0 small text-muted pe-2" style="width: 1%">₴</span>
+                  <span class="input-group-text bg-transparent border-0 small text-muted pe-2 alt-icons">₴</span>
                 </div>
             </div>
           </div>
-          <div class="col-md-4 border-end">
+          <div class="col-12 col-md-4 border-md-end p-0">
             <div class="time-section mb-4 p-3">
               <h6 class="text-primary fw-bold mb-3">Afternoon</h6>
               <div class="input-group w-100 mb-2">
@@ -155,7 +155,7 @@ onMounted(fetchWeather);
                     placeholder="0"
                     v-model="formData.afternoon_data_charge"
                 >
-                <span class="input-group-text bg-transparent border-0 small text-muted pe-2" style="width: 1%">%</span>
+                <span class="input-group-text bg-transparent border-0 small text-muted pe-2 alt-icons">%</span>
               </div>
               <div class="input-group w-100">
                   <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted p-0 pl-2">
@@ -172,11 +172,11 @@ onMounted(fetchWeather);
                     placeholder="0.00"
                     v-model="formData.afternoon_data_price"
                 >
-                <span class="input-group-text bg-transparent border-0 small text-muted pe-2" style="width: 1%">₴</span>
+                <span class="input-group-text bg-transparent border-0 small text-muted pe-2 alt-icons">₴</span>
               </div>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-12 col-md-4 p-0">
             <div class="time-section mb-4 p-3">
               <h6 class="text-purple fw-bold mb-3">Evening</h6>
               <div class="input-group w-100 mb-2">
@@ -193,7 +193,7 @@ onMounted(fetchWeather);
                     placeholder="0"
                     v-model="formData.evening_data_charge"
                 >
-                <span class="input-group-text bg-transparent border-0 small text-muted pe-2" style="width: 1%">%</span>
+                <span class="input-group-text bg-transparent border-0 small text-muted pe-2 alt-icons">%</span>
               </div>
               <div class="input-group w-100">
                   <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted p-0 pl-2">
@@ -210,14 +210,14 @@ onMounted(fetchWeather);
                     placeholder="0.00"
                     v-model="formData.evening_data_price"
                 >
-                <span class="input-group-text bg-transparent border-0 small text-muted pe-2" style="width: 1%">₴</span>
+                <span class="input-group-text bg-transparent border-0 small text-muted pe-2 alt-icons">₴</span>
               </div>
             </div>
           </div>
         </div>
 
         <div class="row">
-          <div class="col-xxl-4">
+          <div class="col-12 col-xxl-4 p-0 pr-2">
             <div class="time-section mb-1 pl-3 pr-3">
               <label class="form-label d-block text-center">
                 Extra power (from USB)
@@ -236,11 +236,11 @@ onMounted(fetchWeather);
                     placeholder="0"
 
                 >
-                <span class="input-group-text bg-transparent border-0 small text-muted pe-2" style="width: 1%; font-size: .7rem">Wh</span>
+                <span class="input-group-text bg-transparent border-0 small text-muted pe-2 alt-icons alt-text">Wh</span>
               </div>
             </div>
           </div>
-          <div class="col-xxl-4">
+          <div class="col-12 col-xxl-4">
             <label class="form-label d-block text-center"
             >Weather Indicators</label
             >
@@ -254,14 +254,13 @@ onMounted(fetchWeather);
                       'bg-primary text-white border-primary shadow':
                         formData.weather.includes(opt.id),
                     }"
-                  style="min-width: 80px"
               >
                 <WeatherIcon :name="opt.name" />
                 <div class="small text-capitalize">{{ opt.name }}</div>
               </div>
             </div>
           </div>
-          <div class="col-xxl-4">
+          <div class="col-12 col-xxl-4">
             <div class="time-section">
               <label class="form-label d-block text-center"
               >Form controllers</label
@@ -279,3 +278,28 @@ onMounted(fetchWeather);
     </div>
   </div>
 </template>
+
+<style scoped>
+  .alt-icons {
+    width: 1%;
+  }
+
+  .alt-text {
+    font-size: .7rem
+  }
+
+  @media (min-width: 576px) {
+    .weather-btn {
+      width: 20%;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .border-md-end {
+      border-right: 1px solid var(--bs-border-color) !important;
+    }
+    .weather-btn {
+      width: 10%;
+    }
+  }
+</style>

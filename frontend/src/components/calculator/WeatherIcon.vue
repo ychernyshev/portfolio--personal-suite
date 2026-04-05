@@ -48,3 +48,7 @@ const currentIcon = computed(() => icons[props.name] || null);
     </svg>
   </span>
 </template>
+
+<style scoped>
+
+</style>
