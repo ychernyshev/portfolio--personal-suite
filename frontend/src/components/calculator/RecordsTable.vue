@@ -1,33 +1,20 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {ref} from "vue";
 import IconsMap from "./IconsMap.vue";
 import Settings from "./Settings.vue";
 import NewRecord from "./NewRecord.vue";
-import backendApi from "../../services/calculator/backendApi.js";
 
-const currentView = ref('table');
-const entries = ref([]);
+import { useCalculatorStore } from "../../../store/useCalculatorStore";
+const store = useCalculatorStore();
+
 const error = ref("");
-
-const fetchEntries = async () => {
-  try {
-    const response = await backendApi.get('entries');
-    entries.value = response.data.results || response.data;
-  } catch (error) {
-    error.value = error;
-  }
-}
-
-onMounted(() => {
-  fetchEntries();
-})
 </script>
 
 <template>
   <div class="row mt-2 mt-xl-0">
     <div class="col-xxl-12 p-0 records-data-table">
       <transition name="fade-slide" mode="out-in">
-        <div v-if="currentView === 'table'" class="table-container card-light" key="table">
+        <div v-if="store.currentView === 'table'" class="table-container card-light" key="table">
           <div class="table-responsive">
             <table class="table table-borderless mb-1">
 <!--                          <colgroup>-->
@@ -55,7 +42,7 @@ onMounted(() => {
               </tr>
               </thead>
               <tbody>
-              <tr v-for="entry in entries" :key="entry.id">
+              <tr v-for="entry in store.entries" :key="entry.id">
                 <th scope="row" class="c-border small">{{ entry.date }}</th>
                 <td class="text-center d-none d-sm-table-cell c-border">{{ entry.power }}</td>
                 <td class="text-center c-border">
@@ -120,12 +107,12 @@ onMounted(() => {
           </div>
         </div>
 
-        <div v-else-if="currentView === 'form'" class="form-container" key="form">
+        <div v-else-if="store.currentView === 'form'" class="form-container" key="form">
           <AddSolarRecordForm @saved="toggleAddRecord" @cancel="toggleAddRecord" />
           <new-record @entry-added="() => { fetchEntries(); fetchStats(); }" />
         </div>
 
-        <div v-else-if="currentView === 'settings'" key="settings" class="settings-containe" style="height: 49vh">
+        <div v-else-if="store.currentView === 'settings'" key="settings" class="settings-containe" style="height: 49vh">
           <settings />
         </div>
 
