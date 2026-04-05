@@ -8,17 +8,14 @@ import IconsMap from "../../components/calculator/IconsMap.vue";
 import NewRecord from "../../components/calculator/NewRecord.vue";
 import Settings from "../../components/calculator/Settings.vue";
 import StatWidget from "../../components/calculator/wingets/StatWidget.vue";
-import {useNotificationStore} from "../../../store/useNotificationStore.js";
 import DataControllers from "../../components/calculator/DataControllers.vue";
 import Sidebar from "../../components/calculator/Sidebar.vue";
 import RecordsTable from "../../components/calculator/RecordsTable.vue";
 
-// Switching "records table" and "add new record" cards
-const isAddingRecord = ref(false);
+import { useNotificationStore } from "../../../store/useNotificationStore.js";
+import { useCalculatorStore } from "../../../store/useCalculatorStore";
 
-const toggleAddRecord = () => {
-  isAddingRecord.value = !isAddingRecord.value;
-};
+const store = useCalculatorStore();
 
 // Total data (all time)
 const stats = ref({ total_power: 0, total_cost: 0 });
@@ -28,12 +25,13 @@ const fetchStats = async () => {
     const response = await backendApi.get("stats/");
     stats.value = response.data;
   } catch (error) {
-    console.error("Помилка при завантаженні статистики:", error);
+    console.error("Error during data loading:", error);
   }
 };
 
 onMounted(() => {
   fetchStats();
+  store.fetchEntries();
 });
 </script>
 
@@ -61,7 +59,9 @@ onMounted(() => {
     </div>
     <section class="table-section neomorphic pl-4 pr-4">
       <data-controllers />
-      <records-table />
+      <records-table v-if="store.currentView === 'table'" :entries="store.entries" />
+      <new-record    v-else-if="store.currentView === 'form'" />
+      <settings      v-else-if="store.currentView === 'settings'" />
     </section>
   </main>
   <sidebar />
