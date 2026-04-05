@@ -39,51 +39,61 @@ onMounted(fetchTariff);
 </script>
 
 <template>
-  <div class="card shadow-sm border-0 p-3">
-    <div class="row">
-      <div class="col-xxl-6">
-          <div
-              v-if="message.text"
-              :class="['alert', 'alert-' + message.type, 'py-2 small']"
-          >
-            {{ message.text }}
-          </div>
+  <div class="card row shadow-sm border-0">
+    <div class="col-12 col-xxl-6">
+      <div
+          v-if="message.text"
+          :class="['alert', 'alert-' + message.type, 'py-2 small']"
+      >
+        {{ message.text }}
+      </div>
 
-          <div class="form-group">
-            <label class="form-label pt-3"
-            >Налаштування тарифу | Поточна вартість (UAH/кВт)</label
+      <div class="form-group">
+        <label class="form-label pt-3 title text-purple"
+        >Energy Tariff Settings | Current Cost (UAH/kW) </label
+        >
+        <div class="row">
+          <div class="col-12 col-xxl-8">
+            <div class="input-group mb-2">
+              <input
+                  type="number"
+                  step="0.01"
+                  v-model="tariff"
+                  class="form-control text-purple"
+              />
+              <span class="input-group-text">₴</span>
+            </div>
+            <p class="text-muted label-text">
+              Last update: {{ lastUpdated }}
+            </p>
+          </div>
+          <div class="col-12 col-xxl-4">
+            <button
+                @click="updateTariff"
+                :disabled="loading"
+                class="btn btn-c-warning text-light w-100 fw-bold"
             >
-            <div class="row">
-              <div class="col-xxl-8">
-                <div class="input-group mb-2">
-                  <input
-                      type="number"
-                      step="0.01"
-                      v-model="tariff"
-                      class="form-control text-purple"
-                  />
-                  <span class="input-group-text">₴</span>
-                </div>
-                <p class="text-muted" style="font-size: 0.75rem">
-                  Останнє оновлення: {{ lastUpdated }}
-                </p>
-              </div>
-              <div class="col-xxl-4">
-                <button
-                    @click="updateTariff"
-                    :disabled="loading"
-                    class="btn btn-c-warning text-light w-100 fw-bold"
-                >
                   <span
                       v-if="loading"
                       class="spinner-border spinner-border-sm me-2"
                   ></span>
-                  Оновити тариф
-                </button>
-              </div>
-            </div>
+              Оновити тариф
+            </button>
           </div>
         </div>
       </div>
     </div>
+  </div>
 </template>
+
+<style scoped>
+  .title {
+    font-size: clamp(1rem, 2vw, 1.1rem);
+    font-weight: 400;
+  }
+
+  .label-text {
+    font-size: 0.75rem;
+    font-weight: 300;
+  }
+</style>
