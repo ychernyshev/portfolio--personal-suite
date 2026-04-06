@@ -40,8 +40,6 @@ const iconSrc = computed(() => {
 
 
   const iconName = iconMap[props.wmoCode] || 'unknown';
-  console.log("Icon name:", iconName);
-  console.log("Icon address: ", iconSrc)
   return iconMap[props.wmoCode] || sunnyIcon;
 });
 </script>

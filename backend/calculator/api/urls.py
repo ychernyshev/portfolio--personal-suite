@@ -5,11 +5,13 @@ from calculator.api.views import (DataEntryViewSet,
                                   StatsViewApiView,
                                   WeatherConditionViewSet,
                                   SolarForecastAPIView,
-                                  SolarComparisonAPIView)
+                                  SolarComparisonAPIView,
+                                  WeatherDataViewSet)
 
 router = DefaultRouter()
 router.register(r'entries', DataEntryViewSet, basename='entries')
 router.register(r'weather-conditions', WeatherConditionViewSet, basename='weather-conditions')
+router.register('forecast/details', WeatherDataViewSet, basename='forecast-details')
 
 urlpatterns = [
     path('', include(router.urls)),

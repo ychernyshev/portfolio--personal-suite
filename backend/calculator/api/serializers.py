@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel
+from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel, WeatherDataModel
 
 class WeatherConditionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,3 +20,9 @@ class DataEntrySerializer(serializers.ModelSerializer):
         model = DataEntryLineModel
         fields = '__all__'
         read_only_fields = ['full_day_power', 'full_day_cost', 'power_tariff']
+
+
+class WeatherDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WeatherDataModel
+        fields = '__all__'

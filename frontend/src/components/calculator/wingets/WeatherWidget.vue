@@ -4,6 +4,7 @@ import backendApi from "../../../services/calculator/backendApi.js";
 import IconsMap from "../IconsMap.vue";
 import Productivity from "./Productivity.vue";
 import MiniCalendar from "./MiniCalendar.vue";
+import ForecastDetail from "./ForecastDetail.vue";
 
 const forecast = ref(null);
 const loading = ref(true);
@@ -76,6 +77,7 @@ onMounted(() => {
                     class="calendar-card w-100"
                 />
               </transition>
+              <forecast-detail />
             </div>
             <!--        MODAL-->
             <div class="d-flex justify-content-start">

@@ -77,7 +77,7 @@ onMounted(fetchWeather);
     <div class="card-body card-light pl-3 pr-3 pb-2">
       <form @submit.prevent="submitForm">
         <div class="row mt-1">
-          <div class="col-12 col-md-6 mt-3 mb-2">
+          <div class="col-12 col-md-6 mt-3">
             <label class="form-label">Date</label>
             <input
                 type="date"
@@ -86,7 +86,7 @@ onMounted(fetchWeather);
                 required
             />
           </div>
-          <div class="col-12 col-md-6 mt-3 mb-2">
+          <div class="col-12 col-md-6 mt-3">
             <label class="form-label">System Power</label>
             <select v-model="formData.power" class="form-select">
               <option value="200">200</option>
@@ -97,11 +97,11 @@ onMounted(fetchWeather);
           </div>
         </div>
 
-        <hr />
+        <hr class="mt-3 mb-2"/>
 
-        <div class="row text-center mb-2">
+        <div class="row text-center">
           <div class="col-12 col-md-4 border-md-end p-0">
-            <div class="time-section mb-4 p-3">
+            <div class="time-section mb-2 p-3">
               <h6 class="text-success fw-bold mb-3">Morning</h6>
                 <div class="input-group w-100 mb-2">
                   <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted p-0 pl-2">
@@ -139,7 +139,7 @@ onMounted(fetchWeather);
             </div>
           </div>
           <div class="col-12 col-md-4 border-md-end p-0">
-            <div class="time-section mb-4 p-3">
+            <div class="time-section mb-2 p-3">
               <h6 class="text-primary fw-bold mb-3">Afternoon</h6>
               <div class="input-group w-100 mb-2">
                   <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted p-0 pl-2">
@@ -177,7 +177,7 @@ onMounted(fetchWeather);
             </div>
           </div>
           <div class="col-12 col-md-4 p-0">
-            <div class="time-section mb-4 p-3">
+            <div class="time-section mb-2 p-3">
               <h6 class="text-purple fw-bold mb-3">Evening</h6>
               <div class="input-group w-100 mb-2">
                   <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted p-0 pl-2">
@@ -217,12 +217,12 @@ onMounted(fetchWeather);
         </div>
 
         <div class="row">
-          <div class="col-12 col-xxl-4 p-0 pr-2">
-            <div class="time-section mb-1 pl-3 pr-3">
+          <div class="col-12 col-xl-4 p-0 pr-2">
+            <div class="time-section pl-3 pr-3">
               <label class="form-label d-block text-center">
                 Extra power (from USB)
               </label>
-              <div class="input-group w-100 my-4">
+              <div class="input-group w-100 mb-3">
                   <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted p-0 pl-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#6f42c1" viewBox="0 0 16 16">
                       <path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5zM6.374 1 4.168 8.5H7.5a.5.5 0 0 1 .478.647L6.78 13.04 11.478 7H8a.5.5 0 0 1-.474-.658L9.306 1H6.374z"/>
@@ -240,11 +240,11 @@ onMounted(fetchWeather);
               </div>
             </div>
           </div>
-          <div class="col-12 col-xxl-4">
+          <div class="col-12 col-xl-4">
             <label class="form-label d-block text-center"
             >Weather Indicators</label
             >
-            <div class="d-flex justify-content-center gap-2">
+            <div class="d-flex justify-content-start gap-2">
               <div
                   v-for="opt in weatherOptions"
                   :key="opt.id"
@@ -260,7 +260,7 @@ onMounted(fetchWeather);
               </div>
             </div>
           </div>
-          <div class="col-12 col-xxl-4">
+          <div class="col-12 col-xl-4">
             <div class="time-section">
               <label class="form-label d-block text-center"
               >Form controllers</label
@@ -300,6 +300,12 @@ onMounted(fetchWeather);
     }
     .weather-btn {
       width: 10%;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .weather-btn {
+      width: 20%;
     }
   }
 </style>
