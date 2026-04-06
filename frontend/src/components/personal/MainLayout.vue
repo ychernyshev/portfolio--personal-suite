@@ -1,9 +1,13 @@
 <script setup lang="ts">
 
+import TopNav from "./TopNav.vue";
 </script>
 
 <template>
-  <h2>Contacts</h2>
+  <div>
+    <top-nav />
+    <slot />
+  </div>
 </template>
 
 <style scoped>
