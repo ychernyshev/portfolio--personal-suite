@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
-import mongoengine
+# import mongoengine
 
 from pathlib import Path
 from django.conf.global_settings import STATICFILES_DIRS, MEDIA_ROOT
@@ -23,11 +23,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-ca6vhl+q1@xtrtnb*xez+u5nhl%+pef702(2a2=3!a+&u*043x'
+CRON_SECRET=os.getenv('CRON_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
 
 # Application definition
 
@@ -39,9 +50,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'calculator.apps.CalculatorConfig',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
+    'djoser',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -81,13 +97,13 @@ DATABASES = {
     }
 }
 
-mongoengine.connect(
-    db=os.environ.get("MONGO_DB_NAME"),
-    host=os.environ.get("MONGO_DB_URI"),
-    username=os.environ.get("MONGO_DB_USER"),
-    password=os.environ.get("MONGO_DB_PASS"),
-    alias="default"
-)
+# mongoengine.connect(
+#     db=os.environ.get("MONGO_DB_NAME"),
+#     host=os.environ.get("MONGO_DB_URI"),
+#     username=os.environ.get("MONGO_DB_USER"),
+#     password=os.environ.get("MONGO_DB_PASS"),
+#     alias="default"
+# )
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -136,3 +152,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media'),
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 7
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}

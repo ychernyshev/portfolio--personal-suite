@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import Sum
+from django.utils import timezone
 
 
 # ====================================================================
@@ -53,7 +54,7 @@ class DataEntryLineModel(models.Model):
 
     date = models.DateField(verbose_name='Дата')
     power = models.CharField(choices=POWER, max_length=3, default='600', verbose_name='Потужність системи')
-    weather = models.ManyToManyField('WeatherCondition', db_index=True, related_name='weather', verbose_name='Погода')
+    weather = models.ManyToManyField('WeatherConditionModel', db_index=True, related_name='weather', verbose_name='Погода')
     morning_data_charge = models.IntegerField(verbose_name='Ранковий рівень заряду')
     morning_data_price = models.FloatField(verbose_name='Вартість використаної енергії на ранок')
     afternoon_data_charge = models.IntegerField(verbose_name='Денний рівень заряду', default=0)
@@ -65,133 +66,20 @@ class DataEntryLineModel(models.Model):
     full_day_cost = models.FloatField(blank=True, null=True, verbose_name='Вартість виробленої енергії за день')
     power_tariff = models.FloatField(verbose_name='Вартість за Кв')
 
+
     def _calculate_power_delta_based_on_price(self, start_cost, end_cost):
         price_diff = end_cost - start_cost
 
-        # Look like: round((((evening_cost - morning_cost) * 100) / TARIFF) * 100, 2)
         if self.power_tariff == 0:
             return 0
 
-        # Look like: round((((evening_cost - morning_cost) * 100) / TARIFF) * 100, 2)
         return round(((price_diff * 100) / self.power_tariff) * 100, 2)
 
     def _handle_charge_difference(self, charge_diff):
-        """This calculates when the solar charge decreased (afternoon > evening or morning > evening)."""
         if charge_diff <= self.CHARGE_DIFFERENCE_THRESHOLD:
             return self.POWER_HIGH
         else:
             return self.POWER_LOW
-
-    # def _calculate_full_day_power(self):
-    #     try:
-    #         # 1. Scenario: 0 energy generation during the day
-    #         if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
-    #             return 0
-    #
-    #         # 2. Scenario: There is a daytime charge, and it is smaller than the evening charge
-    #         if 0 < self.afternoon_data_charge < self.evening_data_charge:
-    #             charge_diff = self.evening_data_charge - self.afternoon_data_charge
-    #             base_power = charge_diff * self.UNIT_CONVERSION_FACTOR
-    #
-    #             # processing constants under the same low-light scenarios
-    #             if self.afternoon_data_price == self.evening_data_price:
-    #                 return base_power
-    #             else:
-    #                 delta_power = self._calculate_power_delta_based_on_price(
-    #                     self.afternoon_data_price, self.evening_data_price)
-    #                 return base_power + delta_power
-    #
-    #         # 3. Scenario: The daytime solar charge is greater than the evening charge.
-    #         if self.afternoon_data_charge > 0 and self.afternoon_data_charge > self.evening_data_charge:
-    #             charge_diff = self.afternoon_data_charge - self.evening_data_charge
-    #             return self._handle_charge_difference(charge_diff)
-    #
-    #         # 4. Scenario: The daytime solar charge is equal to 0 (afternoon_data_charge == 0)
-    #         if self.afternoon_data_charge == 0:
-    #
-    #             # 4.1. Solar charge is growing (morning < evening)
-    #             if self.morning_data_charge < self.evening_data_charge:
-    #                 charge_diff = self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE
-    #                 base_power = charge_diff * self.UNIT_CONVERSION_FACTOR
-    #
-    #                 price_start = self.morning_data_price + self.MORNING_CORRECTION_PRICE
-    #                 delta_power = self._calculate_power_delta_based_on_price(
-    #                     price_start, self.evening_data_price)
-    #                 return base_power + delta_power
-    #
-    #             # 4.2. Solar charge is falling (morning > evening)
-    #             elif self.morning_data_charge > self.evening_data_charge:
-    #                 charge_diff = self.morning_data_charge - self.evening_data_charge
-    #                 return self._handle_charge_difference(charge_diff)
-    #
-    #             # 4.3. Solar Charge is the same (morning == evening)
-    #             elif self.morning_data_charge == self.evening_data_charge:
-    #                 return (self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR
-    #
-    #         # 5. Default scenario (if no one condition is true)
-    #         return 0
-    #
-    #     except (TypeError, ZeroDivisionError):
-    #         return 0
-
-    # def _calculate_full_day_cost(self):
-    #     try:
-    #         # 1. 0 energy generation during the day.
-    #         if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
-    #             return 0
-    #
-    #         # Function that returns the base cost from the charge difference
-    #         def get_base_cost(charge_diff):
-    #             return ((charge_diff * self.UNIT_CONVERSION_FACTOR) / 1000) * self.power_tariff
-    #
-    #         # 2. Scenario: There is a daytime charge, and it is smaller than the evening charge
-    #         if 0 < self.afternoon_data_charge < self.evening_data_charge:
-    #             charge_diff = self.evening_data_charge - self.afternoon_data_charge
-    #             base_cost = get_base_cost(charge_diff)
-    #
-    #             if self.afternoon_data_price == self.evening_data_price:
-    #                 return base_cost
-    #             else:
-    #                 return base_cost + (self.evening_data_price - self.afternoon_data_price)
-    #
-    #         # 3. Scenario: The daytime solar charge is greater than the evening charge
-    #         if 0 < self.afternoon_data_charge > self.evening_data_charge:
-    #             charge_diff = self.afternoon_data_charge - self.evening_data_charge
-    #
-    #             if charge_diff <= self.CHARGE_DIFFERENCE_THRESHOLD:
-    #                 return 0.86
-    #             else:
-    #                 return 0.43
-    #
-    #         # 4. Scenario: The daytime solar charge is equal to 0 (afternoon_data_charge == 0)
-    #         if self.afternoon_data_price == 0:
-    #
-    #             # 4.1. Solar charge is growing (morning < evening)
-    #             if self.morning_data_charge < self.evening_data_charge:
-    #                 charge_diff = self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE
-    #                 base_cost = get_base_cost(charge_diff)
-    #
-    #                 price_diff = self.evening_data_price - (self.morning_data_price + self.MORNING_CORRECTION_PRICE)
-    #                 return base_cost + price_diff
-    #
-    #             # 4.2. Solar Charge is the same (morning == evening)
-    #             elif self.morning_data_charge > self.evening_data_charge:
-    #                 charge_diff = self.morning_data_charge - self.evening_data_charge
-    #                 if charge_diff <= self.CHARGE_DIFFERENCE_THRESHOLD:
-    #                     return 0.86
-    #                 else:
-    #                     return 0.43
-    #
-    #             # 4.3. Solar Charge is the same (morning == evening)
-    #             elif self.morning_data_charge == self.evening_data_charge:
-    #                 charge_diff = self.evening_data_charge - self.afternoon_data_charge
-    #                 return get_base_cost(charge_diff)
-    #
-    #         # 5. Default scenario (if no one condition is true)
-    #         return 0
-    #
-    #     except (TypeError, ZeroDivisionError):
-    #         return 0
 
     def _calculate_full_day_power(self):
         try:
@@ -284,8 +172,82 @@ class DataEntryLineModel(models.Model):
         verbose_name_plural = 'Entries'
 
 
-class WeatherCondition(models.Model):
+class WeatherConditionModel(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
+
+
+class SolarForecastRecordModel(models.Model):
+    date = models.DateField(verbose_name="Forecast date", unique=True, default=timezone.now)
+    predicted_kwh = models.FloatField(verbose_name="Forecast (kWh)")
+    predicted_savings = models.FloatField(verbose_name="Projected savings (UAH)")
+    peak_hour = models.IntegerField(verbose_name="Rush hour")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-date']
+        verbose_name = "forecast record"
+        verbose_name_plural = "Forecasts history"
+
+    def __str__(self):
+        return f"Forecast for {self.date}: {self.predicted_kwh} kWh"
+
+    def get_actual_data(self):
+        return DataEntryLineModel.objects.filter(date=self.date).first()
+
+    @property
+    def accuracy_percentage(self):
+        actual = self.get_actual_data()
+        if not actual or actual.full_day_power == 0:
+            return None
+
+        diff = abs(self.predicted_kwh - (actual.full_day_power / 1000))
+        accuracy = max(0, 100 - (diff / (actual.full_day_power / 1000) * 100))
+        return round(accuracy, 1)
+
+
+class WeatherDataModel(models.Model):
+    # Дата та час виміру/прогнозу
+    timestamp = models.DateTimeField(db_index=True)
+
+    # Основні показники для Pandas
+    temperature = models.FloatField(help_text="Celsius")
+    cloud_cover = models.IntegerField(help_text="Cloud percentage 0-100")
+    pressure = models.FloatField(null=True, blank=True)
+    humidity = models.IntegerField(null=True, blank=True)
+
+    # Опади (важливо для очищення панелей або їх забруднення)
+    precipitation_prob = models.FloatField(default=0, help_text="Chance of precipitation")
+    condition_code = models.CharField(max_length=20, help_text="For example: 'sunny', 'rain'")
+
+    class Meta:
+        ordering = ['-timestamp']
+        verbose_name_plural = "Weather Data Records"
+
+    def __str__(self):
+        return f"{self.timestamp.strftime('%d.%m %H:%M')} - {self.temperature}°C"
+
+
+class SystemMessage(models.Model):
+    LEVEL_CHOICES = (
+        ('info', 'Info'),
+        ('warning', 'Warning'),
+        ('danger', 'Danger'),
+        ('success', 'Success'),
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    level = models.CharField(max_length=10, choices=LEVEL_CHOICES, default='info')
+    title = models.CharField(max_length=150)
+    text = models.TextField()
+
+    # Зв'язок з конкретним типом події (для іконок у Vue)
+    msg_type = models.CharField(max_length=50, default='weather')
+
+    # Поле для зв'язку з календарем (щоб швидко фільтрувати повідомлення за день)
+    event_date = models.DateField(db_index=True, auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']

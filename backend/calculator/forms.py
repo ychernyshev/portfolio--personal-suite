@@ -2,7 +2,7 @@ from datetime import date
 
 from django import forms
 
-from calculator.models import CurrentTariffModel, DataEntryLineModel, WeatherCondition
+from calculator.models import CurrentTariffModel, DataEntryLineModel, WeatherConditionModel
 
 
 class CurrentDate(forms.DateInput):
@@ -23,7 +23,7 @@ class AddEntryForm(forms.Form):
                                       'class': 'form-control',
                                   }))
     weather = forms.ModelMultipleChoiceField(label='',
-                                             queryset=WeatherCondition.objects.all(),
+                                             queryset=WeatherConditionModel.objects.all(),
                                                  widget=forms.SelectMultiple(
                                                  attrs={
                                                      'class': 'form-control',
