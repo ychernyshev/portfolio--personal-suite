@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
-import mongoengine
 
 from pathlib import Path
 from django.conf.global_settings import STATICFILES_DIRS, MEDIA_ROOT
@@ -39,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'calculator.apps.CalculatorConfig',
+    'personal.apps.PersonalConfig',
 ]
 
 MIDDLEWARE = [
@@ -80,14 +80,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-mongoengine.connect(
-    db=os.environ.get("MONGO_DB_NAME"),
-    host=os.environ.get("MONGO_DB_URI"),
-    username=os.environ.get("MONGO_DB_USER"),
-    password=os.environ.get("MONGO_DB_PASS"),
-    alias="default"
-)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
