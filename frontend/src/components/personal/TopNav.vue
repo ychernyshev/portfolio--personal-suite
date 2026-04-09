@@ -10,7 +10,7 @@
           <h4>Yevhenii Chernyshev</h4>
         </div>
         <div class="col-12">
-          <span class="small text-light bg-success p-2">Personal Programmer</span>
+          <span class="small text-light bg-success p-2 w-100">Personal Programmer</span>
         </div>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
