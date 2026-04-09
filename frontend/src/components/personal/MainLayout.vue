@@ -1,15 +1,23 @@
 <script setup lang="ts">
-
-import TopNav from "./TopNav.vue";
+  import TopNav from "./TopNav.vue";
 </script>
 
 <template>
-  <div>
+  <div class="page-container">
     <top-nav />
     <slot />
   </div>
 </template>
 
-<style scoped>
-
+<style>
+  .page-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "content"
+  ;
+    padding: 30px 20px 0 20px;
+    min-width: 100%;
+  }
 </style>

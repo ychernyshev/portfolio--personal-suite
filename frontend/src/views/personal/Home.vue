@@ -1,9 +1,9 @@
 <script setup lang="ts">
-
+  import HeroSection from "../../components/personal/home/HeroSection.vue";
 </script>
 
 <template>
-  <h2>Home</h2>
+  <hero-section/>
 </template>
 
 <style scoped>
