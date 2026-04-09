@@ -55,9 +55,6 @@
       </div><!-- /lc-block -->
     </div>
   </div>
-
-
-
 </template>
 
 <style scoped>
