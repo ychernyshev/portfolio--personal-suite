@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <nav class="navbar navbar-expand-lg bg-light">
+  <nav class="navbar navbar-expand-lg bg-light p-0 m-0">
     <div class="container-fluid">
       <a class="navbar-brand d-flex flex-column d-lg-none" href="#">
         Yevhenii Chernyshev
@@ -13,7 +13,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0 mx-lg-auto w-100 d-lg-flex justify-content-around">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 mx-lg-auto w-100 d-lg-flex justify-content-around align-items-lg-center">
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="#">
               Introducing
@@ -22,9 +22,13 @@
           <li class="nav-item">
             <a class="nav-link" href="#">CV</a>
           </li>
-          <div class="navbar-brand row d-none d-lg-block">
-            <div class="col-12">Yevhenii Chernyshev</div>
-            <div class="col-12 small text-muted text-center">Personal Programmer</div>
+          <div class="navbar-brand row d-none d-lg-block p-0 m-0">
+            <div class="col-12">
+              <h3>Yevhenii Chernyshev</h3>
+            </div>
+            <div class="col-12 small text-white text-center">
+              <span class="bg-success p-2 nav-unit-text">Personal Programmer</span>
+            </div>
           </div>
           <li class="nav-item">
             <a class="nav-link">Examples</a>
@@ -39,20 +43,8 @@
 </template>
 
   <style scoped>
-    /* Твій кастомний стиль, який ТОЧНО спрацює */
-    .hero-bg {
-      min-height: 80vh;
-      background-color: #111827; /* Темний колір як у Tailwind */
-      background-image: radial-gradient(circle at center, #1f2937 0%, #111827 100%);
-    }
-
-    .btn-primary {
-      background-color: #3b82f6;
-      border-color: #3b82f6;
-    }
-
-    .btn-primary:hover {
-      background-color: #2563eb;
+    .nav-unit-text {
+      font-size: clamp(1rem, 1.7vw, 1.4rem);
     }
   </style>
 
