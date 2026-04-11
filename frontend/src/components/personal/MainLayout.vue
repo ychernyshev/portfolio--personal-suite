@@ -1,10 +1,12 @@
 <script setup lang="ts">
   import TopNav from "./TopNav.vue";
+  import ContactForm from "./ContactForm.vue";
 </script>
 
 <template>
   <div class="page-container">
     <top-nav />
+    <contact-form />
     <slot />
   </div>
 </template>
