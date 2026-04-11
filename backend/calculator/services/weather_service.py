@@ -92,9 +92,10 @@ class WeatherForecastService:
     def save_forecast_to_db(self, forecast_data, raw_api_data):
         try:
             today = datetime.date.today()
+            yesterday = today - datetime.timedelta(days=1)
 
             SolarForecastRecordModel.objects.update_or_create(
-                date=today,
+                date=yesterday,
                 defaults={
                     'predicted_kwh': forecast_data['predicted_total_kwh'],
                     'predicted_savings': forecast_data['predicted_savings'],
