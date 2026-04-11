@@ -24,7 +24,7 @@
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/cv" class="nav-link">CV</router-link>
+            <router-link to="/projects" class="nav-link">Projects</router-link>
           </li>
           <div class="navbar-brand row d-none d-lg-block p-0 m-0">
             <div class="col-12">
@@ -35,7 +35,7 @@
             </div>
           </div>
           <li class="nav-item">
-            <router-link to="/projects" class="nav-link">Projects</router-link>
+            <router-link to="/blogs" class="nav-link">Blogs</router-link>
           </li>
           <li class="nav-item">
             <button class="nav-link" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Contacts</button>

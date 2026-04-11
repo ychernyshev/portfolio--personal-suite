@@ -1,5 +1,5 @@
 <script setup lang="ts">
-
+import CvButton from "./CvButton.vue";
 </script>
 
 <template>
@@ -41,6 +41,11 @@
               <div class="lc-block col-2 col-lg-3 m-1"><img class="img-fluid wp-image-967" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTePxAF_PER6j4gJ6K2y7smMwRBTKjYryflRg&s" width="" height="100" srcset="" sizes="" alt=""></div>
             </div>
           </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 justify-content-center align-items-start">
+          <cv-button/>
         </div>
       </div>
     </div>
