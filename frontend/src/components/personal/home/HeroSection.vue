@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import CvButton from "./CvButton.vue";
+import TechIcons from "./TechIcons.vue";
 </script>
 
 <template>
@@ -28,19 +29,7 @@ import CvButton from "./CvButton.vue";
             </div>
           </div>
 
-          <div class="row tech-centering">
-            <div class="d-flex flex-row flex-wrap w-75 mb-4 tech-centering">
-              <div class="lc-block col-2 col-lg-3 m-1"><img class="img-fluid wp-image-975" src="https://www.svgrepo.com/show/353657/django-icon.svg" width="" height="100" srcset="" sizes="" alt=""></div>
-              <div class="lc-block col-2 col-lg-3 m-1"><img class="img-fluid wp-image-977" src="https://icon-icons.com/download-file?file=https%3A%2F%2Fimages.icon-icons.com%2F2415%2FPNG%2F512%2Fvuejs_original_wordmark_logo_icon_146305.png&id=146305&pack_or_individual=pack" width="" height="100" srcset="" sizes="" alt=""></div>
-              <div class="lc-block col-2 col-lg-3 m-1"><img class="img-fluid wp-image-974" src="https://images.icon-icons.com/2415/PNG/512/typescript_plain_logo_icon_146316.png" width="" height="100" srcset="" sizes="" alt=""></div>
-              <div class="lc-block col-2 col-lg-3 m-1"><img class="img-fluid wp-image-967" src="https://app.ibracilinks.com/assets/images/blog/posts/1605445072.png" width="" height="100" srcset="" sizes="" alt=""></div>
-              <div class="lc-block col-2 col-lg-3 m-1"><img class="img-fluid wp-image-967" src="https://avatars.githubusercontent.com/u/82210087?s=200&v=4" width="" height="100" srcset="" sizes="" alt=""></div>
-              <div class="lc-block col-2 col-lg-3 m-1"><img class="img-fluid wp-image-967" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPBjbXwcjW7lVBJ6AdOSDiXKrc-op8UBAw4A&s" width="" height="100" srcset="" sizes="" alt=""></div>
-              <div class="lc-block col-2 col-lg-3 m-1"><img class="img-fluid wp-image-967" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpAq2i0YoBpm512rJCWDRZulLbATRWtcR3ug&s" width="" height="100" srcset="" sizes="" alt=""></div>
-              <div class="lc-block col-2 col-lg-3 m-1"><img class="img-fluid wp-image-967" src="https://w7.pngwing.com/pngs/711/388/png-transparent-redis-plain-logo-icon.png" width="" height="100" srcset="" sizes="" alt=""></div>
-              <div class="lc-block col-2 col-lg-3 m-1"><img class="img-fluid wp-image-967" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTePxAF_PER6j4gJ6K2y7smMwRBTKjYryflRg&s" width="" height="100" srcset="" sizes="" alt=""></div>
-            </div>
-          </div>
+          <tech-icons />
         </div>
       </div>
       <div class="row">
