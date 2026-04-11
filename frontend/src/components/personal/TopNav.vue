@@ -38,7 +38,7 @@
             <router-link to="/projects" class="nav-link">Projects</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/contacts" class="nav-link">Contacts</router-link>
+            <button class="nav-link" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Contacts</button>
           </li>
         </ul>
       </div>

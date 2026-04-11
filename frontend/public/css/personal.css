@@ -10,6 +10,7 @@
   --p-dark-1: #323A50;
   --p-dark-2: #374151;
   --p-darker: #171C28;
+  --primary-emphasis: #052C65;
 }
 
 html,
@@ -135,5 +136,9 @@ body {
 
 .bg-c-sunrise {
   background: #ffc107;
+}
+
+.bg-primary-emphasis {
+  background: var(--primary-emphasis);
 }
 

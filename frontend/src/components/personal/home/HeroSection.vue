@@ -42,17 +42,7 @@
             </div>
           </div>
         </div>
-
-<!--        <div class="lc-block mb-6"><a class="btn btn-primary px-4 me-md-2 btn-lg" href="#" role="button">Get it now</a>-->
-<!--        </div>-->
-
-<!--        <div class="lc-block">-->
-<!--          <div editable="rich">-->
-<!--            <p class="fw-bold"> Business collaboration based on trust:</p>-->
-<!--          </div>-->
-<!--        </div>-->
-
-      </div><!-- /lc-block -->
+      </div>
     </div>
   </div>
 </template>
