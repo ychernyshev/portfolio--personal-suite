@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <nav class="navbar navbar-expand-lg bg-light p-0 m-0">
+  <nav class="navbar navbar-expand-lg bg-light p-0 m-0 rounded-2">
     <div class="container-fluid">
       <a class="navbar-brand d-flex flex-column d-lg-none m-0 p-0" href="#">
         <div class="col-12">
@@ -31,7 +31,7 @@
               <h3>Yevhenii Chernyshev</h3>
             </div>
             <div class="col-12 small text-white text-center">
-              <span class="bg-success p-2 nav-unit-text">Personal Programmer</span>
+              <span class="bg-success p-2 nav-unit-text rounded-bottom-2">Personal Programmer</span>
             </div>
           </div>
           <li class="nav-item">
