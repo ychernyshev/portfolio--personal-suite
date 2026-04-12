@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import CvButton from "./CvButton.vue";
 import TechIcons from "./TechIcons.vue";
+import HeroImages from "./HeroImages.vue";
 </script>
 
 <template>
   <div class="overflow-hidden mt-4">
     <div class="container-fluid col-xxl-8 hero-wrapper">
       <div class="row flex-lg-nowrap align-items-center g-5">
-        <div class="order-lg-1 w-100 hero-image-block">
-          <img style="clip-path: polygon(25% 0%, 100% 0%, 100% 99%, 0% 100%);" src="../../../assets/images/calc_dashboard.png" sizes="(max-width: 1080px) 100vw, 1080px" width="1160" height="568">
-        </div>
+        <hero-images />
         <div class="col-lg-6 col-xl-5 text-center text-lg-start pt-lg-5 mt-lg-4">
           <div class="lc-block mb-4 mb-lg-3">
             <div editable="rich">
@@ -48,10 +47,6 @@ import TechIcons from "./TechIcons.vue";
 
   .hero-technology {
     background: var(--p-dark-1);
-  }
-
-  .hero-image-block {
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .hero-title-bg,
