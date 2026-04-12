@@ -28,12 +28,12 @@ body {
   max-height: 100vh;
 }
 
-.top-border {
-  border-top: .2rem solid;
+.neon-border {
+  border-top: .1rem solid;
   border-image-source: linear-gradient(
           to right,
           var(--primary-emphasis-1) 0%,
-          #3D159E 50%, /* Пурпурний акцент посередині */
+          #3D159E 50%,
           var(--primary-emphasis-1) 100%
   );
   border-image-slice: 1;

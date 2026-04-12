@@ -4,8 +4,8 @@
 </script>
 
 <template>
-  <div class="page-container top-border">
-    <top-nav />
+  <div class="page-container">
+    <top-nav class="neon-border"/>
     <contact-form />
     <slot />
   </div>
