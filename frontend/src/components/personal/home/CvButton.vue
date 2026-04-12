@@ -13,7 +13,8 @@
 .btn-wrapper {
   position: relative;
   padding: 12px 30px;
-  background-color: transparent;
+  background-color: rgba(30, 35, 66, 1);
+  backdrop-filter: blur(10px);
   border: none;
   border-left: .3rem solid var(--p-light-2);
   color: var(--p-light-2);
@@ -26,11 +27,11 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.4s ease;
-  z-index: 0;
+  z-index: -1;
 }
 
 .btn-wrapper:hover::before {
