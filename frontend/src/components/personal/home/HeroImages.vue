@@ -39,6 +39,7 @@
   position: relative;
   width: 100%;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 6rem 4rem 3rem 1rem rgba(0, 0, 0, 0.4);
 }
 
 .hero-image {
@@ -72,6 +73,11 @@
 
 .hero-image-block:hover .get-live-wrapper {
   opacity: 1;
+}
+
+.hero-image-block:hover {
+  box-shadow: 2rem 2rem 5rem 1rem rgba(0, 0, 0, 0.6);
+  transition: 2.5s ;
 }
 
 .hero-image-block:hover .hero-image {
