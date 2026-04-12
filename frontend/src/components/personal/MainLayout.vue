@@ -4,7 +4,7 @@
 </script>
 
 <template>
-  <div class="page-container">
+  <div class="page-container top-border">
     <top-nav />
     <contact-form />
     <slot />
