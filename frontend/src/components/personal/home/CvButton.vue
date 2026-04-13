@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <button type="button" class="btn-wrapper text-light d-flex flex-column text-start mt-lg-2">
+  <button type="button" class="btn-wrapper text-light d-flex flex-column text-start mt-lg-2 mb-5">
       <span class="title">Career Overview</span>
     <span class="unit">For corporate job interviewers and relocation opportunities</span>
   </button>
@@ -16,6 +16,7 @@
   background-color: rgba(30, 35, 66, 1);
   backdrop-filter: blur(10px);
   border: none;
+  box-shadow: 0 0 .6rem .15rem rgba(0, 0, 0, 0.2);
   border-left: .3rem solid var(--p-light-2);
   color: var(--p-light-2);
   font-weight: 600;
@@ -48,6 +49,7 @@
 .title {
   font-size: clamp(1.2rem, 1vw, 1rem);
   font-weight: bold;
+  color: var(--primary-emphasis-2);
 }
 
 .unit {
