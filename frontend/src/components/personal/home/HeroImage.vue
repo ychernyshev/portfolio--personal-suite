@@ -38,7 +38,7 @@
 .hero-image-block {
   position: relative;
   width: 100%;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 2.5s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 6rem 4rem 3rem 1rem rgba(0, 0, 0, 0.4);
 }
 

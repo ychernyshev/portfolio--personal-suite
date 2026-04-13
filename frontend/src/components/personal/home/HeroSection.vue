@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import CvButton from "./CvButton.vue";
 import TechIcons from "./TechIcons.vue";
-import HeroImages from "./HeroImages.vue";
+import HeroImage from "./HeroImage.vue";
 </script>
 
 <template>
   <div class="overflow-hidden mt-4">
     <div class="container-fluid col-xxl-8 hero-wrapper">
       <div class="row flex-lg-nowrap align-items-center g-5">
-        <hero-images />
+        <hero-image />
         <div class="col-lg-6 col-xl-5 text-center text-lg-start pt-lg-5 mt-lg-4">
           <div class="lc-block mb-4 mb-lg-3">
             <div editable="rich">
