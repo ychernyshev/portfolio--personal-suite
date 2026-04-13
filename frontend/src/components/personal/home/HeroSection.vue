@@ -9,7 +9,7 @@ import HeroImage from "@/components/personal/home/HeroImage.vue";
     <div class="container-fluid col-xxl-8 hero-wrapper">
       <div class="row flex-lg-nowrap align-items-center g-5">
         <hero-image />
-        <div class="col-lg-6 col-xl-5 text-center text-lg-start pt-lg-5 mt-lg-4">
+        <div class="col-lg-6 col-xl-5 text-center text-lg-start pt-lg-5 mt-lg-5">
           <div class="lc-block mb-4 mb-lg-3">
             <div editable="rich">
               <h1 class="fw-bold display-3 hero-title ">
@@ -18,7 +18,7 @@ import HeroImage from "@/components/personal/home/HeroImage.vue";
             </div>
           </div>
 
-          <div class="lc-block mb-4">
+          <div class="lc-block">
             <div editable="rich">
               <p class="rfs-8">
                 <span class="hero-unit-bg hero-unit-text p-1">
@@ -28,7 +28,7 @@ import HeroImage from "@/components/personal/home/HeroImage.vue";
             </div>
           </div>
 
-          <tech-icons />
+          <tech-icons class="mt-5"/>
         </div>
       </div>
       <div class="row">

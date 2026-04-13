@@ -88,7 +88,7 @@ const iconEntries = Object.entries(icons) as [string, Icon][];
           v-for="[name, icon] in iconEntries"
           :key="name"
           :content="icon.description"
-          class="lc-block col-2 col-lg-3 m-1 tech-icon"
+          class="lc-block col-2 col-lg-2 m-1 tech-icon"
       >
           <img
               :src="icon.path"

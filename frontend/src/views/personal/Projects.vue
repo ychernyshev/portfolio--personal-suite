@@ -28,7 +28,7 @@ const projects: Project[] = [
     id: 'solar-calculator',
     name: 'Solar Power Calculator',
     description: "A web application dashboard that calculates solar power generation and cost savings. The app allows adding the accumulated charging level in percentages and the current power cost from energy meters. These parameters need to be entered 2-3 times per day, as the app calculates the power that the solar system generates throughout the day and how much money this power costs",
-    unit: "Created by myself",
+    unit: "\"Created for myself to explore and analyze the capacity and productivity of my own solar power station\"",
     techStack: ['django', 'vue', 'js', 'bootstrap'],
     images: [
       {
@@ -61,12 +61,12 @@ const projects: Project[] = [
           <div class="col-lg-8">
             <p class="project-unit text-center">
               {{ project.description }}
-              <span class="text-italic">{{ project.unit }}</span>
             </p>
+            <p class="text-italic text-center text-light">{{ project.unit }}</p>
           </div>
         </div>
         <div class="row justify-content-center mt-lg-3">
-          <div class="col-xl-2 text-end">
+          <div class="col-xl-2 d-flex justify-content-end">
             <TechIcons
                 v-for="techName in project.techStack"
                 :key="techName"
