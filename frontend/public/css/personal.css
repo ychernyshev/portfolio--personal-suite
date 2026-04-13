@@ -7,6 +7,7 @@
 :root {
   --p-light-1: #ffffff;
   --p-light-2: #F5F7FA;
+  --p-light-3: #dedede;
   --p-dark-1: #323A50;
   --p-dark-2: #374151;
   --p-darker: #171C28;
@@ -42,6 +43,10 @@ body {
 
 .header-container {
 
+}
+
+.text-italic {
+  font-style: italic;
 }
 
 /*.btn-primary {*/

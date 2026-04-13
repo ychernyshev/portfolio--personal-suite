@@ -7,7 +7,7 @@ import ButtonComp from "../ButtonComp.vue";
   <div class="order-lg-1 w-100 hero-image-block">
     <img
         class="hero-image"
-        src="../../../assets/images/calc_dashboard.png"
+        src="@/assets/images/solar_power_calculator/calc_dashboard.png"
         sizes="(max-width: 1080px) 100vw, 1080px"
         width="1160"
         height="568"
