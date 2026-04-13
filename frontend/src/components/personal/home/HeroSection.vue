@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import CvButton from "./CvButton.vue";
-import TechIcons from "./TechIcons.vue";
-import HeroImage from "./HeroImage.vue";
+import CvButton from "@/components/personal/home/CvButton.vue";
+import TechIcons from "@/components/personal/TechIcons.vue";
+import HeroImage from "@/components/personal/home/HeroImage.vue";
 </script>
 
 <template>

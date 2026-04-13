@@ -27,7 +27,7 @@ const personalRoutes: RouteRecordRaw = {
         },
         {
             path: "/projects",
-            component: () => import("../views/personal/CalculatorDetails.vue"),
+            component: () => import("../views/personal/Projects.vue"),
             meta: { layout: "MainLayout" }
         },
         {
