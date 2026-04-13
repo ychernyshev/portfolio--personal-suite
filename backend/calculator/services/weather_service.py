@@ -95,7 +95,7 @@ class WeatherForecastService:
             yesterday = today - datetime.timedelta(days=1)
 
             SolarForecastRecordModel.objects.update_or_create(
-                date=yesterday,
+                date=today,
                 defaults={
                     'predicted_kwh': forecast_data['predicted_total_kwh'],
                     'predicted_savings': forecast_data['predicted_savings'],
