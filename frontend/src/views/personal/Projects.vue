@@ -33,11 +33,19 @@ const projects: Project[] = [
     images: [
       {
         path: new URL('@/assets/images/solar_power_calculator/calc_dashboard.png', import.meta.url).href,
-        title: 'Single screen Dashboard'
+        title: 'Single screen Dashboard',
       },
       {
-        path: new URL('@/assets/images/solar_power_calculator/calc_data.png', import.meta.url).href,
-        title: 'Record Data and Reactive Reload'
+        path: new URL('@/assets/images/solar_power_calculator/calc_dashboard.png', import.meta.url).href,
+        title: 'Record Data and Reactive Reload',
+      },
+      {
+        path: new URL('@/assets/images/solar_power_calculator/calc_dashboard.png', import.meta.url).href,
+        title: 'Setup your app',
+      },
+      {
+        path: new URL('@/assets/images/solar_power_calculator/calc_dashboard.png', import.meta.url).href,
+        title: 'Controlling power and cost inficators ont the graphics',
       }
     ]
   }
@@ -98,12 +106,6 @@ const projects: Project[] = [
         <div class="row justify-content-center mt-5">
           <div class="col-12 col-lg-4 col-xl-12">
             <image-slider :images="project.images"/>
-          </div>
-          <div class="carousel-item">
-            <img src="..." class="d-block w-100" alt="...">
-          </div>
-          <div class="carousel-item">
-            <img src="..." class="d-block w-100" alt="...">
           </div>
         </div>
       </div>

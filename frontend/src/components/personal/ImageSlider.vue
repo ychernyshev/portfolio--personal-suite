@@ -1,19 +1,38 @@
 <script setup lang="ts">
+  import {computed} from "vue";
+
   const props = defineProps<{
     images: { path: string; title: string }[];
   }>()
+
+  const step = 6;
+
+  const totalTime = computed(() => props.images.length * step);
 </script>
 
 <template>
   <ul class="cb-slideshow">
-    <li v-for="img in images" :key="img">
+    <li v-for="(img, index) in images" :key="index">
       <span :style="{
-        backgroundImage: `url(${img.path})`
+        backgroundImage: `url(${img.path})`,
+        animationDuration: `${totalTime}s`,
+        animationDelay: `${index * 6}s`
       }"></span>
-      <div>
+      <div :style="{
+        animationDuration: `${totalTime}s`,
+        animationDelay: `${index * 6}s`
+      }">
         <h3>{{ img.title }}</h3>
       </div>
     </li>
+<!--    <li v-for="img in images" :key="img">-->
+<!--      <span :style="{-->
+<!--        backgroundImage: `url(${img.path})`-->
+<!--      }"></span>-->
+<!--      <div>-->
+<!--        <h3>{{ img.title }}</h3>-->
+<!--      </div>-->
+<!--    </li>-->
   </ul>
 </template>
 
@@ -28,7 +47,7 @@
     position: fixed;
     width: 45%;
     height: 45%;
-    bottom: 0;
+    top: 60%;
     right: 25%;
     z-index: 0;
   }
@@ -49,7 +68,7 @@
     background-repeat: none;
     opacity: 0;
     z-index: 0;
-    animation: imageAnimation 36s linear infinite 0s;
+    animation: imageAnimation linear infinite;
   }
   .cb-slideshow li div {
     z-index: 1000;
@@ -60,54 +79,18 @@
     text-align: center;
     opacity: 0;
     color: var(--primary-emphasis);
-    animation: titleAnimation 36s linear infinite 0s;
+    animation: titleAnimation linear infinite;
   }
   .cb-slideshow li div h3 {
+    position: absolute;
+    bottom: 5rem;
     margin: 0;
     font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
-    font-size: clamp(5rem, 5vw, 5rem);
+    font-size: clamp(3.5rem, 3.5vw, 3.5rem);
     padding: 0;
-    line-height: 5rem;
+    line-height: 3rem;
   }
 
-  .cb-slideshow li:nth-child(1) span {
-    background-image: url("@/assets/images/solar_power_calculator/calc_dashboard.png");
-  }
-  .cb-slideshow li:nth-child(2) span {
-    background-image: url(https://images.unsplash.com/photo-1584957109774-c9b6d1ba9d4b?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTkxODM0NjV8&ixlib=rb-4.0.3&q=85&width=1600);
-    animation-delay: 6s;
-  }
-  .cb-slideshow li:nth-child(3) span {
-    background-image: url(https://images.unsplash.com/photo-1509067917181-3ec8d8ef5170?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTkxODM2MDZ8&ixlib=rb-4.0.3&q=85&q=85&width=1600);
-    animation-delay: 12s;
-  }
-  .cb-slideshow li:nth-child(4) span {
-    background-image: url(https://images.unsplash.com/photo-1462392246754-28dfa2df8e6b?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTkxODM2MDZ8&ixlib=rb-4.0.3&q=85&width=1600);
-    animation-delay: 18s;
-  }
-  .cb-slideshow li:nth-child(5) span {
-    background-image: url(https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTkxODM3MTd8&ixlib=rb-4.0.3&q=85&width=1600);
-    animation-delay: 24s;
-  }
-  .cb-slideshow li:nth-child(6) span {
-    background-image: url(https://images.unsplash.com/photo-1470010762743-1fa2363f65ca?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTkxODM3NzB8&ixlib=rb-4.0.3&q=85&width=1600);
-    animation-delay: 30s;
-  }
-  .cb-slideshow li:nth-child(2) div {
-    animation-delay: 6s;
-  }
-  .cb-slideshow li:nth-child(3) div {
-    animation-delay: 12s;
-  }
-  .cb-slideshow li:nth-child(4) div {
-    animation-delay: 18s;
-  }
-  .cb-slideshow li:nth-child(5) div {
-    animation-delay: 24s;
-  }
-  .cb-slideshow li:nth-child(6) div {
-    animation-delay: 30s;
-  }
   /* imageAnimation 1 */
   @keyframes imageAnimation1 {
     0% { opacity: 0; animation-timing-function: ease-in; }
