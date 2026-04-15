@@ -78,7 +78,7 @@
     bottom: 5rem;
     margin: 0;
     font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
-    font-size: clamp(3.5rem, 3.5vw, 3.5rem);
+    font-size: clamp(2.5rem, 2.5vw, 2.5rem);
     padding: 0;
     line-height: 3rem;
   }

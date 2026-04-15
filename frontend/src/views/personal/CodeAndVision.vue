@@ -86,11 +86,9 @@ const projects: Project[] = [
               :key="project.id"
               :class="['carousel-item', { active: index === 0 }]"
           >
-            <div class="col-12">
-              <p class="project-title text-center display-5">{{ project.name }}</p>
-            </div>
             <div class="row justify-content-center">
               <div class="col-lg-6">
+                <p class="project-title text-end display-4">{{ project.name }}</p>
                 <p class="project-unit text-end">
                   {{ project.description }}
                 </p>
@@ -130,7 +128,7 @@ const projects: Project[] = [
                   </div>
                 </div>
               </div>
-              <div class="col-xl-1 d-flex flex-column">
+              <div class="col-xl-1 d-flex flex-column mt-3">
                 <span v-if="project.status === 'Production'" class="bg-success rounded-2 w-100 p-2 text-center small">Production</span>
                 <span v-else-if="project.status === 'MVP'" class="bg-info rounded-2 w-100 p-2 text-center small">MVP</span>
                 <span v-else-if="project.status === 'In Development'" class="bg-warning rounded-2 w-100 p-2 text-center small">In Development</span>
@@ -143,8 +141,8 @@ const projects: Project[] = [
                   {{ future }}
                 </span>
                 </div>
-                <div class="col-12">
-                  <gith-hub-repo-info class="border-1 rounded-2 p-2" />
+                <div class="col-12 mt-3">
+                  <gith-hub-repo-info class="border-1 rounded-2 p-2" repoName="portfolio--personal-suite"/>
                 </div>
               </div>
             </div>
