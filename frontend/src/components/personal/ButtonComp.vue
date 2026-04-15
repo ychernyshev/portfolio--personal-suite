@@ -14,5 +14,9 @@
 </template>
 
 <style scoped>
-
+  .shift-icon {}
+  .shift-icon:hover {
+     margin-right: .4rem;
+     transition: .5s;
+  }
 </style>

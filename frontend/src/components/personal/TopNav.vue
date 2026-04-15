@@ -24,7 +24,7 @@
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/projects" class="nav-link">Projects</router-link>
+            <router-link to="/code" class="nav-link">Code & Vision</router-link>
           </li>
           <div class="navbar-brand row d-none d-lg-block p-0 m-0">
             <div class="col-12">

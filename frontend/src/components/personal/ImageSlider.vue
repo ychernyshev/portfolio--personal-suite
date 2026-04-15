@@ -25,14 +25,6 @@
         <h3>{{ img.title }}</h3>
       </div>
     </li>
-<!--    <li v-for="img in images" :key="img">-->
-<!--      <span :style="{-->
-<!--        backgroundImage: `url(${img.path})`-->
-<!--      }"></span>-->
-<!--      <div>-->
-<!--        <h3>{{ img.title }}</h3>-->
-<!--      </div>-->
-<!--    </li>-->
   </ul>
 </template>
 
