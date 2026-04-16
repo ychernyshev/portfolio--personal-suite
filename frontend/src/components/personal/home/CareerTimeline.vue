@@ -1,0 +1,150 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import { timeline, type CareerItem } from '@/components/personal/static-data/careerData';
+import TechIconsLib from '@/components/personal/TechIconsLib.vue';
+
+const scrollToExperience = (id: string) => {
+  const element = document.getElementById(id);
+  if (element) {
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }
+};
+</script>
+
+<template>
+  <div class="career-modal-wrapper">
+    <div class="timeline-navigation col-4 col-xl-3">
+      <div class="timeline-line">
+        <div
+            v-for="(item, index) in timeline"
+            :key="item.id"
+            class="timeline-dot-wrapper"
+            @click="scrollToExperience(item.id)"
+            :style="{ top: (index * (100 / (timeline.length - 1))) + '%' }"
+        >
+          <div class="timeline-dot"></div>
+          <span class="timeline-date-label">{{ item.date }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-content">
+      <div
+          v-for="item in timeline"
+          :key="item.id"
+          :id="item.id"
+          class="timeline-card"
+      >
+        <div class="card-header">
+          <span class="card-date">{{ item.date }}</span>
+          <h3>{{ item.title }}</h3>
+          <p v-if="item.currentOccupation" class="current-pos">
+            <span class="badge-status text-light"> and current occupations is:</span>
+            <span class="fw-bold">{{ item.currentOccupation }}</span>
+          </p>
+        </div>
+        <p class="card-description">{{ item.description }}</p>
+        <div v-if="item.techStack" class="card-tech">
+          <TechIconsLib
+              v-for="tech in item.techStack"
+              :key="tech"
+              :name="tech"
+              tech-name="tech"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+  .career-modal-wrapper {
+    display: flex;
+    height: 100%;
+  }
+
+  .timeline-navigation {
+    position: relative;
+    display: flex;
+    justify-content: start;
+    border-right: 1px solid rgba(0, 243, 255, 0.1);
+  }
+
+  .timeline-line {
+    position: absolute;
+    top: 40px;
+    bottom: 40px;
+    width: 2px;
+    background: var(--primary-emphasis-2);
+    box-shadow: 0 0 10px var(--primary-emphasis);
+    opacity: 0.3;
+  }
+
+  .timeline-dot-wrapper {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .timeline-dot {
+    width: 16px;
+    height: 16px;
+    background: var(--neon-blue-1);
+    border: 2px solid var(--primary-emphasis);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--primary-emphasis);
+    transition: all 0.3s ease;
+    z-index: 10;
+  }
+
+  .timeline-dot-wrapper:hover .timeline-dot {
+    transform: scale(1.3);
+    background: var(--primary-emphasis);
+    box-shadow: 0 0 20px var(--primary-emphasis);
+  }
+
+  .timeline-date-label {
+    position: absolute;
+    left: 25px;
+    white-space: nowrap;
+    font-size: 0.7rem;
+    color: var(--p-light-3);
+    margin-top: 5px;
+  }
+
+  .timeline-content {
+    flex: 1;
+    overflow-y: scroll;
+    padding: 20px;
+    scroll-behavior: smooth;
+  }
+
+  .timeline-card {
+    margin-bottom: 40px;
+    padding-top: 10px;
+  }
+
+  .current-pos {
+    font-size: 0.9rem;
+    color: var(--p-light-3);
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  .badge-status {
+    background: rgba(0, 243, 255, 0.1);
+    color: var(--primary-emphasis);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-right: 5px;
+    font-style: normal;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+  }
+</style>
