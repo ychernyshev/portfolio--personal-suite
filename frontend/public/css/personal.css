@@ -14,7 +14,11 @@
   --primary-emphasis: #052C65;
   --primary-emphasis-1: #0C4C7D;
   --primary-emphasis-2: #43759B;
+  --primary-emphasis-3: #2281b9;
+  --primary-emphasis-4: #47A4F4;
+  --neon-blue-1: #00f3ff;
   --ideal-green-1: #409E01;
+  --sunrise-1: #FFC107;
 }
 
 html,
@@ -115,7 +119,7 @@ body {
 .links > a.text-c-primary {
   position: relative;
   display: inline-block;
-  color: #2281b9;
+  color: var(--primary-emphasis-3);
   text-decoration: none;
 }
 
@@ -126,7 +130,7 @@ body {
   bottom: -10px;
   width: 80%;
   height: 2px;
-  background-color: #2281b9;
+  background-color: var(--primary-emphasis-3);
 }
 
 .underline-none {
@@ -147,15 +151,15 @@ body {
 }
 
 .bg-c-gray {
-  background: #f8f9fa;
+  background: var(--p-light-2);
 }
 
 .bg-c-dark-gray {
-  background: #e4e7eb;
+  background: var(--p-light-3);
 }
 
 .bg-c-sunrise {
-  background: #ffc107;
+  background: var(--sunrise-1);
 }
 
 .bg-primary-emphasis {

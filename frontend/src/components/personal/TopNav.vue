@@ -40,6 +40,7 @@
           <li class="nav-item">
             <button class="nav-link" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Contacts</button>
           </li>
+<!--          Вінести conatct form в отдельній компонент-->
         </ul>
       </div>
     </div>

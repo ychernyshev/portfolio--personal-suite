@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <button type="button" class="btn-wrapper text-light d-flex flex-column text-start mt-lg-2 mb-5">
+  <button type="button" class="btn-wrapper text-light d-flex flex-column text-start mt-lg-2 mb-5" data-bs-toggle="modal" data-bs-target="#exampleModal">
       <span class="title">Career Overview</span>
     <span class="unit">For corporate job interviewers and relocation opportunities</span>
   </button>
@@ -54,7 +54,6 @@
 
 .unit {
   font-weight: 300;
-  font-style: italic;
 }
 
 </style>

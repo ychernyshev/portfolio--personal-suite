@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import CvButton from "@/components/personal/home/CvButton.vue";
-import TechIcons from "@/components/personal/TechIcons.vue";
+import TechIconsLib from "@/components/personal/TechIconsLib.vue";
 import HeroImage from "@/components/personal/home/HeroImage.vue";
+import CareerOverview from "@/components/personal/CareerOverview.vue";
 </script>
 
 <template>
@@ -28,12 +29,13 @@ import HeroImage from "@/components/personal/home/HeroImage.vue";
             </div>
           </div>
 
-          <tech-icons class="mt-5"/>
+          <tech-icons-lib class="mt-5"/>
         </div>
       </div>
       <div class="row">
         <div class="col-6 justify-content-center align-items-start">
           <cv-button/>
+          <career-overview />
         </div>
       </div>
     </div>

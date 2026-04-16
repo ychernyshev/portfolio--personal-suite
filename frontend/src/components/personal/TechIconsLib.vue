@@ -14,13 +14,13 @@ const props = defineProps<{
 type IconName =
     | "django"
     | "drf"
-    // | "celery"
+    | "celery"
     | "js"
     | "typescript"
     | "bootstrap"
-    // | "docker"
+    | "docker"
     | "vue"
-    // | "redis"
+    | "redis"
     | "pinia";
 
 type TechIconSet = Record<IconName, Icon>;
@@ -61,21 +61,21 @@ const icons: TechIconSet = {
     path: new URL('@/assets/images/tech-icons/bootstrap.png', import.meta.url).href,
     description: "Bootstrap is an HTML, CSS and JS library that focuses on visual style development of web pages."
   },
-  // celery: {
-  //   id: "celery",
-  //   path: new URL('@/assets/images/tech-icons/celery.png', import.meta.url).href,
-  //   description: "Celery is an asynchronous task queue/job or job queue. It is used for executing tasks in the background. Sending an email to the client after registration, for example."
-  // },
-  // redis: {
-  //   id: "redis",
-  //   path: new URL('@/assets/images/tech-icons/redis.png', import.meta.url).href,
-  //   description: "Redis (/ˈrɛdɪs/; Remote Dictionary Server) is an in-memory key–value database, used as a distributed cache and message broker, with optional durability. For example, instantly get data that is often used"
-  // },
-  // docker: {
-  //   id: "docker",
-  //   path: new URL('@/assets/images/tech-icons/docker.png', import.meta.url).href,
-  //   description: "Docker is a set of products that uses operating system-level virtualization to deliver software in packages called containers, with the components needed to build projects using it as a constructor. Container with backend - Django, container with frontend - Vue, container with database - PostgreSQL, etc. It ensures that the project works the same way on the computer, on the server, and everywhere else. For testing and developing, the project runs with one command. The system does preparation, launch, and everything else automatically."
-  // }
+  celery: {
+    id: "celery",
+    path: new URL('@/assets/images/tech-icons/celery.png', import.meta.url).href,
+    description: "Celery is an asynchronous task queue/job or job queue. It is used for executing tasks in the background. Sending an email to the client after registration, for example."
+  },
+  redis: {
+    id: "redis",
+    path: new URL('@/assets/images/tech-icons/redis.png', import.meta.url).href,
+    description: "Redis (/ˈrɛdɪs/; Remote Dictionary Server) is an in-memory key–value database, used as a distributed cache and message broker, with optional durability. For example, instantly get data that is often used"
+  },
+  docker: {
+    id: "docker",
+    path: new URL('@/assets/images/tech-icons/docker.png', import.meta.url).href,
+    description: "Docker is a set of products that uses operating system-level virtualization to deliver software in packages called containers, with the components needed to build projects using it as a constructor. Container with backend - Django, container with frontend - Vue, container with database - PostgreSQL, etc. It ensures that the project works the same way on the computer, on the server, and everywhere else. For testing and developing, the project runs with one command. The system does preparation, launch, and everything else automatically."
+  }
 }
 
 const iconEntries = Object.entries(icons) as [string, Icon][];
@@ -88,7 +88,7 @@ const iconEntries = Object.entries(icons) as [string, Icon][];
           v-for="[name, icon] in iconEntries"
           :key="name"
           :content="icon.description"
-          class="lc-block col-2 col-lg-3 m-1 tech-icon"
+          class="lc-block col-2 col-lg-2 m-1 tech-icon"
       >
           <img
               :src="icon.path"
