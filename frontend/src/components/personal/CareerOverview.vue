@@ -29,19 +29,23 @@ import CareerTimeline from "@/components/personal/home/CareerTimeline.vue";
               <div class="col-12 col-lg-8 mt-3">
                 <label for="core">Core Expertise</label>
                 <ul>
-                  <li class="d-flex justify-content-between p-1">
-                    <span class="text-italic">Backend: </span>
-                    <span class="tech-highline">Python/Django</span>
-                    <span class="tech-highline">REST API (DRF)</span>
-                    <span class="tech-highline">JWT Auth</span>
-                    <span class="tech-highline">PostgreSQL</span>
+                  <li class="d-flex justify-content-start p-1">
+                    <span class="text-italic my-auto">Backend: </span>
+                    <span class="p-md-2 tech-wrapper">
+                      <span class="tech-highline">Python/Django</span>
+                      <span class="tech-highline">REST API (DRF)</span>
+                      <span class="tech-highline">JWT Auth</span>
+                      <span class="tech-highline">PostgreSQL</span>
+                    </span>
                   </li>
-                  <li class="d-flex justify-content-between p-1">
-                    <span class="text-italic">Frontend: </span>
-                    <span class="tech-highline">Vue 3 (Composition API)</span>
-                    <span class="tech-highline">TypeScript</span>
-                    <span class="tech-highline">Pinia</span>
-                    <span class="tech-highline">SCSS</span>
+                  <li class="d-flex justify-content-start p-1">
+                    <span class="text-italic my-auto">Frontend: </span>
+                    <span class="p-md-2 tech-wrapper">
+                      <span class="tech-highline">Vue 3 (Composition API)</span>
+                      <span class="tech-highline">TypeScript</span>
+                      <span class="tech-highline">Pinia</span>
+                      <span class="tech-highline">Bootstrap</span>
+                    </span>
                   </li>
                 </ul>
                 <label for="high">High-Performance Stack</label>
@@ -89,24 +93,35 @@ ul {
 }
 
 .tech-highline {
+  padding: 0 0.3rem;
   background: var(--p-light-3);
   color: var(--p-dark-2);
   border-radius: .3rem;
+}
+
+.tech-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
 }
 
 .modal-footer {
   justify-content: center;
 }
 
-@media (min-width: 520px) {
+@media (min-width: 576px) {
   .tech-highline {
-    padding: 0 .1rem;
+    padding: 0 .4rem;
   }
 }
 
 @media (min-width: 768px) {
   .modal-footer {
     justify-content: end;
+  }
+
+  .tech-wrapper {
+
   }
 }
 </style>

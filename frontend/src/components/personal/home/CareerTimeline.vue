@@ -42,7 +42,7 @@ const scrollToExperience = (id: string) => {
           <span class="card-date">{{ item.date }}</span>
           <h3>{{ item.title }}</h3>
           <p v-if="item.currentOccupation" class="current-pos">
-            <span class="badge-status text-light"> and current occupations is:</span>
+            <span class="badge-status text-light">current occupations is:</span>
             <span class="fw-bold">{{ item.currentOccupation }}</span>
           </p>
         </div>
