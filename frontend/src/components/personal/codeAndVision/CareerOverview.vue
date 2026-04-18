@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import ButtonComp from "@/components/personal/ButtonComp.vue";
-import CareerTimeline from "@/components/personal/home/CareerTimeline.vue";
+import CareerTimeline from "@/components/personal/codeAndVision/CareerTimeline.vue";
 </script>
 
 <template>
@@ -85,7 +85,7 @@ import CareerTimeline from "@/components/personal/home/CareerTimeline.vue";
 
 <style scoped>
 .modal-content {
-  background-image: url("../../../public/assets/personal/dark_bg.png");
+  background-image: url("../../../../public/assets/personal/dark_bg.png");
 }
 
 ul {

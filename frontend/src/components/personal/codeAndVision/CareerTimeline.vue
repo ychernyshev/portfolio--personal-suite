@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { timeline, type CareerItem } from '@/components/personal/static-data/careerData';
+import { timeline, type CareerItem } from '@/static-data/careerData';
 import TechIconsLib from '@/components/personal/TechIconsLib.vue';
 import ButtonComp from "@/components/personal/ButtonComp.vue";
 

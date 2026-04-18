@@ -10,7 +10,7 @@
           <h4>Yevhenii Chernyshev</h4>
         </div>
         <div class="col-12">
-          <router-link to="/introducing" class="small text-light bg-success p-2 w-100">Personal Programmer</router-link>
+          <router-link to="/introducing" class="small text-light bg-success rounded-bottom-2 p-2 w-100 underline-none">Personal Programmer</router-link>
         </div>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

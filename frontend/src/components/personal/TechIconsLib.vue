@@ -101,23 +101,21 @@ const iconEntries = Object.entries(icons) as [string, Icon][];
 
 <template>
   <div v-if="!techName" class="row tech-centering">
-    <div class="d-flex flex-row flex-wrap w-75 mb-4 tech-centering">
-      <tech-popover
-          v-for="[name, icon] in iconEntries"
-          :key="name"
-          :content="icon.description"
-          class="lc-block col-2 col-lg-2 m-1 tech-icon"
-      >
-          <img
-              :src="icon.path"
-              class="img-fluid wp-image-975"
-              width=""
-              height="100"
-              srcset=""
-              sizes=""
-              alt="">
-      </tech-popover>
-    </div>
+    <tech-popover
+        v-for="[name, icon] in iconEntries"
+        :key="name"
+        :content="icon.description"
+        class="lc-block m-1 tech-icon"
+    >
+      <img
+          :src="icon.path"
+          class="img-fluid wp-image-975"
+          width=""
+          height="100"
+          srcset=""
+          sizes=""
+          alt="">
+    </tech-popover>
   </div>
   <div v-else-if="icons[techName as IconName]" class="d-inline-block">
     <tech-popover
@@ -127,7 +125,6 @@ const iconEntries = Object.entries(icons) as [string, Icon][];
       <img
           :src="icons[techName as IconName].path"
           class="img-fluid"
-          style="width: 40px; height: 40px; object-fit: contain;"
           :alt="techName"
       >
     </tech-popover>

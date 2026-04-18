@@ -13,14 +13,14 @@ import ButtonComp from "../ButtonComp.vue";
         height="568"
     >
     <div class="get-live-wrapper d-flex flex-column align-items-center">
-      <p>Live dashboard preview — energy generation, weather, and tariff indicators.</p>
+      <p class="get-live-title">Live dashboard preview — energy generation, weather, and tariff indicators.</p>
       <div class="d-flex flex-row justify-content-around align-items-center w-100">
-        <button-comp title="Live Preview" class="btn-warning text-primary-emphasis d-flex flex-row align-items-center">
+        <button-comp title="Live Preview" class="btn-warning text-primary-emphasis d-flex flex-row align-items-center get-live-button">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
             <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
           </svg>
          </button-comp>
-        <button-comp title="Source Code" class="btn-light text-primary-emphasis d-flex flex-row align-items-center">
+        <button-comp title="Source Code" class="btn-light text-primary-emphasis d-flex flex-row align-items-center get-live-button">
           <template #left>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-code" viewBox="0 0 16 16">
               <path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8z"/>
@@ -42,7 +42,7 @@ import ButtonComp from "../ButtonComp.vue";
   position: relative;
   width: 100%;
   transition: all 2.5s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 6rem 4rem 3rem 1rem rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 5rem .1rem rgba(0, 0, 0, 0.1);
 }
 
 .hero-image {
@@ -52,16 +52,28 @@ import ButtonComp from "../ButtonComp.vue";
   transition: .9s ease-in-out;
 }
 
+.hero-image-block:hover .get-live-wrapper {
+  opacity: 1;
+}
+
+.hero-image-block:hover {
+  box-shadow: 0 0 5rem .1rem rgba(0, 0, 0, 0.1);
+  transition: 2.5s ;
+}
+
+.hero-image-block:hover .hero-image {
+  transform: scale(1.03);
+  clip-path: polygon(0% 0%, 100% 0%, 100% 99%, 0% 100%);
+  transition: .9s ease-in-out;
+}
+
 .get-live-wrapper {
   position: absolute;
-  bottom: 35%;
-  right: 40%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 35%;
-  height: 30%;
-  padding: 25px;
+  bottom: 14%;
+  right: 13%;
+  width: 75%;
+  height: 71%;
+  padding: 10px 0;
   background-color: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -74,19 +86,12 @@ import ButtonComp from "../ButtonComp.vue";
   transition: opacity 0.9s ease;
 }
 
-.hero-image-block:hover .get-live-wrapper {
-  opacity: 1;
+.get-live-title {
+  font-size: clamp(.9rem, 1vw, 1.5rem);
 }
 
-.hero-image-block:hover {
-  box-shadow: 2rem 2rem 5rem 1rem rgba(0, 0, 0, 0.6);
-  transition: 2.5s ;
-}
-
-.hero-image-block:hover .hero-image {
-  transform: scale(1.03);
-  clip-path: polygon(0% 0%, 100% 0%, 100% 99%, 0% 100%);
-  transition: .9s ease-in-out;
+.get-live-button {
+  font-size: clamp(.9rem, .9vw, 1rem);
 }
 
 .btn-transform {
@@ -96,5 +101,30 @@ import ButtonComp from "../ButtonComp.vue";
 .btn-transform:hover {
   transform: scale(1.05);
   transition: .3s ease-in-out;
+}
+
+@media (min-width: 1400px) {
+  .get-live-wrapper {
+    bottom: 35%;
+    right: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35%;
+    height: 30%;
+    padding: 25px;
+  }
+
+  .hero-image-block {
+    position: relative;
+    width: 100%;
+    transition: all 2.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 6rem 4rem 3rem 1rem rgba(0, 0, 0, 0.4);
+  }
+
+  .hero-image-block:hover {
+    box-shadow: 2rem 2rem 5rem 1rem rgba(0, 0, 0, 0.6);
+    transition: 2.5s ;
+  }
 }
 </style>

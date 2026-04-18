@@ -25,7 +25,7 @@ interface Project {
   status: string
   last_update: string;
   key_futures: KeyFutures[];
-  techSteck: TechSteck[];
+  techStack: TechSteck[];
   images: ProjectImage[];
   liveUrl?: string;
   repoUrl?: string;
