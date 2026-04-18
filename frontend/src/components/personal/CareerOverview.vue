@@ -9,14 +9,14 @@ import CareerTimeline from "@/components/personal/home/CareerTimeline.vue";
     <div class="modal-dialog modal-dialog-centered modal-fullscreen">
       <div class="modal-content border-0 neon-border rounded-2 text-light">
         <div class="modal-header border-0 d-flex justify-content-between">
-          <h3 class="modal-title" id="exampleModalLabel">Career Overview</h3>
+          <h3 class="modal-title" id="exampleModalLabel">Personal Dev Showcase</h3>
           <button type="button" class="btn bg-transparent border-0 text-light" data-bs-dismiss="modal">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
               <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
             </svg>
           </button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body pt-0 pb-0">
           <div class="row">
             <div class="col-12 col-xl-5">
               <div class="neon-border p-3 rounded-2 text-light">
@@ -26,22 +26,22 @@ import CareerTimeline from "@/components/personal/home/CareerTimeline.vue";
                 <p>Currently, I am focused on expanding the Code & Vision ecosystem, constantly pushing the boundaries of my technical stack.</p>
                 <p>Ready to transform your vision into a high-performance reality? <a class="border-0 bg-transparent fw-bold underline-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Let’s talk</a> </p>
               </div>
-              <div class="col-12 col-lg-8 mt-3">
+              <div class="col-12 col-lg-8 col-xl-12 mt-3">
                 <label for="core">Core Expertise</label>
                 <ul>
                   <li class="d-flex justify-content-start p-1">
                     <span class="text-italic my-auto">Backend: </span>
                     <span class="p-md-2 tech-wrapper">
                       <span class="tech-highline">Python/Django</span>
-                      <span class="tech-highline">REST API (DRF)</span>
-                      <span class="tech-highline">JWT Auth</span>
+                      <span class="tech-highline">DRF</span>
+                      <span class="tech-highline">JWT</span>
                       <span class="tech-highline">PostgreSQL</span>
                     </span>
                   </li>
                   <li class="d-flex justify-content-start p-1">
                     <span class="text-italic my-auto">Frontend: </span>
                     <span class="p-md-2 tech-wrapper">
-                      <span class="tech-highline">Vue 3 (Composition API)</span>
+                      <span class="tech-highline">Vue 3</span>
                       <span class="tech-highline">TypeScript</span>
                       <span class="tech-highline">Pinia</span>
                       <span class="tech-highline">Bootstrap</span>
@@ -74,7 +74,7 @@ import CareerTimeline from "@/components/personal/home/CareerTimeline.vue";
             </div>
           </div>
         </div>
-        <div class="modal-footer border-0">
+        <div class="modal-footer border-0 pt-0">
           <button-comp title="Download CV" class="btn-success text-light" />
           <button-comp title="Close" class="btn-light" data-bs-dismiss="modal" />
         </div>
@@ -90,6 +90,11 @@ import CareerTimeline from "@/components/personal/home/CareerTimeline.vue";
 
 ul {
   line-height: 2rem;
+}
+
+.core-expertise {
+  display: flex;
+  justify-content: start;
 }
 
 .tech-highline {
@@ -110,6 +115,10 @@ ul {
 }
 
 @media (min-width: 576px) {
+  .tech-wrapper {
+    width: 70%;
+  }
+
   .tech-highline {
     padding: 0 .4rem;
   }
@@ -120,8 +129,26 @@ ul {
     justify-content: end;
   }
 
-  .tech-wrapper {
+  .core-expertise {}
 
+  .tech-wrapper {
+    width:50%;
+  }
+}
+
+@media (min-width: 992px) {
+  .tech-wrapper {
+    width: 60%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .tech-wrapper {
+    width: 50%;
+  }
+
+  .tech-highline {
+    text-align: center;
   }
 }
 </style>

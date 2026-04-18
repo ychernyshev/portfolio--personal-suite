@@ -5,7 +5,7 @@
 </script>
 
 <template>
-  <button class="btn border-0 rounded-2  btn-transform">
+  <button class="btn border-0 btn-transform">
     <slot name="left"></slot>
     <span>{{ title }}</span>
     <slot name="right"></slot>

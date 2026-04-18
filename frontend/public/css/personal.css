@@ -19,6 +19,8 @@
   --neon-blue-1: #00f3ff;
   --ideal-green-1: #409E01;
   --sunrise-1: #FFC107;
+
+  --deep-ocean-rgba-1: rgba(30, 35, 66, 1);
 }
 
 html,
@@ -30,6 +32,7 @@ body {
   font-family: "Nunito", sans-serif;
   max-width: 100vw;
   max-height: 100vh;
+  overflow-y: hidden;
 }
 
 .neon-border {
@@ -166,3 +169,19 @@ body {
   background: var(--primary-emphasis);
 }
 
+.right-angle {
+  border-radius: 0;
+}
+
+.right-angle-top-start {
+  border-top-left-radius: 0;
+}
+.right-angle-top-end {
+  border-top-right-radius: 0;
+}
+.right-angle-bottom-start {
+  border-bottom-left-radius: 0;
+}
+.right-angle-bottom-end {
+  border-bottom-right-radius: 0;
+}

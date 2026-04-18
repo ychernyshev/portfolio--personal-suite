@@ -12,6 +12,9 @@ const props = defineProps<{
 }>();
 
 type IconName =
+    | 'html'
+    | 'css'
+    | 'python'
     | "django"
     | "drf"
     | "celery"
@@ -26,6 +29,11 @@ type IconName =
 type TechIconSet = Record<IconName, Icon>;
 
 const icons: TechIconSet = {
+  python: {
+    id: "python",
+    path: new URL('@/assets/images/tech-icons/python.png', import.meta.url).href,
+    description: 'Django is an open-source and high-level Python-based web framework that runs on a web server and is traditionally used as a project backend.'
+  },
   django: {
     id: "django",
     path: new URL('@/assets/images/tech-icons/django.png', import.meta.url).href,
@@ -69,12 +77,22 @@ const icons: TechIconSet = {
   redis: {
     id: "redis",
     path: new URL('@/assets/images/tech-icons/redis.png', import.meta.url).href,
-    description: "Redis (/ˈrɛdɪs/; Remote Dictionary Server) is an in-memory key–value database, used as a distributed cache and message broker, with optional durability. For example, instantly get data that is often used"
+    description: "Redis (/ˈrɛdɪs/; Remote Dictionary Server) is an in-memory key–value database, used as a distributed cache and message broker, with optional durability. For example, instantly get data that is often used."
   },
   docker: {
     id: "docker",
     path: new URL('@/assets/images/tech-icons/docker.png', import.meta.url).href,
     description: "Docker is a set of products that uses operating system-level virtualization to deliver software in packages called containers, with the components needed to build projects using it as a constructor. Container with backend - Django, container with frontend - Vue, container with database - PostgreSQL, etc. It ensures that the project works the same way on the computer, on the server, and everywhere else. For testing and developing, the project runs with one command. The system does preparation, launch, and everything else automatically."
+  },
+  html: {
+    id: "html",
+    path: new URL('@/assets/images/tech-icons/html.png', import.meta.url).href,
+    description: "Hypertext Markup Language (HTML) is the standard markup language for documents designed to be displayed in a web browser. It defines the content and structure of web content."
+  },
+  css: {
+    id: "css",
+    path: new URL('@/assets/images/tech-icons/css.png', import.meta.url).href,
+    description: "Cascading Style Sheets (CSS) is a style sheet language used for specifying the presentation and styling of a document written in a markup language, such as HTML or XML."
   }
 }
 

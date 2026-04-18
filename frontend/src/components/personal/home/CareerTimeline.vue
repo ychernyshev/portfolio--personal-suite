@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { timeline, type CareerItem } from '@/components/personal/static-data/careerData';
 import TechIconsLib from '@/components/personal/TechIconsLib.vue';
+import ButtonComp from "@/components/personal/ButtonComp.vue";
 
 const scrollToExperience = (id: string) => {
   const element = document.getElementById(id);
@@ -16,7 +17,7 @@ const scrollToExperience = (id: string) => {
 
 <template>
   <div class="career-modal-wrapper">
-    <div class="timeline-navigation col-4 col-xl-3">
+    <div class="timeline-navigation col-3 col-xl-3">
       <div class="timeline-line">
         <div
             v-for="(item, index) in timeline"
@@ -26,7 +27,7 @@ const scrollToExperience = (id: string) => {
             :style="{ top: (index * (100 / (timeline.length - 1))) + '%' }"
         >
           <div class="timeline-dot"></div>
-          <span class="timeline-date-label">{{ item.date }}</span>
+          <span class="timeline-date-label timeline-date">{{ item.date }}</span>
         </div>
       </div>
     </div>
@@ -41,18 +42,36 @@ const scrollToExperience = (id: string) => {
         <div class="card-header">
           <span class="card-date">{{ item.date }}</span>
           <h3>{{ item.title }}</h3>
-          <p v-if="item.currentOccupation" class="current-pos">
-            <span class="badge-status text-light">current occupations is:</span>
-            <span class="fw-bold">{{ item.currentOccupation }}</span>
+          <p v-if="item.currentOccupation" class="row current-pos">
+            <span class="badge-status text-light col-12 col-lg-4 fw-bold">current occupation:</span>
+            <span class="fw-bold col-12 col-lg-8">{{ item.currentOccupation }}</span>
           </p>
-        </div>
-        <p class="card-description">{{ item.description }}</p>
-        <div v-if="item.techStack" class="card-tech">
-          <TechIconsLib
-              v-for="tech in item.techStack"
-              :key="tech"
-              :name="tech"
-              tech-name="tech"/>
+          <p v-if="item.occupationDescription" class="row current-pos">
+            <span class="badge-status text-light col-12 col-lg-4 fw-bold">occupation description:</span>
+            <span class="fw-bold col-12 col-lg-8">{{ item.occupationDescription }}</span>
+          </p>
+          <span v-if="item.occupationDescription" class="row current-pos">
+            <span class="badge-status text-light col-12 col-lg-4 fw-bold mb-3">
+              Acquiring programming skills since...</span>
+          </span>
+          <div v-if="item.techStack" class="card-tech">
+            <TechIconsLib
+                v-for="tech in item.techStack"
+                :key="tech"
+                :name="tech"
+                :tech-name="tech"/>
+          </div>
+          <div v-for="project in item.projects" class="row card-example rounded-2 mt-3">
+            <p class="example-title">{{ project.title }}</p>
+            <p class="example-description">{{ project.description }}</p>
+              <div v-if="project.title && project.description" class="d-flex flex-row p-0 example-button-group-wrapper">
+                <button-comp
+                    v-if="project.livePreviewUrl"
+                    title="Live Preview"
+                    class="btn-warning w-50"></button-comp>
+                <button-comp v-if="project.sourceCodeUrl" title="Source Code" class="btn-light w-50"></button-comp>
+              </div>
+          </div>
         </div>
       </div>
     </div>
@@ -62,7 +81,8 @@ const scrollToExperience = (id: string) => {
 <style scoped>
   .career-modal-wrapper {
     display: flex;
-    height: 100%;
+    height: 85vh;
+    overflow: hidden;
   }
 
   .timeline-navigation {
@@ -70,6 +90,8 @@ const scrollToExperience = (id: string) => {
     display: flex;
     justify-content: start;
     border-right: 1px solid rgba(0, 243, 255, 0.1);
+    height: 100%;
+    overflow-y: auto;
   }
 
   .timeline-line {
@@ -112,7 +134,7 @@ const scrollToExperience = (id: string) => {
   .timeline-date-label {
     position: absolute;
     left: 25px;
-    white-space: nowrap;
+    word-wrap: break-word;
     font-size: 0.7rem;
     color: var(--p-light-3);
     margin-top: 5px;
@@ -120,9 +142,29 @@ const scrollToExperience = (id: string) => {
 
   .timeline-content {
     flex: 1;
-    overflow-y: scroll;
+    height: 100%;
+    overflow-y: auto;
     padding: 20px;
     scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .timeline-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .timeline-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .timeline-content::-webkit-scrollbar-thumb {
+    background-color: var(--neon-blue-1);
+    border-radius: 20px;
+    border: 1px solid transparent;
+  }
+
+  .timeline-content::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-emphasis);
   }
 
   .timeline-card {
@@ -144,7 +186,35 @@ const scrollToExperience = (id: string) => {
     border-radius: 4px;
     margin-right: 5px;
     font-style: normal;
-    font-size: 0.7rem;
+    font-size: clamp(1rem, 1vw, 0.7rem);
     text-transform: uppercase;
+  }
+
+  .card-example {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .example-title {
+    padding: 0.3rem 0.5rem;
+    background-color: rgba(30, 35, 66, 1);
+    backdrop-filter: blur(10px);
+    font-size: clamp(1rem, 1vw, 1rem);
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--p-light-3);
+  }
+
+  .example-description {
+    padding: 0.3rem 0.5rem;
+  }
+  
+  @media (min-width: 720px) {
+    .timeline-date-label {
+      white-space: nowrap;
+    }
+
+    .example-button-group-wrapper {
+      width: 75%;
+    }
   }
 </style>
