@@ -57,6 +57,10 @@ body {
   font-style: italic;
 }
 
+.text-justify {
+  text-align: justify;
+}
+
 /*.btn-primary {*/
 /*  background-color: #3b82f6;*/
 /*  border-color: #3b82f6;*/

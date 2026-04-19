@@ -19,54 +19,54 @@ import CareerTimeline from "@/components/personal/codeAndVision/CareerTimeline.v
         <div class="modal-body pt-0 pb-0">
           <div class="row">
             <div class="col-12 col-xl-5">
-              <div class="neon-border p-3 rounded-2 text-light">
+              <div class="neon-border p-0 pt-3 rounded-2 text-light">
                 <p class="bg-light text-dark p-2 rounded-2 fw-bold">Code & Vision: Engineering Scalable Solutions.</p>
-                <p>I am a Full-Stack Developer specializing in the Django-REST-Vue ecosystem. My work focuses on bridging the gap between robust, secure back-end logic and high-performance, reactive front-end interfaces.</p>
-                <p>I treat every project as a unique engineering challenge, prioritizing clean architecture and a "pixel-perfect" mindset. Whether I’m architecting complex mathematical engines like the Solar Power Calculator or developing open-source NPM packages, my goal is to deliver products that are as functional as they are intuitive.</p>
-                <p>Currently, I am focused on expanding the Code & Vision ecosystem, constantly pushing the boundaries of my technical stack.</p>
-                <p>Ready to transform your vision into a high-performance reality? <a class="border-0 bg-transparent fw-bold underline-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Let’s talk</a> </p>
+                <p class="p-2 text-justify">I am a Full-Stack Developer specializing in the Django-REST-Vue ecosystem. My work focuses on bridging the gap between robust, secure back-end logic and high-performance, reactive front-end interfaces.</p>
+                <p class="p-2 text-justify">I treat every project as a unique engineering challenge, prioritizing clean architecture and a "pixel-perfect" mindset. Whether I’m architecting complex mathematical engines like the Solar Power Calculator or developing open-source NPM packages, my goal is to deliver products that are as functional as they are intuitive.</p>
+                <p class="p-2 text-justify">Currently, I am focused on expanding the Code & Vision ecosystem, constantly pushing the boundaries of my technical stack.</p>
+                <p class="p-2 text-justify">Ready to transform your vision into a high-performance reality? <a class="border-0 bg-transparent fw-bold underline-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Let’s talk</a> </p>
               </div>
               <div class="col-12 col-lg-8 col-xl-12 mt-3">
                 <label for="core">Core Expertise</label>
-                <ul>
+                <ul class="ps-0 ps-lg-4">
                   <li class="d-flex justify-content-start p-1">
                     <span class="text-italic my-auto">Backend: </span>
                     <span class="p-md-2 tech-wrapper">
-                      <span class="tech-highline">Python/Django</span>
-                      <span class="tech-highline">DRF</span>
-                      <span class="tech-highline">JWT</span>
-                      <span class="tech-highline">PostgreSQL</span>
+                      <span class="tech-highline ms-2">Python/Django</span>
+                      <span class="tech-highline ms-2">DRF</span>
+                      <span class="tech-highline ms-2">JWT</span>
+                      <span class="tech-highline ms-2">PostgreSQL</span>
                     </span>
                   </li>
                   <li class="d-flex justify-content-start p-1">
                     <span class="text-italic my-auto">Frontend: </span>
                     <span class="p-md-2 tech-wrapper">
-                      <span class="tech-highline">Vue 3</span>
-                      <span class="tech-highline">TypeScript</span>
-                      <span class="tech-highline">Pinia</span>
-                      <span class="tech-highline">Bootstrap</span>
+                      <span class="tech-highline ms-2">Vue 3</span>
+                      <span class="tech-highline ms-2">TypeScript</span>
+                      <span class="tech-highline ms-2">Pinia</span>
+                      <span class="tech-highline ms-2">Bootstrap</span>
                     </span>
                   </li>
                 </ul>
                 <label for="high">High-Performance Stack</label>
-                <ul>
+                <ul class="ps-0 ps-lg-4">
                   <li class="d-flex justify-content-start p-1">
                     <span class="text-italic">Asynchronous Tasks:</span>
-                    <span class="tech-highline">Celery & Redis (Background processing)</span>
+                    <span class="tech-highline ms-2">Celery & Redis</span>
                   </li>
                   <li class="d-flex justify-content-start p-1">
                     <span class="text-italic">DevOps:</span>
-                    <span class="tech-highline">Docker containers & CI/CD automation</span>
+                    <span class="tech-highline ms-2">Docker containers & CI/CD automation</span>
                   </li>
                   <li class="d-flex justify-content-start p-1">
                     <span class="text-italic">Architecture:</span>
-                    <span class="tech-highline">Advanced TypeScript patterns</span>
+                    <span class="tech-highline ms-2">Advanced TypeScript patterns</span>
                   </li>
                 </ul>
               </div>
               <p class="d-flex flex-row">
                 <span class="text-italic">Study & Research:</span>
-                <span class="tech-highline">Completed intensive <span class="fw-bold">100+</span> hours practical courses on <span class="fw-bold">Udemy</span> (<span class="fw-bold">Django</span>, <span class="fw-bold">JavaScript</span>, <span class="fw-bold">Vue</span>)</span>
+                <span class="tech-highline ms-2">Completed intensive <span class="fw-bold">100+</span> hours practical courses on <span class="fw-bold">Udemy</span> (<span class="fw-bold">Django</span>, <span class="fw-bold">JavaScript</span>, <span class="fw-bold">Vue</span>)</span>
               </p>
             </div>
             <div class="col-12 col-xl-7">
@@ -107,7 +107,10 @@ ul {
 .tech-wrapper {
   width: 100%;
   display: flex;
-  justify-content: space-around;
+  flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  justify-content: start;
+  row-gap: 10px;
 }
 
 .modal-footer {

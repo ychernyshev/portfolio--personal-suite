@@ -54,12 +54,14 @@ const scrollToExperience = (id: string) => {
             <span class="badge-status text-light col-12 col-lg-4 fw-bold mb-3">
               Acquiring programming skills since...</span>
           </span>
-          <div v-if="item.techStack" class="card-tech">
+          <div v-if="item.techStack" class="tech-icon-wrapper">
             <TechIconsLib
                 v-for="tech in item.techStack"
                 :key="tech"
                 :name="tech"
-                :tech-name="tech"/>
+                :tech-name="tech"
+                class="tech-icon-size"
+            />
           </div>
           <div v-for="project in item.projects" class="row card-example rounded-2 mt-3">
             <p class="example-title">{{ project.title }}</p>
@@ -96,7 +98,8 @@ const scrollToExperience = (id: string) => {
 
   .timeline-line {
     position: absolute;
-    top: 40px;
+    top: 31px;
+    left: 5px;
     bottom: 40px;
     width: 2px;
     background: var(--primary-emphasis-2);
@@ -127,12 +130,13 @@ const scrollToExperience = (id: string) => {
 
   .timeline-dot-wrapper:hover .timeline-dot {
     transform: scale(1.3);
-    background: var(--primary-emphasis);
+    background: var(--primary-emphasis-4);
     box-shadow: 0 0 20px var(--primary-emphasis);
   }
 
   .timeline-date-label {
     position: absolute;
+    top: -5px;
     left: 25px;
     word-wrap: break-word;
     font-size: 0.7rem;
@@ -172,6 +176,18 @@ const scrollToExperience = (id: string) => {
     padding-top: 10px;
   }
 
+  .tech-icon-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+  }
+
+  .tech-icon-size {
+    width: 33%;
+    transition: 0.8s;
+  }
+
   .current-pos {
     font-size: 0.9rem;
     color: var(--p-light-3);
@@ -207,6 +223,24 @@ const scrollToExperience = (id: string) => {
   .example-description {
     padding: 0.3rem 0.5rem;
   }
+
+  @media (min-width: 400px) {
+    .tech-icon-size {
+      width: 30%;
+    }
+  }
+
+  @media (min-width: 480px) {
+    .tech-icon-size {
+      width: 27%;
+    }
+  }
+
+  @media (min-width: 575px) {
+    .tech-icon-size {
+      width: 20%;
+    }
+  }
   
   @media (min-width: 720px) {
     .timeline-date-label {
@@ -215,6 +249,36 @@ const scrollToExperience = (id: string) => {
 
     .example-button-group-wrapper {
       width: 75%;
+    }
+  }
+
+  @media (min-width: 766px) {
+    .tech-icon-size {
+      width: 15%;
+    }
+  }
+
+  @media (min-width: 990px) {
+    .tech-icon-size {
+      width: 10%;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .tech-icon-size {
+      width: 13%;
+    }
+  }
+
+  @media (min-width: 1396px) {
+    .tech-icon-size {
+      width: 11%;
+    }
+  }
+
+  @media (min-width: 1600px) {
+    .tech-icon-size {
+      width: 9%;
     }
   }
 </style>
