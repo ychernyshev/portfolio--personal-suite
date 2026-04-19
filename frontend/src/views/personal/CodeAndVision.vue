@@ -67,10 +67,10 @@ const projects: Project[] = [
   <div class="row justify-content-center align-items-center mt-4">
     <div class="col-12 col-xl-4">
       <ul class="nav nav-tabs border-0" id="myTab" role="tablist">
-        <li class="nav-item p-1 w-50" role="presentation">
+        <li class="nav-item p-0 w-50" role="presentation">
           <button class="nav-link active w-100" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Projects</button>
         </li>
-        <li class="nav-item p-1 w-50" role="presentation">
+        <li class="nav-item p-0 w-50" role="presentation">
           <button class="nav-link w-100" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Packages</button>
         </li>
       </ul>
@@ -86,31 +86,40 @@ const projects: Project[] = [
               :key="project.id"
               :class="['carousel-item', { active: index === 0 }]"
           >
-            <div class="row justify-content-center">
-              <div class="col-lg-6">
-                <p class="project-title text-end display-4">{{ project.name }}</p>
-                <p class="project-unit text-end">
-                  {{ project.description }}
+            <div class="row project-description-wrapper">
+              <div class="col-12 col-lg-6 col-xl-8">
+                <p class="project-title p-0 m-0 mt-lg-5 mt-xl-0 display-4">{{ project.name }}</p>
+                <div class="row justify-content-center mt-5 d-block d-lg-none">
+                  <div class="col-12 col-lg-4 col-xl-12">
+                    <image-slider :images="project.images"/>
+                  </div>
+                </div>
+                <p class="project-unit">
+                  <span class="project-unit-bg">{{ project.description }}</span>
                 </p>
-                <p class="text-italic text-end text-light">{{ project.unit }}</p>
-                <div class="row justify-content-end mt-lg-3">
-                  <div class="col-xl-3 d-flex justify-content-end">
+                <p class="project-unit-comment">
+                  <span class="unit-comment-bg">
+                    {{ project.unit }}
+                  </span>
+                </p>
+                <div class="row project-icon-wrapper mt-lg-3 m-lg-0 p-lg-0">
+                  <div class="col-12 col-md-5 col-lg-12 col-xl-3 project-tech-icon">
                     <TechIconsLib
                         v-for="techName in project.techStack"
                         :key="techName"
                         :techName="techName"
                     />
                   </div>
-                  <div class="col-4 col-xl-7">
-                    <div class="row p-1 border-start">
-                      <div class=" col-8 col-lg-4 col-xl-6 d-flex align-items-center">
+                  <div class="col-12 col-md-7 col-lg-12 col-xl-6 mt-lg-3 mt-xl-0">
+                    <div class="row p-1 border-lg-start">
+                      <div class=" col-6 col-lg-6 col-xl-6 d-flex align-items-center">
                         <button-comp title="Live Preview" class="btn-warning text-primary-emphasis d-flex flex-row justify-content-center align-items-center w-100" >
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
                             <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
                           </svg>
                         </button-comp>
                       </div>
-                      <div class=" col-8 col-lg-4 col-xl-6 mt-2 mt-lg-0 d-flex align-items-center">
+                      <div class=" col-6 col-lg-6 col-xl-6 mt-2 mt-lg-0 d-flex align-items-center">
                         <button-comp title="Source Code" class="btn-light text-primary-emphasis d-flex flex-row justify-content-center align-items-center w-100" >
                           <template #left>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-code" viewBox="0 0 16 16">
@@ -128,36 +137,43 @@ const projects: Project[] = [
                   </div>
                 </div>
               </div>
-              <div class="col-xl-1 d-flex flex-column mt-3">
-                <span v-if="project.status === 'Production'" class="bg-success rounded-2 w-100 p-2 text-center small">Production</span>
-                <span v-else-if="project.status === 'MVP'" class="bg-info rounded-2 w-100 p-2 text-center small">MVP</span>
-                <span v-else-if="project.status === 'In Development'" class="bg-warning rounded-2 w-100 p-2 text-center small">In Development</span>
-                <div class="update-wrapper">
-                  <span class="text-light rounded-2 w-100 small mt-xl-2 p-xl-2">Last update:</span>
-                  <span class="fw-bold updating-data small p-xl-2">{{ project.last_update }}</span>
+              <div class="col-lg-6 d-none d-lg-block d-xl-none">
+                <div class="row justify-content-center mt-5  d-none d-lg-block">
+                  <div class="col-12 col-lg-4 col-xl-12">
+                    <image-slider :images="project.images"/>
+                  </div>
                 </div>
-                <div class="mt-xl-2">
+              </div>
+              <div class="col-12 col-md-11 col-lg-12 col-xl-1 d-flex flex-column mb-4 mb-lg-0 mt-2 mt-lg-3 p-0 p-lg-1 mx-auto mx-lg-0 badges-wrapper">
+                <span v-if="project.status === 'Production'" class="bg-success rounded-2 project-status-badge p-2 text-center small">Production</span>
+                <span v-else-if="project.status === 'MVP'" class="bg-info rounded-2 project-status-badge p-2 text-center small">MVP</span>
+                <span v-else-if="project.status === 'In Development'" class="bg-warning rounded-2 project-status-badge p-2 text-center small">In Development</span>
+                <div class="col-12 update-wrapper mt-3 mt-xl-2">
+                  <span class="update-title rounded-2 small p-1 p-xl-2">Last update:</span>
+                  <span class="update-data fw-bold small p-1 p-xl-2">{{ project.last_update }}</span>
+                </div>
+                <div class="col-md-5 mt-xl-2 mt-3 mt-xl-0 badge-future">
                   <span class="badge bg-secondary text-start p-2 mt-xl-1" v-for="future in project.key_futures" :key="future">
-                  {{ future }}
-                </span>
+                    {{ future }}
+                  </span>
                 </div>
-                <div class="col-12 mt-3">
+                <div class="col-12 mt-3 github-badge">
                   <gith-hub-repo-info class="border-1 rounded-2 p-2" repoName="portfolio--personal-suite"/>
                 </div>
               </div>
             </div>
-            <div class="row justify-content-center mt-5">
+            <div class="row justify-content-center mt-5 d-none d-xl-block">
               <div class="col-12 col-lg-4 col-xl-12">
                 <image-slider :images="project.images"/>
               </div>
             </div>
           </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+        <button class="carousel-control-prev mt-3" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+        <button class="carousel-control-next mt-3" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>
@@ -182,24 +198,245 @@ const projects: Project[] = [
   .project-title {
     font-weight: 500;
     color: var(--primary-emphasis-2);
+    text-align: center;
   }
 
   .project-unit {
     font-size: clamp(1.2rem, 1.2vw, 1.2rem);
     font-weight: 300;
     color: var(--p-light-3);
+    text-align: justify;
+  }
+
+  .project-unit-comment {
+    font-style: italic;
+    text-align: justify;
+    color: var(--p-light-3);
+  }
+
+  .project-unit-bg {
+    padding: 5px 0;
+    background: var(--p-darker-1);
+    line-height: 2rem;
+  }
+
+  .unit-comment-bg {
+    padding: 5px 10px;
+    background-color: var(--p-darker-1);
+    line-height: 2rem;
+  }
+
+  .update-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .update-title {
+    color: var(--p-light-3);
+    background-color: var(--p-darker-1);
+  }
+
+  .badge-future {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    column-gap: 10px;
+  }
+
+  .github-badge {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .project-icon-wrapper {
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .project-tech-icon {
+    display: flex;
+    justify-content: center;
+    width: 80%;
+    transition: 0.8s;
+  }
+
+  .project-status-badge {
+    width: 100%;
+  }
+
+  @media (min-width: 389px) {
+    .project-title {
+      display: flex;
+      justify-content: center;
+
+    }
+  }
+
+  @media (min-width: 570px) {
+    .project-tech-icon {
+      width: 60%;
+    }
+  }
+
+  @media (min-width: 760px) {
+    .project-tech-icon {
+      width: 45%;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .project-title {
+      display: block;
+      width: auto;
+      text-align: center;
+    }
+
+    .project-unit {
+      text-align: justify;
+      line-height: 2.2rem;
+    }
+
+    .project-unit-bg {
+      background-color: var(--p-darker-1);
+    }
+
+    .border-lg-start {
+      border-left: .1rem solid var(--p-light-3);
+    }
+
+    .update-wrapper {
+      text-align: center;
+    }
+
+    .update-title {
+      color: var(--p-light-3);
+      background-color: var(--p-darker-1);
+    }
+
+    .badge-future {
+      justify-content: center;
+    }
+
+    .github-badge {
+      justify-content: center;
+    }
+
+    .project-icon-wrapper {
+      justify-content: center;
+    }
+
+    .project-tech-icon {
+      width: 33%;
+    }
+  }
+
+  @media (min-width: 946px) {
+    .project-unit-bg {
+      background-color: transparent;
+    }
+  }
+
+  @media (min-width: 992px) {
+    .project-unit-bg {
+      background: transparent;
+    }
+
+    .project-tech-icon {
+      width: 55%;
+    }
+
+    .border-lg-start {
+      border-left: none;
+    }
+
+    .badges-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .project-status-badge {
+      width: 20%;
+    }
+  }
+
+  @media (min-width: 1056px) {
+    .unit-comment-bg {
+      background: transparent;
+    }
   }
 
   @media (min-width: 1200px) {
-    .update-wrapper {
-      display: flex;
-      flex-direction: column;
-      justify-content: start;
-      line-height: .5rem;
+    .project-description-wrapper {
+      justify-content: center;
     }
 
-    .updating-data {
+    .project-unit-comment {
+      text-align: end;
+    }
+
+    .update-data {
+      width: 100%;
       color: var(--p-light-3);
+    }
+
+    .update-wrapper {
+      flex-direction: column;
+      align-items: start;
+      line-height: .5rem;
+      text-align: start;
+    }
+
+    .update-title {
+      background-color: transparent;
+    }
+
+    .badge-future {
+      justify-content: start;
+    }
+
+    .github-badge {
+      justify-content: start;
+    }
+
+    .project-icon-wrapper {
+      justify-content: end;
+    }
+
+    .project-tech-icon {
+      width: 30%;
+    }
+
+    .border-lg-start {
+      border-left: .1rem solid var(--p-light-3);
+    }
+
+    .project-status-badge {
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 1400px) {
+    .project-tech-icon {
+      width: 24%;
+    }
+  }
+
+  @media (min-width: 1600px) {
+    .project-tech-icon {
+      width: 21%;
     }
   }
 </style>

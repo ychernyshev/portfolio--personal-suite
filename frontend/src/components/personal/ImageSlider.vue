@@ -11,38 +11,49 @@
 </script>
 
 <template>
-  <ul class="cb-slideshow">
-    <li v-for="(img, index) in images" :key="index">
+  <div class="cb-slideshow-wrapper">
+    <ul class="cb-slideshow">
+      <li v-for="(img, index) in images" :key="index">
       <span :style="{
         backgroundImage: `url(${img.path})`,
         animationDuration: `${totalTime}s`,
         animationDelay: `${index * 6}s`
       }"></span>
-      <div :style="{
+        <div :style="{
         animationDuration: `${totalTime}s`,
         animationDelay: `${index * 6}s`
       }">
-        <h3>{{ img.title }}</h3>
-      </div>
-    </li>
-  </ul>
+          <h3>{{ img.title }}</h3>
+        </div>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <style scoped>
+  .cb-slideshow-wrapper {
+    position: relative;
+    width: 100%;
+    height: 30vh;
+    overflow: hidden;
+    z-index: 1;
+  }
+
   .cb-slideshow {
     list-style-type: none;
     margin: 0;
     padding: 0;
   }
+
   .cb-slideshow,
   .cb-slideshow:after {
-    position: fixed;
-    width: 45%;
-    height: 45%;
-    top: 60%;
-    right: 25%;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
     z-index: 0;
   }
+
   .cb-slideshow:after {
     content: '';
     background-size: 5px 5px;
@@ -52,12 +63,12 @@
     width: 100%;
     height: 100%;
     position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     color: transparent;
     background-size: cover;
     background-position: 50% 50%;
-    background-repeat: none;
+    background-repeat: no-repeat;
     opacity: 0;
     z-index: 0;
     animation: imageAnimation linear infinite;
@@ -66,7 +77,7 @@
     z-index: 1000;
     position: absolute;
     bottom: 30px;
-    left: 0px;
+    left: 0;
     width: 100%;
     text-align: center;
     opacity: 0;
@@ -75,12 +86,13 @@
   }
   .cb-slideshow li div h3 {
     position: absolute;
-    bottom: 5rem;
+    bottom: 0;
     margin: 0;
+    left: 1rem;
     font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
-    font-size: clamp(2.5rem, 2.5vw, 2.5rem);
+    font-size: clamp(1.4rem, 2.5vw, 3.5rem);
     padding: 0;
-    line-height: 3rem;
+    line-height: 1.5rem;
   }
 
   /* imageAnimation 1 */
@@ -142,10 +154,82 @@
     25% { opacity: 0 }
     100% { opacity: 0 }
   }
-  @media screen and (max-width: 1140px) {
-    .cb-slideshow li div h3 { font-size: 140px }
+
+  @media (min-width: 992px) {
+    .cb-slideshow-wrapper {
+      position: relative;
+      width: 50vw;
+      height: 60vh;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .cb-slideshow,
+    .cb-slideshow:after {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      right: 0;
+      z-index: 0;
+    }
+
+    .cb-slideshow li div {
+      bottom: 10rem;
+    }
   }
-  @media screen and (max-width: 600px) {
-    .cb-slideshow li div h3 { font-size: 80px }
+
+  @media (min-width: 1200px) {
+    .cb-slideshow-wrapper {
+      position: relative;
+      overflow: auto;
+      width: 100%;
+      height: 100%;
+    }
+
+    .cb-slideshow,
+    .cb-slideshow:after {
+      position: fixed;
+      width: 45%;
+      height: 45%;
+      top: 67%;
+      right: 25%;
+      z-index: 0;
+    }
+
+    .cb-slideshow li div {
+      bottom: 5rem;
+    }
+
+    .cb-slideshow {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .cb-slideshow li span {
+      background-size: cover;
+    }
+
+    .cb-slideshow li div h3 {
+      bottom: 4rem;
+      line-height: 3rem;
+    }
+  }
+
+  @media (min-width: 1400px) {
+    .cb-slideshow,
+    .cb-slideshow:after {
+      position: fixed;
+      width: 45%;
+      height: 45%;
+      top: 65%;
+      right: 25%;
+      z-index: 0;
+    }
+
+    .cb-slideshow li div {
+      bottom: 5rem;
+    }
   }
 </style>
