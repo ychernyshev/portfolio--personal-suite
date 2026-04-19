@@ -2,6 +2,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  /*outline: 1px solid rgba(255, 0, 0, 0.5) !important;*/
 }
 
 :root {
@@ -11,6 +12,7 @@
   --p-dark-1: #323A50;
   --p-dark-2: #374151;
   --p-darker: #171C28;
+  --p-darker-1: #14172F;
   --primary-emphasis: #052C65;
   --primary-emphasis-1: #0C4C7D;
   --primary-emphasis-2: #43759B;

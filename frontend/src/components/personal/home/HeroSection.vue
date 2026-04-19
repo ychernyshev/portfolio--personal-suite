@@ -4,7 +4,7 @@ import TechIconsLib from "@/components/personal/TechIconsLib.vue";
 import HeroImage from "@/components/personal/home/HeroImage.vue";
 import CareerOverview from "@/components/personal/codeAndVision/CareerOverview.vue";
 
-const techStack: string[] = ['python', 'django', 'drf', 'vue', 'pinia', 'ts', 'bootstrap', 'celery', 'redis', 'docker'];
+const techStack: string[] = ['python', 'django', 'drf', 'vue', 'pinia', 'js', 'typescript', 'bootstrap', 'celery', 'redis', 'docker'];
 
 </script>
 
@@ -13,7 +13,7 @@ const techStack: string[] = ['python', 'django', 'drf', 'vue', 'pinia', 'ts', 'b
     <div class="container-fluid col-xxl-8 hero-wrapper">
       <div class="row flex-lg-nowrap align-items-center g-5">
         <hero-image />
-        <div class="col-lg-6 col-xl-5 text-center text-lg-start pt-lg-5 mt-lg-5 left-content">
+        <div class="col-12 col-lg-6 col-xl-5 text-center text-lg-start pt-lg-5 mt-lg-5 left-content">
           <div class="lc-block mb-3 mb-lg-3">
             <div editable="rich">
               <h1 class="fw-bold display-3 hero-title ">
@@ -22,7 +22,7 @@ const techStack: string[] = ['python', 'django', 'drf', 'vue', 'pinia', 'ts', 'b
             </div>
           </div>
 
-          <div class="lc-block">
+          <div class="lc-block col-lg-12">
             <div editable="rich">
               <p class="rfs-8">
                 <span class="hero-unit-bg hero-unit-text p-1">
@@ -33,12 +33,12 @@ const techStack: string[] = ['python', 'django', 'drf', 'vue', 'pinia', 'ts', 'b
           </div>
 
           <div class="tech-icon-wrapper">
-            <tech-icons-lib v-for="tech in techStack" :key="tech" :techName="tech" class="mt-3 col-3 col-lg-2"/>
+            <tech-icons-lib v-for="tech in techStack" :key="tech" :techName="tech" class="mt-3 col-3 col-sm-2 col-md-2 col-lg-3 tech-icon-size"/>
           </div>
         </div>
       </div>
       <div class="row">
-        <div class="col-12 justify-content-center align-items-start mt-3">
+        <div class="col-12 col-lg-5 col-xl-4 col-xxl-5 mt-3">
           <cv-button/>
           <career-overview />
         </div>
@@ -72,6 +72,7 @@ const techStack: string[] = ['python', 'django', 'drf', 'vue', 'pinia', 'ts', 'b
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    transition: .8s;
   }
 
   .tech-icon-wrapper {
@@ -81,39 +82,94 @@ const techStack: string[] = ['python', 'django', 'drf', 'vue', 'pinia', 'ts', 'b
     justify-content: center;
     align-items: center;
     width: 80%;
+    transition: .8s;
+  }
+
+  @media (min-width: 425px) {
+    .hero-unit-bg {
+      background: var(--p-darker);
+      transition: 0.8s;
+    }
+
+    .hero-technology {
+      background: var(--p-light-2);
+      transition: 0.8s;
+    }
+  }
+
+  @media (min-width: 505px) {
+    .hero-unit-bg {
+      background: transparent;
+      transition: 0.8s;
+    }
+  }
+
+  @media (min-width: 505px) {
+    .hero-unit-bg {
+      background: var(--p-darker-1);
+      transition: 0.8s;
+    }
+  }
+
+  @media (min-width: 650px) {
+    .hero-title-bg {
+      background: var(--p-darker-1);
+      transition: 0.8s;
+    }
   }
 
   @media (min-width: 768px) {
-    .left-content {
-      align-items: start;
-    }
-
     .tech-icon-wrapper {
       width: 80%;
+      transition: 0.8s;
     }
   }
 
-  @media (min-width: 902px) {
-
+  @media (min-width: 890px) {
+    .tech-icon-size {
+      width: 13%;
+      transition: 0.8s;
+    }
   }
 
   @media (min-width: 992px) {
     .hero-title,
     .hero-unit-text {
       color: var(--p-light-2);
+      transition: 0.8s;
     }
 
     .hero-technology {
       background: var(--p-light-2);
+      transition: 0.8s;
     }
 
     .hero-title-bg,
     .hero-unit-bg {
       background: transparent;
+      transition: 0.8s;
     }
 
     .w-lg-75 {
       width: 75%;
+    }
+
+    .tech-icon-wrapper {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: start;
+      align-items: start;
+      width: 100%;
+      transition: .8s;
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .hero-unit-text {
+      justify-content: start;
+      align-items: start;
+      transition: .8s;
     }
   }
 </style>

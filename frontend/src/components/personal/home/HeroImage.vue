@@ -88,10 +88,12 @@ import ButtonComp from "../ButtonComp.vue";
 
 .get-live-title {
   font-size: clamp(.9rem, 1vw, 1.5rem);
+  transition: .8s;
 }
 
 .get-live-button {
   font-size: clamp(.9rem, .9vw, 1rem);
+  transition: .8s;
 }
 
 .btn-transform {
@@ -103,16 +105,94 @@ import ButtonComp from "../ButtonComp.vue";
   transition: .3s ease-in-out;
 }
 
-@media (min-width: 1400px) {
+@media (min-width: 480px) {
   .get-live-wrapper {
-    bottom: 35%;
-    right: 40%;
+    bottom: 20%;
+    right: 14%;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 75%;
+    height: 60%;
+    padding: 25px;
+    transition: 0.8s;
+  }
+}
+
+@media (min-width: 530px) {
+  .get-live-wrapper {
+    right: 18%;
+    width: 65%;
+    transition: 0.8s;
+  }
+}
+
+@media (min-width: 600px) {
+  .get-live-wrapper {
+    bottom: 25%;
+    right: 19%;
+    height: 50%;
+    transition: 0.8s;
+  }
+}
+
+@media (min-width: 650px) {
+  .get-live-wrapper {
+    bottom: 25%;
+    right: 25%;
+    width: 55%;
+    height: 50%;
+    transition: 0.8s;
+  }
+}
+
+@media (min-width: 768px) {
+  .get-live-wrapper {
+    bottom: 30%;
+    right: 28%;
+    width: 45%;
+    height: 40%;
+    transition: 0.8s;
+  }
+}
+
+@media (min-width: 946px) {
+  .get-live-wrapper {
+    bottom: 31%;
+    right: 29%;
+    width: 40%;
+    height: 35%;
+    transition: 0.8s;
+  }
+}
+
+@media (min-width: 992px) {
+  .get-live-wrapper {
+    bottom: 30%;
+    left: 8%;
     width: 35%;
     height: 30%;
-    padding: 25px;
+    transition: 0.8s;
+  }
+}
+
+@media (min-width: 1200px) {
+  .get-live-wrapper {
+    bottom: 35%;
+    left: 15%;
+    width: 30%;
+    height: 25%;
+    transition: 0.8s;
+  }
+}
+
+@media (min-width: 1400px) {
+  .get-live-wrapper {
+    bottom: 32%;
+    left: 21.4%;
+    width: 38%;
+    height: 30%;
+    transition: 0.8s;
   }
 
   .hero-image-block {

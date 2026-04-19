@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <button type="button" class="btn-wrapper text-light d-flex flex-column text-start mt-lg-2 mb-5" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  <button type="button" class="btn-wrapper mx-auto text-light d-flex flex-column text-start mt-lg-2 mb-5" data-bs-toggle="modal" data-bs-target="#exampleModal">
       <span class="title">Career Overview</span>
     <span class="unit">For corporate job interviewers and relocation opportunities</span>
   </button>
@@ -22,6 +22,7 @@
   font-weight: 600;
   overflow: hidden;
   cursor: pointer;
+  transition: .8s;
 }
 
 .btn-wrapper::before {
@@ -50,10 +51,11 @@
   font-size: clamp(1.2rem, 1vw, 1rem);
   font-weight: bold;
   color: var(--primary-emphasis-2);
+  transition: .8s;
 }
 
 .unit {
   font-weight: 300;
+  transition: .8s;
 }
-
 </style>
