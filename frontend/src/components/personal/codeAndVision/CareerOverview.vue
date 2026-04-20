@@ -21,10 +21,10 @@ import CareerTimeline from "@/components/personal/codeAndVision/CareerTimeline.v
             <div class="col-12 col-xl-5">
               <div class="neon-border p-0 pt-3 rounded-2 text-light">
                 <p class="bg-light text-dark p-2 rounded-2 fw-bold">Code & Vision: Engineering Scalable Solutions.</p>
-                <p class="p-2 text-justify">I am a Full-Stack Developer specializing in the Django-REST-Vue ecosystem. My work focuses on bridging the gap between robust, secure back-end logic and high-performance, reactive front-end interfaces.</p>
-                <p class="p-2 text-justify">I treat every project as a unique engineering challenge, prioritizing clean architecture and a "pixel-perfect" mindset. Whether I’m architecting complex mathematical engines like the Solar Power Calculator or developing open-source NPM packages, my goal is to deliver products that are as functional as they are intuitive.</p>
-                <p class="p-2 text-justify">Currently, I am focused on expanding the Code & Vision ecosystem, constantly pushing the boundaries of my technical stack.</p>
-                <p class="p-2 text-justify">Ready to transform your vision into a high-performance reality? <a class="border-0 bg-transparent fw-bold underline-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Let’s talk</a> </p>
+                <p class="p-2 p-lg-0 text-justify">I am a Full-Stack Developer specializing in the Django-REST-Vue ecosystem. My work focuses on bridging the gap between robust, secure back-end logic and high-performance, reactive front-end interfaces.</p>
+                <p class="p-2 p-lg-0 text-justify">I treat every project as a unique engineering challenge, prioritizing clean architecture and a "pixel-perfect" mindset. Whether I’m architecting complex mathematical engines like the Solar Power Calculator or developing open-source NPM packages, my goal is to deliver products that are as functional as they are intuitive.</p>
+                <p class="p-2 p-lg-0 text-justify">Currently, I am focused on expanding the Code & Vision ecosystem, constantly pushing the boundaries of my technical stack.</p>
+                <p class="p-2 p-lg-0 text-justify">Ready to transform your vision into a high-performance reality? <a class="border-0 bg-transparent fw-bold underline-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Let’s talk</a> </p>
               </div>
               <div class="col-12 col-lg-8 col-xl-12 mt-3">
                 <label for="core">Core Expertise</label>

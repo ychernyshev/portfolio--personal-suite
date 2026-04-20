@@ -69,9 +69,10 @@ const scrollToExperience = (id: string) => {
               <div v-if="project.title && project.description" class="d-flex flex-row p-0 example-button-group-wrapper">
                 <button-comp
                     v-if="project.livePreviewUrl"
+                    :to="project.livePreviewUrl"
                     title="Live Preview"
-                    class="btn-warning w-50"></button-comp>
-                <button-comp v-if="project.sourceCodeUrl" title="Source Code" class="btn-light w-50"></button-comp>
+                    class="btn-warning w-50 rounded-0 rounded-start"></button-comp>
+                <button-comp v-if="project.sourceCodeUrl" :href="project.sourceCodeUrl" title="Source Code" class="btn-light w-50 rounded-0 rounded-end"></button-comp>
               </div>
           </div>
         </div>

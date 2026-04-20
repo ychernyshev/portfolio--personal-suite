@@ -30,7 +30,7 @@ export const timeline: CareerItem[] = [
             {
                 title: 'Solar Power Calculator',
                 description: 'Developed a high-performance analytical dashboard for monitoring solar energy production and cost-efficiency. Engineered complex mathematical engines to calculate energy yield forecasts and financial savings. Integrated dynamic charts and data tables to provide deep insight into energy consumption patterns. Built with a "pixel-perfect" approach, ensuring a seamless user experience across data entry, export, and visual analysis modules.',
-                livePreviewUrl: '',
+                livePreviewUrl: '/calculator',
                 sourceCodeUrl: 'https://github.com/ychernyshev/portfolio--personal-suite/tree/main/backend/calculator',
             },
             {

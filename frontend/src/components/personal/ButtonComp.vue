@@ -53,6 +53,6 @@ const tag = computed(() => {
   }
 
   .btn {
-    font-size: clamp(1.4rem, 1.4vw, 1.4rem);
+    font-size: clamp(1.1rem, 1.2vw, 1.2rem);
   }
 </style>
