@@ -1,5 +1,53 @@
 <script setup lang="ts">
+  import axios from 'axios';
+  import backendApi from "@/services/backendApi";
+  import {reactive, ref} from "vue";
 
+  const isSuccess = ref(false);
+  const fieldsNotFilled = ref(false);
+
+  const formData = reactive({
+    subject: '',
+    email: '',
+    theme: '',
+    message: ''
+  });
+
+  const submitForm = async () => {
+    if (!formData.email || !formData.message) {
+      fieldsNotFilled.value = true;
+
+      setTimeout(() => {
+        fieldsNotFilled.value = false;
+      }, 4000);
+
+      return;
+    }
+
+    try {
+      const response = await backendApi.post('personal/contact/', {
+        name: formData.subject,
+        email: formData.email,
+        theme: formData.theme,
+        message: formData.message
+      });
+
+      if (response.data.status === 'success') {
+        isSuccess.value = true;
+
+        formData.subject = '';
+        formData.email = '';
+        formData.theme = '';
+        formData.message = '';
+
+        setTimeout(() => {
+          isSuccess.value = false;
+        }, 6000);
+      }
+    } catch (error) {
+      console.error("Sending error:", error);
+    }
+  };
 </script>
 
 <template>
@@ -69,12 +117,25 @@
       </div>
       <div class="col-12 col-xl-6 p-3 mx-auto my-xl-auto">
         <div class="card border-0 shadow p-3 rounded-2">
-          <form action="">
-            <input class="form-control mb-3 bg-body-tertiary rounded-0" autofocus type="text" placeholder="Subject">
-            <input class="form-control mb-3 bg-body-tertiary rounded-0" type="email" placeholder="Email">
-            <input class="form-control mb-3 bg-body-tertiary rounded-0" type="text" placeholder="Project theme">
-            <textarea class="form-control bg-body-tertiary rounded-0" name="" placeholder="Tell me about your idea" id="" cols="30" rows="10"></textarea>
-            <button type="button" class="btn btn-success border-0 shadow w-100 rounded-0">Let`s get discussion</button>
+          <Transition name="fade" mode="out-in">
+            <div v-if="isSuccess" class="alert alert-success alert-dismissible fade show" role="alert">
+              <strong>Success!</strong> Your message has been sent. I'll get back to you soon.
+              Check your spam folder if you don't see a reply.
+              <button type="button" class="btn-close" @click="isSuccess = false" aria-label="Close"></button>
+            </div>
+          </Transition>
+          <Transition name="fade" mode="out-in">
+            <div v-if="fieldsNotFilled" class="alert alert-warning alert-dismissible fade show" role="alert">
+              <strong>Oh!</strong> Please fill all fields.
+              <button type="button" class="btn-close" @click="fieldsNotFilled = false" aria-label="Close"></button>
+            </div>
+          </Transition>
+          <form action="" @submit.prevent="submitForm">
+            <input v-model="formData.subject" class="form-control mb-3 bg-body-tertiary rounded-0 rounded-top-2" autofocus type="text" placeholder="Subject">
+            <input v-model="formData.email" class="form-control mb-3 bg-body-tertiary rounded-0" type="email" placeholder="Email">
+            <input v-model="formData.theme" class="form-control mb-3 bg-body-tertiary rounded-0" type="text" placeholder="Project theme">
+            <textarea v-model="formData.message" class="form-control bg-body-tertiary rounded-0" name="" placeholder="Tell me about your idea" id="" cols="30" rows="10"></textarea>
+            <button type="submit" class="btn btn-success border-0 shadow w-100 rounded-0 rounded-bottom-2">Let`s get discussion</button>
           </form>
         </div>
       </div>
@@ -120,6 +181,17 @@
 
   .btn-emphasis:hover .social-icon {
     fill: var(--p-light-3);
+  }
+
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 0;
+    transform: translateY(-10px);
   }
 
   @media (min-width: 1200px) {

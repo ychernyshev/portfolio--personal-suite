@@ -28,7 +28,13 @@ textarea:focus {
   border: 0.2rem solid var(--p-darker-2);
   background-color: var(--p-light-1) !important;
   color: var(--primary-emphasis) !important;
+  font-style: italic !important;
   font-weight: 700 !important;
+}
+
+::placeholder {
+  color: #6c757d;
+  opacity: 1;
 }
 
 :root {
