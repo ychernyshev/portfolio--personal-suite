@@ -238,7 +238,7 @@
   @media (min-width: 1600px) {
     .cb-slideshow,
     .cb-slideshow:after {
-      top: 60%;
+      top: 69%;
     }
   }
 </style>
