@@ -113,22 +113,56 @@ const projects: Project[] = [
                   <div class="col-12 col-md-7 col-lg-12 col-xl-6 col-xxl-8 mt-lg-3 mt-xl-0">
                     <div class="row p-1 border-lg-start align-items-center">
                       <div class=" col-6 col-lg-6 col-xl-6 d-flex align-items-center">
-                        <button-comp title="Live Preview" class="btn-warning text-primary-emphasis d-flex flex-row justify-content-center align-items-center w-100" >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
-                            <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
+                        <button-comp
+                            to="/calculator"
+                            class="btn-warning text-primary-emphasis d-flex flex-row justify-content-center align-items-center w-100"
+                            title="Live preview"
+                        >
+                          <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              fill="currentColor"
+                              class="bi bi-play-fill"
+                              viewBox="0 0 16 16"
+                          >
+                            <path
+                                d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"
+                            />
                           </svg>
                         </button-comp>
                       </div>
                       <div class=" col-6 col-lg-6 col-xl-6 mt-2 mt-lg-0 d-flex align-items-center">
-                        <button-comp title="Source Code" class="btn-light text-primary-emphasis d-flex flex-row justify-content-center align-items-center w-100" >
+                        <button-comp
+                            href="https://github.com/ychernyshev/portfolio--personal-suite/tree/main"
+                            class="btn-light text-primary-emphasis d-flex flex-row justify-content-center align-items-center w-100"
+                            title="Source Code">
                           <template #left>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-code" viewBox="0 0 16 16">
-                              <path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8z"/>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                fill="currentColor"
+                                class="bi bi-code"
+                                viewBox="0 0 16 16"
+                            >
+                              <path
+                                  d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8z"
+                              />
                             </svg>
                           </template>
                           <template #right>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-code-slash" viewBox="0 0 16 16">
-                              <path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0m6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0"/>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                fill="currentColor"
+                                class="bi bi-code-slash"
+                                viewBox="0 0 16 16"
+                            >
+                              <path
+                                  d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0m6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0"
+                              />
                             </svg>
                           </template>
                         </button-comp>
