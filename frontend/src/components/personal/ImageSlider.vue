@@ -192,7 +192,7 @@
       position: fixed;
       width: 45%;
       height: 45%;
-      top: 67%;
+      top: 64%;
       right: 25%;
       z-index: 0;
     }
@@ -217,19 +217,28 @@
     }
   }
 
+  @media (min-width: 1377px) {
+    .cb-slideshow,
+    .cb-slideshow:after {
+      top: 60%;
+    }
+  }
+
   @media (min-width: 1400px) {
     .cb-slideshow,
     .cb-slideshow:after {
-      position: fixed;
-      width: 45%;
-      height: 45%;
-      top: 65%;
-      right: 25%;
-      z-index: 0;
+      top: 58%;
     }
 
     .cb-slideshow li div {
       bottom: 5rem;
+    }
+  }
+
+  @media (min-width: 1600px) {
+    .cb-slideshow,
+    .cb-slideshow:after {
+      top: 60%;
     }
   }
 </style>

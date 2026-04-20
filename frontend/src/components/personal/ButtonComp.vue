@@ -19,4 +19,8 @@
      margin-right: .4rem;
      transition: .5s;
   }
+
+  .btn {
+    font-size: clamp(1.4rem, 1.4vw, 1.4rem);
+  }
 </style>

@@ -87,7 +87,7 @@ const projects: Project[] = [
               :class="['carousel-item', { active: index === 0 }]"
           >
             <div class="row project-description-wrapper">
-              <div class="col-12 col-lg-6 col-xl-8">
+              <div class="col-12 col-lg-6 col-xl-6">
                 <p class="project-title p-0 m-0 mt-lg-5 mt-xl-0 display-4">{{ project.name }}</p>
                 <div class="row justify-content-center mt-5 d-block d-lg-none">
                   <div class="col-12 col-lg-4 col-xl-12">
@@ -103,15 +103,15 @@ const projects: Project[] = [
                   </span>
                 </p>
                 <div class="row project-icon-wrapper mt-lg-3 m-lg-0 p-lg-0">
-                  <div class="col-12 col-md-5 col-lg-12 col-xl-3 project-tech-icon">
+                  <div class="col-12 col-md-5 col-lg-12 col-xl-3 col-xxl-4 project-tech-icon">
                     <TechIconsLib
                         v-for="techName in project.techStack"
                         :key="techName"
                         :techName="techName"
                     />
                   </div>
-                  <div class="col-12 col-md-7 col-lg-12 col-xl-6 mt-lg-3 mt-xl-0">
-                    <div class="row p-1 border-lg-start">
+                  <div class="col-12 col-md-7 col-lg-12 col-xl-6 col-xxl-8 mt-lg-3 mt-xl-0">
+                    <div class="row p-1 border-lg-start align-items-center">
                       <div class=" col-6 col-lg-6 col-xl-6 d-flex align-items-center">
                         <button-comp title="Live Preview" class="btn-warning text-primary-emphasis d-flex flex-row justify-content-center align-items-center w-100" >
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
@@ -149,8 +149,8 @@ const projects: Project[] = [
                 <span v-else-if="project.status === 'MVP'" class="bg-info rounded-2 project-status-badge p-2 text-center small">MVP</span>
                 <span v-else-if="project.status === 'In Development'" class="bg-warning rounded-2 project-status-badge p-2 text-center small">In Development</span>
                 <div class="col-12 update-wrapper mt-3 mt-xl-2">
-                  <span class="update-title rounded-2 small p-1 p-xl-2">Last update:</span>
-                  <span class="update-data fw-bold small p-1 p-xl-2">{{ project.last_update }}</span>
+                  <span class="update-title rounded-2 p-1 p-xl-2">Last update:</span>
+                  <span class="update-data fw-bold p-1 p-xl-2">{{ project.last_update }}</span>
                 </div>
                 <div class="col-md-5 mt-xl-2 mt-3 mt-xl-0 badge-future">
                   <span class="badge bg-secondary text-start p-2 mt-xl-1" v-for="future in project.key_futures" :key="future">
@@ -202,7 +202,7 @@ const projects: Project[] = [
   }
 
   .project-unit {
-    font-size: clamp(1.2rem, 1.2vw, 1.2rem);
+    font-size: clamp(1.2rem, 1.2vw, 1.6rem);
     font-weight: 300;
     color: var(--p-light-3);
     text-align: justify;
@@ -211,6 +211,7 @@ const projects: Project[] = [
   .project-unit-comment {
     font-style: italic;
     text-align: justify;
+    font-size: clamp(1.2rem, 1.2vw, 1.6rem);
     color: var(--p-light-3);
   }
 
@@ -223,7 +224,6 @@ const projects: Project[] = [
   .unit-comment-bg {
     padding: 5px 10px;
     background-color: var(--p-darker-1);
-    line-height: 2rem;
   }
 
   .update-wrapper {
@@ -231,11 +231,17 @@ const projects: Project[] = [
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    line-height: 3rem;
   }
 
   .update-title {
     color: var(--p-light-3);
     background-color: var(--p-darker-1);
+    font-size: clamp(1.2rem, 1.2vw, 1.6rem);
+  }
+
+  .update-data {
+    font-size: clamp(1.2rem, 1.2vw, 1.6rem);
   }
 
   .badge-future {
@@ -257,6 +263,7 @@ const projects: Project[] = [
     justify-content: center;
     align-items: center;
     gap: 0.25rem;
+    font-size: clamp(1.4rem, 1.5vw, 1.6rem);
   }
 
   .project-icon-wrapper {
@@ -327,6 +334,7 @@ const projects: Project[] = [
 
     .badge-future {
       justify-content: center;
+      font-size: clamp(1.2rem, 1.2vw, 1.6rem);
     }
 
     .github-badge {
@@ -344,7 +352,7 @@ const projects: Project[] = [
 
   @media (min-width: 946px) {
     .project-unit-bg {
-      background-color: transparent;
+      background-color: var(--p-darker-2);
     }
   }
 
@@ -383,6 +391,10 @@ const projects: Project[] = [
       justify-content: center;
     }
 
+    .project-title {
+      text-align: end;
+    }
+
     .project-unit-comment {
       text-align: end;
     }
@@ -401,6 +413,7 @@ const projects: Project[] = [
 
     .update-title {
       background-color: transparent;
+      line-height: 1rem;
     }
 
     .badge-future {
@@ -413,10 +426,11 @@ const projects: Project[] = [
 
     .project-icon-wrapper {
       justify-content: end;
+      align-items: center;
     }
 
     .project-tech-icon {
-      width: 30%;
+      width: 50%;
     }
 
     .border-lg-start {
@@ -430,13 +444,14 @@ const projects: Project[] = [
 
   @media (min-width: 1400px) {
     .project-tech-icon {
-      width: 24%;
+      width: 33%;
     }
+
   }
 
   @media (min-width: 1600px) {
     .project-tech-icon {
-      width: 21%;
+      width: 30%;
     }
   }
 </style>
