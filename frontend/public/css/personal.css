@@ -5,6 +5,32 @@
   /*outline: 1px solid rgba(255, 0, 0, 0.5) !important;*/
 }
 
+*:focus {
+  outline: none;
+}
+
+input,
+textarea {
+  border: 0.1rem solid #ccc;
+  background-color: transparent;
+  color: var(--primary-emphasis);
+  border-radius: 4px;
+  font-weight: 400;
+  transition: border-color 0.5s ease,
+              background-color 0.5s ease,
+              color 0.5s ease !important;
+}
+
+input:focus,
+textarea:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: 0.2rem solid var(--p-darker-2);
+  background-color: var(--p-light-1) !important;
+  color: var(--primary-emphasis) !important;
+  font-weight: 700 !important;
+}
+
 :root {
   --p-light-1: #ffffff;
   --p-light-2: #F5F7FA;
