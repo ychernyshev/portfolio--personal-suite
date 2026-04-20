@@ -3,7 +3,9 @@
 </script>
 
 <template>
-  <h2>CV</h2>
+  <div class="d-flex align-items-center" style="height: 45vh">
+    <h2 class="mx-auto my-auto text-light">In development</h2>
+  </div>
 </template>
 
 <style scoped>
