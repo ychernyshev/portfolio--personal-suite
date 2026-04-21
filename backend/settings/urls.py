@@ -20,8 +20,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include(('calculator.urls', 'calculator'), namespace='calculator')),
-    path('api/', include('calculator.api.urls')),
+    path('calculator/', include(('calculator.urls', 'calculator'), namespace='calculator')),
+    path('', include(('personal.urls', 'personal'), namespace='personal')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
