@@ -9,7 +9,7 @@ const errorMsg = ref("");
 const forecastDetails = async () => {
   try {
     loading.value = true;
-    const response = await backendApi.get('forecast/details');
+    const response = await backendApi.get('calculator/forecast/details/');
     forecast_details.value = response.data.results || response.data;
   } catch (error) {
     errorMsg.value = "Failed to load forecast";

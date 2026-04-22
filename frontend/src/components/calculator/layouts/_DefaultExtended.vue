@@ -1,5 +1,9 @@
 <script setup>
 import TopNav from "../navs/_TopNav.vue";
+import "@/assets/js/bootswatch.min.css";
+import "@/assets/calculator/css/calculator.css";
+import "@/assets/calculator/css/style.css";
+import "@/assets/calculator/css/mobile.css";
 </script>
 
 <template>

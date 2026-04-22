@@ -9,9 +9,9 @@ from calculator.api.views import (DataEntryViewSet,
                                   WeatherDataViewSet)
 
 router = DefaultRouter()
-router.register(r'entries', DataEntryViewSet, basename='entries')
-router.register(r'weather-conditions', WeatherConditionViewSet, basename='weather-conditions')
-router.register('forecast/details', WeatherDataViewSet, basename='forecast-details')
+router.register(r'entries/', DataEntryViewSet, basename='entries')
+router.register(r'weather-conditions/', WeatherConditionViewSet, basename='weather-conditions')
+router.register('forecast/details/', WeatherDataViewSet, basename='forecast-details')
 
 urlpatterns = [
     path('', include(router.urls)),

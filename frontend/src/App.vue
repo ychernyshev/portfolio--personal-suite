@@ -2,14 +2,16 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import CalculatorLayout from "./components/calculator/layouts/_DefaultExtended.vue";
-import PersonalLayout from "./components/personal/layouts/MainLayout.vue";
+import PersonalLayout from "./components/personal/MainLayout.vue";
+
+const route = useRoute();
 
 const layouts: Record<string, any> = {
   CalculatorLayout,
   PersonalLayout,
 };
 
-const currentLayout = computed(() => layouts[route.meta.layout as string] || PersonalLayout);
+const currentLayout = computed(() => layouts[route.meta.layout as string]);
 </script>
 
 <template>

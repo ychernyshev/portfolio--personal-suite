@@ -10,7 +10,7 @@ const message = ref({ text: "", type: "" });
 // Завантажуємо поточний тариф
 const fetchTariff = async () => {
   try {
-    const res = await backendApi.get("current-tariff/");
+    const res = await backendApi.get("calculator/current-tariff/");
     tariff.value = res.data.power_tariff;
     lastUpdated.value = new Date(res.data.last_updated).toLocaleString();
   } catch (e) {
@@ -23,7 +23,7 @@ const updateTariff = async () => {
   loading.value = true;
   message.value = { text: "", type: "" };
   try {
-    await backendApi.patch("current-tariff/", {
+    await backendApi.patch("calculator/current-tariff/", {
       power_tariff: tariff.value,
     });
     message.value = { text: "Тариф успішно оновлено!", type: "success" };

@@ -2,7 +2,7 @@
 
 interface ImportMetaEnv {
     readonly VITE_BACKEND_URL: string
-    // Тут у майбутньому ти зможеш додати CRON_SECRET, якщо він буде потрібен на фронті
+    // CRON_SECRET
 }
 
 interface ImportMeta {

@@ -55,12 +55,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'calculator.apps.CalculatorConfig',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
     'djoser',
     'personal.apps.PersonalConfig',
+    'calculator.apps.CalculatorConfig',
 ]
 
 MIDDLEWARE = [
