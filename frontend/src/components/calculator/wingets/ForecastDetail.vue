@@ -10,6 +10,7 @@ const forecastDetails = async () => {
   try {
     loading.value = true;
     const response = await backendApi.get('calculator/forecast/details/');
+    console.log(`Response: ${response}`)
     forecast_details.value = response.data.results || response.data;
   } catch (error) {
     errorMsg.value = "Failed to load forecast";
