@@ -17,7 +17,7 @@ export const useCalculatorStore = defineStore('calculator', {
     actions: {
         async fetchStats() {
             try {
-                const response = await backendApi.get("stats/");
+                const response = await backendApi.get("calculator/stats/");
                 this.stats = response.data;
             } catch (error) {
                 console.error("Stats error:", error);
@@ -27,7 +27,7 @@ export const useCalculatorStore = defineStore('calculator', {
         async fetchEntries(page = 1) {
             this.loading = true;
             try {
-                const response = await backendApi.get(`entries/?page=${page}`);
+                const response = await backendApi.get(`calculator/entries/?page=${page}`);
                 this.entries = response.data.results;
                 this.totalCount = response.data.count;
                 this.totalPages = Math.ceil(response.data.count / 10);

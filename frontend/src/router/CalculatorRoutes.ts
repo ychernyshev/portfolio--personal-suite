@@ -1,6 +1,8 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { RouterView } from "vue-router";
 
+const Dashboard = () => import("@/views/calculator/Dashboard.vue");
+
 const calculatorRoutes: RouteRecordRaw = {
     path: "/calculator",
     component: RouterView,
@@ -10,25 +12,13 @@ const calculatorRoutes: RouteRecordRaw = {
         {
             path: "",
             name: "calculator-home", // Бажано додавати імена для зручного переходу
-            component: () => import("../views/calculator/Dashboard.vue"),
+            component: Dashboard,
             meta: { layout: "CalculatorLayout" }
         },
         {
             path: "dashboard",
             name: "calculator-dashboard",
-            component: () => import("../views/calculator/Dashboard.vue"),
-            meta: { layout: "CalculatorLayout" }
-        },
-        {
-            path: "add_entry",
-            name: "calculator-add",
-            component: () => import("../components/calculator/NewRecord.vue"),
-            meta: { layout: "CalculatorLayout" }
-        },
-        {
-            path: "settings",
-            name: "calculator-settings",
-            component: () => import("../components/calculator/Settings.vue"),
+            component: Dashboard,
             meta: { layout: "CalculatorLayout" }
         },
     ]

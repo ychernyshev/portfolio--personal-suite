@@ -28,7 +28,7 @@
 }
 
 body {
-  background-image: url("../images/light_theme_bg.png");
+  background-image: url("@/assets/calculator/images/bg/light_theme_bg.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;

@@ -4,7 +4,7 @@ const api_url = backendApi.defaults.baseURL + 'data_export/';
 
 export const exportData = async () => {
     try {
-        const response = await backendApi.get('data-export/', {
+        const response = await backendApi.get('calculator/data-export/', {
             responseType: 'blob',
         });
 

@@ -1,12 +1,12 @@
 <script setup>
 import { computed } from "vue";
-import sunnyIcon from "../../assets/images/weather_icons/light/sunny.png";
-import foggyIcon from "../../assets/images/weather_icons/light/overcast.png";
-import overcastIcon from "../../assets/images/weather_icons/light/overcast.png";
-import partlyCloudyIcon from "../../assets/images/weather_icons/light/partly_cloudy.png";
-import rainyIcon from "../../assets/images/weather_icons/light/rainy.png";
-import ThunderstormIcon from "../../assets/images/weather_icons/light/rainy.png";
-import SnowyIcon from "../../assets/images/weather_icons/light/rainy.png";
+import sunnyIcon from "../../assets/calculator/images/icons/weather/light/sunny.png";
+import foggyIcon from "../../assets/calculator/images/icons/weather/light/overcast.png";
+import overcastIcon from "../../assets/calculator/images/icons/weather/light/overcast.png";
+import partlyCloudyIcon from "../../assets/calculator/images/icons/weather/light/partly_cloudy.png";
+import rainyIcon from "../../assets/calculator/images/icons/weather/light/rainy.png";
+import ThunderstormIcon from "../../assets/calculator/images/icons/weather/light/rainy.png";
+import SnowyIcon from "../../assets/calculator/images/icons/weather/light/rainy.png";
 
 const props = defineProps({
   wmoCode: {
