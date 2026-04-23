@@ -85,7 +85,7 @@ import CareerTimeline from "@/components/personal/codeAndVision/CareerTimeline.v
 
 <style scoped>
 .modal-content {
-  background-image: url("../../../../public/assets/personal/dark_bg.png");
+  background-image: url("../../../assets/personal/images/dark_bg.png");
 }
 
 ul {
