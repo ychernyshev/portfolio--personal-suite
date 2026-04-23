@@ -36,7 +36,7 @@ const chartCosts = computed(() => {
 const fetchEntries = async(page = 1) => {
   try {
     loading.value = true;
-    const response = await backendApi.get(`entries/?page=${page}`);
+    const response = await backendApi.get(`calculator/entries/?page=${page}`);
     entries.value = response.data.results;
     currentPage.value = page;
     totalPages.value = Math.ceil(response.data.count / 10);

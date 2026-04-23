@@ -30,7 +30,7 @@ const weatherOptions = ref([]);
 
 const fetchWeather = async () => {
   try {
-    const res = await backendApi.get("weather-conditions/");
+    const res = await backendApi.get("calculator/weather-conditions/");
     weatherOptions.value = res.data.results || res.data;
   } catch (e) {
     console.error("Помилка завантаження типів погоди", e);

@@ -7,7 +7,7 @@ const loadingHistory = ref(true);
 
 const fetchHistory = async () => {
   try {
-    const response = await backendApi.get('forecast/comparison/');
+    const response = await backendApi.get('calculator/forecast/comparison/');
     history.value = response.data;
   } catch (error) {
     console.error("Error retrieving history:", error);

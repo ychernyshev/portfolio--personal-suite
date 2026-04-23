@@ -22,7 +22,7 @@ const stats = ref({ total_power: 0, total_cost: 0 });
 
 const fetchStats = async () => {
   try {
-    const response = await backendApi.get("stats/");
+    const response = await backendApi.get("calculator/stats/");
     stats.value = response.data;
   } catch (error) {
     console.error("Error during data loading:", error);

@@ -23,7 +23,7 @@ const toggleAddRecord = () => {
 
 const handleSave = async (newData) => {
   try {
-    const response = await backendApi.get('entries/', newData);
+    const response = await backendApi.get('calculator/entries/', newData);
 
     const { total_cost, total_power } = response.data;
 
