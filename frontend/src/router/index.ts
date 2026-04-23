@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import calculatorRoutes from "./CalculatorRoutes.ts";
+import calculatorRoutes from "./CalculatorRoutes";
 
 const routes = [
   calculatorRoutes,

@@ -1,10 +1,27 @@
-export default {
+import type { RouteRecordRaw } from 'vue-router';
+import { RouterView } from "vue-router";
+
+const Dashboard = () => import("@/views/calculator/Dashboard.vue");
+
+const calculatorRoutes: RouteRecordRaw = {
     path: "/calculator",
-    meta: { layout: "_DefaultExtended" },
+    component: RouterView,
+    // Додай meta сюди, щоб батьківський роут знав, який лейаут використовувати
+    meta: { layout: "CalculatorLayout" },
     children: [
-        { path: "", component: () => import("../views/calculator/Dashboard.vue"), meta: { layout: "_DefaultExtended" } },
-        { path: "dashboard", component: () => import("../views/calculator/Dashboard.vue"), meta: { layout: "_DefaultExtended" } },
-        { path: "add_entry", component: () => import("../components/calculator/NewRecord.vue"), meta: { layout: "_DefaultExtended" } },
-        { path: "settings", component: () => import("../components/calculator/Settings.vue"), meta: { layout: "_DefaultExtended" }},
+        {
+            path: "",
+            name: "calculator-home", // Бажано додавати імена для зручного переходу
+            component: Dashboard,
+            meta: { layout: "CalculatorLayout" }
+        },
+        {
+            path: "dashboard",
+            name: "calculator-dashboard",
+            component: Dashboard,
+            meta: { layout: "CalculatorLayout" }
+        },
     ]
 }
+
+export default calculatorRoutes;
