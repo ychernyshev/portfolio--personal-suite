@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import MainLayout from "./components/personal/MainLayout.vue";
+import PersonalLayout from "./components/personal/MainLayout.vue";
 
 const route = useRoute();
 
-const layouts: Record<string, any> = { MainLayout };
+const layouts: Record<string, any> = {
+  PersonalLayout,
+};
 
-const currentLayout = computed(
-    () => layouts[route.meta.layout as string] || MainLayout
-);
+const currentLayout = computed(() => layouts[route.meta.layout as string]);
 </script>
 
 <template>
@@ -17,3 +17,5 @@ const currentLayout = computed(
     <router-view />
   </component>
 </template>
+
+<style scoped></style>
