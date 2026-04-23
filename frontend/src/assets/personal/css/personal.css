@@ -60,7 +60,7 @@ textarea:focus {
 
 html,
 body {
-  background-image: url("../../src/assets/personal/images/dark_bg.png");
+  background-image: url("../images/dark_bg.png");
   background-repeat: no-repeat;
   background-size: cover;
   color: var(--p-dark-1);

@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import TopNav from "./TopNav.vue";
   import ContactForm from "./ContactForm.vue";
+  import "@/assets/personal/css/personal.css";
 </script>
 
 <template>
