@@ -20,4 +20,4 @@ const currentLayout = computed(() => layouts[route.meta.layout as string]);
   </component>
 </template>
 
-<style scoped></style>
+<style scoped></style>\
