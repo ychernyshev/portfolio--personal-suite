@@ -1,18 +1,25 @@
 <script setup lang="ts">
   import TopNav from "./TopNav.vue";
   import ContactForm from "./ContactForm.vue";
-  import '@/assets/personal/css/personal.css';
 </script>
 
 <template>
-  <div class="page-container">
-    <top-nav class="neon-border"/>
-    <contact-form />
-    <slot />
+  <div class="personal-theme">
+    <div class="page-container">
+      <top-nav class="neon-border"/>
+      <contact-form />
+      <slot />
+    </div>
   </div>
 </template>
 
 <style>
+  .personal-theme {
+    @import '@/assets/personal/css/personal.css';
+    min-height: 100vh;
+    background-image: url("@/assets/personal/images/dark_bg.png");
+  }
+
   .page-container {
     display: grid;
     grid-template-columns: 1fr;

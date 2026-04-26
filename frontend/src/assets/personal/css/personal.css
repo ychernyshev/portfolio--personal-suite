@@ -51,6 +51,7 @@ textarea:focus {
   --primary-emphasis-2: #43759B;
   --primary-emphasis-3: #2281b9;
   --primary-emphasis-4: #47A4F4;
+  --primary-emphasis-5: #2FA4E7;
   --neon-blue-1: #00f3ff;
   --ideal-green-1: #409E01;
   --sunrise-1: #FFC107;
@@ -60,7 +61,6 @@ textarea:focus {
 
 html,
 body {
-  background-image: url("../images/dark_bg.png");
   background-repeat: no-repeat;
   background-size: cover;
   color: var(--p-dark-1);
@@ -92,6 +92,10 @@ body {
 
 .text-justify {
   text-align: justify;
+}
+
+.text-primary-ex {
+  color: var(--primary-emphasis-5);
 }
 
 /*.btn-primary {*/

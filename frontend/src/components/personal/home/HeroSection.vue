@@ -16,8 +16,8 @@ const techStack: string[] = ['python', 'django', 'drf', 'vue', 'pinia', 'js', 't
         <div class="col-12 col-lg-6 col-xl-5 text-center text-lg-start pt-lg-5 mt-lg-5 left-content">
           <div class="lc-block mb-3 mb-lg-3">
             <div editable="rich">
-              <h1 class="fw-bold display-3 hero-title ">
-                <span class="hero-title-bg p-1">A full-stack realisation of your ideas</span>
+              <h1 class="fw-bold display-3">
+                <span class="hero-title-bg p-1 text-primary-ex">A full-stack realisation of your ideas</span>
               </h1>
             </div>
           </div>
@@ -25,7 +25,7 @@ const techStack: string[] = ['python', 'django', 'drf', 'vue', 'pinia', 'js', 't
           <div class="lc-block col-lg-12">
             <div editable="rich">
               <p class="rfs-8">
-                <span class="hero-unit-bg hero-unit-text p-1">
+                <span class="hero-unit-bg hero-unit-text text-light p-1">
                   using Django, Vue.js, Bootstrap, and other technologies
                 </span>
               </p>
@@ -133,7 +133,6 @@ const techStack: string[] = ['python', 'django', 'drf', 'vue', 'pinia', 'js', 't
   }
 
   @media (min-width: 992px) {
-    .hero-title,
     .hero-unit-text {
       color: var(--p-light-2);
       transition: 0.8s;

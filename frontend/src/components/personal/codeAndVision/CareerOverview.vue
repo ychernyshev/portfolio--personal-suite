@@ -5,12 +5,12 @@ import CareerTimeline from "@/components/personal/codeAndVision/CareerTimeline.v
 </script>
 
 <template>
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-fullscreen">
+  <div class="modal fade" id="showcaseModal" tabindex="-1" aria-labelledby="showcaseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
       <div class="modal-content border-0 neon-border rounded-2 text-light">
         <div class="modal-header border-0 d-flex justify-content-between">
-          <h3 class="modal-title" id="exampleModalLabel">Personal Dev Showcase</h3>
-          <button type="button" class="btn bg-transparent border-0 text-light" data-bs-dismiss="modal">
+          <h3 class="modal-title text-primary-ex" id="showcaseModalLabel">Personal Dev Showcase</h3>
+          <button type="button" class="btn bg-transparent border-0" data-bs-dismiss="modal">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
               <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
             </svg>

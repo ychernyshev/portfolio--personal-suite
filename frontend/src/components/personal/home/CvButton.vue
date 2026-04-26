@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <button type="button" class="btn-wrapper mx-auto text-light d-flex flex-column text-start mt-lg-2 mb-5" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  <button type="button" class="btn-wrapper mx-auto text-light d-flex flex-column text-start mt-lg-2 mb-5" data-bs-toggle="modal" data-bs-target="#showcaseModal">
       <span class="title">Career Overview</span>
     <span class="unit">For corporate job interviewers and relocation opportunities</span>
   </button>

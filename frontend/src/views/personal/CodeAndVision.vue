@@ -2,7 +2,7 @@
 import ButtonComp from "@/components/personal/ButtonComp.vue";
 import ImageSlider from "@/components/personal/ImageSlider.vue";
 import TechIconsLib from "@/components/personal/TechIconsLib.vue";
-import GithHubRepoInfo from "@/components/personal/GithHubRepoInfo.vue";
+import GitHubRepoInfo from "@/components/personal/GitHubRepoInfo.vue";
 
 interface ProjectImage {
   path: string;
@@ -88,7 +88,7 @@ const projects: Project[] = [
           >
             <div class="row project-description-wrapper">
               <div class="col-12 col-lg-6 col-xl-6">
-                <p class="project-title p-0 m-0 mt-lg-5 mt-xl-0 display-4">{{ project.name }}</p>
+                <p class="project-title p-0 m-0 mt-lg-5 mt-xl-0 display-4 text-primary-ex">{{ project.name }}</p>
                 <div class="row justify-content-center mt-5 d-block d-lg-none">
                   <div class="col-12 col-lg-4 col-xl-12">
                     <image-slider :images="project.images"/>
@@ -192,7 +192,7 @@ const projects: Project[] = [
                   </span>
                 </div>
                 <div class="col-12 mt-3 github-badge">
-                  <gith-hub-repo-info class="border-1 rounded-2 p-2" repoName="portfolio--personal-suite"/>
+                  <git-hub-repo-info class="border-1 rounded-2 p-2" repoName="portfolio--personal-suite"/>
                 </div>
               </div>
             </div>
