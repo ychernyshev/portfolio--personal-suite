@@ -58,7 +58,6 @@ const techStack: string[] = ['python', 'django', 'drf', 'vue', 'pinia', 'js', 't
 
   .hero-title-bg,
   .hero-unit-bg {
-    color: var(--p-light-2);
     transition: .8s;
   }
 

@@ -117,11 +117,6 @@ ul {
   justify-content: center;
 }
 
-.text-primary-ex:hover {
-  color: var(--neon-blue-1);
-  transition: 0.2s;
-}
-
 @media (min-width: 576px) {
   .tech-wrapper {
     width: 70%;

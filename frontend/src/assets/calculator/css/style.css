@@ -106,11 +106,11 @@ body {
 }
 
 .table td {
-  color: var(--purple) !important;
+  color: var(--purple);
 }
 
 .table th {
-  color: var(--purple) !important;
+  color: var(--purple);
 }
 
 .bg-gradient-blue-1 {

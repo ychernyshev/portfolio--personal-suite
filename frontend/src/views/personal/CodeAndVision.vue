@@ -4,6 +4,14 @@ import ImageSlider from "@/components/personal/ImageSlider.vue";
 import TechIconsLib from "@/components/personal/TechIconsLib.vue";
 import GitHubRepoInfo from "@/components/personal/GitHubRepoInfo.vue";
 
+import dashboardMain from '../../assets/personal/images/showcase/solar_power_calculator/dasboard-main.png';
+import dashboardAdd from '../../assets/personal/images/showcase/solar_power_calculator/dasboard-add-record.png';
+import dashboardSettings from '../../assets/personal/images/showcase/solar_power_calculator/dasboard-settings.png';
+import dashboardIndicators from '../../assets/personal/images/showcase/solar_power_calculator/dasboard-indicators.png';
+import dashboardMobile from '../../assets/personal/images/showcase/solar_power_calculator/dasboard-mobile.png';
+
+console.log('Image test:', dashboardMain);
+
 interface ProjectImage {
   path: string;
   title: string;
@@ -38,25 +46,29 @@ const projects: Project[] = [
     description: "A web application dashboard that calculates solar power generation and cost savings. The app allows adding the accumulated charging level in percentages and the current power cost from energy meters. These parameters need to be entered 2-3 times per day, as the app calculates the power that the solar system generates throughout the day and how much money this power costs",
     unit: "\"Created for myself to explore and analyze the capacity and productivity of my own solar power station\"",
     status: "MVP",
-    last_update: "12.04.2026",
+    last_update: "26.04.2026",
     key_futures: ['Reactive UI', 'Real-time calculations'],
     techStack: ['django', 'vue', 'js', 'bootstrap'],
     images: [
       {
-        path: new URL('@/assets/images/solar_power_calculator/calc_dashboard.png', import.meta.url).href,
+        path: dashboardMain,
         title: 'Single screen Dashboard',
       },
       {
-        path: new URL('@/assets/images/solar_power_calculator/calc_dashboard.png', import.meta.url).href,
+        path: dashboardAdd,
         title: 'Record Data and Reactive Reload',
       },
       {
-        path: new URL('@/assets/images/solar_power_calculator/calc_dashboard.png', import.meta.url).href,
+        path: dashboardSettings,
         title: 'Setup your app',
       },
       {
-        path: new URL('@/assets/images/solar_power_calculator/calc_dashboard.png', import.meta.url).href,
-        title: 'Controlling power and cost inficators ont the graphics',
+        path: dashboardIndicators,
+        title: 'Controlling the power and cost using indicators and graphics',
+      },
+      {
+        path: dashboardMobile,
+        title: 'Observation from the any device',
       }
     ]
   }
