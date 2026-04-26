@@ -5,7 +5,7 @@
 <template>
   <nav class="navbar navbar-expand-lg bg-light p-0 m-0 rounded-2">
     <div class="container-fluid">
-      <a class="navbar-brand d-flex flex-column d-lg-none m-0 p-0" href="#">
+      <a class="navbar-brand d-flex flex-column align-items-start d-lg-none m-0 p-0" href="#">
         <div class="col-12">
           <h4>Yevhenii Chernyshev</h4>
         </div>
@@ -17,14 +17,14 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0 mx-lg-auto w-100 d-lg-flex justify-content-around align-items-lg-center">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 mx-lg-auto w-100 d-flex flex-column flex-lg-row justify-content-lg-around align-items-start align-items-lg-center">
           <li class="nav-item">
-            <router-link to="/introducing" class="nav-link active" aria-current="page">
+            <router-link to="/introducing" class="nav-link active mb-3 mb-lg-0" aria-current="page">
               Introducing
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/code" class="nav-link">Code & Vision</router-link>
+            <router-link to="/code" class="nav-link mb-3 mb-lg-0">Code & Vision</router-link>
           </li>
           <div class="navbar-brand row d-none d-lg-block p-0 m-0">
             <div class="col-12">
@@ -35,10 +35,10 @@
             </div>
           </div>
           <li class="nav-item">
-            <router-link to="/blogs" class="nav-link">Blogs</router-link>
+            <router-link to="/blogs" class="nav-link mb-3 mb-lg-0">Blogs</router-link>
           </li>
           <li class="nav-item">
-            <button class="nav-link" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Contacts</button>
+            <button class="nav-link mb-3 mb-lg-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Contacts</button>
           </li>
         </ul>
       </div>
@@ -49,6 +49,10 @@
   <style scoped>
     .nav-unit-text {
       font-size: clamp(1rem, 1.7vw, 1.4rem);
+    }
+
+    .nav-link {
+      font-size: clamp(1.2rem, 1.1vw, 1.1rem);
     }
   </style>
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import TopNav from "./TopNav.vue";
   import ContactForm from "./ContactForm.vue";
+  import '@/assets/personal/css/personal.css';
 </script>
 
 <template>
@@ -13,9 +14,8 @@
   </div>
 </template>
 
-<style>
+<style scoped>
   .personal-theme {
-    @import '@/assets/personal/css/personal.css';
     min-height: 100vh;
     background-image: url("@/assets/personal/images/dark_bg.png");
   }

@@ -27,7 +27,7 @@ const scrollToExperience = (id: string) => {
             :style="{ top: (index * (100 / (timeline.length - 1))) + '%' }"
         >
           <div class="timeline-dot"></div>
-          <span class="timeline-date-label timeline-date">{{ item.date }}</span>
+          <span class="timeline-date-label">{{ item.date }}</span>
         </div>
       </div>
     </div>
@@ -82,6 +82,16 @@ const scrollToExperience = (id: string) => {
 </template>
 
 <style scoped>
+  .scroll-none {
+    scrollbar-width: none;
+    overflow-x: hidden;
+    -ms-overflow-style: none;
+  }
+
+  .scroll-none::-webkit-scrollbar {
+    display: none;
+  }
+
   .career-modal-wrapper {
     display: flex;
     height: 85vh;
@@ -95,6 +105,28 @@ const scrollToExperience = (id: string) => {
     border-right: 1px solid rgba(0, 243, 255, 0.1);
     height: 100%;
     overflow-y: auto;
+    padding: 20px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .timeline-navigation::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .timeline-navigation::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .timeline-navigation::-webkit-scrollbar-thumb {
+    background-color: var(--neon-blue-1);
+    border-radius: 20px;
+    border: 1px solid transparent;
+  }
+
+  .timeline-navigation::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-emphasis-5);
+    box-shadow: 0 0 15px var(--primary-emphasis-5);
   }
 
   .timeline-line {
@@ -169,7 +201,8 @@ const scrollToExperience = (id: string) => {
   }
 
   .timeline-content::-webkit-scrollbar-thumb:hover {
-    background-color: var(--primary-emphasis);
+    background-color: var(--primary-emphasis-5);
+    box-shadow: 0 0 15px var(--primary-emphasis-5);
   }
 
   .timeline-card {
@@ -244,10 +277,6 @@ const scrollToExperience = (id: string) => {
   }
   
   @media (min-width: 720px) {
-    .timeline-date-label {
-      white-space: nowrap;
-    }
-
     .example-button-group-wrapper {
       width: 75%;
     }
@@ -260,6 +289,10 @@ const scrollToExperience = (id: string) => {
   }
 
   @media (min-width: 990px) {
+    .timeline-date-label {
+      white-space: nowrap;
+    }
+
     .tech-icon-size {
       width: 10%;
     }

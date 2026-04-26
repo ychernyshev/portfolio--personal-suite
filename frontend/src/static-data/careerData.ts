@@ -44,7 +44,7 @@ export const timeline: CareerItem[] = [
     {
         id: 'exp-2022',
         date: 'september 2022 - september 2025',
-        title: 'skill expansion',
+        title: 'Skill expansion',
         type: 'education',
         currentOccupation: 'Postal Service Worker',
         occupationDescription: 'Responsible for timely delivery and logistics management within a designated area',
