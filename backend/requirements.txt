@@ -4,6 +4,7 @@ cffi==2.0.0
 charset-normalizer==3.4.5
 cryptography==46.0.5
 defusedxml==0.7.1
+dj-database-url==3.1.2
 Django==5.2.7
 django-cors-headers==4.9.0
 djangorestframework==3.16.1
@@ -15,9 +16,11 @@ idna==3.11
 mongoengine==0.29.1
 oauthlib==3.3.1
 packaging==25.0
+psycopg2-binary==2.9.10
 pycparser==3.0
 PyJWT==2.11.0
 pymongo==4.15.5
+python-dotenv==1.2.2
 python3-openid==3.2.0
 requests==2.32.5
 requests-oauthlib==2.0.0
@@ -26,3 +29,4 @@ social-auth-core==4.8.5
 sqlparse==0.5.3
 tzdata==2025.3
 urllib3==2.6.3
+whitenoise==6.12.0
