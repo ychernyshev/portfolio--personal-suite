@@ -32,7 +32,7 @@ const icons: TechIconSet = {
   python: {
     id: "python",
     path: new URL('@/assets/personal/images/tech-icons/python.png', import.meta.url).href,
-    description: 'Django is an open-source and high-level Python-based web framework that runs on a web server and is traditionally used as a project backend.'
+    description: 'Python is a high-level, general-purpose programming language that emphasizes code readability, simplicity, and ease-of-writing with the use of significant indentation, "plain English" naming, an extensive ("batteries-included") standard library, and garbage collection.'
   },
   django: {
     id: "django",
