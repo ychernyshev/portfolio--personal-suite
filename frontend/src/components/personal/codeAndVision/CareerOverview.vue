@@ -20,7 +20,7 @@ import CollapsedForm from "@/components/personal/contacts/CollapsedForm.vue";
         <div class="modal-body pt-0 pb-0">
           <div class="row">
             <div class="col-12 col-xl-5">
-              <div class="neon-border p-0 pt-3 rounded-2 text-light">
+              <div class="neon-border p-2 pt-3 pb-1 rounded-2 text-light">
                 <p class="bg-light text-dark p-2 rounded-2 fw-bold">Code & Vision: Engineering Scalable Solutions.</p>
                 <p class="p-2 p-lg-0 text-justify">I am a Full-Stack Developer specializing in the Django-REST-Vue ecosystem. My work focuses on bridging the gap between robust, secure back-end logic and high-performance, reactive front-end interfaces.</p>
                 <p class="p-2 p-lg-0 text-justify">I treat every project as a unique engineering challenge, prioritizing clean architecture and a "pixel-perfect" mindset. Whether I’m architecting complex mathematical engines like the Solar Power Calculator or developing open-source NPM packages, my goal is to deliver products that are as functional as they are intuitive.</p>

@@ -222,14 +222,14 @@ body {
 }
 
 .right-angle-top-start {
-  border-top-left-radius: 0;
+  border-top-left-radius: 0 !important;
 }
 .right-angle-top-end {
-  border-top-right-radius: 0;
+  border-top-right-radius: 0 !important;
 }
 .right-angle-bottom-start {
-  border-bottom-left-radius: 0;
+  border-bottom-left-radius: 0 !important;
 }
 .right-angle-bottom-end {
-  border-bottom-right-radius: 0;
+  border-bottom-right-radius: 0 !important;
 }
