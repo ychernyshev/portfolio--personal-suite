@@ -10,19 +10,19 @@
   <div class="card card-body bg-transparent border-0">
     <form action="" @submit.prevent="submitForm" class="row justify-content-end">
       <div class="col-12 col-lg-4">
-        <input v-model="formData.subject" class="form-control mb-1 bg-glass rounded-2 right-angle-bottom-start right-angle-bottom-end" autofocus type="text" placeholder="Subject">
+        <input v-model="formData.subject" class="form-control mb-1 bg-glass rounded-bottom-0" autofocus type="text" placeholder="Subject">
       </div>
       <div class="col-12 col-lg-4">
-        <input v-model="formData.email" class="form-control mb-1 bg-glass rounded-2 right-angle-bottom-start right-angle-bottom-end" type="email" placeholder="Email">
+        <input v-model="formData.email" class="form-control mb-1 bg-glass rounded-0 rounded-top" type="email" placeholder="Email">
       </div>
       <div class="col-12 col-lg-4">
-        <input v-model="formData.theme" class="form-control mb-1 bg-glass right-angle-bottom-start right-angle-bottom-end" type="text" placeholder="Project theme">
+        <input v-model="formData.theme" class="form-control mb-1 bg-glass rounded-0 rounded-top" type="text" placeholder="Company name">
       </div>
       <div class="col-12">
-        <textarea v-model="formData.message" class="form-control bg-glass border-0 right-angle-bottom-start right-angle-bottom-end rounded-lg-0" name="" placeholder="Tell me about your idea" id="" cols="30" rows="5"></textarea>
+        <textarea v-model="formData.message" class="form-control bg-glass rounded-0" name="" placeholder="Tell me about your idea" id="" cols="30" rows="5"></textarea>
       </div>
       <div class="col-12 col-lg-4">
-        <button type="submit" class="btn btn-success shadow w-100 rounded-2 right-angle-top-start right-angle-top-end">Let`s get discussion</button>
+        <button type="submit" class="btn btn-success shadow w-100 rounded-0 rounded-bottom-2">Let`s get discussion</button>
       </div>
     </form>
   </div>
@@ -32,11 +32,22 @@
 <style scoped>
   .bg-glass {
     background: rgba(255, 255, 255, 0.8);
+    transition: 0.4s ease;
+  }
+
+  .bg-glass:focus {
+    background: rgba(255, 255, 255, 1);
+  }
+
+  .rounded-top {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
   }
 
   @media (min-width: 992px) {
-    .rounded-lg-0 {
-      border-radius: 0;
+    .rounded-top {
+      border-top-left-radius: 0.4rem !important;
+      border-top-right-radius: 0.4rem !important;
     }
   }
 </style>
