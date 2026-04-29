@@ -3,10 +3,6 @@
 import ButtonComp from "@/components/personal/ButtonComp.vue";
 import CareerTimeline from "@/components/personal/codeAndVision/CareerTimeline.vue";
 import CollapsedForm from "@/components/personal/contacts/CollapsedForm.vue";
-export default {
-  components: {CollapsedForm}
-}
-
 </script>
 
 <template>
