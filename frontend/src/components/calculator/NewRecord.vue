@@ -1,8 +1,9 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import {ref, onMounted, computed} from "vue";
 import backendApi from "../../services/calculator/backendApi.js";
 import WeatherIcon from "./WeatherIcon.vue";
 import {useNotificationStore} from "../../../store/useNotificationStore.js";
+import {useCalculatorStore} from "../../../store/useCalculatorStore.js";
 
 const emit = defineEmits(["entry-added"]);
 
@@ -69,6 +70,18 @@ const submitForm = async () => {
   }
 };
 
+// Used data validation
+const calculatorStore = useCalculatorStore();
+
+const existingDates = computed(() => {
+  return calculatorStore.entries.map(entry => entry.date);
+});
+
+const isDuplicateDate = computed(() => {
+  return existingDates.value.includes(formData.value.date);
+});
+
+
 onMounted(fetchWeather);
 </script>
 
@@ -83,8 +96,12 @@ onMounted(fetchWeather);
                 type="date"
                 v-model="formData.date"
                 class="form-control"
+                :class="{ 'is-invalid': isDuplicateDate }"
                 required
             />
+            <div v-if="isDuplicateDate" class="invalid-feedback d-block" style="font-size: 0.8rem;">
+              This date already has a record. Please choose another.
+            </div>
           </div>
           <div class="col-12 col-md-6 mt-3">
             <label class="form-label">System Power</label>
@@ -267,7 +284,7 @@ onMounted(fetchWeather);
               >
               <div class="btn-group my-3" role="group" aria-label="Basic example">
                 <button type="button" class="btn btn-light mb-1 w-10 py-2">Clear form</button>
-                <button type="submit" class="btn btn-success mb-1 w-10 py-2">
+                <button type="submit" class="btn btn-success mb-1 w-10 py-2" :disabled="isDuplicateDate">
                   Add Record
                 </button>
               </div>
