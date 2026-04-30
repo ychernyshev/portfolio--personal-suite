@@ -4,18 +4,24 @@ import backendApi from "../../services/calculator/backendApi.js";
 import { storeToRefs } from "pinia";
 import { useNotificationStore } from "../../../store/useNotificationStore.js";
 
+// Icons
+import successIcon from '@/assets/calculator/images/icons/messages/success.png';
+import infoIcon from '@/assets/calculator/images/icons/messages/info.png';
+import warningIcon from '@/assets/calculator/images/icons/messages/warning.png';
+import errorIcon from '@/assets/calculator/images/icons/messages/error.png';
+
 const notificationStore = useNotificationStore();
 const { messages } = storeToRefs(notificationStore);
 
 // Icons
 const getIcon = (type) => {
   const icons = {
-    'weather': 'bi-cloud-sun',
+    'weather': '',
     'storm': 'bi-cloud-lightning-rain',
-    'success': 'bi-check-circle',
-    'warning': 'bi-exclamation-triangle',
-    'info': 'bi-info-circle',
-    'error': 'bi-exclamation-triangle'
+    'success': new URL(successIcon, import.meta.url).href,
+    'warning': new URL(warningIcon, import.meta.url).href,
+    'info': new URL(infoIcon, import.meta.url).href,
+    'error': new URL(errorIcon, import.meta.url).href,
   };
   return icons[type] || 'bi-bell';
 };
@@ -50,7 +56,7 @@ defineExpose({ pushLocalMessage });
     <transition-group name="list" tag="div">
       <div v-for="msg in messages" :key="msg.id" class="msg-card shadow-sm" :class="msg.level">
         <div class="d-flex align-items-center">
-          <i :class="getIcon(msg.msg_type)" class="me-2 text-dark"></i>
+          <img :src="getIcon(msg.msg_type)" class="me-2 text-dark icon"  alt=""/>
           <div>
             <h6 class="mb-0 text-dark">{{ msg.title }}</h6>
             <small class="text-muted">{{ msg.text }}</small>
@@ -80,6 +86,13 @@ defineExpose({ pushLocalMessage });
   margin-bottom: 8px;
   transition: all 0.5s ease;
 }
+
+.icon {
+  width: 24px;
+  height: 24px;
+  filter: drop-shadow(0 0 2px rgba(0,0,0,0.2));
+}
+
 
 @media (min-width: 1200px) {
   .notification-stack {
