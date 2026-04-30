@@ -103,7 +103,9 @@ onMounted(() => {
     min-height: 48px;
   }
 
-  .message-card {}
+  .message-card {
+    position: relative;
+  }
 
   @media (min-width: 992px) {
     .btn-graphic-tab {

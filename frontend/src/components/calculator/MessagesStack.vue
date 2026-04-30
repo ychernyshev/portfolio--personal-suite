@@ -14,7 +14,8 @@ const getIcon = (type) => {
     'storm': 'bi-cloud-lightning-rain',
     'success': 'bi-check-circle',
     'warning': 'bi-exclamation-triangle',
-    'info': 'bi-info-circle'
+    'info': 'bi-info-circle',
+    'error': 'bi-exclamation-triangle'
   };
   return icons[type] || 'bi-bell';
 };
@@ -62,8 +63,8 @@ defineExpose({ pushLocalMessage });
 
 <style scoped>
 .notification-stack {
-  position: absolute; /* Позиціонуємо над графіком */
-  top: 10px;
+  position: absolute;
+  top: -5rem;
   right: 10px;
   z-index: 1000;
   width: 300px;
@@ -80,23 +81,38 @@ defineExpose({ pushLocalMessage });
   transition: all 0.5s ease;
 }
 
-/* Кольорові акценти для рівнів (зліва тонка лінія) */
+@media (min-width: 1200px) {
+  .notification-stack {
+    width: 390px;
+  }
+
+  .msg-card {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 8px;
+    transition: all 0.5s ease;
+  }
+}
+
 .msg-card.success { border-left: 4px solid #198754; }
 .msg-card.warning { border-left: 4px solid #ffc107; }
 .msg-card.danger  { border-left: 4px solid #dc3545; }
 .msg-card.info    { border-left: 4px solid #0dcaf0; }
 
-/* Анімація Transition Group */
 .list-enter-from {
   opacity: 0;
   transform: translateX(30px);
 }
 .list-leave-to {
   opacity: 0;
-  transform: translateY(-30px); /* Нове приходить збоку, старе йде вгору */
+  transform: translateY(-30px);
 }
 .list-leave-active {
-  position: absolute; /* Потрібно для плавного зсуву інших елементів */
+  position: absolute;
   width: 100%;
 }
 </style>

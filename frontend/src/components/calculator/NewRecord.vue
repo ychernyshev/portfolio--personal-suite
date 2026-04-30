@@ -33,7 +33,7 @@ const fetchWeather = async () => {
     const res = await backendApi.get("calculator/weather-conditions/");
     weatherOptions.value = res.data.results || res.data;
   } catch (e) {
-    console.error("Помилка завантаження типів погоди", e);
+    console.error("Error loading weather types", e);
   }
 };
 
@@ -50,8 +50,8 @@ const submitForm = async () => {
   try {
     await backendApi.post("calculator/entries/", formData.value);
     notificationStore.addNotification({
-      title: 'Дані збережено',
-      text: 'Показники потужності успішно оновлені в базі.',
+      title: 'Data has been recorded',
+      text: 'Power indicators successfully updated.',
       level: 'success',
       msg_type: 'success'
     });
@@ -60,8 +60,8 @@ const submitForm = async () => {
     });
   } catch (e) {
     notificationStore.addNotification({
-      title: 'Помилка',
-      text: 'Не вдалося зберегти дані.',
+      title: 'Error',
+      text: 'Failed to save data.',
       level: 'danger',
       msg_type: 'warning'
     });
