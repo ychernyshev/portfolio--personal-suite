@@ -14,8 +14,12 @@ import RecordsTable from "../../components/calculator/RecordsTable.vue";
 
 import { useNotificationStore } from "../../../store/useNotificationStore.js";
 import { useCalculatorStore } from "../../../store/useCalculatorStore";
+import WakeUpLoader from "@/components/calculator/WakeUpLoader.vue";
 
 const store = useCalculatorStore();
+
+// Loader
+const isLoading = ref(false);
 
 // Total data (all time)
 const stats = ref({ total_power: 0, total_cost: 0 });
@@ -25,17 +29,38 @@ const fetchStats = async () => {
     const response = await backendApi.get("calculator/stats/");
     stats.value = response.data;
   } catch (error) {
-    console.error("Error during data loading:", error);
+    console.error("Error during stats loading:", error);
   }
 };
 
-onMounted(() => {
-  fetchStats();
-  store.fetchEntries();
+onMounted(async () => {
+  const startTime = Date.now();
+  isLoading.value = true;
+
+  try {
+    await Promise.all([
+      fetchStats(),
+      store.fetchEntries()
+    ]);
+  } catch (error) {
+    const notification = useNotificationStore();
+    notification.addNotification("Сервер ще не прокинувся, спробуйте оновити сторінку пізніше", "error");
+  } finally {
+    const duration = Date.now() - startTime;
+    const minWait = 1500;
+    if (duration < minWait) {
+      setTimeout(() => {
+        isLoading.value = false;
+      }, minWait - duration);
+    } else {
+      isLoading.value = false;
+    }
+  }
 });
 </script>
 
 <template>
+  <wake-up-loader :is-visible="isLoading" @cancel="isLoading = false" />
   <main class="main-content">
     <div class="widgets-container">
       <div class="card border-0 neomorphic">
