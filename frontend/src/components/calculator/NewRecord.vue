@@ -81,6 +81,26 @@ const isDuplicateDate = computed(() => {
   return existingDates.value.includes(formData.value.date);
 });
 
+// Important fields
+const isDayDataMissing = computed(() => {
+  const morning_charge = formData.value.morning_data_charge;
+  const morning_price = formData.value.morning_data_price;
+  const afternoon_charge = formData.value.afternoon_data_charge;
+  const afternoon_price = formData.value.afternoon_data_price;
+
+  return morning_charge === 0 || morning_charge === "" || morning_price === 0 || morning_price === "" || afternoon_charge === 0 || afternoon_charge === "" || afternoon_price === 0 || afternoon_price === "";
+});
+
+const isEveningDataMissing = computed(() => {
+  const evening_charge = formData.value.evening_data_charge;
+  const evening_price = formData.value.evening_data_price;
+
+  return evening_charge === 0 || evening_charge === "" || evening_price === 0 || evening_price === "";
+})
+
+const isWeatherSelected = computed(() => {
+  return formData.value.weather.length === 0;
+})
 
 onMounted(fetchWeather);
 </script>
@@ -117,6 +137,18 @@ onMounted(fetchWeather);
         <hr class="mt-3 mb-2"/>
 
         <div class="row text-center">
+          <div class="row">
+            <div class="col-12 col-lg-6">
+              <div class="text-info-emphasis d-block text-start" style="font-size: 0.8rem;">
+                You need to fill out the <span class="fw-bold">morning</span> metrics section and/or the <span class="fw-bold">afternoon</span> metrics section.
+              </div>
+            </div>
+            <div class="col-12 col-lg-6">
+              <div class="text-info-emphasis d-block text-end" style="font-size: 0.8rem;">
+                You need to fill out the <span class="fw-bold">evening</span> metrics section.
+              </div>
+            </div>
+          </div>
           <div class="col-12 col-md-4 border-md-end p-0">
             <div class="time-section mb-2 p-3">
               <h6 class="text-success fw-bold mb-3">Morning</h6>
@@ -187,6 +219,7 @@ onMounted(fetchWeather);
                     step="any"
                     class="form-control border-start-0 rounded-end-3"
                     placeholder="0.00"
+                    value=""
                     v-model="formData.afternoon_data_price"
                 >
                 <span class="input-group-text bg-transparent border-0 small text-muted pe-2 alt-icons">₴</span>
@@ -261,7 +294,7 @@ onMounted(fetchWeather);
             <label class="form-label d-block text-center"
             >Weather Indicators</label
             >
-            <div class="d-flex justify-content-start gap-2">
+            <div class="d-flex justify-content-start gap-2" :class="{'not-chosen': isWeatherSelected}">
               <div
                   v-for="opt in weatherOptions"
                   :key="opt.id"
@@ -284,7 +317,10 @@ onMounted(fetchWeather);
               >
               <div class="btn-group my-3" role="group" aria-label="Basic example">
                 <button type="button" class="btn btn-light mb-1 w-10 py-2">Clear form</button>
-                <button type="submit" class="btn btn-success mb-1 w-10 py-2" :disabled="isDuplicateDate">
+                <button
+                    type="submit"
+                    class="btn btn-success mb-1 w-10 py-2"
+                    :disabled="isDuplicateDate || isWeatherSelected || isEveningDataMissing">
                   Add Record
                 </button>
               </div>
@@ -303,6 +339,15 @@ onMounted(fetchWeather);
 
   .alt-text {
     font-size: .7rem
+  }
+
+  .not-filled {
+    background-color: var(--dark-gray-rgba);
+  }
+
+  .not-chosen {
+    padding-bottom: .4rem;
+    border-bottom: 0.1rem solid var(--sunset-yelow);
   }
 
   @media (min-width: 576px) {
