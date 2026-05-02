@@ -5,8 +5,8 @@
 /* Базові стилі */
 :root {
   --accent-color: #4db6ac;
-  --green-1: #7db64f;
   --green-1: #2ecc71;
+  --green-2: #7db64f;
   --sunrise-yelow: #feed41;
   --sunset-yelow: #febe1e;
   --shadow-light: #ffffff;
@@ -136,6 +136,22 @@ body {
 
 .bg-green-1 {
   background: var(--green-1);
+}
+
+.text-success-1 {
+  color: var(--green-1);
+}
+
+.text-success-2 {
+  color: var(--green-2);
+}
+
+.text-warning-1 {
+  color: var(--sunrise-yelow);
+}
+
+.text-warning-2 {
+  color: var(--sunset-yelow);
 }
 
 .nav-links a {
