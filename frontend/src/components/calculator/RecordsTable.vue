@@ -69,10 +69,10 @@ const error = ref("");
                   {{ entry.morning_data_price }} UAH
                 </td>
                 <td class="text-center d-none d-md-table-cell small" v-else-if="entry.afternoon_data_charge && entry.evening_data_charge">
-                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper">not tracked</span>
+                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper text-success-2">not tracked</span>
                 </td>
                 <td class="text-center d-none d-md-table-cell small" v-else>
-                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper">no generation</span>
+                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper text-warning-2">no generation</span>
                 </td>
                 <td
                     class="text-center d-none d-xl-table-cell"
@@ -86,10 +86,10 @@ const error = ref("");
                 <td
                     class="text-center d-none d-xl-table-cell small"
                     v-else-if="!entry.morning_data_charge && !entry.evening_data_charge">
-                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper">no generation</span>
+                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper text-warning-2">no generation</span>
                 </td>
                 <td class="text-center d-none d-xl-table-cell small" v-else>
-                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper">not tracked</span>
+                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper text-success-2">not tracked</span>
                 </td>
                 <td
                     class="text-center d-none d-md-table-cell"
@@ -99,7 +99,7 @@ const error = ref("");
                   {{ entry.evening_data_price }} UAH
                 </td>
                 <td class="text-center d-none d-md-table-cell small" v-else>
-                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper">
+                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper text-warning-2">
                     no generation
                   </span>
                 </td>
@@ -109,7 +109,7 @@ const error = ref("");
                     >
                 </td>
                 <td class="text-center small" v-else>
-                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper">no generation</span>
+                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper text-warning-2">no generation</span>
                 </td>
                 <td class="text-center" v-if="entry.full_day_cost > 0">
                     <span class="badge bg-dark-blue text-light p-2 w-sm-100"
@@ -117,7 +117,7 @@ const error = ref("");
                     >
                 </td>
                 <td class="text-center small" v-else>
-                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper">not calculated</span>
+                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper text-warning-2">not calculated</span>
                 </td>
                 <td class="text-center d-none d-lg-table-cell">
                   <small>{{ entry.power_tariff }}</small>
