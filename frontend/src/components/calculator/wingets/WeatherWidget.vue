@@ -63,24 +63,24 @@ onMounted(() => {
         </div>
       </div>
       <div class="col-sm-12 col-md-6 col-xl-6 d-flex justify-content-end align-items-start">
-        <div class="flex-grow-1 ps-4 position-relative d-flex align-items-center justify-content-center">
-          <div class="d-flex justify-content-between align-items-center mt-2">
-            <div class="position-relative d-inline-block d-flex flex-row">
-              <transition v-if="showCalendar" class="custom-tooltip-box" name="fade-slide" mode="out-in">
-                <mini-calendar
-                    transparent
-                    borderless
-                    trim-weeks
-                    :attributes="attributes"
-                    @dayclick="onDayClick"
-                    locale="uk"
-                    class="calendar-card w-100"
-                />
-              </transition>
-              <forecast-detail />
-            </div>
+        <div class="flex-grow-1 ps-4 position-relative d-flex align-items-center justify-content-start">
+          <forecast-detail />
+<!--          <div class="d-flex justify-content-between align-items-center mt-2">-->
+<!--            <div class="position-relative d-inline-block d-flex flex-row">-->
+<!--              <transition v-if="showCalendar" class="custom-tooltip-box" name="fade-slide" mode="out-in">-->
+<!--                <mini-calendar-->
+<!--                    transparent-->
+<!--                    borderless-->
+<!--                    trim-weeks-->
+<!--                    :attributes="attributes"-->
+<!--                    @dayclick="onDayClick"-->
+<!--                    locale="uk"-->
+<!--                    class="calendar-card w-100"-->
+<!--                />-->
+<!--              </transition>-->
+<!--            </div>-->
             <!--        MODAL-->
-            <div class="d-flex justify-content-start">
+<!--            <div class="d-flex justify-content-start">-->
               <!--            <button>-->
               <!--              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">-->
               <!--                <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>-->
@@ -93,42 +93,41 @@ onMounted(() => {
               <!--                <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 2h-4v3h4zm0 4h-4v3h4zm0 4h-4v3h3a1 1 0 0 0 1-1zm-5 3v-3H6v3zm-5 0v-3H1v2a1 1 0 0 0 1 1zm-4-4h4V8H1zm0-4h4V4H1zm5-3v3h4V4zm4 4H6v3h4z"/>-->
               <!--              </svg> comparison table-->
               <!--            </button>-->
-            </div>
+<!--            </div>-->
 
             <!-- Modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Comparison table of actual and real solar energy production rates</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <productivity/>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
+<!--            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
+<!--              <div class="modal-dialog modal-dialog-centered">-->
+<!--                <div class="modal-content">-->
+<!--                  <div class="modal-header">-->
+<!--                    <h1 class="modal-title fs-5" id="exampleModalLabel">Comparison table of actual and real solar energy production rates</h1>-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--                  </div>-->
+<!--                  <div class="modal-body">-->
+<!--                    <productivity/>-->
+<!--                  </div>-->
+<!--                  <div class="modal-footer">-->
+<!--                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
             <!--        END MODAL-->
-          </div>
-          <div v-if="!showDetailChart" class="w-100 text-center">
-            <div id="mini-calendar"></div>
+<!--          </div>-->
+<!--          <div v-if="!showDetailChart" class="w-100 text-center">-->
+<!--            <div id="mini-calendar"></div>-->
 
-          </div>
+<!--          </div>-->
 
-          <div v-else class="w-100 h-100">
-          </div>
+<!--          <div v-else class="w-100 h-100">-->
+<!--          </div>-->
         </div>
-        <button @click="showCalendar = !showCalendar" class="btn btn-sm text-purple">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">
-            <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
-            <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
-          </svg>
-        </button>
+<!--        <button @click="showCalendar = !showCalendar" class="btn btn-sm text-purple">-->
+<!--          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">-->
+<!--            <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>-->
+<!--            <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>-->
+<!--          </svg>-->
+<!--        </button>-->
       </div>
     </div>
     <div v-else-if="loading" class="text-center p-3">
