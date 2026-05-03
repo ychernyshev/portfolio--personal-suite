@@ -47,6 +47,13 @@ class StatsViewApiView(APIView):
         })
 
 
+class CurrentMothStatsApiView(APIView):
+    def get(self, request):
+        return Response({
+            "sun_days": DataEntryLineModel.get_count_of_sun_days()
+        })
+
+
 class WeatherUpdateTaskView(APIView):
     def get(self, request):
         auth_header = request.headers.get('Authorization')

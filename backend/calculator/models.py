@@ -1,3 +1,6 @@
+import calendar
+from datetime import date
+
 from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
@@ -143,8 +146,34 @@ class DataEntryLineModel(models.Model):
         except(TypeError, ZeroDivisionError):
             return self.FALLBACK_COST
 
-    def get_empty_day_message(self):
-        if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
+    @classmethod
+    def get_count_of_sun_days(cls):
+        current_month = date.today().month
+        current_month_weather = cls.objects.filter(date__month=current_month)
+        sunny_days = current_month_weather.filter(weather__name__icontains="sunny")
+        if sunny_days:
+            return sunny_days.count()
+        return 0
+
+    @classmethod
+    def _calculate_month_average_temperature(cls):
+        pass
+
+    @classmethod
+    def _calculate_month_average_power(cls):
+        pass
+
+    @classmethod
+    def _calculate_month_total_power(cls):
+        pass
+
+    @classmethod
+    def _calculate_month_total_savings(cls):
+        pass
+
+    @classmethod
+    def get_empty_day_message(cls):
+        if cls.morning_data_charge == cls.afternoon_data_charge == cls.evening_data_charge == 0:
             return '0% - 0.0 UAH'
         return None
 

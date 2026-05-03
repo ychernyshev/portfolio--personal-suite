@@ -2,7 +2,7 @@
 import {onMounted, ref} from "vue";
 import backendApi from "../../../services/calculator/backendApi.js";
 
-const forecast_details = ref([]);
+const current_month_details = ref([]);
 const loading = ref(true);
 const errorMsg = ref("");
 
@@ -14,35 +14,35 @@ const lastMonthDate = new Date(date);
 lastMonthDate.setMonth(date.getMonth() - 1);
 const lastMonthName = lastMonthDate.toLocaleString('en-US', {month: 'long'});
 
-const forecastDetails = async () => {
+const currentMonthDetails = async () => {
   try {
     loading.value = true;
-    const response = await backendApi.get('calculator/forecast/details/');
+    const response = await backendApi.get('calculator/current_month_stats/');
     console.log(`Response: ${response}`)
-    forecast_details.value = response.data.results || response.data;
+    current_month_details.value = response.data;
   } catch (error) {
-    errorMsg.value = "Failed to load forecast";
+    errorMsg.value = "Failed to load month stats";
   } finally {
     loading.value = false;
   }
 }
 
 onMounted(() => {
-  forecastDetails();
+  currentMonthDetails();
 });
 </script>
 
 <template>
-  <div v-if="loading" class="text-center p-3">Loading forecast...</div>
-  <div v-else-if="errorMsg" class="alert alert-danger">{{ errorMsg }}</div>
+  <div v-if="loading" class="text-center p-3">Loading month stats...</div>
+  <div v-else-if="errorMsg" class="alert alert-warning">{{ errorMsg }}</div>
   <div class="row text-start">
     <p data-v-80000e9e="" class="text-purple widget-title">
       The {{ currentMonthName }} stats
     </p>
     <div class="col-6 d-inline-flex flex-column align-items-start widget-item">
-      <div v-if="!loading && forecast_details" class="w-100 d-flex flex-column small align-items-start text-purple">
+      <div v-if="!loading && current_month_details" class="w-100 d-flex flex-column small align-items-start text-purple">
         <span class="fw-bold"></span>
-        <span class="small">Sun days: <span class="fw-bold">2</span></span>
+        <span class="small">Sun days: <span class="fw-bold">{{ current_month_details.sun_days }}</span></span>
         <span class="small">Average temperature: <span class="fw-bold">36.6</span></span>
         <span class="small">Average power: <span class="fw-bold text-success-1">897Wh</span></span>
         <span class="small">Total power: <span class="fw-bold text-success-1">28597Wh</span></span>
