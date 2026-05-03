@@ -177,10 +177,20 @@ class DataEntryLineModel(models.Model):
     @classmethod
     def get_count_of_month_average_power(cls):
         current_month = cls.get_current_month()
+        current_month_average_power = cls.objects.filter(date__month=current_month)
+        average_power = current_month_average_power.aggregate(
+            average_power=Avg('full_day_power')
+        )
+        if average_power['average_power'] is not None:
+            return round(average_power['average_power'], 1)
+        return 0
 
     @classmethod
     def get_count_of_month_total_power(cls):
         current_month = cls.get_current_month()
+        current_month_total_power = cls.objects.filter(date__month=current_month).aggregate(total_power=Sum('full_day_power'))
+
+        return current_month_total_power['total_power'] or 0
 
     @classmethod
     def get_count_of_month_total_savings(cls):

@@ -43,9 +43,9 @@ onMounted(() => {
       <div v-if="!loading && current_month_details" class="w-100 d-flex flex-column small align-items-start text-purple">
         <span class="fw-bold"></span>
         <span class="small">Sun days: <span class="fw-bold">{{ current_month_details.sun_days }}</span></span>
-        <span class="small">Average temperature: <span class="fw-bold">{{ current_month_details.average_temperature }}&nbsp;&deg;C</span></span>
-        <span class="small">Average power: <span class="fw-bold text-success-1">897Wh</span></span>
-        <span class="small">Total power: <span class="fw-bold text-success-1">28597Wh</span></span>
+        <span class="small">Avr temperature: <span class="fw-bold">{{ current_month_details.average_temperature }}&nbsp;&deg;C</span></span>
+        <span class="small">Day avr power: <span class="fw-bold text-success-1">{{ current_month_details.average_power }}Wh</span></span>
+        <span class="small">Total power: <span class="fw-bold text-success-1">{{ current_month_details.current_month_total_power }}Wh</span></span>
         <span class="small">Total savings: <span class="fw-bold text-sky-blue-4">897UAH</span></span>
       </div>
     </div>

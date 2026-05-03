@@ -52,6 +52,8 @@ class CurrentMothStatsApiView(APIView):
         return Response({
             "sun_days": DataEntryLineModel.get_count_of_sun_days(),
             "average_temperature": DataEntryLineModel.get_count_of_month_average_temperature(),
+            "average_power": DataEntryLineModel.get_count_of_month_average_power(),
+            "current_month_total_power": DataEntryLineModel.get_count_of_month_total_power(),
         })
 
 
