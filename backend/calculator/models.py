@@ -171,7 +171,7 @@ class DataEntryLineModel(models.Model):
             average_temperature=Avg('temperature')
         )
         if average_temperature['average_temperature'] is not None:
-            return round(average_temperature['average_temperature'], 1)
+            return round(average_temperature['average_temperature'], 2)
         return 0
 
     @classmethod
@@ -182,7 +182,7 @@ class DataEntryLineModel(models.Model):
             average_power=Avg('full_day_power')
         )
         if average_power['average_power'] is not None:
-            return round(average_power['average_power'], 1)
+            return round(average_power['average_power'], 2)
         return 0
 
     @classmethod
@@ -195,6 +195,30 @@ class DataEntryLineModel(models.Model):
     @classmethod
     def get_count_of_month_total_savings(cls):
         current_month = cls.get_current_month()
+        current_month_savings = cls.objects.filter(date__month=current_month).aggregate(
+            total_power=Sum('full_day_cost'))
+
+        return round(current_month_savings['total_power'], 2) or 0
+
+    @classmethod
+    def get_power_difference(cls):
+        current_month = cls.get_current_month()
+        previous_month = current_month - 1 if current_month > 1 else 12
+
+        current_total = cls.objects.filter(date__month=current_month).aggregate(
+            total=Sum('full_day_power')
+        )['total'] or 0
+
+        previous_total = cls.objects.filter(date__month=previous_month).aggregate(
+            total=Sum('full_day_power')
+        )['total'] or 0
+
+        if previous_total == 0:
+            return None
+        difference_power_percentage = ((current_total - previous_total) / previous_total) * 100
+
+        return round(difference_power_percentage, 1)
+
 
     @classmethod
     def get_empty_day_message(cls):

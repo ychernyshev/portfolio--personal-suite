@@ -54,6 +54,9 @@ class CurrentMothStatsApiView(APIView):
             "average_temperature": DataEntryLineModel.get_count_of_month_average_temperature(),
             "average_power": DataEntryLineModel.get_count_of_month_average_power(),
             "current_month_total_power": DataEntryLineModel.get_count_of_month_total_power(),
+            "current_month_savings": DataEntryLineModel.get_count_of_month_total_savings(),
+            "difference_power_percentage":
+            DataEntryLineModel.get_power_difference(),
         })
 
 
