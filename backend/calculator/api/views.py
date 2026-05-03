@@ -50,7 +50,8 @@ class StatsViewApiView(APIView):
 class CurrentMothStatsApiView(APIView):
     def get(self, request):
         return Response({
-            "sun_days": DataEntryLineModel.get_count_of_sun_days()
+            "sun_days": DataEntryLineModel.get_count_of_sun_days(),
+            "average_temperature": DataEntryLineModel.get_count_of_month_average_temperature(),
         })
 
 

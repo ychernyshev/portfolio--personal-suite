@@ -2,7 +2,7 @@ import calendar
 from datetime import date
 
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum, Avg
 from django.utils import timezone
 
 
@@ -147,8 +147,14 @@ class DataEntryLineModel(models.Model):
             return self.FALLBACK_COST
 
     @classmethod
-    def get_count_of_sun_days(cls):
+    def get_current_month(cls):
         current_month = date.today().month
+
+        return current_month
+
+    @classmethod
+    def get_count_of_sun_days(cls):
+        current_month = cls.get_current_month()
         current_month_weather = cls.objects.filter(date__month=current_month)
         sunny_days = current_month_weather.filter(weather__name__icontains="sunny")
         if sunny_days:
@@ -156,20 +162,29 @@ class DataEntryLineModel(models.Model):
         return 0
 
     @classmethod
-    def _calculate_month_average_temperature(cls):
-        pass
+    def get_count_of_month_average_temperature(cls):
+        current_month = cls.get_current_month()
+        current_month_average_temperature = WeatherDataModel.objects.filter(
+            timestamp__month=current_month
+        )
+        average_temperature = current_month_average_temperature.aggregate(
+            average_temperature=Avg('temperature')
+        )
+        if average_temperature['average_temperature'] is not None:
+            return round(average_temperature['average_temperature'], 1)
+        return 0
 
     @classmethod
-    def _calculate_month_average_power(cls):
-        pass
+    def get_count_of_month_average_power(cls):
+        current_month = cls.get_current_month()
 
     @classmethod
-    def _calculate_month_total_power(cls):
-        pass
+    def get_count_of_month_total_power(cls):
+        current_month = cls.get_current_month()
 
     @classmethod
-    def _calculate_month_total_savings(cls):
-        pass
+    def get_count_of_month_total_savings(cls):
+        current_month = cls.get_current_month()
 
     @classmethod
     def get_empty_day_message(cls):
