@@ -217,7 +217,7 @@ class DataEntryLineModel(models.Model):
             return None
         difference_power_percentage = ((current_total - previous_total) / previous_total) * 100
 
-        return round(difference_power_percentage, 1)
+        return int(difference_power_percentage)
 
 
     @classmethod
