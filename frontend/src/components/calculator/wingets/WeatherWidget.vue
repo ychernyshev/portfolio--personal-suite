@@ -4,7 +4,7 @@ import backendApi from "../../../services/calculator/backendApi.js";
 import IconsMap from "../IconsMap.vue";
 import Productivity from "./Productivity.vue";
 import MiniCalendar from "./MiniCalendar.vue";
-import ForecastDetail from "./ForecastDetail.vue";
+import MonthStats from "./MonthStats.vue";
 
 const forecast = ref(null);
 const loading = ref(true);
@@ -62,9 +62,9 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <div class="col-sm-12 col-md-6 col-xl-6 d-flex justify-content-end align-items-start">
-        <div class="flex-grow-1 ps-4 position-relative d-flex align-items-center justify-content-start">
-          <forecast-detail />
+      <div class="col-sm-12 col-md-6 col-xl-6">
+        <month-stats />
+<!--        <div class="flex-grow-1 ps-4 position-relative d-flex align-items-center justify-content-start">-->
 <!--          <div class="d-flex justify-content-between align-items-center mt-2">-->
 <!--            <div class="position-relative d-inline-block d-flex flex-row">-->
 <!--              <transition v-if="showCalendar" class="custom-tooltip-box" name="fade-slide" mode="out-in">-->
@@ -121,7 +121,7 @@ onMounted(() => {
 
 <!--          <div v-else class="w-100 h-100">-->
 <!--          </div>-->
-        </div>
+<!--        </div>-->
 <!--        <button @click="showCalendar = !showCalendar" class="btn btn-sm text-purple">-->
 <!--          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">-->
 <!--            <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>-->

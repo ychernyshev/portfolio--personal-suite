@@ -33,6 +33,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <div class="mt-3 mt-md-0"></div>
   <div v-if="loading" class="text-center p-3">Loading month stats...</div>
   <div v-else-if="errorMsg" class="alert alert-warning">{{ errorMsg }}</div>
   <div class="row text-start">
@@ -49,7 +50,7 @@ onMounted(() => {
         <span class="small">Total savings: <span class="fw-bold text-sky-blue-4">{{ current_month_details.current_month_savings }}UAH</span></span>
       </div>
     </div>
-    <div class="col-6 d-flex flex-column w-100 align-items-start text-purple">
+    <div class="col-6 d-flex flex-column w-100 align-items-end text-purple">
       <div class="text-success-1 d-flex flex-row">
           <span class="d-flex flex-column align-items-start text-warning">
             <svg v-if="current_month_details.difference_power_percentage < 0 || current_month_details.difference_power_percentage === null"  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-right" viewBox="0 0 16 16">
