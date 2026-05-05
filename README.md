@@ -8,8 +8,8 @@
 - [Frontend Detailed](#frontend-detailed)
 - [Apps Detailed](#apps-detailed)
   - [Personal Page](#personal-page)
-  - [Solar Power Calculator V1 (Legacy)](#sp-calc-v1)
-  - [Solar Power Calculator V2](#sp-calc-v2)
+  - [Solar Power Calculator V1 (Legacy)](#solar-power-calculator-v1-legacy) 
+  - [Solar Power Calculator V2](#solar-power-calculator-v2)
 - [Local Launching](#local-launching)
 - [Short API reference](#short-api-reference)
 - [License](#licence)
@@ -89,7 +89,7 @@ The central hub of my portfolio.
     *   Implemented an animated `WakeUpLoader` to mitigate the "cold start" effect on free PaaS platforms like Render or Vercel.
     *   The contact form has been moved to a separate `useContactForm` service for better code maintainability.
 
-### 2. [Solar Power Calculator V1 (Legacy)](#sp-calc-v1)
+### 2. ☀️ [Solar Power Calculator V1 (Legacy)](#solar-power-calculator-v1-legacy)
 A previous version of the Calculator in the form of a notebook with a simple design and logic
 
 #### Desktop View
@@ -102,7 +102,7 @@ An analytical platform for monitoring and calculating the efficiency of solar po
 - **Server-Side Dashboard**: Desktop-oriented UI using Bootstrap, featuring a tabbed interface for `Chart.js` visualizations (power generation vs. costs) and paginated data tables.
 - **Data Integrity**: Specialized handling for missing "afternoon" data points and battery-level logic to ensure accurate accounting of net energy production.
 
-### 3. ☀️ [Solar Power Calculator V2](#sp-calc-v2)
+### 3. ☀️ [Solar Power Calculator V2](#solar-power-calculator-v2)
 The second iteration of the Calculator APP was developed as a service with a responsive design,  a reactive template, friendlу user UI experience, and extended functionality
 
 #### Desktop View
