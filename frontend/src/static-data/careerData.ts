@@ -48,7 +48,7 @@ export const timeline: CareerItem[] = [
         type: 'education',
         currentOccupation: 'Postal Service Worker',
         occupationDescription: 'Responsible for timely delivery and logistics management within a designated area',
-        description: 'Mastered 10+ projects...',
+        description: 'Mastered 10+ screenshots...',
         techStack: ['js', 'python', 'django', 'vue'],
         projects: [
             {
@@ -66,7 +66,7 @@ export const timeline: CareerItem[] = [
         type: 'education',
         currentOccupation: 'Senior Contact Center Operator',
         occupationDescription: 'Streamlined business processes to enhance client interactions and operational efficiency. Regularly resolved unique, high-stakes inquiries while identifying opportunities for system improvements. As a Senior Specialist, I managed complex cases, maintained databases, and developed training documentation.',
-        description: 'Mastered 10+ projects...',
+        description: 'Mastered 10+ screenshots...',
         techStack: ['js', 'python', 'django'],
         projects: [
             {
@@ -84,7 +84,7 @@ export const timeline: CareerItem[] = [
         type: 'work',
         currentOccupation: 'Contact Center Specialist',
         occupationDescription: 'Focused on resolving high-complexity tasks and optimizing internal database processes. Actively mentored new team members and authored technical guidelines to improve overall call center performance.',
-        description: 'Mastered 10+ projects...',
+        description: 'Mastered 10+ screenshots...',
         techStack: ['html', 'css'],
         projects: [
             {

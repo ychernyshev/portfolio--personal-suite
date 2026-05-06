@@ -1,4 +1,4 @@
-See the English version of the readme [here.](README.md)
+See the English version of the readme [here.](README.en-US.md)
 
 # 🚀 Personal Dev Showcase
 
