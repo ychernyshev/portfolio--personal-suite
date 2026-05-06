@@ -180,14 +180,14 @@ curl -X POST https://api.example.com/api/calculator/data-import/ \
 
 ## 🐳 [Docker Support](#-docker-support)
 #### Planned features
-- `docker-compose up` started backend (Gunicorn) + frontend (Nginx) + PostgreSQL (using `docker-compose up --build`)
-- Redis + Celery (planned for Post Flow Controlling App)
+- `docker-compose up` started backend (`Gunicorn`) + frontend (`Nginx`) + `PostgreSQL
+- `Redis` + `Celery` (planned for `Post Flow Controlling App`)
 
 
 ## 🌐 [Current deployment](#-current-deployment)
-- Frontend: Vercel (auto-deploy from repository)
-- Backend: Render (Gunicorn + PostgreSQL, auto-deploy from repository)
-- Domain: ychernyshev.vercel.app 
+- **Frontend**: `Vercel` (auto-deploy from repository)
+- **Backend**: `Render` (`Gunicorn` + `PostgreSQL`, auto-deploy from repository)
+- **Domain**: `ychernyshev.vercel.app`
 
 ## 📫 [Contact](#-contact)
 Feel free to reach out via the contact form on my [Personal Page](https://ychernyshev.vercel.app/) or via [LinkedIn](https://www.linkedin.com/in/ychernyshev/).
