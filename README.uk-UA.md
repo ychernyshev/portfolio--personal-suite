@@ -1,4 +1,4 @@
-See the English version of the readme [here.](README.en-US.md)
+See the English version of the readme [here.](README.md)
 
 # 🚀 Personal Dev Showcase
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

@@ -63,7 +63,7 @@ Welcome to my software projects `monorepository`. This space is designed to demo
 ## 📱 [App List](#-app-list)
 - Personal Page
 - [Solar Power Calculator V1 Legacy](https://github.com/ychernyshev/portfolio--personal-suite/blob/v1-legacy/README.md)
-- Solar Power Calculator V2 Active
+- [Solar Power Calculator V2 Active](https://github.com/ychernyshev/portfolio--personal-suite/blob/v2-reborn-in-vue/frontend/README.md)
 
 ## ⚙️ [Backend Detailed](#-backend-detailed)
 ### Main responsibilities
