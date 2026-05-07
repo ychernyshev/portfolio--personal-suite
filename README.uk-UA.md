@@ -93,7 +93,7 @@ See the English version of the readme [here.](README.md)
 Центральний хаб мого портфоліо.
 
 #### Десктопний вигляд
-![personal-6-desctop-home.png](docs/pictures/screenshots/personal_page/personal-6-desctop-home.png)
+![personal-6-desctop-home.png](docs/pictures/screenshots/personal_page/personal-6-desktop-home.png)
 
 #### Мобільний вигляд
 ![personal-6-mobile-home.png](docs/pictures/screenshots/personal_page/personal-6-mobile-home.png)

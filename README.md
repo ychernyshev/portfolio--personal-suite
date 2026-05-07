@@ -93,7 +93,7 @@ Welcome to my software projects `monorepository`. This space is designed to demo
 The central hub of my portfolio.
 
 #### Desktop view
-![personal-6-desctop-home.png](docs/pictures/screenshots/personal_page/personal-6-desctop-home.png)
+![personal-6-desctop-home.png](docs/pictures/screenshots/personal_page/personal-6-desktop-home.png)
 
 #### Mobile view
 ![personal-6-mobile-home.png](docs/pictures/screenshots/personal_page/personal-6-mobile-home.png)
