@@ -1,3 +1,5 @@
+[![Solar Power Calculator V1 Legacy](../docs/pictures/screenshots/sp_calculator_v1/v1_widget.png)](https://github.com/ychernyshev/portfolio--personal-suite/blob/v1-legacy/README.md) [![Personal Page](../docs/pictures/screenshots/personal_page/personal_page.png)](README.personal.page.md)
+
 # ☀️ Solar Power Calculator V2
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.12](https://img.shields.io/badge/Python-v3.12-blue?logo=python)](https://www.python.org/)
