@@ -1,5 +1,5 @@
 [![Solar Power Calculator V1 Legacy](../docs/pictures/screenshots/sp_calculator_v1/v1_widget.png)](https://github.com/ychernyshev/portfolio--personal-suite/blob/v1-legacy/README.md)
-[![Personal Page](../docs/pictures/screenshots/sp_calculator_v2/v2_widget.png)](README.personal.page.md)
+[![Personal Page](../docs/pictures/screenshots/sp_calculator_v2/v2_widget.png)](README.md)
 
 # 🏠 Personal Page / Showcase
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
