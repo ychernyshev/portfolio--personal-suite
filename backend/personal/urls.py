@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from personal.views import ProjectItemViewSet, contact_view
 
 router = DefaultRouter()
-router.register('projects', ProjectItemViewSet, basename='projects')
+router.register('screenshots', ProjectItemViewSet, basename='screenshots')
 
 urlpatterns = [
     path('', include(router.urls)),
