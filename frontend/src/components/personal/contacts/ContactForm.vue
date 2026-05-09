@@ -8,8 +8,13 @@
 <template>
   <div class="offcanvas offcanvas-end my-auto height-0 offcanvas-wrapper" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
     <div class="offcanvas-body row">
-      <div class="col-12 col-lg-1 p-3">
+      <div class="col-12 col-lg-1 d-flex flex-column p-3">
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <div class="p-4 text-center inbound-messages">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-envelope-fill" viewBox="0 0 16 16">
+            <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414zM0 4.697v7.104l5.803-3.558zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586zm3.436-.586L16 11.801V4.697z"/>
+          </svg>
+        </div>
       </div>
       <div class="col-12 col-xl-4 p-3 d-flex justify-content-center align-items-center">
         <div class="d-flex flex-column">
@@ -107,6 +112,25 @@
 </template>
 
 <style scoped>
+  .offcanvas-body {
+    position: relative;
+  }
+
+  .inbound-messages {
+    position: absolute;
+    bottom: 0;
+    left: 0.7rem;
+    border-bottom-left-radius: 1.3rem;
+    background: var(--primary-emphasis);
+    color: var(--p-light-2);
+    transition: 0.4s;
+  }
+
+  .inbound-messages:hover {
+    background: var(--p-light-2);
+    color:  var(--primary-emphasis);
+  }
+
   .offcanvas-wrapper {
     background-color: #F5F6F8;
     box-shadow: 0 0 6rem .6rem rgba(255, 255, 255, 0.4);
