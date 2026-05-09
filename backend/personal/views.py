@@ -38,7 +38,7 @@ def contact_view(request):
             message=f"Contact Email: {email}\n\n{message}",
             from_email=host_user,
             recipient_list=[my_email],
-            fail_silently=False,
+            fail_silently=True,
         )
         return Response({"status": "success", "message": "Email sent!"}, status=status.HTTP_200_OK)
     except Exception as e:
