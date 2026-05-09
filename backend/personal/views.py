@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.core.mail import send_mail
+from rest_framework.views import APIView
 
 from personal.models import ProjectItemModel, ContactMessageModel
 from personal.serializers import ProjectItemSerializer, ContactMessageSerializer
@@ -45,6 +46,28 @@ def contact_view(request):
         return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+from rest_framework import viewsets, permissions
+
 class ContactMessageViewSet(viewsets.ModelViewSet):
     queryset = ContactMessageModel.objects.all()
     serializer_class = ContactMessageSerializer
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+
+    def get_queryset(self):
+        if self.action == 'list':
+            return ContactMessageModel.objects.filter(parent__isnull=True, is_deleted=False)
+        return ContactMessageModel.objects.filter(is_deleted=False)
+
+    # def perform_create(self, serializer):
+    #     instance = serializer.save()
+
+        # Telegram
+        # send_telegram_notification(instance)
+
+        # Brevo/Resend
+        # if not instance.is_from_admin:
+        #     send_auto_reply(instance.sender_email)
