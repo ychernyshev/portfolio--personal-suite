@@ -5,8 +5,7 @@ from .models import (
     DataEntryLineModel,
      WeatherConditionModel,
      SolarForecastRecordModel,
-     WeatherDataModel,
-     ContactMessageModel
+     WeatherDataModel
 )
 
 
@@ -103,9 +102,3 @@ class SolarForecastRecordAdmin(admin.ModelAdmin):
 @admin.register(WeatherDataModel)
 class WeatherDataAdmin(admin.ModelAdmin):
     list_display = ['timestamp', 'temperature', 'cloud_cover', 'pressure', 'humidity', 'precipitation_prob', 'condition_code']
-
-
-@admin.register(ContactMessageModel)
-class ContactMessageAdmin(admin.ModelAdmin):
-    list_display = ('sender_email', 'subject', 'created_at', 'is_read', 'is_deleted')
-    list_filter = ('is_deleted', 'is_archived', 'is_read')
