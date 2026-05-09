@@ -5,8 +5,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.core.mail import send_mail
 
-from personal.models import ProjectItemModel
-from personal.serializers import ProjectItemSerializer
+from personal.models import ProjectItemModel, ContactMessageModel
+from personal.serializers import ProjectItemSerializer, ContactMessageSerializer
 
 
 class ProjectItemViewSet(viewsets.ModelViewSet):
@@ -43,3 +43,8 @@ def contact_view(request):
         return Response({"status": "success", "message": "Email sent!"}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ContactMessageViewSet(viewsets.ModelViewSet):
+    queryset = ContactMessageModel.objects.all()
+    serializer_class = ContactMessageSerializer

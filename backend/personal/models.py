@@ -13,3 +13,31 @@ class ProjectItemModel(models.Model):
     class Meta:
         verbose_name = 'project item'
         verbose_name_plural = "Project Items"
+
+
+class ContactMessageModel(models.Model):
+    sender_name = models.CharField(max_length=100, blank=True)
+    sender_email = models.EmailField()
+    subject = models.CharField(max_length=255)
+    body = models.TextField()
+    parent = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='replies'
+    )
+    is_from_admin = models.BooleanField(default=False)
+    is_read = models.BooleanField(default=False)
+    is_archived = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['created_at']
+        verbose_name="contact message"
+        verbose_name_plural="Contact Messages"
+
+    def __str__(self):
+        return f"{'Admin' if self.is_from_admin else self.sender_email}: {self.subject[:30]}"
