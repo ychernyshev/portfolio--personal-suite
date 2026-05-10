@@ -14,4 +14,16 @@ const router = createRouter({
   linkExactActiveClass: "text-c-primary",
 });
 
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = localStorage.getItem('access_token');
+  if (to.path.startsWith('/user') && !isAuthenticated) {
+    next({
+      path: '/login',
+      query: { next: to.fullPath }
+    });
+  } else {
+    next();
+  }
+});
+
 export default router;

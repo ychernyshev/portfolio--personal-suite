@@ -36,6 +36,12 @@ const personalRoutes: RouteRecordRaw = {
             component: () => import("../views/personal/Contacts.vue"),
             meta: { layout: "PersonalLayout" }
         },
+        // Users
+        {
+            path: "/login",
+            component: () => import("../views/personal/user/Login.vue"),
+            meta: { layout: "PersonalLayout" }
+        },
     ]
 };
 
