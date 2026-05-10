@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import CalculatorLayout from "./components/calculator/layouts/_DefaultExtended.vue";
-import PersonalLayout from "./components/personal/MainLayout.vue";
+import PersonalLayout from "./components/personal/layouts/MainLayout.vue";
 import backendApi from "@/services/backendApi.ts";
 
 const route = useRoute();

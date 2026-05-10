@@ -18,7 +18,7 @@
     try {
       errorMessage.value = '';
 
-      const response = await backendApi.post('/api/auth/jwt/create/', {
+      const response = await backendApi.post('/auth/jwt/create/', {
         username: credentials.username,
         password: credentials.password
       });
