@@ -1,6 +1,6 @@
 import os
 from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes, action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.core.mail import send_mail
@@ -8,6 +8,14 @@ from rest_framework.views import APIView
 
 from personal.models import ProjectItemModel, ContactMessageModel
 from personal.serializers import ProjectItemSerializer, ContactMessageSerializer
+
+
+@action(detail=True, methods=['post'])
+def mark_as_read(self, request, pk=None):
+    message = self.get_object()
+    message.is_read = True
+    message.save()
+    return Response({'status': 'marked as read'})
 
 
 class ProjectItemViewSet(viewsets.ModelViewSet):
