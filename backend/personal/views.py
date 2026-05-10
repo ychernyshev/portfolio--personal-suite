@@ -5,6 +5,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.core.mail import send_mail
 from rest_framework.views import APIView
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from personal.models import ProjectItemModel, ContactMessageModel
 from personal.serializers import ProjectItemSerializer, ContactMessageSerializer
@@ -62,10 +63,11 @@ class ProjectItemViewSet(viewsets.ModelViewSet):
 # =====
 
 class ContactMessageViewSet(viewsets.ModelViewSet):
-    queryset = ContactMessageModel.objects.all()
+    queryset = ContactMessageModel.objects.all().order_by('-created_at')
     serializer_class = ContactMessageSerializer
 
-    authentication_classes = []
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
         if self.action == 'create':

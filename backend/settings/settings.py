@@ -37,6 +37,7 @@ raw_csrf = os.getenv("CSRF_TRUSTED_ORIGINS", "")
 CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in raw_csrf.split(",") if origin.strip()]
 
 CORS_ALLOW_METHODS = [m.strip() for m in os.getenv("CORS_ALLOW_METHODS", "").split(",") if m.strip()]
+CORS_ALLOW_HEADERS = [m.strip() for m in os.getenv("CORS_ALLOW_HEADERS", "").split(",") if m.strip()]
 
 CORS_ALLOW_CREDENTIALS = os.getenv("CORS_ALLOW_CREDENTIALS", "True") == "True"
 CSRF_COOKIE_NAME = os.getenv("CSRF_COOKIE_NAME", "csrftoken")

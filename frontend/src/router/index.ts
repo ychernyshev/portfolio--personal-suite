@@ -1,8 +1,10 @@
 import {createRouter, createWebHistory} from "vue-router";
+import adminPageRoutes from "./AdminRoutes";
 import personalRoutes from "./PersonalRoutes";
 import calculatorRoutes from "./CalculatorRoutes";
 
 const routes = [
+    adminPageRoutes,
     personalRoutes,
     calculatorRoutes,
 ];
