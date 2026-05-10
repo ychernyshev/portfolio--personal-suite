@@ -62,6 +62,12 @@ class ContactMessageViewSet(viewsets.ModelViewSet):
             return ContactMessageModel.objects.filter(parent__isnull=True, is_deleted=False)
         return ContactMessageModel.objects.filter(is_deleted=False)
 
+    def perform_create(self, serializer):
+        if self.request.user.is_authenticated:
+            serializer.save(is_from_admin=True)
+        else:
+            serializer.save(is_from_admin=False)
+
     # def perform_create(self, serializer):
     #     instance = serializer.save()
 
