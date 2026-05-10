@@ -22,10 +22,10 @@ export function useContactForm() {
 
         try {
             const response = await backendApi.post('personal/contact/', {
-                name: formData.subject,
-                email: formData.email,
-                theme: formData.theme,
-                message: formData.message
+                subject_name: formData.subject,
+                subject_email: formData.email,
+                project_theme: formData.theme,
+                mail_body: formData.message
             });
 
             if (response.data.status === 'success') {

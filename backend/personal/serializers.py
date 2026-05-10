@@ -15,8 +15,8 @@ class ContactMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactMessageModel
         fields = [
-            'id', 'sender_email', 'subject', 'project_theme',
-            'body', 'is_from_admin', 'created_at', 'replies'
+            'id', 'subject_email', 'subject_name', 'project_theme',
+            'mail_body', 'is_from_admin', 'created_at', 'replies'
         ]
         read_only_fields = ['is_from_admin', 'parent']
 

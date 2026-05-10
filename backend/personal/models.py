@@ -16,10 +16,10 @@ class ProjectItemModel(models.Model):
 
 
 class ContactMessageModel(models.Model):
-    sender_name = models.CharField(max_length=100, blank=True)
-    sender_email = models.EmailField()
-    subject = models.CharField(max_length=255)
-    body = models.TextField()
+    subject_name = models.CharField(max_length=100, blank=True)
+    subject_email = models.EmailField()
+    project_theme = models.CharField(max_length=255)
+    mail_body = models.TextField()
     parent = models.ForeignKey(
         'self',
         on_delete=models.CASCADE,
