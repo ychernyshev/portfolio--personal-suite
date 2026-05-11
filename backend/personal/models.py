@@ -20,6 +20,7 @@ class InboundMessageModel(models.Model):
     subject_email = models.EmailField()
     project_theme = models.CharField(max_length=255)
     mail_body = models.TextField()
+
     parent = models.ForeignKey(
         'self',
         on_delete=models.CASCADE,
@@ -27,15 +28,24 @@ class InboundMessageModel(models.Model):
         blank=True,
         related_name='replies'
     )
+
+    external_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
+
     is_from_admin = models.BooleanField(default=False)
     is_read = models.BooleanField(default=False)
+    is_replead = models.BooleanField(default=False)
+    is_spam = models.BooleanField(default=False)
     is_archived = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['created_at']
+        indexes = [
+            models.Index(fields=['subject_email', 'is_archived']),
+        ]
         verbose_name="contact message"
         verbose_name_plural="Contact Messages"
 
