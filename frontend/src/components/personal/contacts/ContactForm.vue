@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import ButtonComp from "@/components/personal/ButtonComp.vue";
-  import {useContactForm} from "@/services/personal/useContactForm";
+  import { useContactForm } from "@/services/personal/useContactForm";
 
   const { formData, isSuccess, fieldsNotFilled, submitForm } = useContactForm();
 </script>

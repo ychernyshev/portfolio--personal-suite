@@ -66,6 +66,8 @@ class ContactMessageViewSet(viewsets.ModelViewSet):
     queryset = ContactMessageModel.objects.all().order_by('-created_at')
     serializer_class = ContactMessageSerializer
 
+    pagination_class = None
+
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
