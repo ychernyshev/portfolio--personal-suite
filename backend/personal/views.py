@@ -7,8 +7,8 @@ from django.core.mail import send_mail
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from personal.models import ProjectItemModel, ContactMessageModel
-from personal.serializers import ProjectItemSerializer, ContactMessageSerializer
+from personal.models import ProjectItemModel, InboundMessageModel
+from personal.serializers import ProjectItemSerializer, InboundMessageSerializer
 
 
 @action(detail=True, methods=['post'])
@@ -63,8 +63,8 @@ class ProjectItemViewSet(viewsets.ModelViewSet):
 # =====
 
 class ContactMessageViewSet(viewsets.ModelViewSet):
-    queryset = ContactMessageModel.objects.all().order_by('-created_at')
-    serializer_class = ContactMessageSerializer
+    queryset = InboundMessageModel.objects.all().order_by('-created_at')
+    serializer_class = InboundMessageSerializer
 
     pagination_class = None
 
@@ -78,8 +78,8 @@ class ContactMessageViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.action == 'list':
-            return ContactMessageModel.objects.filter(parent__isnull=True, is_deleted=False)
-        return ContactMessageModel.objects.filter(is_deleted=False)
+            return InboundMessageModel.objects.filter(parent__isnull=True, is_deleted=False)
+        return InboundMessageModel.objects.filter(is_deleted=False)
 
     def perform_create(self, serializer):
         is_admin = self.request.user.is_authenticated

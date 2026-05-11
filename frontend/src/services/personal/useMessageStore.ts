@@ -23,7 +23,20 @@ export const useMessageStore = defineStore('messages', () => {
         messages.value.unshift(newMessage);
     };
 
+    const initWebSocket = () => {
+        const socket = new WebSocket('ws://localhost:8001/ws/inbox/');
 
+        socket.onmessage = (event) => {
+            const newMessage = JSON.parse(event.data);
+            console.log("WS: New message received!", newMessage);
+            addMessage(newMessage);
+        };
 
-    return { messages, isLoading, fetchMessages, addMessage };
+        socket.onclose = () => {
+            console.warn("WS: Connection lost. Trying to reconnect...");
+            setTimeout(initWebSocket, 3000);
+        };
+    };
+
+    return { messages, isLoading, fetchMessages, addMessage, initWebSocket };
 });

@@ -15,7 +15,7 @@ class ProjectItemModel(models.Model):
         verbose_name_plural = "Project Items"
 
 
-class ContactMessageModel(models.Model):
+class InboundMessageModel(models.Model):
     subject_name = models.CharField(max_length=100, blank=True)
     subject_email = models.EmailField()
     project_theme = models.CharField(max_length=255)

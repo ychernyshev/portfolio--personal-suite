@@ -26,7 +26,7 @@ const selectMessage = (msg: Message) => {
 
 onMounted( async () => {
   await messageStore.fetchMessages();
-  console.log("INBOX: Завантажено повідомлень у стор:", messages.value.length);
+  messageStore.initWebSocket();
 });
 </script>
 

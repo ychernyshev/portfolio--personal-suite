@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from personal.models import ProjectItemModel, ContactMessageModel
+from personal.models import ProjectItemModel, InboundMessageModel
 
 
 class ProjectItemSerializer(serializers.ModelSerializer):
@@ -9,11 +9,11 @@ class ProjectItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ContactMessageSerializer(serializers.ModelSerializer):
+class InboundMessageSerializer(serializers.ModelSerializer):
     replies = serializers.SerializerMethodField()
 
     class Meta:
-        model = ContactMessageModel
+        model = InboundMessageModel
         fields = [
             'id', 'subject_email', 'subject_name', 'project_theme',
             'mail_body', 'is_from_admin', 'created_at', 'replies'
@@ -22,5 +22,5 @@ class ContactMessageSerializer(serializers.ModelSerializer):
 
     def get_replies(self, obj):
         if obj.replies.exists():
-            return ContactMessageSerializer(obj.replies.all(), many=True).data
+            return InboundMessageSerializer(obj.replies.all(), many=True).data
         return []
