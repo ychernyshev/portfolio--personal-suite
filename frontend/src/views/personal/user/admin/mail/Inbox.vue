@@ -4,6 +4,8 @@ import { useMessageStore } from "@/services/personal/useMessageStore";
 import { storeToRefs } from "pinia";
 
 import '@/assets/personal/css/personal.css';
+import MessagesListGroup from "@/components/personal/user/admin/mail/MessagesListGroup.vue";
+import SelectedMessage from "@/components/personal/user/admin/mail/SelectedMessage.vue";
 
 const messageStore = useMessageStore();
 const { messages, isLoading } = storeToRefs(messageStore);
@@ -45,56 +47,20 @@ onMounted( async () => {
         No inbound data found.
       </div>
 
-      <div v-else class="list-group">
-        <div
-            v-for="msg in messages" :key="msg.id"
-            @click="selectMessage(msg)"
-            class="list-group-item bg-transparent text-light border-secondary mb-2 cursor-pointer msg-card"
-            :class="{ 'active-msg': selectedMessage?.id === msg.id }"
-        >
-          <div class="d-flex justify-content-between small">
-            <span class="text-info fw-bold">{{ msg.subject_name }}</span>
-            <span class="text-muted">{{ new Date(msg.created_at).toLocaleDateString() }}</span>
-          </div>
-          <div class="text-truncate mt-1 small">{{ msg.project_theme }}</div>
-        </div>
-      </div>
+      <messages-list-group
+          :messages="messages"
+          :selected-message="selectedMessage"
+          :on-select="selectMessage"
+      />
+
     </div>
 
     <div class="col-md-8 ps-4">
-      <div v-if="selectedMessage" class="h-100 d-flex flex-column">
-        <div class="border-bottom border-secondary pb-3 mb-3">
-          <h2 class="text-warning">{{ selectedMessage.project_theme }}</h2>
-          <div class="d-flex justify-content-between">
-            <span class="text-info">From: {{ selectedMessage.subject_email }}</span>
-            <span class="text-muted">{{ new Date(selectedMessage.created_at).toLocaleString() }}</span>
-          </div>
-        </div>
-        <div class="flex-grow-1 bg-black p-3 rounded border border-secondary mail-body">
-          {{ selectedMessage.mail_body }}
-        </div>
-      </div>
-
-      <div v-else class="h-100 d-flex align-items-center justify-content-center border border-secondary border-dashed rounded text-muted">
-        Select a message to view details
-      </div>
+      <selected-message
+          :message="selectedMessage"
+      />
     </div>
   </div>
 </template>
 
-<style scoped>
-  .msg-card { transition: all 0.2s ease; border-left: 3px solid transparent; }
-  .msg-card:hover { background: rgba(255, 255, 255, 0.05) !important; }
-  .active-msg {
-    background: rgba(255, 193, 7, 0.1) !important;
-    border-left-color: #ffc107 !important;
-  }
-  .mail-body { white-space: pre-wrap; font-family: 'Courier New', Courier, monospace; }
-  .cursor-pointer { cursor: pointer; }
-  .border-dashed { border-style: dashed !important; }
-  .cursor-pointer { cursor: pointer; }
-  .msg-card:hover { background: rgba(255,255,255,0.05) !important; }
-  .active-msg { border-left: 4px solid #ffc107 !important; background: rgba(255,193,7,0.1) !important; }
-  .mail-content { white-space: pre-wrap; line-height: 1.6; }
-  .border-dashed { border-style: dashed !important; }
-</style>
+<style scoped></style>
