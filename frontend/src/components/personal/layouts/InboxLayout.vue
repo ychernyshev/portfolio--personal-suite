@@ -6,7 +6,7 @@
   <div class="admin-layout-wrapper bg-dark min-vh-100">
     <nav class="navbar navbar-dark bg-black border-bottom border-secondary mb-3">
       <div class="container-fluid">
-        <span class="navbar-brand text-warning font-monospace">SENTINEL_HUB</span>
+        <span class="navbar-brand text-warning font-monospace">MAIL HUB</span>
       </div>
     </nav>
 

@@ -7,7 +7,7 @@ const adminPageRoutes: RouteRecordRaw = {
     meta: { layout: "InboxLayout" },
     children: [
         {
-            path: "dashboard/inbox",
+            path: "dashboard/mail_hub",
             component: () => import("@/views/personal/user/admin/mail/Inbox.vue"),
         },
     ],
