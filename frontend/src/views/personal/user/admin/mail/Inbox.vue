@@ -33,7 +33,7 @@ onMounted( async () => {
 </script>
 
 <template>
-  <div class="row m-0 p-3 h-100 bg-dark text-light font-monospace">
+  <div class="row m-0 p-3 h-100 text-light font-monospace">
     <div class="col-md-4 border-end border-secondary overflow-auto h-100">
       <h4 class="text-warning mb-4 border-bottom border-secondary pb-2">
         <i class="fa-solid fa-inbox me-2"></i>INBOX

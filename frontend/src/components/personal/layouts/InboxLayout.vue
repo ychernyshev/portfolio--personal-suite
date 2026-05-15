@@ -3,13 +3,7 @@
 </script>
 
 <template>
-  <div class="admin-layout-wrapper bg-dark min-vh-100">
-    <nav class="navbar navbar-dark bg-black border-bottom border-secondary mb-3">
-      <div class="container-fluid">
-        <span class="navbar-brand text-warning font-monospace">MAIL HUB</span>
-      </div>
-    </nav>
-
+  <div class="admin-layout-wrapper min-vh-100">
     <main class="container-fluid">
       <slot />
     </main>
@@ -18,6 +12,6 @@
 
 <style scoped>
 .admin-layout-wrapper {
-  background-color: #0f172a;
+  background-color: #27314A;
 }
 </style>
