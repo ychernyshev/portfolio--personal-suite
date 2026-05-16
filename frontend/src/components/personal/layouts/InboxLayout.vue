@@ -1,10 +1,11 @@
 <script setup lang="ts">
-
+  import InboxSidebar from "@/components/personal/user/admin/mail/InboxSidebar.vue";
 </script>
 
 <template>
-  <div class="admin-layout-wrapper min-vh-100">
-    <main class="container-fluid">
+  <div class="admin-layout-wrapper min-vh-100 m-0 p-0 ps-3 pt-3">
+    <inbox-sidebar />
+    <main class="container-fluid inbox-container m-0 p-0">
       <slot />
     </main>
   </div>
@@ -12,6 +13,12 @@
 
 <style scoped>
 .admin-layout-wrapper {
-  background-color: #27314A;
+  font-family: "Inter", sans-serif;
+  background: var(--p-light-2);
+}
+
+.inbox-container {
+  background-color: var(--p-darker-4);
+  border-top-left-radius: 1.2rem;
 }
 </style>
