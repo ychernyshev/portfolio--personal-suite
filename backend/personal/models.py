@@ -33,7 +33,7 @@ class InboundMessageModel(models.Model):
 
     is_from_admin = models.BooleanField(default=False)
     is_read = models.BooleanField(default=False)
-    is_replead = models.BooleanField(default=False)
+    is_replied = models.BooleanField(default=False)
     is_spam = models.BooleanField(default=False)
     is_archived = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)

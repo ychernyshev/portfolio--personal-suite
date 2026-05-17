@@ -66,11 +66,13 @@ const props = defineProps<{
       {{ props.message.mail_body }}
       <div class="mt-5">
         <mail-reply
+            :message_id="props.message.id"
             :subject_email="props.message.subject_email"
             :project_theme="props.message.project_theme"
             :mail_body="props.message.mail_body"
         />
         <mail-answer
+            :message_id="props.message.id"
             :project_theme="props.message.project_theme"
             :mail_body="props.message.mail_body"
         />

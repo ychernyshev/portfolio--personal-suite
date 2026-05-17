@@ -3,6 +3,7 @@
   import {ref, watch} from "vue";
 
   const props = defineProps<{
+    message_id: number;
     project_theme: string;
     mail_body: string;
   }>()
