@@ -1,22 +1,65 @@
 <script setup lang="ts">
+  import ButtonComp from "@/components/personal/ButtonComp.vue";
+  import {ref, watch} from "vue";
 
+  const props = defineProps<{
+    project_theme: string;
+    mail_body: string;
+  }>()
+
+  const formatAnswerBody = (originalBody: string) => {
+    return `\n\n\n--- On ${new Date().toLocaleDateString()} wrote:\n> ${originalBody.replace(/\n/g, '\n> ')}`;
+  };
+
+  const answerText = ref(formatAnswerBody(props.mail_body));
+
+  watch(() => props.mail_body, (newBody) => {
+    answerText.value = formatAnswerBody(newBody);
+  });
 </script>
 
 <template>
-  <p>
-    <a class="btn btn-secondary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-right" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M14.854 4.854a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 4H3.5A2.5 2.5 0 0 0 1 6.5v8a.5.5 0 0 0 1 0v-8A1.5 1.5 0 0 1 3.5 5h9.793l-3.147 3.146a.5.5 0 0 0 .708.708z"/>
-      </svg>
-    </a>
-  </p>
-  <div class="collapse" id="collapseExample">
-    <div class="card card-body">
-      Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+  <div class="collapse" id="mailAnswerBox">
+    <div class="card card-body text-start answer-container border-secondary text-light">
+      <form @submit.prevent>
+        <div class="mb-2">
+          <label class="small text-muted">From:</label>
+          <input type="text" class="form-control form-control-sm bg-transparent text-light border-secondary rounded-2" value="communicate@ychenyshev-dev.com">
+        </div>
+        <div class="mb-2">
+          <input type="text" class="form-control form-control-sm bg-transparent text-light border-secondary rounded-2" placeholder="Send copy to...">
+        </div>
+        <div class="mb-2">
+          <label class="small text-muted">Theme:</label>
+          <input type="text" :value="'Re: ' + props.project_theme" class="form-control form-control-sm bg-transparent text-light border-secondary rounded-2">
+        </div>
+        <div class="mb-3">
+          <textarea
+              v-model="answerText"
+              rows="8"
+              class="form-control form-control-sm answer-container border-secondary rounded-2 reply-area"
+          ></textarea>
+        </div>
+        <button-comp title="Reply" class="btn btn-outline-success"></button-comp>
+      </form>
     </div>
   </div>
 </template>
 
 <style scoped>
+.answer-container {
+  background: var(--deep-ocean-rgba-1);
+  border-top-left-radius: 1.2rem;
+  color: var(--p-light-2);
+}
 
+input::placeholder{
+  color: var(--p-light-1);
+  opacity: 1;
+}
+
+.reply-area {
+  font-family: 'Courier New', Courier, monospace;
+  line-height: 1.5;
+}
 </style>
