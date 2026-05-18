@@ -16,8 +16,12 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 # CRON / EMAIL
 CRON_SECRET = os.getenv('CRON_SECRET')
-EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
+EMAIL_BACKEND = os.getenv("RESEND_EMAIL_BACKEND")
 EMAIL_HOST = os.getenv("EMAIL_HOST")
+
+ANYMAIL = {
+    "RESEND_API_KEY": os.environ.get("RESEND_API_KEY"),
+}
 
 # SECURE PORT
 raw_port = os.getenv("EMAIL_PORT", "587")
@@ -63,6 +67,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'djoser',
+    "anymail",
     'personal.apps.PersonalConfig',
     'calculator.apps.CalculatorConfig',
 ]
