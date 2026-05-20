@@ -3,6 +3,7 @@
 interface ImportMetaEnv {
     readonly VITE_BACKEND_URL: string
     readonly VITE_WEATHER_API_KEY: string;
+    readonly VITE_WEBSOCKET_URL: string;
     // CRON_SECRET
 }
 

@@ -1,9 +1,13 @@
+import json
 import os
+import re
 import traceback
 
 from asgiref.sync import async_to_sync, sync_to_async
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import api_view, permission_classes, authentication_classes, action
 from rest_framework.permissions import AllowAny
@@ -151,7 +155,11 @@ class ContactMessageViewSet(viewsets.ModelViewSet):
         # if not instance.is_from_admin:
         #     send_auto_reply(instance.sender_email)
 
-    @action(detail=False, methods=['post'], url_path='admin/mail/reply')
+    @action(
+        detail=False,
+        methods=['post'],
+        url_path='reply'
+    )
     def reply(self, request):
         parent_id = request.data.get('parent_id')
         to_email = request.data.get('to_email')
@@ -192,3 +200,54 @@ class ContactMessageViewSet(viewsets.ModelViewSet):
         except Exception as e:
             traceback.print_exc()
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # Inbound messages
+    @action(
+        detail=False,
+        methods=['post'],
+        url_path='webhook',
+        permission_classes=[permissions.AllowAny],
+        authentication_classes=[]
+    )
+    def resend_webhook(self, request):
+        try:
+            data = request.data
+
+            email_id = data.get('email_id') or data.get('id')
+            if email_id and InboundMessageModel.objects.filter(external_id=email_id).exists():
+                return Response({'status': 'ignored', 'message': 'Duplicate webhook'}, status=status.HTTP_200_OK)
+
+            def _parse_sender(from_string):
+                if not from_string: return "Unknown", "unknown@example.com"
+                match = re.search(r'<(.*?)>', from_string)
+                if match:
+                    return from_string.split('<')[0].strip().strip('"') or "Unknown", match.group(1).strip()
+                return "Unknown", from_string.strip()
+
+            from_field = data.get('from', '')
+            sender_name, sender_email = _parse_sender(from_field)
+
+            subject = data.get('subject', '(Без теми)')
+            body = data.get('text') or data.get('html') or ''
+
+            parent_message = None
+            headers = data.get('headers', {})
+            in_reply_to = headers.get('In-Reply-To') or headers.get('in-reply-to')
+            if in_reply_to:
+                parent_message = InboundMessageModel.objects.filter(external_id=in_reply_to).first()
+
+            InboundMessageModel.objects.create(
+                subject_name=sender_name,
+                subject_email=sender_email,
+                project_theme=subject,
+                mail_body=body,
+                external_id=email_id,
+                parent=parent_message,
+                is_from_admin=False,
+                is_read=False
+            )
+
+            return Response({'status': 'delivered'}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)

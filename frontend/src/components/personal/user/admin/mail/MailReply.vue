@@ -28,7 +28,7 @@ const sendReply = async () => {
       try {
         const token = localStorage.getItem('access_token');
 
-        const response = await backendApi.post("personal/contact/admin/mail/reply/", {
+        const response = await backendApi.post("personal/contact/admin/email/reply/", {
           parent_id: props.message_id,
           to_email: props.subject_email,
           subject: `Re: ${props.project_theme}`,

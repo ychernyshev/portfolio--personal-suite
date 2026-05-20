@@ -6,6 +6,9 @@ from asgiref.sync import async_to_sync
 
 @receiver(post_save, sender='personal.InboundMessageModel')
 def notify_new_message(sender, instance, created, **kwargs):
+    if kwargs.get('raw'):
+        return
+
     if created:
         from personal.serializers import InboundMessageSerializer
 

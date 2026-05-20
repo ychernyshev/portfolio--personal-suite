@@ -3,7 +3,8 @@ import { ref, reactive } from 'vue';
 import backendApi from "@/services/backendApi";
 import { useMessageStore } from "@/services/personal/useMessageStore";
 
-export function useContactForm() {
+export function
+useContactForm() {
     const messageStore = useMessageStore();
     const isSuccess = ref(false);
     const fieldsNotFilled = ref(false);
