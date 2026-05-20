@@ -3,6 +3,9 @@
   import { useRoute, useRouter } from 'vue-router';
   import backendApi from "@/services/backendApi.ts";
   import ButtonComp from "@/components/personal/ButtonComp.vue";
+  import {useMessageStore} from "@/services/personal/useMessageStore.ts";
+
+  const messageStore = useMessageStore();
 
   const route = useRoute();
   const router = useRouter();
@@ -31,7 +34,9 @@
 
       backendApi.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-      const redirectPath = route.query.next as string || 'user/dashboard/inbox';
+      messageStore.initWebSocket();
+
+      const redirectPath = route.query.next as string || 'user/admin/emails/inbound';
       await router.push(redirectPath);
     } catch (err: any) {
       errorMessage.value = "You have entered an incorrect username or password";
@@ -39,7 +44,7 @@
   };
 </script>
 
-<<template>
+<template>
   <div class="row justify-content-center align-items-center" style="height: 60vh">
     <div class="col-12 col-md-4 col-lg-3">
       <h3 class="text-light mb-4 text-center">Sentinel Access</h3>

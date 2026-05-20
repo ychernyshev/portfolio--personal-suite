@@ -54,6 +54,8 @@ CSRF_COOKIE_NAME = os.getenv("CSRF_COOKIE_NAME", "csrftoken")
 
 REDIS_URL = os.getenv("REDIS_URL")
 
+redis_host = os.environ.get('REDIS_URL') or os.environ.get('REDIS_HOST') or 'redis://127.0.0.1:6379'
+
 INSTALLED_APPS = [
     'daphne',
     'channels',
@@ -105,16 +107,59 @@ TEMPLATES = [
 WSGI_APPLICATION = 'settings.wsgi.application'
 ASGI_APPLICATION = 'settings.asgi.application'
 
-redis_host = REDIS_URL if REDIS_URL else ('127.0.0.1', 6379)
+# if 'RENDER' in os.environ and redis_host.startswith('redis://'):
+#     redis_host = redis_host.replace('redis://', 'rediss://', 1)
+IS_RENDER = 'RENDER' in os.environ
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [redis_host],
+# Full Redis compatibility code
+# if redis_host and 'RENDER' in os.environ:
+#     CHANNEL_LAYERS = {
+#         "default": {
+#             "BACKEND": "channels_redis.core.RedisChannelLayer",
+#             "CONFIG": {
+#                 "hosts": [{
+#                     "address": redis_host,
+#                     "socket_timeout": 5,
+#                     "socket_connect_timeout": 5,
+#                 }],
+#             },
+#         },
+#     }
+#     print("=== CHANNELS: Запущено з використанням Redis ===")
+# else:
+#     CHANNEL_LAYERS = {
+#         "default": {
+#             "BACKEND": "channels.layers.InMemoryChannelLayer",
+#         },
+#     }
+#     print("=== CHANNELS: Відкат на InMemoryChannelLayer ===")
+
+# Simplified Redis compatibility code
+# settings.py
+
+if redis_host and ('RENDER' in os.environ or 'DOCKER' in os.environ or os.environ.get('REDIS_HOST')):
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [{
+                    "address": redis_host,
+                    "socket_timeout": 10,
+                    "socket_connect_timeout": 10,
+                }],
+                "capacity": 500,
+                "expiry": 60,
+            },
         },
-    },
-}
+    }
+    print("=== CHANNELS: Запущено з використанням Redis ===")
+else:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels.layers.InMemoryChannelLayer",
+        },
+    }
+    print("=== CHANNELS: Відкат на InMemoryChannelLayer ===")
 
 DATABASES = {
     'default': dj_database_url.config(
@@ -171,6 +216,13 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 7
+}
+
+DJOSER = {
+    'LOGIN_FIELD': 'username',
+    'PERMISSIONS': {
+        'token_create': ['rest_framework.permissions.AllowAny'],
+    },
 }
 
 CACHES = {
