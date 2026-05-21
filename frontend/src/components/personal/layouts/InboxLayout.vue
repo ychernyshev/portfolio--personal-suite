@@ -1,9 +1,11 @@
 <script setup lang="ts">
   import InboxSidebar from "@/components/personal/user/admin/mail/InboxSidebar.vue";
+  import SyncMail from "@/components/personal/user/admin/mail/SyncMail.vue";
 </script>
 
 <template>
   <div class="admin-layout-wrapper min-vh-100 m-0 p-0 ps-3 pt-3">
+    <sync-mail />
     <inbox-sidebar />
     <main class="container-fluid inbox-container m-0 p-0">
       <slot />

@@ -135,8 +135,6 @@ IS_RENDER = 'RENDER' in os.environ
 #     print("=== CHANNELS: Відкат на InMemoryChannelLayer ===")
 
 # Simplified Redis compatibility code
-# settings.py
-
 if redis_host and ('RENDER' in os.environ or 'DOCKER' in os.environ or os.environ.get('REDIS_HOST')):
     CHANNEL_LAYERS = {
         "default": {

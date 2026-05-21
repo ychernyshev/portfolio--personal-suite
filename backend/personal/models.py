@@ -42,7 +42,7 @@ class InboundMessageModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['created_at']
+        ordering = ['-created_at']
         indexes = [
             models.Index(fields=['subject_email', 'is_archived']),
         ]
@@ -50,4 +50,4 @@ class InboundMessageModel(models.Model):
         verbose_name_plural="Contact Messages"
 
     def __str__(self):
-        return f"{'Admin' if self.is_from_admin else self.sender_email}: {self.subject[:30]}"
+        return f"{'Admin' if self.is_from_admin else self.subject_email}: {self.project_theme[:30]}"

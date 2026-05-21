@@ -8,7 +8,7 @@ from personal.views import (
 
 router = DefaultRouter()
 router.register('projects', ProjectItemViewSet, basename='projects')
-router.register('user/admin/emails/inbound', ContactMessageViewSet, basename='email')
+router.register('user/admin/mail/inbound', ContactMessageViewSet, basename='email')
 router.register('contact', ContactMessageViewSet, basename='contact')
 
 urlpatterns = [

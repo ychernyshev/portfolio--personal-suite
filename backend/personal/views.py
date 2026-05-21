@@ -3,6 +3,7 @@ import os
 import re
 import traceback
 
+import resend
 from asgiref.sync import async_to_sync, sync_to_async
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -19,6 +20,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from personal.models import ProjectItemModel, InboundMessageModel
 from personal.serializers import ProjectItemSerializer, InboundMessageSerializer
 
+resend.api_key = os.getenv("RESWND_RECIEVE_API_KEY")
 
 @action(detail=True, methods=['post'])
 def mark_as_read(self, request, pk=None):
@@ -99,6 +101,121 @@ class ContactMessageViewSet(viewsets.ModelViewSet):
             self._send_admin_notification(instance)
 
             self._send_auto_reply_to_client(instance)
+
+    @action(
+        detail=False,
+        methods=['post'],
+        url_path='sync',
+        url_name='mail_sync',
+        authentication_classes=[JWTAuthentication],
+        permission_classes=[permissions.IsAuthenticated]
+    )
+    def sync_inbound_emails(self, request):
+        try:
+            resend_response = resend.Emails.Receiving.list()
+
+            # Зчитуємо список на основі твого принту
+            if isinstance(resend_response, dict):
+                emails_list = resend_response.get('data', [])
+            elif hasattr(resend_response, 'data'):
+                emails_list = resend_response.data
+            else:
+                emails_list = resend_response or []
+
+            new_messages_count = 0
+
+            for brief_mail in emails_list:
+                if not brief_mail or isinstance(brief_mail, str):
+                    continue
+
+                resend_id = getattr(brief_mail, 'id', None) or (
+                    brief_mail.get('id') if isinstance(brief_mail, dict) else None)
+
+                if not resend_id:
+                    continue
+
+                if InboundMessageModel.objects.filter(external_id=resend_id).exists():
+                    continue
+
+                try:
+                    full_mail_response = resend.Emails.Receiving.get(email_id=resend_id)
+                    # Приводимо до словника, якщо це об'єкт SDK
+                    mail_dict = full_mail_response if isinstance(full_mail_response, dict) else getattr(
+                        full_mail_response, '__dict__', {})
+                except Exception as api_err:
+                    print(f"Не вдалося завантажити повне тіло листа {resend_id}: {api_err}")
+                    continue
+
+                from_field = mail_dict.get('from', '') or getattr(full_mail_response, 'from', '')
+                subject = mail_dict.get('subject', '(Без теми)') or getattr(full_mail_response, 'subject', '(Без теми)')
+
+                mail_headers = mail_dict.get('headers', {}) or getattr(full_mail_response, 'headers', {})
+                if not isinstance(mail_headers, dict):
+                    mail_headers = {}
+
+                text_content = mail_dict.get('text') or getattr(full_mail_response, 'text', None)
+                html_content = mail_dict.get('html') or getattr(full_mail_response, 'html', None)
+
+                if html_content and not text_content:
+                    mail_body = re.sub(r'<[^>]+>', '', html_content).strip()
+                else:
+                    mail_body = text_content or html_content or '(Порожній лист)'
+
+                def _parse_sender(from_string):
+                    if not from_string:
+                        return "Unknown", "unknown@example.com"
+                    match = re.search(r'<(.*?)>', from_string)
+                    if match:
+                        name = from_string.split('<')[0].strip().strip('"') or "Unknown"
+                        return name, match.group(1).strip()
+                    return "Unknown", from_string.strip()
+
+                sender_name, sender_email = _parse_sender(from_field)
+
+                parent_message = None
+                in_reply_to = mail_headers.get('In-Reply-To') or mail_headers.get('in-reply-to')
+
+                if in_reply_to:
+                    clean_id = in_reply_to.strip('<>')
+                    parent_message = InboundMessageModel.objects.filter(
+                        external_id__icontains=clean_id
+                    ).first()
+
+                if not parent_message and (subject.lower().startswith('re:') or subject.lower().startswith('fwd:')):
+                    clean_subject = re.sub(r'^(re|fwd):\s*', '', subject, flags=re.IGNORECASE).strip()
+                    parent_message = InboundMessageModel.objects.filter(
+                        subject_email=sender_email,
+                        project_theme__icontains=clean_subject
+                    ).order_by('-created_at').first()
+
+                InboundMessageModel.objects.create(
+                    subject_name=sender_name,
+                    subject_email=sender_email,
+                    project_theme=subject,
+                    mail_body=mail_body,
+                    external_id=resend_id,
+                    parent=parent_message,
+                    is_from_admin=False,
+                    is_read=False
+                )
+
+                if parent_message:
+                    parent_message.is_replied = True
+                    parent_message.save()
+
+                new_messages_count += 1
+
+            return Response({
+                "success": True,
+                "message": f"Sync has been completed. Count of new letters: {new_messages_count}"
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            traceback.print_exc()
+            return Response({
+                "error": "Resend API Sync Error",
+                "details": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def _send_admin_notification(self, instance):
         my_email = os.getenv("MY_EMAIL")
