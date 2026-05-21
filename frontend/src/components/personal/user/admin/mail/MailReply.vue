@@ -10,12 +10,20 @@ const props = defineProps<{
   mail_body: string;
 }>();
 
+interface Reply {
+  parent_id: number;
+  to_email: string;
+  subject: string;
+  body: string;
+}
+
 const formatReplyBody = (originalBody: string) => {
   return `\n\n\n--- On ${new Date().toLocaleDateString()} wrote:\n> ${originalBody.replace(/\n/g, '\n> ')}`;
 };
 
 const replyText = ref(formatReplyBody(props.mail_body));
 const isSending = ref(false);
+const isVisible = ref(false);
 
 watch(() => props.mail_body, (newBody) => {
   replyText.value = formatReplyBody(newBody);
@@ -25,36 +33,35 @@ const sendReply = async () => {
   if (!replyText.value.trim()) return;
 
   isSending.value = true;
-      try {
-        const token = localStorage.getItem('access_token');
+  try {
+    const token = localStorage.getItem('access_token');
 
-        const response = await backendApi.post("personal/contact/admin/email/reply/", {
-          parent_id: props.message_id,
-          to_email: props.subject_email,
-          subject: `Re: ${props.project_theme}`,
-          body: replyText.value
-        }, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+    const replyData: Reply = {
+      parent_id: props.message_id,
+      to_email: props.subject_email,
+      subject: props.project_theme.toLowerCase().startsWith('re:')
+          ? props.project_theme
+          : `Re: ${props.project_theme}`,
+      body: replyText.value
+    };
 
-    if (response.data.success) {
+    const response = await backendApi.post("personal/user/admin/mail/inbound/reply/", replyData, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (response.status === 201 || response.data?.success) {
       alert("Mail sent successfully!");
-      // Тут можна закрити collapse-форму або очистити текст
+      isVisible.value = false; // ховаємо форму
     }
-  } catch
-    (error)
-    {
-      console.error("Sending error:", error);
-      alert("Failed to send email.");
-    }
-  finally
-    {
-      isSending.value = false;
-    }
+  } catch (error) {
+    console.error("Sending error:", error);
+    alert("Failed to send email.");
+  } finally {
+    isSending.value = false;
   }
-  ;
+};
 </script>
 
 <template>
