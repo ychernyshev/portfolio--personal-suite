@@ -288,6 +288,56 @@ class ContactMessageViewSet(viewsets.ModelViewSet):
 
         parent_message = get_object_or_404(InboundMessageModel, id=parent_id)
 
+        try:
+            headers = {}
+            if parent_message.external_id:
+                clean_msg_id = parent_message.external_id.strip('<>')
+                headers = {
+                    "In-Reply-To": f"<{clean_msg_id}>",
+                    "References": f"<{clean_msg_id}>",
+                }
+            html_body = reply_body.replace('\n', '<br>')
+
+            from_email = os.getenv('RESEND_DEFAULT_EMAIL') or "Admin <communicate@ychernyshev.dev>"
+
+            params = {
+                "from": from_email,
+                "to": [to_email],
+                "subject": subject if subject.lower().startswith('re:') else f"Re: {subject}",
+                "html": f"<div>{html_body}</div>",
+                "headers": headers
+            }
+
+            resend_response = resend.Emails.send(params)
+
+            new_external_id = None
+            if isinstance(resend_response, dict):
+                new_external_id = resend_response.get('id')
+            elif hasattr(resend_response, 'id'):
+                new_external_id = resend_response.data.get('id') if isinstance(resend_response.data, dict) else getattr(
+                    resend_response, 'id', None)
+
+            parent_message.is_replied = True
+            parent_message.save()
+
+            InboundMessageModel.objects.create(
+                parent=parent_message,
+                subject_email=from_email,
+                subject_name="Admin",
+                project_theme=subject,
+                mail_body=reply_body,
+                external_id=new_external_id,
+                is_from_admin=True,
+                is_read=True
+            )
+
+            return Response({"success": True, "resend_id": new_external_id}, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            traceback.print_exc()
+            return Response({"error": "Failed to send reply via Resend API", "details": str(e)},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         def _sync_email_pipeline():
             email = EmailMessage(
                 subject=subject,
