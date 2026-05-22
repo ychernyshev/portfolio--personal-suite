@@ -13,6 +13,7 @@ const props = defineProps<{
 interface Reply {
   parent_id: number;
   to_email: string;
+  cc_email?: string;
   subject: string;
   body: string;
 }
@@ -24,6 +25,7 @@ const formatReplyBody = (originalBody: string) => {
 const replyText = ref(formatReplyBody(props.mail_body));
 const isSending = ref(false);
 const isVisible = ref(false);
+const ccEmail = ref("");
 
 watch(() => props.mail_body, (newBody) => {
   replyText.value = formatReplyBody(newBody);
@@ -44,6 +46,10 @@ const sendReply = async () => {
           : `Re: ${props.project_theme}`,
       body: replyText.value
     };
+
+    if (ccEmail.value.trim()) {
+      replyData.cc_email = ccEmail.value.trim();
+    }
 
     const response = await backendApi.post("personal/user/admin/mail/inbound/reply/", replyData, {
       headers: {
@@ -74,8 +80,11 @@ const sendReply = async () => {
                  :value="props.subject_email">
         </div>
         <div class="mb-2">
-          <input type="text" class="form-control form-control-sm bg-transparent text-light border-secondary rounded-2"
-                 placeholder="Send copy to...">
+          <input
+              v-model="ccEmail"
+              type="text"
+              class="form-control form-control-sm bg-transparent text-light border-secondary rounded-2"
+              placeholder="Send copy to...">
         </div>
         <div class="mb-2">
           <label class="small text-muted">Theme:</label>

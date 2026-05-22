@@ -280,6 +280,7 @@ class ContactMessageViewSet(viewsets.ModelViewSet):
     def reply(self, request):
         parent_id = request.data.get('parent_id')
         to_email = request.data.get('to_email')
+        cc_email = request.data.get('cc_email')  # 🌟 Забираємо нове необов'язкове поле
         subject = request.data.get('subject')
         reply_body = request.data.get('body')
 
@@ -307,6 +308,11 @@ class ContactMessageViewSet(viewsets.ModelViewSet):
                 "html": f"<div>{html_body}</div>",
                 "headers": headers
             }
+
+            if cc_email and str(cc_email).strip():
+                cc_list = [email.strip() for email in cc_email.split(",") if email.strip()]
+                if cc_list:
+                    params["cc"] = cc_list
 
             resend_response = resend.Emails.send(params)
 
