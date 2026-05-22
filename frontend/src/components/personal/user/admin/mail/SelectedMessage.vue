@@ -2,6 +2,10 @@
 import MailReply from "@/components/personal/user/admin/mail/MailReply.vue";
 import MailAnswer from "@/components/personal/user/admin/mail/MailAnswer.vue";
 import ButtonComp from "@/components/personal/ButtonComp.vue";
+import MoveToArchiveBtn from "@/components/personal/user/admin/mail/buttons/MoveToArchiveBtn.vue";
+import DeleteMailBtn from "@/components/personal/user/admin/mail/buttons/DeleteMailBtn.vue";
+import MoveToSpamBtn from "@/components/personal/user/admin/mail/buttons/MoveToSpamBtn.vue";
+import MarkAsUnreadBtn from "@/components/personal/user/admin/mail/buttons/MarkAsUnreadBtn.vue";
 
 interface Message {
   id: number;
@@ -43,23 +47,13 @@ const props = defineProps<{
           </a>
         </p>
         <div>
-          <button-comp title="Mark as New" class="btn-success p-1 right-angle"></button-comp>
-          <button-comp title="To archive" class="btn-secondary p-1 right-angle">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-archive" viewBox="0 0 16 16">
-              <path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5zm13-3H1v2h14zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
-            </svg>
-          </button-comp>
-          <button-comp title="Delete" class="btn-warning p-1 right-angle">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-              <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-            </svg>
-          </button-comp>
-          <button-comp title="Spam" class="btn-danger p-1 right-angle">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fire" viewBox="0 0 16 16">
-              <path d="M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16m0-1c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3C6.125 10 7 10.5 7 10.5c-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15"/>
-            </svg>
-          </button-comp>
+          <mark-as-unread-btn
+              :message-id=props.message.id
+              :is-read-initial="props.message.is_read"
+          />
+          <move-to-archive-btn />
+          <delete-mail-btn/>
+          <move-to-spam-btn />
         </div>
         <p>
           <a class="btn btn-secondary" data-bs-toggle="collapse" href="#mailAnswerBox" role="button" aria-expanded="false" aria-controls="mailAnswerBox">

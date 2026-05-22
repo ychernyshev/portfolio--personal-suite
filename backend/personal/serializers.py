@@ -16,7 +16,8 @@ class InboundMessageSerializer(serializers.ModelSerializer):
         model = InboundMessageModel
         fields = [
             'id', 'subject_email', 'subject_name', 'project_theme',
-            'mail_body', 'is_from_admin', 'created_at', 'replies'
+            'mail_body', 'is_from_admin', 'is_read', 'is_replied',
+            'is_spam', 'is_archived', 'is_deleted', 'created_at', 'replies'
         ]
         read_only_fields = ['is_from_admin', 'parent']
 

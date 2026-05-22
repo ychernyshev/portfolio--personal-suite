@@ -16,6 +16,7 @@ from rest_framework.response import Response
 from django.core.mail import send_mail, get_connection, EmailMessage
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from twisted.conch.client import default
 
 from personal.models import ProjectItemModel, InboundMessageModel
 from personal.serializers import ProjectItemSerializer, InboundMessageSerializer
@@ -424,3 +425,29 @@ class ContactMessageViewSet(viewsets.ModelViewSet):
 
         except Exception as e:
             return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SetMessageStatusViewSet(viewsets.ModelViewSet):
+    queryset = InboundMessageModel.objects.all()
+    serializer_class = InboundMessageSerializer
+
+    @action(
+        detail=True,
+        methods=['patch'],
+        url_path='is_read',
+        permission_classes=[permissions.AllowAny],  # Потім зміни на IsAuthenticated, коли протестуєш
+        authentication_classes=[]
+    )
+    def is_read(self, request, pk=None):
+        message = self.get_object()
+
+        is_read_status = request.data.get('is_read', False)
+
+        message.is_read = is_read_status
+        message.save()
+
+        return Response({
+            "success": True,
+            "message_id": message.id,
+            "is_read": message.is_read
+        }, status=status.HTTP_200_OK)
