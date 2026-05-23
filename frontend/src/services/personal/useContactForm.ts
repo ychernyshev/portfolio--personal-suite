@@ -1,11 +1,11 @@
 // src/composables/useContactForm.ts
 import { ref, reactive } from 'vue';
 import backendApi from "@/services/backendApi";
-import { useMessageStore } from "@/services/personal/useMessageStore";
+import { useMailStore } from "@/services/personal/useMailStore.ts";
 
 export function
 useContactForm() {
-    const messageStore = useMessageStore();
+    const messageStore = useMailStore();
     const isSuccess = ref(false);
     const fieldsNotFilled = ref(false);
 

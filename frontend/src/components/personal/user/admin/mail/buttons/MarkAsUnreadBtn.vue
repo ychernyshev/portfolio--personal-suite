@@ -2,7 +2,8 @@
 import {computed, ref} from "vue";
 import ButtonComp from "@/components/personal/ButtonComp.vue";
 import backendApi from "@/services/backendApi.ts";
-import {useToastStore} from "@/services/personal/useToastStore.ts";
+import {useToastStore} from "@/services/personal/useToastStore";
+import { useMailStore } from "@/services/personal/useMailStore";
 
 const props = defineProps<{
   messageId: number;
@@ -11,6 +12,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['statusUpdated']);
 const toast = useToastStore();
+const mailStore = useMailStore();
 
 const isRead = ref(props.isReadInitial);
 const isLoading = ref(false);
@@ -37,6 +39,10 @@ const toggleReadStatus = async () => {
 
     if (response.data && response.data.success) {
       isRead.value = response.data.is_read;
+
+      mailStore.updateMessageStatus(props.messageId, response.data.is_read);
+
+      toast.show(isRead.value ? 'The mail is marked as read' : 'The mail is marked as unread', 'success');
     }
   } catch (error) {
     console.error("Can not change the mail status:", error);

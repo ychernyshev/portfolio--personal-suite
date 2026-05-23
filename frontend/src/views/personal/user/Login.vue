@@ -3,9 +3,9 @@
   import { useRoute, useRouter } from 'vue-router';
   import backendApi from "@/services/backendApi.ts";
   import ButtonComp from "@/components/personal/ButtonComp.vue";
-  import {useMessageStore} from "@/services/personal/useMessageStore.ts";
+  import {useMailStore} from "@/services/personal/useMailStore.js";
 
-  const messageStore = useMessageStore();
+  const messageStore = useMailStore();
 
   const route = useRoute();
   const router = useRouter();

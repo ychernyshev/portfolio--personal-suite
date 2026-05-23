@@ -1,11 +1,15 @@
 // src/stores/messageStore.ts
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import backendApi from "@/services/backendApi";
 
-export const useMessageStore = defineStore('messages', () => {
+export const useMailStore = defineStore('messages', () => {
     const messages = ref<any[]>([]);
     const isLoading = ref(false);
+
+    const unreadCount = computed(() => {
+        return messages.value.filter(msg => !msg.is_read).length;
+    });
 
     const fetchMessages = async () => {
         isLoading.value = true;
@@ -21,6 +25,13 @@ export const useMessageStore = defineStore('messages', () => {
 
     const addMessage = (newMessage: any) => {
         messages.value.unshift(newMessage);
+    };
+
+    const updateMessageStatus = (id: number, isReadStatus: boolean) => {
+        const msg = messages.value.find(m => m.id === id);
+        if (msg) {
+            msg.is_read = isReadStatus;
+        }
     };
 
     const initWebSocket = () => {
@@ -42,5 +53,13 @@ export const useMessageStore = defineStore('messages', () => {
         };
     };
 
-    return { messages, isLoading, fetchMessages, addMessage, initWebSocket };
+    return {
+        messages,
+        isLoading,
+        unreadCount,
+        fetchMessages,
+        addMessage,
+        updateMessageStatus,
+        initWebSocket
+    };
 });
