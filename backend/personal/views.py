@@ -435,14 +435,12 @@ class SetMessageStatusViewSet(viewsets.ModelViewSet):
         detail=True,
         methods=['patch'],
         url_path='is_read',
-        permission_classes=[permissions.AllowAny],  # Потім зміни на IsAuthenticated, коли протестуєш
+        permission_classes=[permissions.AllowAny],
         authentication_classes=[]
     )
     def is_read(self, request, pk=None):
         message = self.get_object()
-
         is_read_status = request.data.get('is_read', False)
-
         message.is_read = is_read_status
         message.save()
 

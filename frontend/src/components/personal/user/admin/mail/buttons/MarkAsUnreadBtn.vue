@@ -24,7 +24,7 @@ const toggleReadStatus = async () => {
 
     if (response.data && response.data.success) {
       isRead.value = response.data.is_read;
-      alert(`Mail marked as ${isRead.value ? 'Read' : 'Unread'}`);
+      // alert(`Mail marked as ${isRead.value ? 'Read' : 'Unread'}`);
     }
   } catch (error) {
     console.error("Can not change the mail status:", error);
@@ -54,7 +54,5 @@ const toggleReadStatus = async () => {
 </template>
 
 <style scoped>
-.right-angle {
-  /* Твої кастомні стилі для кутів кнопки, якщо потрібні */
-}
+.right-angle {}
 </style>

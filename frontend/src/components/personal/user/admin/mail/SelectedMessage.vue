@@ -2,9 +2,9 @@
 import MailReply from "@/components/personal/user/admin/mail/MailReply.vue";
 import MailAnswer from "@/components/personal/user/admin/mail/MailAnswer.vue";
 import ButtonComp from "@/components/personal/ButtonComp.vue";
-import MoveToArchiveBtn from "@/components/personal/user/admin/mail/buttons/MoveToArchiveBtn.vue";
-import DeleteMailBtn from "@/components/personal/user/admin/mail/buttons/DeleteMailBtn.vue";
-import MoveToSpamBtn from "@/components/personal/user/admin/mail/buttons/MoveToSpamBtn.vue";
+// import MoveToArchiveBtn from "@/components/personal/user/admin/mail/buttons/MoveToArchiveBtn.vue";
+// import DeleteMailBtn from "@/components/personal/user/admin/mail/buttons/DeleteMailBtn.vue";
+// import MoveToSpamBtn from "@/components/personal/user/admin/mail/buttons/MoveToSpamBtn.vue";
 import MarkAsUnreadBtn from "@/components/personal/user/admin/mail/buttons/MarkAsUnreadBtn.vue";
 
 interface Message {
@@ -51,9 +51,9 @@ const props = defineProps<{
               :message-id=props.message.id
               :is-read-initial="props.message.is_read"
           />
-          <move-to-archive-btn />
-          <delete-mail-btn/>
-          <move-to-spam-btn />
+<!--          <move-to-archive-btn />-->
+<!--          <delete-mail-btn/>-->
+<!--          <move-to-spam-btn />-->
         </div>
         <p>
           <a class="btn btn-secondary" data-bs-toggle="collapse" href="#mailAnswerBox" role="button" aria-expanded="false" aria-controls="mailAnswerBox">
