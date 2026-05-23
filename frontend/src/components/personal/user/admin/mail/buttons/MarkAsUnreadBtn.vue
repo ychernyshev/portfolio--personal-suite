@@ -1,15 +1,21 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import {computed, ref} from "vue";
 import ButtonComp from "@/components/personal/ButtonComp.vue";
 import backendApi from "@/services/backendApi.ts";
+import {useToastStore} from "@/services/personal/useToastStore.ts";
 
 const props = defineProps<{
   messageId: number;
   isReadInitial: boolean;
 }>();
 
+const emit = defineEmits(['statusUpdated']);
+const toast = useToastStore();
+
 const isRead = ref(props.isReadInitial);
 const isLoading = ref(false);
+
+const buttonText = computed(() => isRead.value ? 'Mark as unread' : 'Read');
 
 const toggleReadStatus = async () => {
   if (isLoading.value) return;
@@ -22,12 +28,19 @@ const toggleReadStatus = async () => {
       is_read: nextStatus
     });
 
+    isRead.value = nextStatus;
+
+    const textNotification = nextStatus ? 'The mail is marked as read' : 'The mail is marked as unread';
+    toast.show(textNotification, 'success');
+
+    emit('statusUpdated', { id: props.messageId, is_read: nextStatus });
+
     if (response.data && response.data.success) {
       isRead.value = response.data.is_read;
-      // alert(`Mail marked as ${isRead.value ? 'Read' : 'Unread'}`);
     }
   } catch (error) {
     console.error("Can not change the mail status:", error);
+    toast.show('Can not change the mail status','danger');
   } finally {
     isLoading.value = false;
   }
@@ -36,10 +49,10 @@ const toggleReadStatus = async () => {
 
 <template>
   <button-comp
-      :title="isRead ? 'Mark as Unread' : 'Mark as Read'"
-      class="btn-warning p-1 right-angle"
-      :disabled="isLoading"
       @click="toggleReadStatus"
+      :disabled="isLoading"
+      class="btn-warning p-1 right-angle"
+      :title="isRead ? 'Mark as Unread' : 'Mark as Read'"
   >
     <svg v-if="isRead" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash" viewBox="0 0 16 16">
       <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c4.478 0 7.268 4.73 7.474 5.08-.102.166-.49.734-1.127 1.336l.752.752zM7.42 5.617l1.16 1.16a2.1 2.1 0 0 1 .132 2.193l1.56 1.56a4 4 0 0 0-.58-4.784 4 4 0 0 0-2.272-.13z"/>

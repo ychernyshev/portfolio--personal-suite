@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import InboxSidebar from "@/components/personal/user/admin/mail/InboxSidebar.vue";
   import SyncMail from "@/components/personal/user/admin/mail/SyncMail.vue";
+  import Toast from "@/components/personal/user/admin/Toast.vue";
 </script>
 
 <template>
@@ -10,6 +11,7 @@
     <main class="container-fluid inbox-container m-0 p-0">
       <slot />
     </main>
+    <toast />
   </div>
 </template>
 
