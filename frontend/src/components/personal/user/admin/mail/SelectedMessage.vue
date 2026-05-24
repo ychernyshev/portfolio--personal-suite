@@ -2,10 +2,10 @@
 import MailReply from "@/components/personal/user/admin/mail/MailReply.vue";
 import MailAnswer from "@/components/personal/user/admin/mail/MailAnswer.vue";
 import ButtonComp from "@/components/personal/ButtonComp.vue";
-// import DeleteMailBtn from "@/components/personal/user/admin/mail/buttons/DeleteMailBtn.vue";
 import MarkAsUnreadBtn from "@/components/personal/user/admin/mail/buttons/MarkAsUnreadBtn.vue";
 import MoveToArchiveBtn from "@/components/personal/user/admin/mail/buttons/MoveToArchiveBtn.vue";
 import MoveToSpamBtn from "@/components/personal/user/admin/mail/buttons/MoveToSpamBtn.vue";
+import DeleteMailBtn from "@/components/personal/user/admin/mail/buttons/DeleteMailBtn.vue";
 
 interface Message {
   id: number;
@@ -17,6 +17,7 @@ interface Message {
   is_read: boolean;
   is_archived: boolean;
   is_spam: boolean;
+  is_deleted: boolean;
 }
 
 const props = defineProps<{
@@ -57,7 +58,10 @@ const props = defineProps<{
             :message-id=props.message.id
             :is-archive-initial="props.message.is_archived"
           />
-<!--          <delete-mail-btn/>-->
+          <delete-mail-btn
+            :message-id="props.message.id"
+            :is-delete-initial="props.message.is_deleted"
+          />
           <move-to-spam-btn
             :message-id="props.message.id"
             :is-spam-initial="props.message.is_spam"

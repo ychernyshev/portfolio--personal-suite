@@ -21,6 +21,7 @@ interface Message {
   is_read: boolean;
   is_archived: boolean;
   is_spam: boolean;
+  is_deleted: boolean;
 }
 const selectedMessage = ref<Message | null>(null);
 
