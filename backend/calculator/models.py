@@ -1,5 +1,8 @@
+import calendar
+from datetime import date
+
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum, Avg
 from django.utils import timezone
 
 
@@ -143,8 +146,83 @@ class DataEntryLineModel(models.Model):
         except(TypeError, ZeroDivisionError):
             return self.FALLBACK_COST
 
-    def get_empty_day_message(self):
-        if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
+    @classmethod
+    def get_current_month(cls):
+        current_month = date.today().month
+
+        return current_month
+
+    @classmethod
+    def get_count_of_sun_days(cls):
+        current_month = cls.get_current_month()
+        current_month_weather = cls.objects.filter(date__month=current_month)
+        sunny_days = current_month_weather.filter(weather__name__icontains="sunny")
+        if sunny_days:
+            return sunny_days.count()
+        return 0
+
+    @classmethod
+    def get_count_of_month_average_temperature(cls):
+        current_month = cls.get_current_month()
+        current_month_average_temperature = WeatherDataModel.objects.filter(
+            timestamp__month=current_month
+        )
+        average_temperature = current_month_average_temperature.aggregate(
+            average_temperature=Avg('temperature')
+        )
+        if average_temperature['average_temperature'] is not None:
+            return round(average_temperature['average_temperature'], 2)
+        return 0
+
+    @classmethod
+    def get_count_of_month_average_power(cls):
+        current_month = cls.get_current_month()
+        current_month_average_power = cls.objects.filter(date__month=current_month)
+        average_power = current_month_average_power.aggregate(
+            average_power=Avg('full_day_power')
+        )
+        if average_power['average_power'] is not None:
+            return round(average_power['average_power'], 2)
+        return 0
+
+    @classmethod
+    def get_count_of_month_total_power(cls):
+        current_month = cls.get_current_month()
+        current_month_total_power = cls.objects.filter(date__month=current_month).aggregate(total_power=Sum('full_day_power'))
+
+        return current_month_total_power['total_power'] or 0
+
+    @classmethod
+    def get_count_of_month_total_savings(cls):
+        current_month = cls.get_current_month()
+        current_month_savings = cls.objects.filter(date__month=current_month).aggregate(
+            total_power=Sum('full_day_cost'))
+
+        return round(current_month_savings['total_power'], 2) or 0
+
+    @classmethod
+    def get_power_difference(cls):
+        current_month = cls.get_current_month()
+        previous_month = current_month - 1 if current_month > 1 else 12
+
+        current_total = cls.objects.filter(date__month=current_month).aggregate(
+            total=Sum('full_day_power')
+        )['total'] or 0
+
+        previous_total = cls.objects.filter(date__month=previous_month).aggregate(
+            total=Sum('full_day_power')
+        )['total'] or 0
+
+        if previous_total == 0:
+            return None
+        difference_power_percentage = ((current_total - previous_total) / previous_total) * 100
+
+        return int(difference_power_percentage)
+
+
+    @classmethod
+    def get_empty_day_message(cls):
+        if cls.morning_data_charge == cls.afternoon_data_charge == cls.evening_data_charge == 0:
             return '0% - 0.0 UAH'
         return None
 

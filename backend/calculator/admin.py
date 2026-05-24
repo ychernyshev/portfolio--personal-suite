@@ -1,7 +1,12 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import DataEntryLineModel, WeatherConditionModel, SolarForecastRecordModel, WeatherDataModel
+from .models import (
+    DataEntryLineModel,
+     WeatherConditionModel,
+     SolarForecastRecordModel,
+     WeatherDataModel
+)
 
 
 # Register your models here.
@@ -88,9 +93,11 @@ class DataEntryLineAdmin(admin.ModelAdmin):
 class WeatherConditionAdmin(admin.ModelAdmin):
     list_display = ['name']
 
+
 @admin.register(SolarForecastRecordModel)
 class SolarForecastRecordAdmin(admin.ModelAdmin):
     list_display = ['date', 'predicted_kwh', 'predicted_savings', 'peak_hour', 'created_at']
+
 
 @admin.register(WeatherDataModel)
 class WeatherDataAdmin(admin.ModelAdmin):

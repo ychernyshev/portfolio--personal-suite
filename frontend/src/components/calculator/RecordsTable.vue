@@ -58,7 +58,8 @@ const error = ref("");
                         style="width: 22px; height: 22px; opacity: 0.8"
                     />
                   </template>
-                  <span v-else class="text-muted text-center c-border">- -</span>
+                  <span v-else class="text-muted text-center c-border small">
+                    not discovered</span>
                 </td>
                 <td
                     class="text-center c-border d-none d-md-table-cell"
@@ -67,7 +68,12 @@ const error = ref("");
                   {{ entry.morning_data_charge }}% -
                   {{ entry.morning_data_price }} UAH
                 </td>
-                <td class="text-center d-none d-md-table-cell" v-else>- -</td>
+                <td class="text-center d-none d-md-table-cell small" v-else-if="entry.afternoon_data_charge && entry.evening_data_charge">
+                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper text-success-2">not tracked</span>
+                </td>
+                <td class="text-center d-none d-md-table-cell small" v-else>
+                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper text-warning-2">no generation</span>
+                </td>
                 <td
                     class="text-center d-none d-xl-table-cell"
                     v-if="
@@ -77,7 +83,14 @@ const error = ref("");
                   {{ entry.afternoon_data_charge }}% -
                   {{ entry.afternoon_data_price }}
                 </td>
-                <td class="text-center d-none d-xl-table-cell" v-else>- -</td>
+                <td
+                    class="text-center d-none d-xl-table-cell small"
+                    v-else-if="!entry.morning_data_charge && !entry.evening_data_charge">
+                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper text-warning-2">no generation</span>
+                </td>
+                <td class="text-center d-none d-xl-table-cell small" v-else>
+                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper text-success-2">not tracked</span>
+                </td>
                 <td
                     class="text-center d-none d-md-table-cell"
                     v-if="entry.evening_data_charge > 0 || entry.evening_data_price"
@@ -85,19 +98,27 @@ const error = ref("");
                   {{ entry.evening_data_charge }}% -
                   {{ entry.evening_data_price }} UAH
                 </td>
-                <td class="text-center d-none d-md-table-cell" v-else>- -</td>
+                <td class="text-center d-none d-md-table-cell small" v-else>
+                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper text-warning-2">
+                    no generation
+                  </span>
+                </td>
                 <td class="text-center" v-if="entry.full_day_power > 0">
                     <span class="badge bg-gradient-blue-1 text-light p-2 w-100"
                     >{{ entry.full_day_power.toFixed(2) }}W</span
                     >
                 </td>
-                <td class="text-center" v-else>- -</td>
+                <td class="text-center small" v-else>
+                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper text-warning-2">no generation</span>
+                </td>
                 <td class="text-center" v-if="entry.full_day_cost > 0">
                     <span class="badge bg-dark-blue text-light p-2 w-sm-100"
                     >{{ entry.full_day_cost.toFixed(2) }}UAH</span
                     >
                 </td>
-                <td class="text-center" v-else>- -</td>
+                <td class="text-center small" v-else>
+                  <span class="bg-body-tertiary p-2 rounded-1 small text-upper text-warning-2">not calculated</span>
+                </td>
                 <td class="text-center d-none d-lg-table-cell">
                   <small>{{ entry.power_tariff }}</small>
                 </td>
