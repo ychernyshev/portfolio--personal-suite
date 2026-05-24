@@ -20,6 +20,7 @@ interface Message {
   created_at: string;
   is_read: boolean;
   is_archived: boolean;
+  is_spam: boolean;
 }
 const selectedMessage = ref<Message | null>(null);
 
