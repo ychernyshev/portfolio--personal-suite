@@ -26,23 +26,21 @@ const toggleReadStatus = async () => {
   try {
     const nextStatus = !isRead.value;
 
-    const response = await backendApi.patch(`personal/user/mail/status/${props.messageId}/is_read/`, {
-      is_read: nextStatus
+    const response = await backendApi.patch(`personal/user/mail/status/${props.messageId}/change_status/`, {
+      field: 'is_read',
+      value: nextStatus,
     });
 
-    isRead.value = nextStatus;
-
-    const textNotification = nextStatus ? 'The mail is marked as read' : 'The mail is marked as unread';
-    toast.show(textNotification, 'success');
-
-    emit('statusUpdated', { id: props.messageId, is_read: nextStatus });
-
     if (response.data && response.data.success) {
-      isRead.value = response.data.is_read;
+      const serverStatus = response.data.value;
+      isRead.value = serverStatus;
 
-      mailStore.updateMessageStatus(props.messageId, response.data.is_read);
+      mailStore.updateMessageStatus(props.messageId, serverStatus);
 
-      toast.show(isRead.value ? 'The mail is marked as read' : 'The mail is marked as unread', 'success');
+      const textNotification = serverStatus ? 'The mail is marked as read' : 'The mail is marked as unread';
+      toast.show(textNotification,'success');
+
+      emit('statusUpdated', { id: props.messageId, is_read: serverStatus });
     }
   } catch (error) {
     console.error("Can not change the mail status:", error);

@@ -431,21 +431,33 @@ class SetMessageStatusViewSet(viewsets.ModelViewSet):
     queryset = InboundMessageModel.objects.all()
     serializer_class = InboundMessageSerializer
 
+    ALLOWED_FIELDS = ['is_read', 'is_spam', 'is_archived', 'is_deleted']
+
     @action(
         detail=True,
         methods=['patch'],
-        url_path='is_read',
+        url_path='change_status',
         permission_classes=[permissions.AllowAny],
         authentication_classes=[]
     )
-    def is_read(self, request, pk=None):
+    def change_status(self, request, pk=None):
         message = self.get_object()
-        is_read_status = request.data.get('is_read', False)
-        message.is_read = is_read_status
+
+        field = request.data.get('field')
+        new_value = request.data.get('value', False)
+
+        if field not in self.ALLOWED_FIELDS:
+            return Response(
+                {"success": False, "error": f"Field '{field}' cannot be updated via this endpoint."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        setattr(message, field, new_value)
         message.save()
 
         return Response({
             "success": True,
             "message_id": message.id,
-            "is_read": message.is_read
+            "field": field,
+            "value": getattr(message, field)
         }, status=status.HTTP_200_OK)
