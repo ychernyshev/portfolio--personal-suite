@@ -1,54 +1,54 @@
 <script setup lang="ts">
-import {computed, ref} from "vue";
-import ButtonComp from "@/components/personal/ButtonComp.vue";
-import backendApi from "@/services/backendApi.ts";
-import {useToastStore} from "@/services/personal/useToastStore";
-import { useMailStore } from "@/services/personal/useMailStore";
+  import {computed, ref} from "vue";
+  import ButtonComp from "@/components/personal/ButtonComp.vue";
+  import backendApi from "@/services/backendApi.ts";
+  import {useToastStore} from "@/services/personal/useToastStore";
+  import { useMailStore } from "@/services/personal/useMailStore";
 
-const props = defineProps<{
-  messageId: number;
-  isReadInitial: boolean;
-}>();
+  const props = defineProps<{
+    messageId: number;
+    isReadInitial: boolean;
+  }>();
 
-const emit = defineEmits(['statusUpdated']);
-const toast = useToastStore();
-const mailStore = useMailStore();
+  const emit = defineEmits(['statusUpdated']);
+  const toast = useToastStore();
+  const mailStore = useMailStore();
 
-const isRead = ref(props.isReadInitial);
-const isLoading = ref(false);
+  const isRead = ref(props.isReadInitial);
+  const isLoading = ref(false);
 
-const buttonText = computed(() => isRead.value ? 'Mark as unread' : 'Read');
+  const buttonText = computed(() => isRead.value ? 'Mark as unread' : 'Read');
 
-const toggleReadStatus = async () => {
-  if (isLoading.value) return;
+  const toggleReadStatus = async () => {
+    if (isLoading.value) return;
 
-  isLoading.value = true;
-  try {
-    const nextStatus = !isRead.value;
+    isLoading.value = true;
+    try {
+      const nextStatus = !isRead.value;
 
-    const response = await backendApi.patch(`personal/user/mail/status/${props.messageId}/change_status/`, {
-      field: 'is_read',
-      value: nextStatus,
-    });
+      const response = await backendApi.patch(`personal/user/mail/status/${props.messageId}/change_status/`, {
+        field: 'is_read',
+        value: nextStatus,
+      });
 
-    if (response.data && response.data.success) {
-      const serverStatus = response.data.value;
-      isRead.value = serverStatus;
+      if (response.data && response.data.success) {
+        const serverStatus = response.data.value;
+        isRead.value = serverStatus;
 
-      mailStore.updateMessageStatus(props.messageId, serverStatus);
+        mailStore.updateMessageStatus(props.messageId, serverStatus);
 
-      const textNotification = serverStatus ? 'The mail is marked as read' : 'The mail is marked as unread';
-      toast.show(textNotification,'success');
+        const textNotification = serverStatus ? 'The mail is marked as read' : 'The mail is marked as unread';
+        toast.show(textNotification,'success');
 
-      emit('statusUpdated', { id: props.messageId, is_read: serverStatus });
+        emit('statusUpdated', { id: props.messageId, is_read: serverStatus });
+      }
+    } catch (error) {
+      console.error("Can not change the mail status:", error);
+      toast.show('Can not change the mail status','danger');
+    } finally {
+      isLoading.value = false;
     }
-  } catch (error) {
-    console.error("Can not change the mail status:", error);
-    toast.show('Can not change the mail status','danger');
-  } finally {
-    isLoading.value = false;
-  }
-};
+  };
 </script>
 
 <template>

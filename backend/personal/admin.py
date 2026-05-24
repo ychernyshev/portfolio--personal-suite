@@ -8,7 +8,7 @@ from personal.models import InboundMessageModel
 
 @admin.register(InboundMessageModel)
 class InboundMessageAdmin(admin.ModelAdmin):
-    list_display = ('subject_email', 'subject_name', 'project_theme', 'created_at', 'is_read', 'is_deleted')
+    list_display = ('subject_email', 'subject_name', 'project_theme', 'created_at', 'is_read', 'is_archived', 'is_deleted')
     list_filter = ('is_deleted', 'is_archived', 'is_read')
 
     def save_model(self, request, obj, form, change):
