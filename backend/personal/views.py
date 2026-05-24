@@ -273,39 +273,27 @@ class ContactMessageViewSet(viewsets.ModelViewSet):
         # if not instance.is_from_admin:
         #     send_auto_reply(instance.sender_email)
 
-    @action(
-        detail=False,
-        methods=['post'],
-        url_path='reply'
-    )
-    def reply(self, request):
-        parent_id = request.data.get('parent_id')
-        to_email = request.data.get('to_email')
-        cc_email = request.data.get('cc_email')  # 🌟 Забираємо нове необов'язкове поле
-        subject = request.data.get('subject')
-        reply_body = request.data.get('body')
-
-        if not all([parent_id, to_email, subject, reply_body]):
-            return Response({"error": "Missing fields"}, status=status.HTTP_400_BAD_REQUEST)
-
-        parent_message = get_object_or_404(InboundMessageModel, id=parent_id)
-
+    def _send_and_log_email(self, parent_message, to_email, subject, body, prefix, cc_email=None,
+                            custom_header_key="In-Reply-To"):
         try:
             headers = {}
             if parent_message.external_id:
                 clean_msg_id = parent_message.external_id.strip('<>')
                 headers = {
-                    "In-Reply-To": f"<{clean_msg_id}>",
+                    custom_header_key: f"<{clean_msg_id}>",
                     "References": f"<{clean_msg_id}>",
                 }
-            html_body = reply_body.replace('\n', '<br>')
 
+            html_body = body.replace('\n', '<br>')
             from_email = os.getenv('RESEND_DEFAULT_EMAIL') or "Admin <communicate@ychernyshev.dev>"
+
+            clean_prefix = f"{prefix.strip(':')} "
+            final_subject = subject if subject.lower().startswith(prefix.lower()) else f"{clean_prefix}{subject}"
 
             params = {
                 "from": from_email,
                 "to": [to_email],
-                "subject": subject if subject.lower().startswith('re:') else f"Re: {subject}",
+                "subject": final_subject,
                 "html": f"<div>{html_body}</div>",
                 "headers": headers
             }
@@ -331,8 +319,8 @@ class ContactMessageViewSet(viewsets.ModelViewSet):
                 parent=parent_message,
                 subject_email=from_email,
                 subject_name="Admin",
-                project_theme=subject,
-                mail_body=reply_body,
+                project_theme=final_subject,
+                mail_body=body,
                 external_id=new_external_id,
                 is_from_admin=True,
                 is_read=True
@@ -342,8 +330,39 @@ class ContactMessageViewSet(viewsets.ModelViewSet):
 
         except Exception as e:
             traceback.print_exc()
-            return Response({"error": "Failed to send reply via Resend API", "details": str(e)},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                {"error": f"Failed to process email operational pipeline", "details": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+
+    @action(
+        detail=False,
+        methods=['post'],
+        url_path='reply'
+    )
+    def reply(self, request):
+        parent_id = request.data.get('parent_id')
+        to_email = request.data.get('to_email')
+        cc_email = request.data.get('cc_email')
+        subject = request.data.get('subject')
+        reply_body = request.data.get('body')
+
+        if not all([parent_id, to_email, subject, reply_body]):
+            return Response({"error": "Missing fields"}, status=status.HTTP_400_BAD_REQUEST)
+
+        parent_message = get_object_or_404(InboundMessageModel, id=parent_id)
+
+        return self._send_and_log_email(
+            parent_message=parent_message,
+            to_email=to_email,
+            subject=subject,
+            body=reply_body,
+            prefix="Re:",
+            cc_email=cc_email,
+            custom_header_key="In-Reply-To"
+        )
 
         def _sync_email_pipeline():
             email = EmailMessage(
@@ -374,6 +393,31 @@ class ContactMessageViewSet(viewsets.ModelViewSet):
         except Exception as e:
             traceback.print_exc()
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(
+        detail=False,
+        methods=['post'],
+        url_path='forward'
+    )
+    def forward(self, request):
+        parent_id = request.data.get('parent_id')
+        to_email = request.data.get('to_email')
+        subject = request.data.get('subject')
+        forward_body = request.data.get('body')
+
+        if not all([parent_id, to_email, subject, forward_body]):
+            return Response({"error": "Missing fields"}, status=status.HTTP_400_BAD_REQUEST)
+
+        parent_message = get_object_or_404(InboundMessageModel, id=parent_id)
+
+        return self._send_and_log_email(
+            parent_message=parent_message,
+            to_email=to_email,
+            subject=subject,
+            body=forward_body,
+            prefix="Fwd:",
+            custom_header_key="In-Forward-To"
+        )
 
     # Inbound messages
     @action(

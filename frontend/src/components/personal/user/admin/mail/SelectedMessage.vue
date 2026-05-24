@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import MailReply from "@/components/personal/user/admin/mail/MailReply.vue";
-import MailAnswer from "@/components/personal/user/admin/mail/MailAnswer.vue";
+import MailForward from "@/components/personal/user/admin/mail/MailForward.vue";
 import ButtonComp from "@/components/personal/ButtonComp.vue";
 import MarkAsUnreadBtn from "@/components/personal/user/admin/mail/buttons/MarkAsUnreadBtn.vue";
 import MoveToArchiveBtn from "@/components/personal/user/admin/mail/buttons/MoveToArchiveBtn.vue";
@@ -68,7 +68,7 @@ const props = defineProps<{
           />
         </div>
         <p>
-          <a class="btn btn-secondary" data-bs-toggle="collapse" href="#mailAnswerBox" role="button" aria-expanded="false" aria-controls="mailAnswerBox">
+          <a class="btn btn-secondary" data-bs-toggle="collapse" href="#mailForwardBox" role="button" aria-expanded="false" aria-controls="mailForwardBox">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-right" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="M14.854 4.854a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 4H3.5A2.5 2.5 0 0 0 1 6.5v8a.5.5 0 0 0 1 0v-8A1.5 1.5 0 0 1 3.5 5h9.793l-3.147 3.146a.5.5 0 0 0 .708.708z"/>
             </svg>
@@ -83,8 +83,10 @@ const props = defineProps<{
             :project_theme="props.message.project_theme"
             :mail_body="props.message.mail_body"
         />
-        <mail-answer
+        <mail-forward
             :message_id="props.message.id"
+            :subject_email="props.message.subject_email"
+            :date="props.message.created_at"
             :project_theme="props.message.project_theme"
             :mail_body="props.message.mail_body"
         />
