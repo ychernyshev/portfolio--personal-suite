@@ -19,12 +19,12 @@ interface Message {
   mail_body: string;
   created_at: string;
   is_read: boolean;
+  is_archived: boolean;
 }
 const selectedMessage = ref<Message | null>(null);
 
 const selectMessage = (msg: Message) => {
   selectedMessage.value = msg;
-  // Тут пізніше додамо запит на бекенд mark_as_read
 };
 
 onMounted( async () => {

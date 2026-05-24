@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
   import ButtonComp from "@/components/personal/ButtonComp.vue";
   import backendApi from "@/services/backendApi.ts";
   import {useToastStore} from "@/services/personal/useToastStore";
@@ -17,6 +17,10 @@
   const isRead = ref(props.isReadInitial);
   const isLoading = ref(false);
 
+  watch(() => props.isReadInitial, (newVal) => {
+    isRead.value = newVal;
+  });
+
   const buttonText = computed(() => isRead.value ? 'Mark as unread' : 'Read');
 
   const toggleReadStatus = async () => {
@@ -33,9 +37,10 @@
 
       if (response.data && response.data.success) {
         const serverStatus = response.data.value;
+        const fieldStatus = response.data.field;
         isRead.value = serverStatus;
 
-        mailStore.updateMessageStatus(props.messageId, serverStatus);
+        mailStore.updateMessageStatus(props.messageId, fieldStatus, serverStatus);
 
         const textNotification = serverStatus ? 'The mail is marked as read' : 'The mail is marked as unread';
         toast.show(textNotification,'success');

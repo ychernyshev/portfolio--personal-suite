@@ -27,10 +27,10 @@ export const useMailStore = defineStore('messages', () => {
         messages.value.unshift(newMessage);
     };
 
-    const updateMessageStatus = (id: number, isReadStatus: boolean) => {
+    const updateMessageStatus = (id: number, field: string, value: any) => {
         const msg = messages.value.find(m => m.id === id);
         if (msg) {
-            msg.is_read = isReadStatus;
+            Object.assign(msg, { [field]: value });
         }
     };
 

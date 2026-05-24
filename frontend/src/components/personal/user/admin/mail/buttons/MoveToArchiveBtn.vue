@@ -3,7 +3,7 @@
   import backendApi from "@/services/backendApi.ts";
   import {useToastStore} from "@/services/personal/useToastStore";
   import {useMailStore} from "@/services/personal/useMailStore.ts";
-  import {ref} from "vue";
+  import {ref, watch} from "vue";
 
   const props = defineProps<{
     messageId: number;
@@ -16,6 +16,10 @@
 
   const is_archived = ref(props.isArchiveInitial);
   const isLoading = ref(false);
+
+  watch(() => props.isArchiveInitial, (newVal) => {
+    is_archived.value = newVal;
+  });
 
   const toggleArchiveStatus = async () => {
     if (isLoading.value) return;
@@ -31,9 +35,10 @@
 
       if (response.data && response.data.success) {
         const serverStatus = response.data.value;
-        is_archived.value = nextStatus;
+        const fieldStatus = response.data.field;
+        is_archived.value = serverStatus;
 
-        mailStore.updateMessageStatus(props.messageId, serverStatus)
+        mailStore.updateMessageStatus(props.messageId, fieldStatus, serverStatus)
 
         const textNotification = serverStatus ? 'The mail is marked as archived' : 'The mail is marked as not archived';
         toast.show(textNotification, 'success');

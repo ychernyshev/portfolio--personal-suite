@@ -7,6 +7,7 @@ interface Message {
   mail_body: string;
   created_at: string;
   is_read: boolean;
+  is_archived: boolean;
 }
 
 interface IProps {
@@ -24,9 +25,11 @@ const props = defineProps<IProps>();
         v-for="msg in props.messages"
         :key="msg.id"
         @click="props.onSelect(msg)"
+        v-show="!msg.is_archived"
         class="list-group-item bg-transparent text-light border-top-0 border-end-0 border-bottom-0 mb-2 cursor-pointer msg-card pt-4"
         :class="{ 'active-msg': props.selectedMessage?.id === msg.id }"
     >
+      {{ msg.is_archived }}
       <div class="d-flex justify-content-between small">
         <span class="text-info fw-bold">{{ msg.subject_name }}</span>
         <div class="d-flex flex-row">
