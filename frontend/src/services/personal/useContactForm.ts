@@ -1,8 +1,11 @@
 // src/composables/useContactForm.ts
 import { ref, reactive } from 'vue';
 import backendApi from "@/services/backendApi";
+import { useMailStore } from "@/services/personal/useMailStore.ts";
 
-export function useContactForm() {
+export function
+useContactForm() {
+    const messageStore = useMailStore();
     const isSuccess = ref(false);
     const fieldsNotFilled = ref(false);
 
@@ -22,13 +25,14 @@ export function useContactForm() {
 
         try {
             const response = await backendApi.post('personal/contact/', {
-                name: formData.subject,
-                email: formData.email,
-                theme: formData.theme,
-                message: formData.message
+                subject_name: formData.subject,
+                subject_email: formData.email,
+                project_theme: formData.theme,
+                mail_body: formData.message
             });
 
-            if (response.data.status === 'success') {
+            if (response.status === 201 || response.status === 200) {
+                messageStore.addMessage(response.data);
                 isSuccess.value = true;
                 // Очищення форми
                 formData.subject = '';

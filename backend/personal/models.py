@@ -13,3 +13,41 @@ class ProjectItemModel(models.Model):
     class Meta:
         verbose_name = 'project item'
         verbose_name_plural = "Project Items"
+
+
+class InboundMessageModel(models.Model):
+    subject_name = models.CharField(max_length=100, blank=True)
+    subject_email = models.EmailField()
+    project_theme = models.CharField(max_length=255)
+    mail_body = models.TextField()
+
+    parent = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='replies'
+    )
+
+    external_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
+
+    is_from_admin = models.BooleanField(default=False)
+    is_read = models.BooleanField(default=False)
+    is_replied = models.BooleanField(default=False)
+    is_spam = models.BooleanField(default=False)
+    is_archived = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['subject_email', 'is_archived']),
+        ]
+        verbose_name="contact message"
+        verbose_name_plural="Contact Messages"
+
+    def __str__(self):
+        return f"{'Admin' if self.is_from_admin else self.subject_email}: {self.project_theme[:30]}"
