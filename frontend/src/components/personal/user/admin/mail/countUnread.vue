@@ -5,7 +5,7 @@ const mailStore = useMailStore();
 </script>
 
 <template>
-  <span v-if="mailStore.unreadCount > 0" class="badge bg-gradient-primary ms-2">
+  <span v-if="mailStore.unreadCount > 0">
     {{ mailStore.unreadCount }}
   </span>
 </template>

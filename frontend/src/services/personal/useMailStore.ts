@@ -7,6 +7,24 @@ export const useMailStore = defineStore('messages', () => {
     const messages = ref<any[]>([]);
     const isLoading = ref(false);
 
+    const currentFolder = ref<'inbox' | 'archive' | 'spam' | 'trash'>('inbox');
+
+    const filteredMessages = computed(() => {
+        return messages.value.filter(msg => {
+            switch (currentFolder.value) {
+                case 'archive':
+                    return msg.is_archived && !msg.is_deleted;
+                case 'spam':
+                    return msg.is_spam && !msg.is_deleted;
+                case 'trash':
+                    return msg.is_deleted;
+                case 'inbox':
+                default:
+                    return !msg.is_archived && !msg.is_spam && !msg.is_deleted;
+            }
+        });
+    });
+
     const unreadCount = computed(() => {
         return messages.value.filter(msg => !msg.is_read).length;
     });
@@ -56,6 +74,8 @@ export const useMailStore = defineStore('messages', () => {
     return {
         messages,
         isLoading,
+        currentFolder,
+        filteredMessages,
         unreadCount,
         fetchMessages,
         addMessage,

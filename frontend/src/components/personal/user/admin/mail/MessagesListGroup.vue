@@ -27,7 +27,6 @@ const props = defineProps<IProps>();
         v-for="msg in props.messages"
         :key="msg.id"
         @click="props.onSelect(msg)"
-        v-show="!msg.is_archived || !msg.is_spam || !msg.is_deleted"
         class="list-group-item bg-transparent text-light border-top-0 border-end-0 border-bottom-0 mb-2 cursor-pointer msg-card pt-4"
         :class="{ 'active-msg': props.selectedMessage?.id === msg.id }"
     >
