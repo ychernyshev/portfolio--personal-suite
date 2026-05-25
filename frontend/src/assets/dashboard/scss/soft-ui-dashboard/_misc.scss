@@ -74,6 +74,12 @@
   }
 }
 
+// hr lines
+hr {
+  border-top: none !important;
+  height: 1px;
+}
+
 // Vertical Line
 hr.vertical {
   position: absolute;
@@ -160,6 +166,10 @@ hr.horizontal {
 
 .border-top-start-radius-0 {
   border-top-left-radius: 0;
+}
+
+.border-dashed{
+  border-style: dashed;
 }
 
 .z-index-sticky {
@@ -268,4 +278,75 @@ hr.horizontal {
   .popover-header {
     font-weight: 600;
   }
+}
+
+
+// Background Sizes
+.bg-cover{
+  background-size: cover;
+}
+
+// Overflow directional
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
+.overflow-y-hidden {
+  overflow-y: hidden;
+}
+.overflow-x-scroll {
+  overflow-x: scroll;
+}
+.overflow-y-scroll {
+  overflow-y: scroll;
+}
+
+// Mask Class
+.mask {
+  position: $mask-position;
+  background-size: $mask-bg-size;
+  background-position: $mask-bg-position;
+  top: $mask-top;
+  left: $mask-left;
+  width: $mask-width;
+  height: $mask-height;
+  opacity: $mask-opacity;
+}
+
+
+// Cursor Pointer Class
+.cursor-pointer {
+  cursor: pointer;
+}
+
+// Translate 50% Class
+.transform-translate-50{
+  transform: translate(0,-50%)
+}
+
+// VR Pages
+
+@include media-breakpoint-up(lg) {
+  .virtual-reality {
+    .sidenav {
+      margin-top: $spacer * 1.5;
+      animation-name: $animation-name;
+      animation-fill-mode: $animation-mode;
+      animation-duration: $animation-duration;
+      transform: $transform-scale;
+      background: $white;
+      left: $position-left !important;
+      position: absolute;
+    }
+  }
+}
+
+// border inside iframe sections
+
+html {
+  border: none !important;
+}
+
+.container,
+.container-fluid {
+  @include make-container();
 }
