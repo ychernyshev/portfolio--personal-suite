@@ -172,9 +172,6 @@ curl -X POST https://api.example.com/api/calculator/entries/ \
 - Full Dockerization of the project using `docker-compose` (Gunicorn, Nginx, and PostgreSQL).  
 - Integration of Redis and Celery for background task processing.
 
-## 📜 License
- — free to use, modify, and distribute.
-
 ## ⚖️ License & Credits
 ### Core Project Logic
 The core application logic, backend architecture, and custom components are authored by Yevhenii Chernyshev and licensed under the **[MIT License](../LICENSE)**.
