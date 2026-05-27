@@ -34,7 +34,7 @@
       </div>
     </nav>
     <!-- End Navbar -->
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-1">
       <div class="row">
         <div class="col-lg-12">
           <div class="card z-index-2">
@@ -51,7 +51,7 @@
               <div class="copyright text-center text-sm text-muted text-lg-start">
                 © {{ currentYear }},
                 <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Personal Dev Showcase</a>
-                2.3.0
+                2.3.2
               </div>
             </div>
           </div>
@@ -62,5 +62,13 @@
 </template>
 
 <style scoped>
+  .card-body {
+    overflow-y: hidden;
+  }
 
+  @media (min-width: 1200px) {
+    .card-body {
+      height: 80vh;
+    }
+  }
 </style>

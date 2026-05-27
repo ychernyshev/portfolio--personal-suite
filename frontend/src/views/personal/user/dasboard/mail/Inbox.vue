@@ -38,8 +38,8 @@ onMounted(async () => {
 
 <template>
   <div class="row m-0 h-100 text-light font-monospace">
-    <div class="col-md-4 m-0 p-0 pt-3 inbox-list-container">
-      <div class="d-flex flex-row align-items-baseline justify-content-between">
+    <div class="col-md-4 m-0 p-0 pt-3">
+      <div class=" d-flex flex-row align-items-baseline justify-content-between">
         <h4 class="text-warning mb-4 ps-3">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-inbox"
                viewBox="0 0 16 16">
@@ -98,28 +98,20 @@ onMounted(async () => {
           </button>
         </div>
       </div>
-
-      <form class="d-flex mb-3" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-
-      <div v-if="isLoading" class="text-center">
-        <div class="text-warning" role="status"></div>
+      <div class="inbox-list-container">
+        <div v-if="isLoading" class="text-center">
+          <div class="text-warning" role="status"></div>
+        </div>
+        <div v-else-if="messages.length === 0" class="text-muted text-center mt-5">
+          No inbound data found.
+        </div>
+        <messages-list-group
+            :messages="filteredMessages"
+            :selected-message="selectedMessage"
+            :on-select="selectMessage"
+        />
       </div>
-
-      <div v-else-if="messages.length === 0" class="text-muted text-center mt-5">
-        No inbound data found.
-      </div>
-
-      <messages-list-group
-          :messages="filteredMessages"
-          :selected-message="selectedMessage"
-          :on-select="selectMessage"
-      />
-
     </div>
-
     <div class="col-md-8 m-0 p-0">
       <selected-message
           :message="selectedMessage"
