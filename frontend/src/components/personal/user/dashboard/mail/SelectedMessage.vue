@@ -75,8 +75,7 @@ const props = defineProps<{
           </a>
         </p>
       </div>
-      {{ props.message.mail_body }}
-      <div class="mt-5">
+      <div class="mb-3">
         <mail-reply
             :message_id="props.message.id"
             :subject_email="props.message.subject_email"
@@ -90,6 +89,9 @@ const props = defineProps<{
             :project_theme="props.message.project_theme"
             :mail_body="props.message.mail_body"
         />
+      </div>
+      <div class="select-message-container">
+        {{ props.message.mail_body }}
       </div>
     </div>
   </div>
@@ -111,5 +113,9 @@ const props = defineProps<{
   font-family: 'Courier New', Courier, monospace;
   line-height: 1.6;
   overflow: scroll;
+}
+
+.select-message-container {
+  overflow-y: scroll;
 }
 </style>

@@ -2,3 +2,7 @@
 
 @import '../../../../src/assets/dashboard/css/nucleo-icons.css';
 @import '../../../../src/assets/dashboard/css/nucleo-svg.css';
+
+.right-angle {
+    border-radius: 0;
+}
