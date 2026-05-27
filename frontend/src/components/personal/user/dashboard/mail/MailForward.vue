@@ -49,7 +49,7 @@
         body: forwardText.value
       };
 
-      const response = await backendApi.post("personal/user/admin/mail/inbound/forward/", forwardData, {
+      const response = await backendApi.post("personal/user/dasboard/mail/inbound/forward/", forwardData, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

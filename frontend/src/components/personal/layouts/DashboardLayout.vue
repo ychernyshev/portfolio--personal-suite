@@ -34,7 +34,9 @@ import {onMounted, onUnmounted} from "vue";
 </script>
 
 <template>
-  <div class="dashboard-wrapper"></div>
+  <div class="dashboard-wrapper">
+    <slot />
+  </div>
 </template>
 
 <style scoped>

@@ -4,9 +4,9 @@ import {useMailStore} from "@/services/personal/useMailStore";
 import {storeToRefs} from "pinia";
 
 import '@/assets/personal/css/personal.css';
-import MessagesListGroup from "@/components/personal/user/admin/mail/MessagesListGroup.vue";
-import SelectedMessage from "@/components/personal/user/admin/mail/SelectedMessage.vue";
-import CountUnread from "@/components/personal/user/admin/mail/countUnread.vue";
+import MessagesListGroup from "@/components/personal/user/dashboard/mail/MessagesListGroup.vue";
+import SelectedMessage from "@/components/personal/user/dashboard/mail/SelectedMessage.vue";
+import CountUnread from "@/components/personal/user/dashboard/mail/countUnread.vue";
 
 const messageStore = useMailStore();
 const {messages, filteredMessages, currentFolder, isLoading} = storeToRefs(messageStore);

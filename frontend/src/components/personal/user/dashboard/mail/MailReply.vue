@@ -51,7 +51,7 @@ const sendReply = async () => {
       replyData.cc_email = ccEmail.value.trim();
     }
 
-    const response = await backendApi.post("personal/user/admin/mail/inbound/reply/", replyData, {
+    const response = await backendApi.post("personal/user/dasboard/mail/inbound/reply/", replyData, {
       headers: {
         'Authorization': `Bearer ${token}`
       }

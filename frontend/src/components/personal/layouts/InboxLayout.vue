@@ -1,7 +1,7 @@
 <script setup lang="ts">
-  import InboxSidebar from "@/components/personal/user/admin/mail/InboxSidebar.vue";
-  import SyncMail from "@/components/personal/user/admin/mail/SyncMail.vue";
-  import Toast from "@/components/personal/user/admin/Toast.vue";
+  import InboxSidebar from "@/components/personal/user/dashboard/mail/InboxSidebar.vue";
+  import SyncMail from "@/components/personal/user/dashboard/mail/SyncMail.vue";
+  import Toast from "@/components/personal/user/dashboard/Toast.vue";
 </script>
 
 <template>

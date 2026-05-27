@@ -9,7 +9,7 @@ from personal.views import (
 
 router = DefaultRouter()
 router.register('projects', ProjectItemViewSet, basename='projects')
-router.register('user/admin/mail/inbound', ContactMessageViewSet, basename='email')
+router.register('user/dashboard/mail/inbound', ContactMessageViewSet, basename='email')
 router.register('user/mail/status', SetMessageStatusViewSet, basename='mail_status')
 router.register('contact', ContactMessageViewSet, basename='contact')
 

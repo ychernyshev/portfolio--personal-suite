@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import MailReply from "@/components/personal/user/admin/mail/MailReply.vue";
-import MailForward from "@/components/personal/user/admin/mail/MailForward.vue";
+import MailReply from "@/components/personal/user/dashboard/mail/MailReply.vue";
+import MailForward from "@/components/personal/user/dashboard/mail/MailForward.vue";
 import ButtonComp from "@/components/personal/ButtonComp.vue";
-import MarkAsUnreadBtn from "@/components/personal/user/admin/mail/buttons/MarkAsUnreadBtn.vue";
-import MoveToArchiveBtn from "@/components/personal/user/admin/mail/buttons/MoveToArchiveBtn.vue";
-import MoveToSpamBtn from "@/components/personal/user/admin/mail/buttons/MoveToSpamBtn.vue";
-import DeleteMailBtn from "@/components/personal/user/admin/mail/buttons/DeleteMailBtn.vue";
+import MarkAsUnreadBtn from "@/components/personal/user/dashboard/mail/buttons/MarkAsUnreadBtn.vue";
+import MoveToArchiveBtn from "@/components/personal/user/dashboard/mail/buttons/MoveToArchiveBtn.vue";
+import MoveToSpamBtn from "@/components/personal/user/dashboard/mail/buttons/MoveToSpamBtn.vue";
+import DeleteMailBtn from "@/components/personal/user/dashboard/mail/buttons/DeleteMailBtn.vue";
 
 interface Message {
   id: number;
