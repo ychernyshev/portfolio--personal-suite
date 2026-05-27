@@ -1,33 +1,40 @@
 <script setup lang="ts">
 import {onMounted, onUnmounted} from "vue";
 
-  import '@/assets/dashboard/css/styles.css';
   import '@/assets/dashboard/css/nucleo-icons.css';
   import '@/assets/dashboard/css/nucleo-svg.css';
   import '@/assets/dashboard/css/nucleo-svg.css';
 
-  const SOFT_UI_DASHBOARD = 'soft-ui-dashboard';
+  const SOFT_UI_DASHBOARD_CLASS = 'soft-ui-styles';
 
   onMounted(() => {
-    if (!document.getElementById(SOFT_UI_DASHBOARD)) {
-      const link = document.createElement('link');
-      link.id = SOFT_UI_DASHBOARD;
-      link.rel = 'stylesheet';
-      link.href = '/assets/dashboard/css/soft-ui-dashboard.css?v=1.0.7';
-      document.head.appendChild(link);
+    const links: string[] = [
+      '/public/assets/dashboard/css/soft-ui-dashboard.css?v=1.0.7',
+      '/public/assets/dashboard/css/dashboard.css'
+    ];
+
+    if (document.getElementsByClassName(SOFT_UI_DASHBOARD_CLASS).length === 0) {
+      links.forEach((linkValue: string) => {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.className = SOFT_UI_DASHBOARD_CLASS;
+        link.href = linkValue;
+
+        document.head.appendChild(link);
+      });
     }
   });
 
   onUnmounted(() => {
-    const link = document.getElementById(SOFT_UI_DASHBOARD);
-    if (link) {
-      link.remove();
+    const dynamicStyles = document.getElementsByClassName(SOFT_UI_DASHBOARD_CLASS);
+    while (dynamicStyles.length > 0) {
+      dynamicStyles[0].remove();
     }
   });
 </script>
 
 <template>
-
+  <div class="dashboard-wrapper"></div>
 </template>
 
 <style scoped>
