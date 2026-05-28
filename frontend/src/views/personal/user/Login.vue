@@ -36,7 +36,7 @@
 
       messageStore.initWebSocket();
 
-      const redirectPath = route.query.next as string || 'user/admin/emails/inbound';
+      const redirectPath = route.query.next as string || 'user/dashboard/emails/inbound';
       await router.push(redirectPath);
     } catch (err: any) {
       errorMessage.value = "You have entered an incorrect username or password";

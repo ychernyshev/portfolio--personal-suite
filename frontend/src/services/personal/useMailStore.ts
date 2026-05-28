@@ -32,7 +32,7 @@ export const useMailStore = defineStore('messages', () => {
     const fetchMessages = async () => {
         isLoading.value = true;
         try {
-            const response = await backendApi.get('/personal/user/admin/mail/inbound');
+            const response = await backendApi.get('/personal/user/dashboard/mail/inbound');
             messages.value = response.data.results || response.data;
         } catch (error) {
             console.error("Failed to fetch messages:", error);

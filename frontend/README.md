@@ -172,5 +172,12 @@ curl -X POST https://api.example.com/api/calculator/entries/ \
 - Full Dockerization of the project using `docker-compose` (Gunicorn, Nginx, and PostgreSQL).  
 - Integration of Redis and Celery for background task processing.
 
-## 📜 License
-[MIT License](../LICENSE) — free to use, modify, and distribute.
+## ⚖️ License & Credits
+### Core Project Logic
+The core application logic, backend architecture, and custom components are authored by Yevhenii Chernyshev and licensed under the **[MIT License](../LICENSE)**.
+
+### UI & Design System
+The visual interface and dashboard layouts are built using and adapted from **Soft UI Dashboard** by [Creative Tim](https://www.creative-tim.com).
+* The UI assets, design tokens, and base templates are used under Creative Tim's standard Open-Source MIT License.
+* Original copyright notices within CSS, SASS, and JS assets remain unaltered.
+* For full license terms, see [CREATIVE-TIM-LICENSE.md](./frontend_folder_path/CREATIVE-TIM-LICENSE.md).

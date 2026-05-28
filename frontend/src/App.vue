@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import CalculatorLayout from "./components/calculator/layouts/_DefaultExtended.vue";
 import PersonalLayout from "./components/personal/layouts/MainLayout.vue";
+import DashboardLayout from "@/components/personal/layouts/DashboardLayout.vue";
 import InboxLayout from "@/components/personal/layouts/InboxLayout.vue";
 import backendApi from "@/services/backendApi.ts";
 
@@ -11,6 +12,7 @@ const route = useRoute();
 const layouts: Record<string, any> = {
   CalculatorLayout,
   PersonalLayout,
+  DashboardLayout,
   InboxLayout,
 };
 
