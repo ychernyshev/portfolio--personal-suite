@@ -60,12 +60,11 @@ const props = defineProps<IProps>();
   cursor: pointer;
 }
 .msg-card:hover {
-  background: #27314A !important;
-  box-shadow: 0 0 3rem 0.5rem rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  background: #ECEEF1 !important;
 }
 .active-msg {
-  background: #0f172a !important;
-  box-shadow: 0 0 3rem 0.5rem rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  background: #F5F7FA !important;
+  box-shadow: 0 0 0.3rem 0.2rem rgba(208, 211, 212, 0.2), 0 -0.2rem 0.8rem 0.1rem rgba(208, 211, 212, 0.2);
   border-left-color: #ffc107 !important;
   border-left-width: 4px !important;
 }
