@@ -26,12 +26,12 @@ const props = defineProps<IProps>();
       v-for="msg in props.messages"
       :key="msg.id"
       @click="props.onSelect(msg)"
-      class="list-group-item bg-transparent text-light border-top-0 border-end-0 border-bottom-0 mb-2 cursor-pointer msg-card pt-4"
+      class="list-group-item bg-transparent text-light border-top-0 border-end-0 border-bottom-0 mb-2 cursor-pointer msg-card p-2 ps-3"
       :class="{ 'active-msg': props.selectedMessage?.id === msg.id }"
   >
-    {{ msg.is_archived }}
     <div class="d-flex justify-content-between small">
-      <span class="text-info fw-bold">{{ msg.subject_name }}</span>
+      <span v-if="msg.subject_name === 'Unknown' || !msg.subject_name" class="text-info fw-bold">{{ msg.subject_email }}</span>
+      <span v-else class="text-info fw-bold">{{ msg.subject_name }}</span>
       <div class="d-flex flex-row">
         <span class="text-secondary">{{ new Date(msg.created_at).toLocaleDateString() }}</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash text-warning-emphasis ms-2" viewBox="0 0 16 16">
@@ -49,7 +49,7 @@ const props = defineProps<IProps>();
         </svg>
       </div>
     </div>
-    <div class="text-truncate mt-1 small">{{ msg.project_theme }}</div>
+    <div class="text-muted mt-1 small text-start">{{ msg.project_theme }}</div>
   </div>
 </template>
 
