@@ -62,7 +62,13 @@
 </template>
 
 <style scoped>
+  .main-content {
+    height: 100vh;
+    flex-direction: column;
+  }
+
   .card-body {
+    height: auto;
     overflow-y: hidden;
   }
 

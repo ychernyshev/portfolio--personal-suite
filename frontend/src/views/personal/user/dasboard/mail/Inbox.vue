@@ -38,7 +38,7 @@ onMounted(async () => {
 
 <template>
   <div class="row m-0 h-100 text-light font-monospace">
-    <div class="col-md-4 m-0 p-0 pt-3">
+    <div class="col-md-4 m-0 p-0 pt-3 h-100 d-flex flex-column">
       <div class=" d-flex flex-row align-items-baseline justify-content-between">
         <h4 class="text-warning mb-4 ps-3">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-inbox"
@@ -121,8 +121,20 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.row.h-100 {
+  height: 100% !important;
+  max-height: 100%;
+}
+
 .inbox-list-container {
-  height: 100vh;
-  overflow: scroll;
+  height: calc(100% - 60px);
+  overflow-y: scroll;
+  flex-grow: 1;
+}
+
+.col-md-8 {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 </style>

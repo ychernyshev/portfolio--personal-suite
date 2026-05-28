@@ -26,7 +26,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div v-if="props.message" class="d-flex flex-column mail-body-container mt-3 ms-3 pt-3 ps-3 pe-3 h-75">
+  <div v-if="props.message" class="d-flex flex-column mail-body-container mt-3 ms-3 pt-3 ps-3 pe-3 h-100" style="max-height: calc(100% - 1rem); box-sizing: border-box;">
     <div class="pb-3 mb-3">
       <h2 class="text-warning">{{ props.message.project_theme }}</h2>
       <div class="d-flex justify-content-between">
