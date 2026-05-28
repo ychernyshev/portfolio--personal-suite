@@ -6,7 +6,7 @@
 
   const fetchMail = async () => {
     try {
-      await backendApi.post("personal/user/dasboard/mail/inbound/sync/")
+      await backendApi.post("personal/user/dashboard/mail/inbound/sync/")
       console.log("Mail successfully synced")
     } catch (error) {
       console.error("Mail sync error:", error)
