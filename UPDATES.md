@@ -1,4 +1,5 @@
 ### Solar Power Calculator V2 
+- [x] New neomorphic toolbar with micro-interactions and full mobile responsiveness
 - [ ] Analytics for the last month. Creating and notification
 - [ ] More weather icons
 - [x] Cleaning form after saving
