@@ -4,6 +4,7 @@ import backendApi from "../../services/calculator/backendApi.js";
 import WeatherIcon from "./WeatherIcon.vue";
 import {useNotificationStore} from "../../../store/useNotificationStore.js";
 import {useCalculatorStore} from "../../../store/useCalculatorStore.js";
+import {data} from "v-calendar/dist/types/tests/unit/util/dayData.d.ts";
 
 const emit = defineEmits(["entry-added"]);
 
@@ -59,7 +60,24 @@ const submitForm = async () => {
     emit("entry-added", {
       title: "New solar power generation data for the day has been added"
     });
+    const nextDay = new Date(formData.value.date);
+    nextDay.setDate(nextDay.getDate() + 1);
+    const nextDayString = nextDay.toISOString().split("T")[0];
+
+    formData.value = {
+      date: nextDayString,
+      power: "600",
+      morning_data_charge: 0,
+      morning_data_price: 0,
+      afternoon_data_charge: 0,
+      afternoon_data_price: 0,
+      evening_data_charge: 0,
+      evening_data_price: 0,
+      weather: [],
+    };
+
   } catch (e) {
+    console.error(e);
     notificationStore.addNotification({
       title: 'Error',
       text: 'Failed to save data.',

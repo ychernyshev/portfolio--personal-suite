@@ -1,7 +1,7 @@
 ### Solar Power Calculator V2 
 - [ ] Analytics for the last month. Creating and notification
 - [ ] More weather icons
-- [ ] Cleaning form after saving
+- [x] Cleaning form after saving
 - [ ] Set up the "Extra power" field
 - [ ] Monthly statistics. Graphic
 - [x] Add Calculator CSS only when the user is watching the current page
