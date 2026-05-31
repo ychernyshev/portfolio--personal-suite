@@ -11,6 +11,7 @@ const currentMonthName = date.toLocaleString('en-US', {month: 'long'});
 
 // Last month
 const lastMonthDate = new Date(date);
+lastMonthDate.setDate(1);
 lastMonthDate.setMonth(date.getMonth() - 1);
 const lastMonthName = lastMonthDate.toLocaleString('en-US', {month: 'long'});
 
