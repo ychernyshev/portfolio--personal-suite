@@ -17,7 +17,8 @@ class DataEntryLineAdmin(admin.ModelAdmin):
         'display_morning_charge', 'display_morning_price',
         'display_afternoon_charge', 'display_afternoon_price',
         'display_evening_charge', 'display_evening_price',
-        'display_full_day_power', 'display_full_day_cost', 'display_power_tariff'
+        'display_extra_power', 'display_full_day_power',
+        'display_full_day_cost', 'display_power_tariff'
     ]
 
     def get_weather(self, obj):
@@ -67,6 +68,12 @@ class DataEntryLineAdmin(admin.ModelAdmin):
         return format_html('{}₴', obj.evening_data_price)
 
     display_evening_price.short_description = 'Вартість використаної енергії на вечір'
+
+
+    def display_extra_power(self, obj):
+        return format_html('{}₴', obj.extra_power)
+
+    display_extra_power.short_description = 'Приблизна потужність використана на USB'
 
 
     def display_full_day_cost(self, obj):

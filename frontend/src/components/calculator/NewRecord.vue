@@ -4,7 +4,6 @@ import backendApi from "../../services/calculator/backendApi.js";
 import WeatherIcon from "./WeatherIcon.vue";
 import {useNotificationStore} from "../../../store/useNotificationStore.js";
 import {useCalculatorStore} from "../../../store/useCalculatorStore.js";
-import {data} from "v-calendar/dist/types/tests/unit/util/dayData.d.ts";
 
 const emit = defineEmits(["entry-added"]);
 
