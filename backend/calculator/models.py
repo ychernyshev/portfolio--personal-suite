@@ -60,11 +60,12 @@ class DataEntryLineModel(models.Model):
     weather = models.ManyToManyField('WeatherConditionModel', db_index=True, related_name='weather', verbose_name='Погода')
     morning_data_charge = models.IntegerField(verbose_name='Ранковий рівень заряду')
     morning_data_price = models.FloatField(verbose_name='Вартість використаної енергії на ранок')
-    afternoon_data_charge = models.IntegerField(verbose_name='Денний рівень заряду', default=0)
-    afternoon_data_price = models.FloatField(verbose_name='Вартість використаної енергії на день', default=0)
+    afternoon_data_charge = models.IntegerField(default=0, verbose_name='Денний рівень заряду')
+    afternoon_data_price = models.FloatField(default=0, verbose_name='Вартість використаної енергії на день')
     evening_data_charge = models.IntegerField(verbose_name='Вечірній рівень заряду')
     evening_data_price = models.FloatField(verbose_name='Вартість використаної енергії на вечір')
     default_day_energy_formula = models.BooleanField(default=False)
+    extra_power = models.IntegerField(default=0, verbose_name='Приблизна потужність використана на USB')
     full_day_power = models.FloatField(blank=True, verbose_name='Вироблена потужність за день')
     full_day_cost = models.FloatField(blank=True, null=True, verbose_name='Вартість виробленої енергії за день')
     power_tariff = models.FloatField(verbose_name='Вартість за Кв')
@@ -103,7 +104,7 @@ class DataEntryLineModel(models.Model):
                     return (
                                    self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE) * self.UNIT_CONVERSION_FACTOR + round(
                         (((
-                                  self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE) * 100) / 43.2) * 100,
+                                  self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE) * 100) / 43.2) * 100 + self.extra_power,
                         2)
                 if self.morning_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
                     return self.POWER_HIGH
@@ -136,7 +137,7 @@ class DataEntryLineModel(models.Model):
             if self.afternoon_data_price == 0:
                 if self.morning_data_charge < self.evening_data_charge:
                     return (((
-                                     self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE) * self.UNIT_CONVERSION_FACTOR) / 1000) * self.power_tariff + (
+                                     self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE + self.extra_power) * self.UNIT_CONVERSION_FACTOR) / 1000) * self.power_tariff + (
                                    self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE)
                 if self.morning_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
                     return self.DEFAULT_COST_LOW
