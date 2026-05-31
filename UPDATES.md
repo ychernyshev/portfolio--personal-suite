@@ -4,9 +4,10 @@
 - [ ] Cleaning form after saving
 - [ ] Set up the "Extra power" field
 - [ ] Monthly statistics. Graphic
-- [ ] Add Calculator CSS only when the user is watching the current page
+- [x] Add Calculator CSS only when the user is watching the current page
 - [ ] Docker for: Gunicorn, Daphne, Postgres
-
+- [x] Bug with 31-day in the month
+ 
 ### Personal Page
 - [ ] Centered the technique description on the mobile view
 - [ ] Generate a CV after clicking on the button "Download CV"
