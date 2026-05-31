@@ -5,10 +5,10 @@ import { storeToRefs } from "pinia";
 import { useNotificationStore } from "../../../store/useNotificationStore.js";
 
 // Icons
-import successIcon from '@/assets/calculator/images/icons/messages/success.png';
-import infoIcon from '@/assets/calculator/images/icons/messages/info.png';
-import warningIcon from '@/assets/calculator/images/icons/messages/warning.png';
-import errorIcon from '@/assets/calculator/images/icons/messages/error.png';
+import successIcon from '../../../public/assets/calculator/images/icons/messages/success.png';
+import infoIcon from '../../../public/assets/calculator/images/icons/messages/info.png';
+import warningIcon from '../../../public/assets/calculator/images/icons/messages/warning.png';
+import errorIcon from '../../../public/assets/calculator/images/icons/messages/error.png';
 
 const notificationStore = useNotificationStore();
 const { messages } = storeToRefs(notificationStore);
