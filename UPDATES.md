@@ -2,7 +2,7 @@
 - [ ] Analytics for the last month. Creating and notification
 - [ ] More weather icons
 - [x] Cleaning form after saving
-- [ ] Set up the "Extra power" field
+- [x] Set up the "Extra power" field
 - [ ] Monthly statistics. Graphic
 - [x] Add Calculator CSS only when the user is watching the current page
 - [ ] Docker for: Gunicorn, Daphne, Postgres
