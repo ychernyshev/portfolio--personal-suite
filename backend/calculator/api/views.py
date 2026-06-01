@@ -1,5 +1,6 @@
 import io
 import os
+from datetime import datetime
 
 import pandas as pd
 from django.http import HttpResponse
@@ -15,6 +16,9 @@ from calculator.services.data_export import export_data_logic
 from calculator.services.data_import import import_data_logic
 from calculator.services.weather_service import WeatherForecastService
 
+
+def current_month():
+    return datetime.now().month
 
 class DataEntryViewSet(viewsets.ModelViewSet):
     queryset = DataEntryLineModel.objects.all().order_by('-date')
@@ -49,6 +53,19 @@ class StatsViewApiView(APIView):
 
 class CurrentMothStatsApiView(APIView):
     def get(self, request):
+        entries = DataEntryLineModel.objects.filter(date__month=current_month())
+
+        if not entries.exists():
+            return Response({
+                "sun_days": 0,
+                "average_temperature": 0,
+                "average_power": 0,
+                "current_month_total_power": 0,
+                "current_month_savings": 0,
+                "difference_power_percentage": None,
+                "is_empty": True
+            }, status=200)
+
         return Response({
             "sun_days": DataEntryLineModel.get_count_of_sun_days(),
             "average_temperature": DataEntryLineModel.get_count_of_month_average_temperature(),

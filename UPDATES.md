@@ -7,7 +7,8 @@
 - [ ] Monthly statistics. Graphic
 - [x] Add Calculator CSS only when the user is watching the current page
 - [ ] Docker for: Gunicorn, Daphne, Postgres
-- [x] Bug with 31-day in the month
+- [x] A bug with 31-day in the month when not every month has 31-day
+- [x] A bug with 1-day in the month when the data has not yet been added
  
 ### Personal Page
 - [ ] Centered the technique description on the mobile view

@@ -5,6 +5,7 @@ import backendApi from "../../../services/calculator/backendApi.js";
 const current_month_details = ref([]);
 const loading = ref(true);
 const errorMsg = ref("");
+const errorClass = ref("");
 
 const date = new Date();
 const currentMonthName = date.toLocaleString('en-US', {month: 'long'});
@@ -19,10 +20,19 @@ const currentMonthDetails = async () => {
   try {
     loading.value = true;
     const response = await backendApi.get('calculator/current_month_stats/');
+    if (response.data.is_empty) {
+      errorMsg.value = "Add the first data for this month";
+      errorClass.value = "alert-success";
+    } else {
+      current_month_details.value = response.data;
+      errorMsg.value = "";
+    }
     console.log(`Response: ${response}`)
     current_month_details.value = response.data;
   } catch (error) {
+    console.error("API Error:", error);
     errorMsg.value = "Failed to load month stats";
+    errorClass.value = "alert-warning";
   } finally {
     loading.value = false;
   }
@@ -36,7 +46,7 @@ onMounted(() => {
 <template>
   <div class="mt-3 mt-md-0"></div>
   <div v-if="loading" class="text-center p-3">Loading month stats...</div>
-  <div v-else-if="errorMsg" class="alert alert-warning">{{ errorMsg }}</div>
+  <div v-else-if="errorMsg" class="alert p-1" :class="errorClass">{{ errorMsg }}</div>
   <div class="row text-start">
     <p data-v-80000e9e="" class="text-purple widget-title">
       The {{ currentMonthName }} stats
@@ -44,11 +54,29 @@ onMounted(() => {
     <div class="col-6 d-inline-flex flex-column align-items-start widget-item">
       <div v-if="!loading && current_month_details" class="w-100 d-flex flex-column small align-items-start text-purple">
         <span class="fw-bold"></span>
-        <span class="small">Sun days: <span class="fw-bold">{{ current_month_details.sun_days }}</span></span>
-        <span class="small">Avr temperature: <span class="fw-bold">{{ current_month_details.average_temperature }}&nbsp;&deg;C</span></span>
-        <span class="small">Day avr power: <span class="fw-bold text-success-1">{{ current_month_details.average_power }}Wh</span></span>
-        <span class="small">Total power: <span class="fw-bold text-success-1">{{ current_month_details.current_month_total_power }}Wh</span></span>
-        <span class="small">Total savings: <span class="fw-bold text-sky-blue-4">{{ current_month_details.current_month_savings }}UAH</span></span>
+        <span v-if="current_month_details.length === 0" class="small">Sun days: <span class="fw-bold">0</span></span>
+        <span v-else class="small">Sun days: <span class="fw-bold">{{ current_month_details.sun_days }}</span></span>
+        <span v-if="current_month_details.length === 0" class="small">Avr temperature:
+          <span class="fw-bold">
+            no data
+          </span>
+        </span>
+        <span v-else class="small">Avr temperature: <span class="fw-bold">{{ current_month_details.average_temperature }}&nbsp;&deg;C</span></span>
+        <span v-if="current_month_details.length === 0" class="small">
+          Day avr power:
+          <span class="fw-bold text-success-1">0Wh</span>
+        </span>
+        <span v-else class="small">Day avr power: <span class="fw-bold text-success-1">{{ current_month_details.average_power }}Wh</span></span>
+        <span v-if="current_month_details.length === 0" class="small">
+          Total power:
+          <span class="fw-bold text-success-1">0Wh</span>
+        </span>
+        <span v-else class="small">Total power: <span class="fw-bold text-success-1">{{ current_month_details.current_month_total_power }}Wh</span></span>
+        <span v-if="current_month_details.length === 0" class="small">
+          Total savings:
+          <span class="fw-bold text-sky-blue-4">0UAH</span>
+        </span>
+        <span v-else class="small">Total savings: <span class="fw-bold text-sky-blue-4">{{ current_month_details.current_month_savings }}UAH</span></span>
       </div>
     </div>
     <div class="col-6 d-flex flex-column w-100 align-items-end text-purple">
@@ -63,9 +91,10 @@ onMounted(() => {
             <span v-if="current_month_details.difference_power_percentage < 0 || current_month_details.difference_power_percentage === null" class="text-warning difference-power">—</span>
             <span v-else class="difference-power">+</span>
           </span>
-        <div v-if="current_month_details.difference_power_percentage < 0" class="widget-huge-number text-warning mt-2">{{ Math.abs(current_month_details.difference_power_percentage) }}%</div>
-        <div v-else-if="current_month_details.difference_power_percentage === null" class="widget-huge-number text-warning mt-2">100%</div>
-        <div v-else class="widget-huge-number text-success-1 mt-2">{{ Math.abs(current_month_details.difference_power_percentage) }}%</div>
+          <div v-if="current_month_details.difference_power_percentage < 0" class="widget-huge-number text-warning mt-2">{{ Math.abs(current_month_details.difference_power_percentage) }}%</div>
+          <div v-else-if="current_month_details.difference_power_percentage === null" class="widget-huge-number text-warning mt-2">100%</div>
+          <div v-else-if="current_month_details.length === 0" class="widget-huge-number text-warning mt-2">0%</div>
+          <div v-else class="widget-huge-number text-success-1 mt-2">{{ Math.abs(current_month_details.difference_power_percentage) }}%</div>
       </div>
       <span class="">compare to <span class="text-lowercase text-warning-2">{{ lastMonthName }}</span></span>
     </div>
