@@ -2,6 +2,7 @@
   import { onMounted, onUnmounted } from 'vue';
 
   import TopNav from "../navs/_TopNav.vue";
+  import CurrentMonthStats from "@/components/calculator/charts/CurrentMonthStats.vue";
 
   const BOOTSWATCH_ID = 'bootswatch-theme';
   const POWER_CALCULATOR_CLASS = 'power-calculator-class';
@@ -37,6 +38,7 @@
 <template>
   <div class="dashboard-grid">
     <top-nav />
+    <current-month-stats />
     <slot />
   </div>
 </template>

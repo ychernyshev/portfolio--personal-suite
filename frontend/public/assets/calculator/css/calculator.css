@@ -134,3 +134,7 @@ body {
   border-top-right-radius: none;
   border-bottom-right-radius: none;
 }
+
+.modal-xxl {
+  max-width: 1800px
+}
