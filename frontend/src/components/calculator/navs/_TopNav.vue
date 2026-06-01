@@ -36,7 +36,7 @@ import ButtonComp from "@/components/personal/ButtonComp.vue";
 <!--            Developed with Django & Vue 3-->
 <!--          </a>-->
         </div>
-        <div class="card border-0 neomorphic text-purple p-2 additional-button-group">
+        <div class="card border-0 neomorphic text-purple p-2 additional-button-group justify-content-around">
           <button-comp title="" class="neomorphic right-angle p-2 p-sm-3 p-md-4 p-xl-2 text-purple" style="font-size: 0.9rem">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-stack text-purple additional-button-icon" viewBox="0 0 16 16">
               <path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.6.6 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.6.6 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.6.6 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535z"/>
@@ -122,6 +122,7 @@ import ButtonComp from "@/components/personal/ButtonComp.vue";
 .additional-button-group {
   flex-direction: row;
   transition: 0.2s;
+  width: 75%;
 }
 
 .additional-button-icon {
@@ -151,9 +152,13 @@ import ButtonComp from "@/components/personal/ButtonComp.vue";
     justify-content: space-between;
   }
 
+  .additional-button-group {
+    width: 40%;
+  }
+
   .additional-button-icon {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
   }
 }
 
