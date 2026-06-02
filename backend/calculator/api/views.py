@@ -1,8 +1,9 @@
 import io
 import os
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 import pandas as pd
+import requests
 from django.http import HttpResponse
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -109,6 +110,97 @@ class SolarForecastAPIView(APIView):
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
+
+class SolarMonthAnalyticsAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            today = date.today()
+            year = today.year
+            month = today.month
+
+            start_date = date(year, month, 1)
+            if month == 12:
+                end_date = date(year + 1, 1, 1) - timedelta(days=1)
+            else:
+                end_date = date(year, month + 1, 1) - timedelta(days=1)
+
+            total_days = end_date.day
+
+            actual_qs = DataEntryLineModel.objects.filter(date__range=(start_date, today))
+            actual_dict = {q.date.day: float(q.full_day_power) for q in actual_qs if q.full_day_power is not None}
+
+            forecast_qs = SolarForecastRecordModel.objects.filter(date__range=(start_date, today))
+            forecast_dict = {q.date.day: float(q.predicted_kwh) for q in forecast_qs if q.predicted_kwh is not None}
+
+            api_forecast_dict = {}
+            if today < end_date:
+                system_factor = 3.45 * 0.23 * 0.85
+
+                api_url = "https://api.open-meteo.com/v1/forecast"
+                params = {
+                    "latitude": 49.8383,
+                    "longitude": 24.0232,
+                    "hourly": "shortwave_radiation",
+                    "timezone": "auto",
+                    "forecast_days": 16  # ВИПРАВЛЕНО: Завжди просимо стабільні 16 днів
+                }
+
+                response = requests.get(api_url, params=params, timeout=10)
+                if response.status_code == 200:
+                    api_data = response.json()
+                    rad_data = api_data.get('hourly', {}).get('shortwave_radiation', [])
+                    times = api_data.get('hourly', {}).get('time', [])
+
+                    # Групуємо погодинні дані з API по днях
+                    for i in range(len(times)):
+                        dt = datetime.strptime(times[i][:10], "%Y-%m-%d").date()
+
+                        # ВИПРАВЛЕНО: Перевіряємо, щоб день належав поточному місяцю та поточному року
+                        if dt.month == month and dt.year == year:
+                            day_num = dt.day
+
+                            # Рахуємо Wh для цієї години
+                            wh = rad_data[i] * system_factor
+
+                            if day_num not in api_forecast_dict:
+                                api_forecast_dict[day_num] = 0.0
+                            api_forecast_dict[day_num] += wh
+
+                    # Переводимо Wh в kWh для кожного дня поточного місяця
+                    for day_num in api_forecast_dict:
+                        api_forecast_dict[day_num] = round(api_forecast_dict[day_num] / 1000, 2)
+
+            labels = []
+            actual_power = []
+            forecast_power = []
+
+            for day in range(1, total_days + 1):
+                labels.append(day)
+
+                if day <= today.day:
+                    actual_power.append(actual_dict.get(day, None))
+                else:
+                    actual_power.append(None)
+
+                if day in forecast_dict:
+                    forecast_power.append(round(forecast_dict[day], 2))
+                elif day in api_forecast_dict:
+                    forecast_power.append(api_forecast_dict[day])
+                else:
+                    forecast_power.append(None)
+
+            result = {
+                "status": "success",
+                "month_name": today.strftime("%B"),
+                "labels": labels,
+                "actual_power": actual_power,
+                "forecast_power": forecast_power
+            }
+
+            return Response(result, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class SolarComparisonAPIView(APIView):
     def get(self, request):

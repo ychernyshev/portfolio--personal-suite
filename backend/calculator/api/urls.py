@@ -7,7 +7,8 @@ from calculator.api.views import (DataEntryViewSet,
                                   WeatherConditionViewSet,
                                   SolarForecastAPIView,
                                   SolarComparisonAPIView,
-                                  WeatherDataViewSet)
+                                  WeatherDataViewSet,
+                                  SolarMonthAnalyticsAPIView)
 
 router = DefaultRouter()
 router.register(r'entries', DataEntryViewSet, basename='entries')
@@ -20,6 +21,7 @@ urlpatterns = [
     path('stats/', StatsViewApiView.as_view(), name='stats'),
     path('current_month_stats/', CurrentMothStatsApiView.as_view(), name='stats'),
     path('forecast/', SolarForecastAPIView.as_view(), name='forecast'),
+    path('power_generation_month_analytics/', SolarMonthAnalyticsAPIView.as_view(), name='month_analytics'),
     path('forecast/comparison/', SolarComparisonAPIView.as_view(), name='comparison'),
     path('data-export/', SolarForecastAPIView.as_view(), name='data-export'),
     path('data-import/', SolarForecastAPIView.as_view(), name='data-import'),
