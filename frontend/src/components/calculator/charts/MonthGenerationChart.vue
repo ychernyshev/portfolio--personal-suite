@@ -95,7 +95,7 @@ const chartOptions = computed(() => ({
     x: {
       title: {
         display: true,
-        text: `Дні місяця (${props.monthName})`,
+        text: `Month days (${props.monthName})`,
         color: '#6b7280',
         font: { size: 12, weight: 'bold' }
       },
@@ -118,12 +118,8 @@ const chartOptions = computed(() => ({
 </script>
 
 <template>
-  <div class="solar-chart-card">
-    <div class="chart-header">
-      <h3>Analytics for the current month with a generation power forecast and actual power generation</h3>
-    </div>
-
-    <div class="chart-container">
+  <div class="solar-chart-card text-end p-0">
+    <div class="chart-container p-0">
       <Line :data="chartData" :options="chartOptions" />
     </div>
   </div>
@@ -131,10 +127,8 @@ const chartOptions = computed(() => ({
 
 <style scoped>
 .solar-chart-card {
-  background: #e0e0e0;
   border-radius: 20px;
   padding: 20px;
-  box-shadow: 9px 9px 16px #bebebe, -9px -9px 16px #ffffff;
   margin: 20px 0;
 }
 
@@ -150,9 +144,7 @@ const chartOptions = computed(() => ({
   position: relative;
   height: 350px;
   width: 100%;
-  background: #e0e0e0;
   border-radius: 12px;
   padding: 10px;
-  box-shadow: inset 3px 3px 6px #bebebe, inset -3px -3px 6px #ffffff;
 }
 </style>
