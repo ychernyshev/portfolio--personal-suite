@@ -1,9 +1,7 @@
 import datetime
-
 import requests
 from django.core.cache import cache
 from django.utils import timezone
-
 from calculator.models import CurrentTariffModel, SolarForecastRecordModel, WeatherDataModel, DataEntryLineModel
 
 
@@ -30,8 +28,8 @@ class WeatherForecastService:
                 "temperature_2m",
                 "weather_code",
                 "cloud_cover",
-                "relative_humidity_2m",  # Вологість
-                "surface_pressure"  # Тиск
+                "relative_humidity_2m",
+                "surface_pressure"
             ],
             "timezone": "auto",
             "forecast_days": 1
@@ -56,41 +54,6 @@ class WeatherForecastService:
             if not radiation_data:
                 return {"status": "error", "message": "No radiation data found"}
 
-            total_area = 3.45
-            panel_efficiency = 0.23
-            performance_ratio = 0.85
-
-            system_factor = total_area * panel_efficiency * performance_ratio
-            hourly_gen_wh = [round(rad * system_factor, 2) for rad in radiation_data]
-
-            current_hour = datetime.datetime.now().hour
-            weather_data = data.get('hourly', {})
-
-            total_kwh = sum(hourly_gen_wh) / 1000
-            predicted_savings = total_kwh * current_tariff
-
-            result_dict = {
-                "predicted_total_kwh": round(total_kwh, 2),
-                "predicted_savings": round(predicted_savings, 2),
-                "hourly_forecast_wh": hourly_gen_wh,
-                "currency": "UAH",
-                "peak_hour": radiation_data.index(max(radiation_data)) if radiation_data else 0,
-                "status": "success",
-                "tariff_used": current_tariff,
-                "current_temp": round(weather_data.get('temperature_2m', [])[current_hour], 1),
-                "weather_condition": wmo_codes.get(weather_data.get('weather_code', [])[current_hour], "Unknown"),
-                "weather_code": weather_data.get('weather_code', [])[current_hour],
-            }
-
-            cache.set(cache_key, result_dict, 3600)
-            self.save_forecast_to_db(result_dict, data)
-
-            return result_dict
-        except Exception as e:
-            return {"status": "error", "message": str(e)}
-
-    def save_forecast_to_db(self, forecast_data, raw_api_data):
-        try:
             today = datetime.date.today()
             year = today.year
             month = today.month
@@ -111,23 +74,56 @@ class WeatherForecastService:
                 for day_idx in actual_dict.keys():
                     if day_idx in forecast_dict and forecast_dict[day_idx] > 0:
                         real_kwh = actual_dict[day_idx] / 1000.0
-
                         total_real += real_kwh
                         total_pred += forecast_dict[day_idx]
 
                 if total_pred > 0 and total_real > 0:
                     calibration_factor = total_real / total_pred
-            raw_predicted_kwh = float(forecast_data['predicted_total_kwh'])
-            calibrated_kwh = round(raw_predicted_kwh * calibration_factor, 2)
 
-            raw_savings = float(forecast_data['predicted_savings'])
-            calibrated_savings = round(raw_savings * calibration_factor, 2)
+            total_area = 3.45
+            panel_efficiency = 0.23
+            performance_ratio = 0.85
+
+            system_factor = total_area * panel_efficiency * performance_ratio * calibration_factor
+
+            hourly_gen_wh = [round(rad * system_factor, 2) for rad in radiation_data]
+
+            current_hour = datetime.datetime.now().hour
+            weather_data = data.get('hourly', {})
+
+            total_kwh = sum(hourly_gen_wh) / 1000
+            predicted_savings = total_kwh * current_tariff
+
+            result_dict = {
+                "predicted_total_kwh": round(total_kwh, 2),
+                "predicted_savings": round(predicted_savings, 2),
+                "hourly_forecast_wh": hourly_gen_wh,
+                "currency": "UAH",
+                "peak_hour": radiation_data.index(max(radiation_data)) if radiation_data else 0,
+                "status": "success",
+                "tariff_used": current_tariff,
+                "current_temp": round(weather_data.get('temperature_2m', [])[current_hour], 1),
+                "weather_condition": wmo_codes.get(weather_data.get('weather_code', [])[current_hour], "Unknown"),
+                "weather_code": weather_data.get('weather_code', [])[current_hour],
+                "calibration_factor": round(calibration_factor, 2)
+            }
+
+            cache.set(cache_key, result_dict, 3600)
+            self.save_forecast_to_db(result_dict, data)
+
+            return result_dict
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
+
+    def save_forecast_to_db(self, forecast_data, raw_api_data):
+        try:
+            today = datetime.date.today()
 
             SolarForecastRecordModel.objects.update_or_create(
                 date=today,
                 defaults={
-                    'predicted_kwh': calibrated_kwh,
-                    'predicted_savings': calibrated_savings,
+                    'predicted_kwh': forecast_data['predicted_total_kwh'],
+                    'predicted_savings': forecast_data['predicted_savings'],
                     'peak_hour': forecast_data['peak_hour'],
                 }
             )
