@@ -53,7 +53,7 @@ const chartData = computed(() => ({
       spanGaps: true
     },
     {
-      label: 'Weather forecast (kWh)',
+      label: 'Forecast generation (kWh)',
       data: props.forecastPower,
       borderColor: '#9ca3af',
       backgroundColor: '#9ca3af',
@@ -74,7 +74,7 @@ const todayLinePlugin = {
     const todayIndex = props.labels.indexOf(todayDay.value);
 
     if (todayIndex !== -1) {
-      const xPos = x.getPixelForValue(props.labels[todayIndex]);
+      const xPos = x.getPixelForValue(todayIndex);
 
       ctx.save();
       ctx.beginPath();
