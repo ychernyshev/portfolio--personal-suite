@@ -158,25 +158,17 @@ class SolarMonthAnalyticsAPIView(APIView):
                     total_pred_db = 0.0
 
                     for day_idx in actual_dict.keys():
-                        # Якщо за цей день є і факт, і минулий прогноз в базі
                         if day_idx in forecast_dict and forecast_dict[day_idx] > 0:
                             total_real += actual_dict[day_idx]
                             total_pred_db += forecast_dict[day_idx]
 
-                        # Визначаємо коригуючий коефіцієнт (наприклад, 0.75, якщо реальність — це 75% від прогнозу)
                     calibration_factor = 1.0
                     if total_pred_db > 0 and total_real > 0:
                         calibration_factor = total_real / total_pred_db
-
-                    # Базовий фактор системи (наш старий розрахунок)
+                        
                     base_system_factor = 3.45 * 0.23 * 0.85
 
-                    # Фінальний калібрований фактор під конкретно твої умови установки панелей
                     calibrated_factor = base_system_factor * calibration_factor
-
-                    # Друкуємо в консоль для контролю
-                    print(
-                        f"=== КАЛІБРУВАННЯ === Фактор коригування: {round(calibration_factor, 2)}, Новий системний фактор: {round(calibrated_factor, 4)}")
 
                     for i in range(min(len(times), len(rad_data))):
                         if rad_data[i] is None:
@@ -186,7 +178,6 @@ class SolarMonthAnalyticsAPIView(APIView):
 
                         if dt.month == month and dt.year == year:
                             day_num = dt.day
-                            # Використовуємо відкалібрований коефіцієнт!
                             wh = float(rad_data[i]) * calibrated_factor
 
                             if day_num not in api_forecast_dict:

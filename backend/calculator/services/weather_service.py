@@ -4,7 +4,7 @@ import requests
 from django.core.cache import cache
 from django.utils import timezone
 
-from calculator.models import CurrentTariffModel, SolarForecastRecordModel, WeatherDataModel
+from calculator.models import CurrentTariffModel, SolarForecastRecordModel, WeatherDataModel, DataEntryLineModel
 
 
 class WeatherForecastService:
@@ -92,13 +92,42 @@ class WeatherForecastService:
     def save_forecast_to_db(self, forecast_data, raw_api_data):
         try:
             today = datetime.date.today()
+            year = today.year
+            month = today.month
+            start_date = datetime.date(year, month, 1)
             yesterday = today - datetime.timedelta(days=1)
+            calibration_factor = 1.0
+
+            if yesterday >= start_date:
+                actual_qs = DataEntryLineModel.objects.filter(date__range=(start_date, yesterday))
+                actual_dict = {q.date.day: float(q.full_day_power) for q in actual_qs if q.full_day_power is not None}
+
+                forecast_qs = SolarForecastRecordModel.objects.filter(date__range=(start_date, yesterday))
+                forecast_dict = {q.date.day: float(q.predicted_kwh) for q in forecast_qs if q.predicted_kwh is not None}
+
+                total_real = 0.0
+                total_pred = 0.0
+
+                for day_idx in actual_dict.keys():
+                    if day_idx in forecast_dict and forecast_dict[day_idx] > 0:
+                        real_kwh = actual_dict[day_idx] / 1000.0
+
+                        total_real += real_kwh
+                        total_pred += forecast_dict[day_idx]
+
+                if total_pred > 0 and total_real > 0:
+                    calibration_factor = total_real / total_pred
+            raw_predicted_kwh = float(forecast_data['predicted_total_kwh'])
+            calibrated_kwh = round(raw_predicted_kwh * calibration_factor, 2)
+
+            raw_savings = float(forecast_data['predicted_savings'])
+            calibrated_savings = round(raw_savings * calibration_factor, 2)
 
             SolarForecastRecordModel.objects.update_or_create(
                 date=today,
                 defaults={
-                    'predicted_kwh': forecast_data['predicted_total_kwh'],
-                    'predicted_savings': forecast_data['predicted_savings'],
+                    'predicted_kwh': calibrated_kwh,
+                    'predicted_savings': calibrated_savings,
                     'peak_hour': forecast_data['peak_hour'],
                 }
             )
@@ -108,8 +137,8 @@ class WeatherForecastService:
             temps = hourly.get('temperature_2m', [])
             codes = hourly.get('weather_code', [])
             clouds = hourly.get('cloud_cover', [])
-            humidities = hourly.get('relative_humidity_2m', [])  # Нове
-            pressures = hourly.get('surface_pressure', [])  # Нове
+            humidities = hourly.get('relative_humidity_2m', [])
+            pressures = hourly.get('surface_pressure', [])
 
             for i in range(len(timestamps)):
                 naive_dt = datetime.datetime.strptime(timestamps[i], '%Y-%m-%dT%H:%M')
@@ -121,8 +150,8 @@ class WeatherForecastService:
                         'temperature': temps[i],
                         'condition_code': str(codes[i]),
                         'cloud_cover': clouds[i],
-                        'humidity': humidities[i],  # Заповнюємо вологість
-                        'pressure': pressures[i],  # Заповнюємо тиск
+                        'humidity': humidities[i],
+                        'pressure': pressures[i],
                     }
                 )
             return True
