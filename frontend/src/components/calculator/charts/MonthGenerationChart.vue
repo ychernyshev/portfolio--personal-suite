@@ -36,33 +36,64 @@ const props = withDefaults(defineProps<ChartDataProps>(), {
   forecastPower: () => []
 });
 
+const todayDay = computed(() => new Date().getDate());
+
 const chartData = computed(() => ({
   labels: props.labels,
   datasets: [
     {
-      label: 'Actual output (kWh)',
+      label: 'Actual generation (kWh)',
       data: props.actualPower,
       borderColor: '#a855f7',
       backgroundColor: '#a855f7',
       tension: 0.4,
       borderWidth: 4,
-      pointRadius: 4,
-      pointHoverRadius: 7,
-      spanGaps: false
+      pointRadius: (context: any) => context.dataIndex + 1 === todayDay.value ? 6 : 3,
+      pointBackgroundColor: '#a855f7',
+      spanGaps: true
     },
     {
-      label: 'Weather Forecast (kWh)',
+      label: 'Weather forecast (kWh)',
       data: props.forecastPower,
       borderColor: '#9ca3af',
       backgroundColor: '#9ca3af',
-      tension: 0,
+      tension: 0.4,
       borderWidth: 3,
-      borderDash: [6, 6],
+      borderDash: [6, 4],
       pointRadius: 0,
       spanGaps: true
     }
   ]
 }));
+
+const todayLinePlugin = {
+  id: 'todayLine',
+  afterDatasetsDraw(chart: any) {
+    const { ctx, chartArea: { top, bottom }, scales: { x } } = chart;
+
+    const todayIndex = props.labels.indexOf(todayDay.value);
+
+    if (todayIndex !== -1) {
+      const xPos = x.getPixelForValue(props.labels[todayIndex]);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#4b5563';
+      ctx.setLineDash([4, 4]);
+      ctx.moveTo(xPos, top);
+      ctx.lineTo(xPos, bottom);
+      ctx.stroke();
+
+      ctx.fillStyle = '#4b5563';
+      ctx.font = 'bold 10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('TODAY', xPos, top - 8);
+
+      ctx.restore();
+    }
+  }
+};
 
 const chartOptions = computed(() => ({
   responsive: true,
@@ -79,38 +110,17 @@ const chartOptions = computed(() => ({
       mode: 'index' as const,
       intersect: false,
       padding: 12,
-      backgroundColor: '#1f2937',
-      titleColor: '#ffffff',
-      bodyColor: '#9ca3af',
-      callbacks: {
-        label: (context: any) => {
-          const label = context.dataset.label || '';
-          const value = context.parsed.y;
-          return value !== null ? ` ${label}: ${value.toFixed(2)} kWh` : ` ${label}: no data`;
-        }
-      }
+      backgroundColor: '#1f2937'
     }
   },
   scales: {
     x: {
-      title: {
-        display: true,
-        text: `Month days (${props.monthName})`,
-        color: '#6b7280',
-        font: { size: 12, weight: 'bold' }
-      },
       grid: { display: false },
       ticks: { color: '#6b7280' }
     },
     y: {
       min: 0,
-      title: {
-        display: true,
-        text: 'Energy (kWh)',
-        color: '#6b7280',
-        font: { size: 12, weight: 'bold' }
-      },
-      grid: { color: '#f3f4f6' },
+      grid: { color: 'rgba(0, 0, 0, 0.05)' },
       ticks: { color: '#6b7280' }
     }
   }
@@ -118,9 +128,9 @@ const chartOptions = computed(() => ({
 </script>
 
 <template>
-  <div class="solar-chart-card text-end p-0">
+  <div class="solar-chart-card p-0">
     <div class="chart-container p-0">
-      <Line :data="chartData" :options="chartOptions" />
+      <Line :data="chartData" :options="chartOptions" :plugins="[todayLinePlugin]" />
     </div>
   </div>
 </template>
@@ -128,23 +138,12 @@ const chartOptions = computed(() => ({
 <style scoped>
 .solar-chart-card {
   border-radius: 20px;
-  padding: 20px;
   margin: 20px 0;
 }
-
-.chart-header h3 {
-  color: #4b5563;
-  margin-top: 0;
-  margin-bottom: 15px;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
 .chart-container {
   position: relative;
-  height: 350px;
+  height: 380px;
   width: 100%;
-  border-radius: 12px;
-  padding: 10px;
+  padding: 15px 10px 10px 10px;
 }
 </style>

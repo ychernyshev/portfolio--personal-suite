@@ -127,7 +127,10 @@ class SolarMonthAnalyticsAPIView(APIView):
             total_days = end_date.day
 
             actual_qs = DataEntryLineModel.objects.filter(date__range=(start_date, today))
-            actual_dict = {q.date.day: float(q.full_day_power) for q in actual_qs if q.full_day_power is not None}
+            actual_dict = {
+                q.date.day: round(float(q.full_day_power) / 1000.0, 2)
+                for q in actual_qs if q.full_day_power is not None
+            }
 
             forecast_qs = SolarForecastRecordModel.objects.filter(date__range=(start_date, today))
             forecast_dict = {q.date.day: float(q.predicted_kwh) for q in forecast_qs if q.predicted_kwh is not None}
@@ -142,7 +145,7 @@ class SolarMonthAnalyticsAPIView(APIView):
                     "longitude": 24.0232,
                     "hourly": "shortwave_radiation",
                     "timezone": "auto",
-                    "forecast_days": 16  # ВИПРАВЛЕНО: Завжди просимо стабільні 16 днів
+                    "forecast_days": 16
                 }
 
                 response = requests.get(api_url, params=params, timeout=10)
@@ -151,24 +154,25 @@ class SolarMonthAnalyticsAPIView(APIView):
                     rad_data = api_data.get('hourly', {}).get('shortwave_radiation', [])
                     times = api_data.get('hourly', {}).get('time', [])
 
-                    # Групуємо погодинні дані з API по днях
-                    for i in range(len(times)):
+                    for i in range(min(len(times), len(rad_data))):
+                        if rad_data[i] is None:
+                            continue
+
                         dt = datetime.strptime(times[i][:10], "%Y-%m-%d").date()
 
-                        # ВИПРАВЛЕНО: Перевіряємо, щоб день належав поточному місяцю та поточному року
                         if dt.month == month and dt.year == year:
                             day_num = dt.day
-
-                            # Рахуємо Wh для цієї години
-                            wh = rad_data[i] * system_factor
+                            wh = float(rad_data[i]) * system_factor
 
                             if day_num not in api_forecast_dict:
                                 api_forecast_dict[day_num] = 0.0
                             api_forecast_dict[day_num] += wh
 
-                    # Переводимо Wh в kWh для кожного дня поточного місяця
-                    for day_num in api_forecast_dict:
-                        api_forecast_dict[day_num] = round(api_forecast_dict[day_num] / 1000, 2)
+                    for day_num in list(api_forecast_dict.keys()):
+                        if api_forecast_dict[day_num] <= 0:
+                            del api_forecast_dict[day_num]
+                        else:
+                            api_forecast_dict[day_num] = round(api_forecast_dict[day_num] / 1000, 2)
 
             labels = []
             actual_power = []
@@ -182,10 +186,10 @@ class SolarMonthAnalyticsAPIView(APIView):
                 else:
                     actual_power.append(None)
 
-                if day in forecast_dict:
-                    forecast_power.append(round(forecast_dict[day], 2))
-                elif day in api_forecast_dict:
+                if day in api_forecast_dict:
                     forecast_power.append(api_forecast_dict[day])
+                elif day in forecast_dict:
+                    forecast_power.append(round(forecast_dict[day], 2))
                 else:
                     forecast_power.append(None)
 
