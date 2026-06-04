@@ -57,3 +57,4 @@ blob-store/
 # === OS ===
 Thumbs.db
 ehthumbs.db
+*.rdb

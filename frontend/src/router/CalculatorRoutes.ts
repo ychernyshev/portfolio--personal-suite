@@ -6,12 +6,11 @@ const Dashboard = () => import("@/views/calculator/Dashboard.vue");
 const calculatorRoutes: RouteRecordRaw = {
     path: "/calculator",
     component: RouterView,
-    // Додай meta сюди, щоб батьківський роут знав, який лейаут використовувати
     meta: { layout: "CalculatorLayout" },
     children: [
         {
             path: "",
-            name: "calculator-home", // Бажано додавати імена для зручного переходу
+            name: "calculator-home",
             component: Dashboard,
             meta: { layout: "CalculatorLayout" }
         },

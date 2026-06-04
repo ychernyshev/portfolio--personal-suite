@@ -2,27 +2,35 @@
   import { onMounted, onUnmounted } from 'vue';
 
   import TopNav from "../navs/_TopNav.vue";
-  // import '@/assets/calculator/js/bootswatch.min.css';
-  import '@/assets/calculator/css/calculator.css';
-  import '@/assets/calculator/css/style.css';
-  import '@/assets/calculator/css/mobile.css';
+  import CurrentMonthStats from "@/components/calculator/charts/CurrentMonthStats.vue";
 
   const BOOTSWATCH_ID = 'bootswatch-theme';
+  const POWER_CALCULATOR_CLASS = 'power-calculator-class';
 
   onMounted(() => {
-    if (!document.getElementById(BOOTSWATCH_ID)) {
-      const link = document.createElement('link');
-      link.id = BOOTSWATCH_ID;
-      link.rel = 'stylesheet';
-      link.href = '/assets/bootstrap/css/bootswatch.min.css';
-      document.head.appendChild(link);
+    const links = [
+      '/assets/calculator/js/bootswatch.min.css',
+      '/assets/calculator/css/calculator.css',
+      '/assets/calculator/css/style.css',
+      '/assets/calculator/css/mobile.css'
+    ];
+
+    if (document.getElementsByClassName(POWER_CALCULATOR_CLASS).length === 0) {
+      links.forEach(linkValue => {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.className = POWER_CALCULATOR_CLASS;
+        link.href = linkValue;
+
+        document.head.appendChild(link);
+      })
     }
   });
 
   onUnmounted(() => {
-    const link = document.getElementById(BOOTSWATCH_ID);
-    if (link) {
-      link.remove();
+    const dynamicStyles = document.getElementsByClassName(POWER_CALCULATOR_CLASS);
+    while (dynamicStyles.length > 0) {
+      dynamicStyles[0].remove();
     }
   });
 </script>
@@ -30,6 +38,7 @@
 <template>
   <div class="dashboard-grid">
     <top-nav />
+    <current-month-stats />
     <slot />
   </div>
 </template>

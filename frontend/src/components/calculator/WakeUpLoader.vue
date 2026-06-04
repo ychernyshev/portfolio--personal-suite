@@ -87,7 +87,7 @@ onUnmounted(() => {
   position: fixed;
   inset: 0;
   background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(8px); /* Наш улюблений блюр, але на весь екран */
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
