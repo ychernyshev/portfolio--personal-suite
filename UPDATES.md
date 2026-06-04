@@ -4,7 +4,7 @@
 - [ ] Analytics for the last month. Graphic
 - [ ] Analytics for the entire period. Graphic and diagram
 - [ ] More weather icons
-- [x] Cleaning form after saving
+- [x] Cleaning the "Add record" form after saving
 - [x] Set up the "Extra power" field
 - [x] Add Calculator CSS only when the user is watching the current page
 - [x] A bug with 31-day in the month when not every month has 31-day
