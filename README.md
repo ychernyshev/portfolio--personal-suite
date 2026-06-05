@@ -68,11 +68,8 @@ Welcome to my software projects `monorepository`. This space is designed to demo
 ## ⚙️ [Backend Detailed](#-backend-detailed)
 ### Main responsibilities
 - 🔌 **REST API**Built with DRF, supporting full CRUD for solar records.
-- 📈 **Data Processing & Aggregations** 
-  - **`Current` and `real-time` aggregations**:
-    - For sunny days count, average temperature, monthly average power, monthly total power, percentage performance comparison current vs previous month with NaN handling, etc.
-  - **Planned feature**: 
-    - Pandas and NumPy.
+- 📈 **Data Processing & Analytics (Pandas & NumPy):** - **`Current` and `real-time` aggregations:** For sunny days count, average temperature, monthly average power, monthly total power, and percentage performance comparison (current vs. previous month) with NaN handling.
+  - **Empirical Calibration Engine:** Implemented background data-science logic using `Pandas` to dynamically compute a `calibration_factor` (Performance Ratio), calibrating historical Open-Meteo solar radiation forecasts against empirical user-meter data.
 - 📑 **Reporting**: Endpoints for automated `CSV/Excel` data lifecycle.
 
 ## 🎨 [Frontend Detailed](#-frontend-detailed)
@@ -126,12 +123,14 @@ The second iteration of the `Calculator APP` was developed as a service with a r
 ![4_widget_new_mobile.png](docs/pictures/screenshots/sp_calculator_v2/4_widget_new_mobile.png)
 
 An analytical platform for monitoring and calculating the efficiency of solar power plants.
-*   **Purpose:** Data collection on generation, financial accounting, and performance analytics.
-*   **Key Features:**
-*   **Dashboard:** The `MonthStats` widget, which compares current generation with the previous month in real-time using percentages.
-*   Implemented a pinned notification system (`MessagesStack`) with icons for event types: success, info, warning, and errors
-*   **Smart Table:** A record table with intelligent status badges (`NOT TRACKED`, `NO GENERATION`) and context-aware color indication.
-*   **Backend Analytics:** Calculation of sunny days, average temperatures, total power, and generated energy costs on the Django side using model methods.
+* **Purpose:** Data collection on generation, financial accounting, and performance analytics.
+* **Key Features:**
+  * **Interactive Analytics Chart:** A custom multi-layered Chart.js visualization in a `modal-xxl` layout. Features a synchronized view tracking both **Actual Generation** (purple line, tracking real entries) and a **Realistic Generation Forecast** (grey dotted line) separated by a vertical "Today Reality Line".
+  * **Dynamic Forecast Calibration:** Integrates live Open-Meteo API data (16 days into the future) combined with a self-correcting backend algorithm that calibrates weather predictions to the physical specs/shading of Lviv solar systems.
+  * **Dashboard:** The `MonthStats` widget, which compares current generation with the previous month in real-time using percentages.
+  * Implemented a pinned notification system (`MessagesStack`) with icons for event types: success, info, warning, and errors.
+  * **Smart Table:** A record table with intelligent status badges (`NOT TRACKED`, `NO GENERATION`) and context-aware color indication.
+  * **Bulletproof Edge-Case Architecture:** Fully protected against 31-day month layout/shifting anomalies via atomic date operations and 1-day "cold start" database absence bugs (preventing NaN or 500 errors).
 
 
 ## 💻 [Local Launching](#-local-launching)
