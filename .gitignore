@@ -30,7 +30,7 @@ frontend/.vite/
 frontend/.output/
 frontend/.eslintcache
 
-# === Docker ===
+# === docker ===
 *.pid
 *.sock
 docker-compose.override.yml

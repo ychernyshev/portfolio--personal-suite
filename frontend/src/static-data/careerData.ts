@@ -35,7 +35,7 @@ export const timeline: CareerItem[] = [
             },
             {
                 title: 'Post Flow Controlling App (v2.0)',
-                description: 'A complete re-engineering of the legacy system into a high-performance Fullstack application. Features a reactive Vue.js frontend and a distributed backend powered by Celery, Redis, and Docker for scalable logistics management.',
+                description: 'A complete re-engineering of the legacy system into a high-performance Fullstack application. Features a reactive Vue.js frontend and a distributed backend powered by Celery, Redis, and docker for scalable logistics management.',
                 livePreviewUrl: '',
                 sourceCodeUrl: '',
             },
