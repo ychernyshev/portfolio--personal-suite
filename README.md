@@ -2,18 +2,16 @@
 
 # 🚀 Personal Dev Showcase
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.12](https://img.shields.io/badge/Python-v3.12-blue?logo=python)](https://www.python.org/)
+[![Python 3.11](https://img.shields.io/badge/Python-v3.11-blue?logo=python)](https://www.python.org/)
 [![Django 5.2.7](https://img.shields.io/badge/Django-v5.2.7-darkgreen?logo=django)](https://www.djangoproject.com/)
-[![Node.js 18](https://img.shields.io/badge/Node.js-v18-green?logo=node.js)](https://nodejs.org/)
 [![Vue 3](https://img.shields.io/badge/Vue.js-v3.4-brightgreen?logo=vue.js)](https://vuejs.org/)
+[![Docker](https://img.shields.io/badge/Docker-v24+-blue?logo=docker)](https://www.docker.com/)
+[![Redis](https://img.shields.io/badge/Redis-v7-red?logo=redis)](https://redis.io/)
 
-[//]: # ([![Build]&#40;https://github.com/ychernyshev/portfolio--personal-suite/actions/workflows/ci.yml/badge.svg&#41;]&#40;https://github.com/ychernyshev/portfolio--personal-suite/actions/workflows/ci.yml&#41;)
-
-
-Welcome to my software projects `monorepository`. This space is designed to demonstrate my skills in `Full-stack development`, with a focus on clean code, architectural flexibility, and automation.
+Welcome to my software projects `monorepository`. This space is designed to demonstrate my skills in `Full-stack development`, with a focus on clean code, production-ready containerization, asynchronous architectures, and automation.
 
 ## 🧾 Table of Contents
--  [Project Structure](#-project-structure)
+- [Project Structure](#-project-structure)
 - [Tech Stack](#-tech-stack)
 - [App List](#-app-list)
 - [Backend Detailed](#-backend-detailed)
@@ -23,10 +21,9 @@ Welcome to my software projects `monorepository`. This space is designed to demo
   - [Solar Power Calculator V1 Legacy](#2--solar-power-calculator-v1-legacy) 
   - [Solar Power Calculator V2 Active](#3--solar-power-calculator-v2-active)
 - [Local Launching](#-local-launching)
+- [Docker Support](#-docker-support)
 - [Short API reference](#short-api-reference)
   - [Solar Power Calculator V2 API](#-solar-power-calculator-v2-api)
-    - [Example Requests](#example-requests)
-- [Docker Support](#-docker-support)
 - [Current deployment](#-current-deployment)
 - [Contact](#-contact)
 - [License](#-license)
@@ -34,162 +31,144 @@ Welcome to my software projects `monorepository`. This space is designed to demo
 ## 📂 [Project Structure](#-project-structure)
 
 ```
-├── backend/                # Django Project (Python 3.12+)
+├── backend/                # Django Project (Python 3.11+)
 │   ├── calculator/         # Solar app logic and API
-│   ├── personal/           # Portfolio API & email service
-│   └── settings/           # Security, CORS, CSRF & deployment config
-├── frontend/               # Vue 3 Project (Vite + TypeScript)
+│   ├── personal/           # Portfolio API, routing & WebSockets
+│   ├── settings/           # Security, ASGI/WSGI, CORS & DB configurations
+│   ├── Dockerfile          # Optimized backend containerization configuration
+│   ├── docker-compose.yml  # Local orchestration stack (Daphne + Postgres + Redis)
+│   └── requirements.txt    # Python dependencies
+├── frontend/               # Vue 3 Project (Vite + JavaScript)
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── calculator/ # Dashboard, charts, and table components
-│   │   │   └── personal/   # Hero section, Timeline, and contact components
-│   │   ├── store/          # Pinia (state management for messages and data)
-│   │   └── assets/         # Styles (CSS), icons, and images
+│   │   │   ├── calculator/ # Dashboard, charts, tables, and modal layers
+│   │   │   └── personal/   # Hero section, Interactive Timeline, and contact components
+│   │   ├── store/          # Pinia (reactive state for cross-component management)
+│   │   └── assets/         # Unified styles (CSS), neomorphic toolkit, and icons
 └── README.md               # Global documentation
 ```
 
 ## 🛠 [Tech Stack](#-tech-stack)
 
-| Domain               | Technologies                                                          |
-|:---------------------|:----------------------------------------------------------------------|
-| **Backend**          | Python 3.12, Django 5.2.7, Django REST Framework, Pandas, NumPy       |
-| **Frontend**         | Node 20, Vue 3 (Composition API), TypeScript, Pinia, Vite, Vue Router |
-| **DevOps & Tooling** | Vercel, Render (PaaS), Gunicorn, CORS/CSRF Security, Yarn             |
-| **Database**         | PostgreSQL / SQLite                                                   |
-| **Visualization**    | Chart.js                                                              |
-| **Styling**          | Bootstrap 5, Bootswatch, FontAwesome                                  |
-| **API/Data**         | Open-Meteo API, Axios, Excel/CSV Export/Import                        |
+| Domain | Technologies |
+|:---|:---|
+| **Backend** | Python 3.11, Django 5.2.7, Django Channels, DRF, Pandas, NumPy |
+| **Frontend** | Node 20, Vue 3 (Composition API), Pinia, Vite, Vue Router |
+| **Asynchronous Core** | Daphne (ASGI Server), WebSockets, Redis 7 (Channel Layer) |
+| **DevOps & Infrastructure**| Docker, Docker Compose, Render (PaaS), Vercel (SaaS) |
+| **Database** | PostgreSQL 15 (Production/Docker), SQLite (Local fallback) |
+| **Visualization & UI** | Chart.js, Vue-Chart.js, Bootstrap 5, Bootswatch, FontAwesome |
+| **API / Integration** | Open-Meteo API, Axios, Excel/CSV Lifecycle |
 
 ## 📱 [App List](#-app-list)
-- Personal Page
+- Personal Page (Portfolio Hub)
 - [Solar Power Calculator V1 Legacy](https://github.com/ychernyshev/portfolio--personal-suite/blob/v1-legacy/README.md)
 - [Solar Power Calculator V2 Active](https://github.com/ychernyshev/portfolio--personal-suite/blob/v2-reborn-in-vue/frontend/README.md)
 
 ## ⚙️ [Backend Detailed](#-backend-detailed)
 ### Main responsibilities
-- 🔌 **REST API**Built with DRF, supporting full CRUD for solar records.
-- 📈 **Data Processing & Analytics (Pandas & NumPy):** - **`Current` and `real-time` aggregations:** For sunny days count, average temperature, monthly average power, monthly total power, and percentage performance comparison (current vs. previous month) with NaN handling.
-  - **Empirical Calibration Engine:** Implemented background data-science logic using `Pandas` to dynamically compute a `calibration_factor` (Performance Ratio), calibrating historical Open-Meteo solar radiation forecasts against empirical user-meter data.
-- 📑 **Reporting**: Endpoints for automated `CSV/Excel` data lifecycle.
+- 🔌 **Unified ASGI Network Gateway:** Driven by `Daphne` and `Django Channels` to concurrently manage standard REST API request/response cycles alongside persistent WebSockets state.
+- 📈 **Data Processing & Analytics (Pandas & NumPy):** - **Real-Time Aggregations:** Processes month-over-month performance ratios, sunny days calculations, peak trends, and averages with resilient NaN/zero‑fault safety guards.
+  - **Empirical Calibration Engine:** Implemented specialized data-science workflows. The system automatically cross-references empirical production inputs against raw Open-Meteo radiation historical metrics to dynamically yield a custom `calibration_factor`.
+- 📊 **Resource & Schema Integration:** Added deep-level indexing and calculations accounting for a dedicated `Extra power` field directly integrated across structural formulas.
 
 ## 🎨 [Frontend Detailed](#-frontend-detailed)
 ### Main responsibilities
-- Responsive dashboard from **320px** upward.
-- Components: `MonthStats.vue`, `Dashboard.vue`, `TopNav`, `WeatherIcon`, `RecordsTable`, `AddRecord`, `Settings`, `CodeAndVision`, `Personal pages`, `Calculator` app.
-- Charts: power generation, cost savings; drill‑down modal with tables and charts.
-- State: Pinia stores (`useNotificationStore`, etc.).
-- Routing: modular routes with lazy loading and layout-based rendering.
-
-### Notes
-- Env variables must be prefixed with `VITE_` (e.g., `VITE_API_URL`).
-- Assets: Bootstrap core, Bootswatch, FontAwesome, custom CSS (`personal.css`, `calculator.css`).
-- `Axios` configured for API calls; calculator/ prefix used for calculator app endpoints.
+- **Responsive Fluid Layouts:** Optimized for all viewport sizes starting from ultra-compact smartphones (**320px**) up to wide-screen displays.
+- **Asynchronous Connectivity:** Seamlessly maintains connections with the backend server via HTTP and WebSockets for dynamic interfaces.
+- **Neomorphic UI Toolkit:** Modular implementation with tactile micro-interactions, smooth shadow-states, and optimized touch target zones.
+- **State & Router Orchestration:** Pinia reactive architecture paired with modular layout-based lazy loading routes.
 
 ## 🚀 [Apps Detailed](#-apps-detailed)
+
 ### 1. 🏠 [Personal Page](#1--personal-page)
-The central hub of my portfolio.
-
-#### Desktop view
-![personal-6-desctop-home.png](docs/pictures/screenshots/personal_page/personal-6-desktop-home.png)
-
-#### Mobile view
-![personal-6-mobile-home.png](docs/pictures/screenshots/personal_page/personal-6-mobile-home.png)
-
-*   **Purpose:** Presentation of experience, technical stack, and communication tools.
-*   **Latest Updates:** 
-    *   Implemented an animated `WakeUpLoader` to mitigate the "cold start" effect on free PaaS platforms like `Render` or `Vercel`.
-    *   The contact form has been moved to a separate `useContactForm` service for better code maintainability.
+The centralized core of the portfolio showcase.
+* **Purpose:** Production display of professional experience, stack competency, and client communications.
+* **Key Mechanisms:** Features a specialized `WakeUpLoader` ensuring seamless platform transitions, asynchronous request pooling, and a dedicated `useContactForm` architecture.
 
 ### 2. 🏛️ [Solar Power Calculator V1 Legacy](#2--solar-power-calculator-v1-legacy)
-A previous version of the `Calculator` in the form of a notebook with a simple design and logic
-
-#### Desktop View
-![sp_calculator_v1_dashboard.png](docs/pictures/screenshots/sp_calculator_v1/sp_calculator_v1_dashboard.png)
-
-An analytical platform for monitoring and calculating the efficiency of solar power plants. Based on the initial monolithic iteration of the system, built with a focus on robust backend logic and `Server-Side Rendering (SSR)`.
-- **Monolithic Architecture**: Built entirely within the Django ecosystem using `Django Templates `and `Django Forms`, with business logic encapsulated in a dedicated service layer (`handle_entry_form.py`).
-- **Automated Financial Logic**: Implemented math algorithms for real-time calculation of generated power (Watts) and financial savings, including automated battery discharge compensation and precision rounding (2 decimal places).
-- **Integrated Management**: Features a built-in `Add Entry` system with automated validation and a customized `Django Admin` interface for advanced record management.
-- **Server-Side Dashboard**: `Desktop-oriented UI` using `Bootstrap`, featuring a tabbed interface for `Chart.js` visualizations (power generation vs. costs) and paginated data tables.
-- **Data Integrity**: Specialized handling for missing "afternoon" data points and battery-level logic to ensure accurate accounting of net energy production.
+Monolithic historical codebase focusing on Server-Side Rendering (SSR). Encapsulated entirely inside Django Templates with static tabular visual mappings.
 
 ### 3. ☀️ [Solar Power Calculator V2 Active](#3--solar-power-calculator-v2-active)
-The second iteration of the `Calculator APP` was developed as a service with a responsive design,  a reactive template, friendlу user UI experience, and extended functionality
-
-#### Desktop View
-![4_widget_new.png](docs/pictures/screenshots/sp_calculator_v2/4_widget_new.png)
-
-#### Mobile View
-![4_widget_new_mobile.png](docs/pictures/screenshots/sp_calculator_v2/4_widget_new_mobile.png)
-
-An analytical platform for monitoring and calculating the efficiency of solar power plants.
-* **Purpose:** Data collection on generation, financial accounting, and performance analytics.
-* **Key Features:**
-  * **Interactive Analytics Chart:** A custom multi-layered Chart.js visualization in a `modal-xxl` layout. Features a synchronized view tracking both **Actual Generation** (purple line, tracking real entries) and a **Realistic Generation Forecast** (grey dotted line) separated by a vertical "Today Reality Line".
-  * **Dynamic Forecast Calibration:** Integrates live Open-Meteo API data (16 days into the future) combined with a self-correcting backend algorithm that calibrates weather predictions to the physical specs/shading of Lviv solar systems.
-  * **Dashboard:** The `MonthStats` widget, which compares current generation with the previous month in real-time using percentages.
-  * Implemented a pinned notification system (`MessagesStack`) with icons for event types: success, info, warning, and errors.
-  * **Smart Table:** A record table with intelligent status badges (`NOT TRACKED`, `NO GENERATION`) and context-aware color indication.
-  * **Bulletproof Edge-Case Architecture:** Fully protected against 31-day month layout/shifting anomalies via atomic date operations and 1-day "cold start" database absence bugs (preventing NaN or 500 errors).
-
-
-## 💻 [Local Launching](#-local-launching)
-### Backend
-```bash
-    cd backend
-    python -m venv venv
-    source venv/bin/activate  # or venv\Scripts\activate for Windows
-    pip install -r requirements.txt
-    python manage.py migrate
-    python manage.py runserver
-```
-
-### Frontend
-```bash
-    cd frontend
-    yarn install
-    yarn dev --host 0.0.0.0 --port 5173
-```
-
-## [Short API reference](#short-api-reference)
-Use a compact table for endpoints and short `curl` examples + a minimal sample response. Put full response examples in code blocks.
-
-## 📡 [Solar Power Calculator V2 API](#-solar-power-calculator-v2-api)
-
-| Method | Endpoint | Purpose | Notes                                                                                                            |
-|--------|----------|---------|------------------------------------------------------------------------------------------------------------------|
-| GET    | /api/calculator/entries/ | List all records | Supports pagination                                                                                              |
-| GET    | /api/calculator/weather-conditions/ | Weather data | Cached hourly forecast                                                                                           |
-| GET    | /api/calculator/current-tariff/ | Current tariff | Returns UAH per kWh and sets a new one                                                                           |
-| GET    | /api/calculator/stats/ | Monthly stats | Count of sunny days, avg temp, avg power,  total power, current savings, month-over-month performance comparison |
-| GET    | /api/calculator/forecast/ | Daily forecast | kWh, savings, peak hour                                                                                          |
-| GET    | /api/calculator/forecast/details/ | Hourly forecast | Temperature, sky condition                                                                                       |
-| GET    | /api/calculator/data-export/ | Export records | Excel download                                                                                                   |
-| POST   | /api/calculator/data-import/ | Import records | CSV upload                                                                                                       |
-
-#### [Example Requests](#example-requests)
-```bash
-# Get current monthly stats
-curl -s https://api.example.com/api/calculator/stats/
-
-# Import CSV
-curl -X POST https://api.example.com/api/calculator/data-import/ \
-  -F "file=@records.csv"
-```
+The active responsive analytical platform for monitoring and calculating solar energy performance.
+* **Dynamic Dual-Line Visuals:** Multi-layered `Chart.js` tracking actual user metrics (purple line) against self-correcting generation forecasts (grey dotted line), separated cleanly by a live "Today Timeline" boundary.
+* **Predictive Weather Calibration:** Auto-fetches 16-day forward metrics via Open-Meteo, scaling weather datasets against mathematical models calibrated to physical shading characteristics.
+* **Bulletproof Integrity:** Native protection mechanisms handling edge cases like 31-day shifting layout anomalies or database-absence crashes.
 
 ## 🐳 [Docker Support](#-docker-support)
-#### Planned features
-- `docker-compose up` started backend (`Gunicorn`) + frontend (`Nginx`) + `PostgreSQL
-- `Redis` + `Celery` (planned for `Post Flow Controlling App`)
 
+The backend infrastructure is fully containerized for local development, providing an environment identical to production.
 
-## 🌐 [Current deployment](#-current-deployment)
-- **Frontend**: `Vercel` (auto-deploy from repository)
-- **Backend**: `Render` (`Gunicorn` + `PostgreSQL`, auto-deploy from repository)
-- **Domain**: `ychernyshev.vercel.app`
+Inside the `backend/` directory, the multi-container environment includes:
+* **`backend`**: Custom Python 3.11 environment running the Daphne ASGI server.
+* **`db`**: PostgreSQL 15 relational storage database.
+* **`redis`**: Redis 7 serving as both the caching mechanism and message broker for Django Channels.
 
-## 📫 [Contact](#-contact)
-Feel free to reach out via the contact form on my [Personal Page](https://ychernyshev.vercel.app/) or via [LinkedIn](https://www.linkedin.com/in/ychernyshev/).
+Data persistence is guaranteed via isolated named Docker volumes (`postgres_data`), ensuring records remain intact across infrastructure restarts.
 
-## 📜 [License](#-license)
-[MIT License](LICENSE) — free to use, modify, and distribute.
+---
+
+## 💻 [Local Launching](#-local-launching)
+
+### Option A: Complete Automated Stack (Recommended)
+Ensure you have Docker and Docker Compose installed. Navigate to the backend folder and boot all services simultaneously:
+```bash
+cd backend
+docker-compose up --build -d
+```
+
+# Apply DB tables structure & migrations inside the live container
+docker-compose exec backend python manage.py migrate
+
+> The backend API and WebSocket endpoints will become available at http://localhost:8001/.
+
+### Option B: Manual Bare-Metal Installation
+### 1. Backend Service
+
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # Or venv\Scripts\activate on Windows
+pip install -r requirements.txt
+python manage.py migrate
+daphne -b 0.0.0.0 -p 8001 settings.asgi:application
+```
+
+### 2. Frontend Application
+
+```bash
+cd frontend
+npm install  # or yarn install
+npm run dev  # or yarn dev
+```
+
+# 📡 Short API Reference
+| Method | Endpoint | Purpose | Configuration Type |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/calculator/entries/` | Paginated records retrieval | REST API |
+| `GET` | `/api/calculator/stats/` | Monthly aggregations & Performance Metrics | REST API |
+| `GET` | `/api/calculator/forecast/` | 16-Day forward empirical production metrics | REST API / Open-Meteo |
+| `POST` | `/api/calculator/data-import/` | Bulk file lifecycle data intake | CSV Multipart Stream |
+| `WS` | `/ws/personal/...` | Real-time bi-directional message streams | WebSocket Protocol |
+
+### Example Requests
+
+```bash
+# Fetch aggregated solar analytics data
+curl -s http://localhost:8001/api/calculator/stats/
+
+# Dispatch a secure record ingestion command
+curl -X POST http://localhost:8001/api/calculator/data-import/ -F "file=@records.csv"
+```
+
+## 🌐 Current Deployment
+
+- Frontend Application Infrastructure: Hosted via Vercel pipeline directly connected to repository triggers.
+- Backend Application Infrastructure: Scaled on Render hosting environments, utilizing persistent attached PostgreSQL database storage.
+- Live Address: ychernyshev.vercel.app
+
+## 📫 Contact
+Feel free to reach out via the secure asynchronous contact channel on my Personal Portfolio Page or connect professionally via LinkedIn.
+
+## 📜 License
+Distributed under the MIT License. Check the root [LICENSE](LICENSE) file for additional terms.
