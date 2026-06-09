@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import Toast from "@/components/personal/user/dashboard/Toast.vue";
+  import DashboardHeader from "@/components/personal/user/dashboard/grid/dashboardHeader.vue";
 
   const currentYear = new Date().getFullYear();
 </script>

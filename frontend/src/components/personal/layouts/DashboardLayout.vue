@@ -40,9 +40,9 @@ import {onMounted, onUnmounted} from "vue";
   <div class="dashboard-wrapper g-sidenav-show bg-gray-100">
     <div class="container-fluid">
       <dashboard-header />
-      <main-content>
-        <router-view/>
-      </main-content>
+<!--      <main-content>-->
+<!--        <router-view/>-->
+<!--      </main-content>-->
     </div>
 <!--    <asside />-->
 
