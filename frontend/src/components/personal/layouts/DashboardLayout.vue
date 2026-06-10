@@ -272,52 +272,7 @@ onUnmounted(() => {
       </div>
     </nav>
     <!-- End Navbar -->
-    <div class="container-fluid py-4">
-      <div class="row mt-4">
-        <div class="col-12">
-          <div class="card">
-            <div class="card-header pb-0">
-              <slot />
-            </div>
-            <div class="card-body p-3">
-              <div class="chart">
-                <canvas id="chart-line" class="chart-canvas" height="300px"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <footer class="footer pt-3">
-        <div class="container-fluid">
-          <div class="row align-items-center justify-content-lg-between">
-            <div class="col-lg-6 mb-lg-0 mb-4">
-              <div class="copyright text-center text-sm text-muted text-lg-left">
-                © {{ currentYear }}, the <span class="text-info">personal dev showcase</span> by
-                <router-link to="/">
-                  <b>Yevgenii Chernyshev</b>
-                </router-link>
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                <li class="nav-item">
-                  <router-link to="/" class="nav-link text-muted">YChernyshev</router-link>
-                </li>
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About</a>
-                </li>
-                <li class="nav-item">
-                  <a href="http://blog.creative-tim.com" class="nav-link text-muted" target="_blank">Blog</a>
-                </li>
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted" target="_blank">License</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+    <main-content/>
   </main>
 </template>
 
