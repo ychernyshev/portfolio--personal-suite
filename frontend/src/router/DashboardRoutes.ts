@@ -8,6 +8,10 @@ const adminPageRoutes: RouteRecordRaw = {
     meta: { layout: "DashboardLayout" },
     children: [
         {
+            path: "dashboard",
+            component: () => import("@/views/personal/user/dasboard/mail/Inbox.vue"),
+        },
+        {
             path: "dashboard/mail_hub",
             component: () => import("@/views/personal/user/dasboard/mail/Inbox.vue"),
         },
