@@ -25,13 +25,8 @@
     <div class="row mt-4">
       <div class="col-12">
         <div class="card">
-          <div class="card-header pb-0">
+          <div class="card-header pb-4 rounded-5">
             <slot />
-          </div>
-          <div class="card-body p-3">
-            <div class="chart">
-              <canvas id="chart-line" class="chart-canvas" height="300px"></canvas>
-            </div>
           </div>
         </div>
       </div>
@@ -71,18 +66,9 @@
 
 <style scoped>
   .main-content {
-    height: 100vh;
     flex-direction: column;
-  }
-
-  .card-body {
-    height: auto;
     overflow-y: hidden;
   }
 
-  @media (min-width: 1200px) {
-    .card-body {
-      height: 76vh;
-    }
-  }
+  @media (min-width: 1200px) {}
 </style>

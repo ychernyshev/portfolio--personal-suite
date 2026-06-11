@@ -115,8 +115,8 @@ onMounted(async () => {
 
 <style scoped>
 .row.h-100 {
-  height: 100% !important;
-  max-height: 100%;
+  height: 75vh !important;
+  max-height: 85vh;
 }
 
 .inbox-list-container {
