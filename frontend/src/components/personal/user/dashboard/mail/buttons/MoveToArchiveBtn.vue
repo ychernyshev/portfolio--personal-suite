@@ -58,8 +58,9 @@
   <button-comp
       @click="toggleArchiveStatus"
       :disabled="isLoading"
-      :title="is_archived ? 'Move to archive' : 'Archived'"
-      class="p-2 right-angle">
+      :class="{ '': is_archived, 'btn-secondary': !is_archived }"
+      :title="is_archived ? 'To archive' : 'Is archived'"
+      class="p-1 right-angle">
   </button-comp>
 </template>
 

@@ -57,8 +57,9 @@
   <button-comp
       @click="toggleDeleteStatus"
       :disabled="isLoading"
+      :class="{ '': !is_deleted, 'btn-secondary': is_deleted }"
       :title="!is_deleted ? 'Delete' : 'Deleted'"
-      class="p-2 right-angle">
+      class="p-1 right-angle">
   </button-comp>
 </template>
 
