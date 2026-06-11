@@ -58,22 +58,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <!--  <div class="dashboard-wrapper g-sidenav-show bg-gray-100">-->
-  <!--    <div class="container-fluid">-->
-  <!--      <dashboard-header />-->
-  <!--      <main-content>-->
-  <!--        <router-view/>-->
-  <!--      </main-content>-->
-  <!--    </div>-->
-  <!--    <asside />-->
-
-  <!--  </div>-->
-
   <dashboard-sidebar />
   <main class="main-content mt-1 border-radius-lg">
-    <!-- Navbar -->
     <dashboard-header />
-    <!-- End Navbar -->
     <main-content>
       <router-view/>
     </main-content>
