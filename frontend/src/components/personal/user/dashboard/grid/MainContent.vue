@@ -21,7 +21,7 @@
       </div>
     </div>
   </div>
-  <div class="container-fluid py-4 main-content">
+  <div class="container-fluid py-2 main-content">
     <div class="row mt-4">
       <div class="col-12">
         <div class="card">
