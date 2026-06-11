@@ -40,14 +40,12 @@ onMounted(async () => {
   <div class="row m-0 h-100 text-light font-monospace">
     <div class="col-md-4 m-0 p-0 pt-3 h-100 d-flex flex-column">
       <div class=" d-flex flex-row align-items-baseline justify-content-between mb-3">
-        <button type="button" class="brtn pe-3 bg-white border-0 position-relative shadow-none">
-          INBOX
-          <span
-              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary-subtle text-dark-emphasis">
-              <count-unread/>
-              <span class="visually-hidden">unread messages</span>
-            </span>
-        </button>
+        <div class="brtn ps-3 bg-white border-0 position-relative shadow-none text-dark-emphasis">
+          <span>
+            <count-unread/>
+            unread messages
+          </span>
+        </div>
         <div class="d-flex flex-row align-items-center">
           <div class="shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center p-1">
             <button
