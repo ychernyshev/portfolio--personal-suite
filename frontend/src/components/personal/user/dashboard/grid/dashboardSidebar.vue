@@ -14,7 +14,7 @@
     <div class="collapse navbar-collapse  w-auto" id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <router-link to="/user/dashboard" class="nav-link  active">
+          <router-link to="/user/dashboard" class="nav-link" exact-active-class="active">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>dashboard</title>
@@ -37,7 +37,7 @@
           <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Mail Hub</h6>
         </li>
         <li class="nav-item">
-          <router-link to="/user/dashboard/mail_hub" class="nav-link">
+          <router-link to="/user/dashboard/mail_hub" class="nav-link" exact-active-class="active">
             <div class="shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center p-1">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill"
                    viewBox="0 0 16 16">
@@ -49,7 +49,7 @@
           </router-link>
         </li>
         <li class="nav-item">
-          <router-link to="dashboard/mail_hub" class="nav-link">
+          <router-link to="dashboard/mail_hub" class="nav-link" exact-active-class="active">
             <div class="shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center p-1">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash-fill" viewBox="0 0 16 16">
                 <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z"/>
