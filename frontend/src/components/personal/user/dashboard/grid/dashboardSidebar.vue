@@ -38,53 +38,6 @@
             <span class="nav-link-text ms-1">Inbox</span>
           </router-link>
         </li>
-        <li class="nav-item">
-          <router-link to="dashboard/mail_hub" class="nav-link" exact-active-class="active">
-            <div class="shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center p-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash-fill" viewBox="0 0 16 16">
-                <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z"/>
-                <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z"/>
-              </svg>
-            </div>
-            <span class="nav-link-text ms-1">Unread</span>
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="../pages/sign-in.html">
-            <div class="shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center p-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-archive-fill"
-                   viewBox="0 0 16 16">
-                <path
-                    d="M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1M.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8z"/>
-              </svg>
-            </div>
-            <span class="nav-link-text ms-1">Archived</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="../pages/sign-up.html">
-            <div class="shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center p-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill"
-                   viewBox="0 0 16 16">
-                <path
-                    d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
-              </svg>
-            </div>
-            <span class="nav-link-text ms-1">Deleted</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="../pages/sign-up.html">
-            <div class="shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center p-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fire"
-                   viewBox="0 0 16 16">
-                <path
-                    d="M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16m0-1c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3C6.125 10 7 10.5 7 10.5c-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15"/>
-              </svg>
-            </div>
-            <span class="nav-link-text ms-1">Spam</span>
-          </a>
-        </li>
       </ul>
     </div>
     <div class="sidenav-footer mx-3 mt-3 pt-3">
