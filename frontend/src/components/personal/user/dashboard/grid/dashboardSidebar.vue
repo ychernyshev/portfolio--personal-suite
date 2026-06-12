@@ -1,5 +1,6 @@
 <script setup lang="ts">
 
+import DashboardFooter from "@/components/personal/user/dashboard/DashboardFooter.vue";
 </script>
 
 <template>
@@ -42,14 +43,14 @@
     </div>
     <div class="sidenav-footer mx-3 mt-3 pt-3">
       <div class="card card-background shadow-none card-background-mask-secondary" id="sidenavCard">
-        <div class="full-background" style="background-image: url('../assets/img/curved-images/white-curved.jpeg')"></div>
-        <div class="card-body text-left p-3 w-100">
+        <div class="card-body text-left p-1 w-100">
           <div class="docs-info">
             <a href="https://www.creative-tim.com/learning-lab/bootstrap/license/soft-ui-dashboard" target="_blank" class="btn btn-white btn-sm w-100 mb-0">Documentation</a>
           </div>
         </div>
       </div>
     </div>
+    <dashboard-footer />
   </aside>
 </template>
 

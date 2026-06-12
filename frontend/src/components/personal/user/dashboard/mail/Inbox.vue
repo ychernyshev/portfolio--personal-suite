@@ -124,7 +124,7 @@ onMounted(async () => {
 
 <style scoped>
 .row.h-100 {
-  height: 75vh !important;
+  height: 80vh !important;
   max-height: 85vh;
 }
 
