@@ -21,7 +21,7 @@ import {computed, ref, watch} from "vue";
     isRead.value = newVal;
   });
 
-  const buttonText = computed(() => isRead.value ? 'Mark as unread' : 'Read');
+  const buttonText = computed(() => isRead.value ? 'Is unread' : 'Is read');
 
   const toggleReadStatus = async () => {
     if (isLoading.value) return;
@@ -60,8 +60,9 @@ import {computed, ref, watch} from "vue";
   <button-comp
       @click="toggleReadStatus"
       :disabled="isLoading"
-      class="p-2 right-angle"
-      :title="isRead ? 'Mark as unread' : 'Mark as read'"
+      class="p-1 right-angle"
+      :class="{ '': isRead, 'btn-secondary': !isRead }"
+      :title="isRead ? 'Is unread' : 'Is read'"
   >
   </button-comp>
 </template>

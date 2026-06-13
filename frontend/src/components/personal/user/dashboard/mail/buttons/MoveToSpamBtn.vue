@@ -55,8 +55,9 @@
   <button-comp
       @click="toggleSpamStatus"
       :disabled="isLoading"
+      :class="{ '': !is_spam, 'btn-secondary': is_spam }"
       :title="!is_spam ? 'Add to spam' : 'Added to spam'"
-      class="p-2 right-angle">
+      class="p-1 right-angle">
   </button-comp>
 </template>
 

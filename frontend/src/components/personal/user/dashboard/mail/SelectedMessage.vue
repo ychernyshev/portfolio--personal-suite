@@ -26,18 +26,20 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div v-if="props.message" class="d-flex flex-column mail-body-container mt-3 ms-3 pt-3 ps-3 pe-3 h-100" style="max-height: calc(100% - 1rem); box-sizing: border-box;">
-    <div class="pb-3 mb-3">
-      <h2 class="text-warning">{{ props.message.project_theme }}</h2>
-      <div class="d-flex justify-content-between">
-        <span class="text-info">From: {{ props.message.subject_email }}</span>
-        <span class="text-info-emphasis bg-body-tertiary ps-2 pe-2 rounded-2">{{ new Date(props.message.created_at).toLocaleString() }}</span>
+  <div v-if="props.message" class="d-flex flex-column mail-body-container mt-3 ms-3 pt-0 ps-3 pe-3 h-100" style="max-height: calc(100% - 1rem); box-sizing: border-box;">
+    <div>
+      <div class="d-flex justify-content-between mb-4">
+        <span class="shadow text-secondary bg-body-tertiary p-2 rounded-2">
+          From:
+          <span class=fw-bold>{{ props.message.subject_email }}</span>
+        </span>
+        <span class="shadow text-info-emphasis bg-body-tertiary text-secondary p-2 rounded-2">Received:
+          <span class=fw-bold>{{ new Date(props.message.created_at).toLocaleString() }}</span>
+        </span>
       </div>
-    </div>
-    <div class="flex-grow-1 p-3 rounded border-0 mail-body">
-      <div class="d-flex flex-row justify-content-between">
+      <div class="d-flex flex-row justify-content-between align-items-baseline">
         <p>
-          <a 
+          <a
               class="btn btn-success rounded-2"
               data-bs-toggle="collapse"
               href="#mailReplyBox"
@@ -49,23 +51,35 @@ const props = defineProps<{
             </svg>
           </a>
         </p>
-        <div>
-          <mark-as-unread-btn
-              :message-id=props.message.id
-              :is-read-initial="props.message.is_read"
-          />
-          <move-to-archive-btn
-            :message-id=props.message.id
-            :is-archive-initial="props.message.is_archived"
-          />
-          <delete-mail-btn
-            :message-id="props.message.id"
-            :is-delete-initial="props.message.is_deleted"
-          />
-          <move-to-spam-btn
-            :message-id="props.message.id"
-            :is-spam-initial="props.message.is_spam"
-          />
+        <div class="row w-75 m-0 p-0">
+          <div class="col-3 p-1">
+            <mark-as-unread-btn
+                :message-id=props.message.id
+                :is-read-initial="props.message.is_read"
+                class="w-100"
+            />
+          </div>
+          <div class="col-3 p-1">
+            <move-to-archive-btn
+                :message-id=props.message.id
+                :is-archive-initial="props.message.is_archived"
+                class="w-100"
+            />
+          </div>
+          <div class="col-3 p-1">
+            <delete-mail-btn
+                :message-id="props.message.id"
+                :is-delete-initial="props.message.is_deleted"
+                class="w-100"
+            />
+          </div>
+          <div class="col-3 p-1">
+            <move-to-spam-btn
+                :message-id="props.message.id"
+                :is-spam-initial="props.message.is_spam"
+                class="w-100"
+            />
+          </div>
         </div>
         <p>
           <a class="btn btn-secondary" data-bs-toggle="collapse" href="#mailForwardBox" role="button" aria-expanded="false" aria-controls="mailForwardBox">
@@ -90,6 +104,9 @@ const props = defineProps<{
             :mail_body="props.message.mail_body"
         />
       </div>
+    </div>
+    <div class="flex-grow-1 m-0 p-0 rounded border-0 mail-body">
+      <h3 class="text-secondary">{{ props.message.project_theme }}</h3>
       <div class="select-message-container">
         {{ props.message.mail_body }}
       </div>
@@ -103,7 +120,6 @@ const props = defineProps<{
 
 <style scoped>
 .mail-body-container {
-  background: var(--p-light-2);
   border-top-left-radius: 1.2rem;
   color: var(--primary-emphasis);
 }
