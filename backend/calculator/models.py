@@ -80,9 +80,15 @@ class DataEntryLineModel(models.Model):
         return round(((price_diff * 100) / self.power_tariff) * 100, 2)
 
     def _handle_charge_difference(self, charge_diff):
+        current_power = self._delta_price(self.morning_data_price, self.afternoon_data_price)
+
         if charge_diff <= self.CHARGE_DIFFERENCE_THRESHOLD:
+            if 0 < current_power < self.POWER_HIGH:
+                return current_power + self.POWER_HIGH
             return self.POWER_HIGH
         else:
+            if current_power > self.POWER_LOW:
+                return current_power + self.POWER_LOW
             return self.POWER_LOW
 
     def _calculate_full_day_power(self):
