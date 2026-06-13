@@ -25,7 +25,8 @@
 - [ ] Hide the reply form when the forward form is visible and vice versa
 - [ ] Update message toasts design
 - [ ] Hide mails from old message thread in mail and side mail list
+- [ ] The interface is responsive; unnecessary scroll bars are hidden.
 
 ### Refactoring
-- [ ] Docker for: Gunicorn, Daphne, Postgres, Nginx
+- [x] Docker for: Gunicorn, Daphne, Postgres, Nginx
 - [ ] Refresh css`s: colors and other neutral styles 
