@@ -72,7 +72,7 @@ class DataEntryLineModel(models.Model):
     evening_data_price = models.FloatField(verbose_name='Вартість використаної енергії на вечір')
 
     default_day_energy_formula = models.BooleanField(default=False)
-    extra_power = models.IntegerField(default=0, verbose_name='Приблизна потужність використана на USB')
+    extra_power = models.IntegerField(default=0, verbose_name='Приблизна потужність використана на USB', null=True, blank=True)
 
     full_day_power = models.FloatField(blank=True, verbose_name='Вироблена потужність за день')
     full_day_cost = models.FloatField(blank=True, null=True, verbose_name='Вартість виробленої енергії за день')
@@ -111,76 +111,90 @@ class DataEntryLineModel(models.Model):
     def _evening_afternoon_power_result(self, evening_data_charge, afternoon_data_charge):
         return (evening_data_charge - afternoon_data_charge) * self.ONE_POWER_UNIT
 
-    def _first_to_second_price(self, first_price, second_price):
-        power_dif = first_price - second_price
-        return round(((power_dif * 100) / 43.2) * 100, 2)
+    def _power_to_price(self, bigger_charge, lower_charge):
+        return (((bigger_charge - lower_charge) * self.ONE_POWER_UNIT) / 1000) * self.power_tariff
+
+    def _price_to_power(self, bigger_price, lower_price):
+        return round(
+                    (((bigger_price - lower_price) * 100) / 43.2) * 100, 2)
+
+    def _evening_to_afternoon_price(self, evening_price, afternoon_price):
+        power_dif = evening_price - afternoon_price
+        curren_tariff_unit = (CurrentTariffModel.power_tariff * 100) / 100
+
+        return round(((power_dif * 100) / curren_tariff_unit) * 100, 2)
 
     def _calculate_full_day_power(self):
         try:
-            if self._day_charge_equal():
+            if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
                 return 0
-            if self._morning_price_equal_evening_price() or self._afternoon_price_equal_evening_price():
-                return self._evening_afternoon_power_result(self.evening_data_charge, self.afternoon_data_charge)
-            if self._afternoon_charge_bigger_zero() < self.evening_data_charge:
-                return self._evening_afternoon_power_result(self.evening_data_charge, self.afternoon_data_charge) + self._evening_to_afternoon_price(self.evening_data_price, self.afternoon_data_price)
-            if self._afternoon_charge_bigger_zero() > self.evening_data_charge:
+            if self.afternoon_data_price == self.evening_data_price or self.morning_data_price == self.evening_data_price:
+                return (self.evening_data_charge - self.afternoon_data_charge) * self.ONE_POWER_UNIT
+            if 0 < self.afternoon_data_charge < self.evening_data_charge:
+                return (self.evening_data_charge - self.afternoon_data_charge) * self.ONE_POWER_UNIT + round(
+                    (((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100, 2)
 
-                if charge_diff <= self.CHARGE_DIFFERENCE_THRESHOLD:
-                    if self.POWER_HIGH < current_power < self.POWER_LOW:
-                        return current_power + self.POWER_HIGH
-                    if 0 < current_power < self.POWER_HIGH:
-                        return current_power + self.POWER_HIGH
-                    return self.POWER_HIGH
-                else:
-                    if current_power > self.POWER_LOW:
-                        return current_power + self.POWER_LOW
-                    return self.POWER_LOW
+            # IF AFTERNOON CHARGE BIGGER THEN EVENING
+            if 0 < self.afternoon_data_charge > self.evening_data_charge:
+                if self.evening_data_charge < self.afternoon_data_charge:
+                    power_meters = self._price_to_power(self.evening_data_price, self.afternoon_data_price)
+                    power_battery = (self.afternoon_data_charge - self.evening_data_charge) * self.ONE_POWER_UNIT
+                    final_power_watts = power_meters - power_battery
+                    return final_power_watts
 
-                if self.afternoon_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return self.POWER_HIGH
-                if self.afternoon_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return self.POWER_LOW
-            if self._afternoon_charge_equal_zero():
-                if self.morning_data_charge < self.evening_data_charge:
-                    return (
-                                   self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE) * self.ONE_POWER_UNIT + round(
+            # IF AFTERNOON CHARGE IS EGUAL ZERO
+            if self.afternoon_data_charge == 0:
+                if self.morning_data_charge > self.evening_data_charge:
+                    power_meters = round(
                         (((
                                   self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE) * 100) / 43.2) * 100 + self.extra_power,
                         2)
-                if self.morning_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return self.POWER_HIGH
-                if self.morning_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return self.POWER_LOW
+                    power_battery = (
+                                            self.morning_data_charge - self.evening_data_charge - self.MORNING_CORRECTION_CHARGE + self.extra_power) * self.ONE_POWER_UNIT
+                    return power_meters - power_battery
+                if self.morning_data_charge < self.evening_data_charge:
+                    power_meters = round(
+                        (((
+                                  self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE) * 100) / 43.2) * 100 + self.extra_power,
+                        2)
+                    power_battery = (
+                                   self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE + self.extra_power) * self.ONE_POWER_UNIT
+                    return  power_battery + power_meters
             return self.FALLBACK_COST
         except(TypeError, ZeroDivisionError):
             return self.FALLBACK_COST
 
     def _calculate_full_day_cost(self):
         try:
-            if self._day_charge_equal():
+            if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
                 return 0.0
             if self.afternoon_data_price == self.evening_data_price or self.morning_data_price == self.evening_data_price:
-                return (self._evening_afternoon_power_result(self.evening_data_charge, self.afternoon_data_charge) / 1000) * self.power_tariff
-            if self._afternoon_charge_bigger_zero() < self.evening_data_charge:
-                return (self._evening_afternoon_power_result(self.evening_data_charge, self.afternoon_data_charge) / 1000) * self.power_tariff + (
+                return (((
+                                 self.evening_data_charge - self.afternoon_data_charge) * self.ONE_POWER_UNIT) / 1000) * self.power_tariff
+            if 0 < self.afternoon_data_charge < self.evening_data_charge:
+                return (((
+                                 self.evening_data_charge - self.afternoon_data_charge) * self.ONE_POWER_UNIT) / 1000) * self.power_tariff + (
                                self.evening_data_price - self.afternoon_data_price)
-            if self._afternoon_charge_bigger_zero() > self.evening_data_charge and self.default_day_energy_formula:
-                if self.afternoon_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return self.DEFAULT_COST_LOW
-                if self.afternoon_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return self.DEFAULT_COST_HIGH
-            if self._afternoon_charge_bigger_zero() > self.evening_data_charge:
-                return (self._evening_afternoon_power_result(self.evening_data_charge, self.afternoon_data_charge) / 1000) * self.power_tariff + (
-                               self.evening_data_price - self.afternoon_data_price)
-            if self._afternoon_charge_equal_zero():
+
+            # IF AFTERNOON CHARGE BIGGER THEN EVENING
+            if 0 < self.afternoon_data_charge > self.evening_data_charge:
+                power_meters = self.evening_data_price - self.afternoon_data_price
+                power_battery = self._power_to_price(self.afternoon_data_charge, self.evening_data_charge)
+                final_power_costs = power_meters - power_battery
+                return final_power_costs
+
+            # IF AFTERNOON COSTS IS EQUAL ZERO
+            if self.afternoon_data_price == 0:
+                if self.morning_data_charge > self.evening_data_charge:
+                    power_battery = (((
+                                     self.morning_data_charge - self.evening_data_charge - self.MORNING_CORRECTION_CHARGE + self.extra_power) * self.ONE_POWER_UNIT) / 1000) * self.power_tariff
+                    power_meters = (self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE)
+                    return  power_meters - power_battery
                 if self.morning_data_charge < self.evening_data_charge:
-                    return (((
-                                     self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE + self.extra_power) * self.ONE_POWER_UNIT) / 1000) * self.power_tariff + (
-                                   self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE)
-                if self.morning_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return self.DEFAULT_COST_LOW
-                if self.morning_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return self.DEFAULT_COST_HIGH
+                    power_battery = (((
+                                     self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE + self.extra_power) * self.ONE_POWER_UNIT) / 1000) * self.power_tariff
+                    power_meters = (self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE)
+                    return  power_battery + power_meters
             return self.FALLBACK_COST
         except(TypeError, ZeroDivisionError):
             return self.FALLBACK_COST
