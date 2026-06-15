@@ -1,8 +1,7 @@
 <script setup lang="ts">
-  import MonthGenerationChart from "@/components/calculator/charts/MonthGenerationChart.vue";
-  import backendApi from "@/services/backendApi.ts";
+  import MonthGenerationChart from "@/components/calculator/charts/CurrentMonthStats/MonthGenerationChart.vue";
+  import backendApi from "@/services/backendApi.js";
   import {onMounted, ref} from "vue";
-  import MontGenerationStats from "@/components/calculator/MontGenerationStats.vue";
 
   const monthGenerationGraphiData = ref();
   const errorMsg = ref("");
@@ -35,7 +34,6 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
           </div>
-<!--          <button class="btn btn-blue-1 text-light" data-bs-target="#exampleModalToggle" data-bs-toggle="modal">Close stats window</button>-->
           <month-generation-chart
               v-if="monthGenerationGraphiData"
               month-name="Current Month"
@@ -51,11 +49,6 @@
           <div v-if="errorMsg" :class="['alert', errorClass, 'text-center']">
             {{ errorMsg }}
           </div>
-<!--          <div class="row">-->
-<!--            <div class="col-12">-->
-<!--              <mont-generation-stats />-->
-<!--            </div>-->
-<!--          </div>-->
         </div>
       </div>
     </div>

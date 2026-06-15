@@ -2,6 +2,7 @@ from datetime import date
 
 from django.db import models
 from django.db.models import Sum, Avg
+from django.db.models.functions import TruncMonth
 from django.utils import timezone
 
 
@@ -236,6 +237,28 @@ class DataEntryLineModel(models.Model):
             total_power=Sum('full_day_cost'))
 
         return round(current_month_savings['total_power'], 2) or 0
+
+    @classmethod
+    def get_monthly_comparison_data(cls):
+        monthly_stats = (
+            cls.objects.annotate(month=TruncMonth('date'))
+            .values('month')
+            .annotate(
+                total_power=Sum('full_day_power'),
+                total_cost=Sum('full_day_cost')
+            )
+            .order_by('month')
+        )
+
+        result = []
+        for stat in monthly_stats:
+            if stat['month']:
+                result.append({
+                    "month": stat['month'].strftime("%Y-%m"),
+                    "total_power": round(stat['total_power'], 2) if stat['total_power'] else 0,
+                    "total_cost": round(stat['total_cost'], 2) if stat['total_cost'] else 0
+                })
+        return result
 
     @classmethod
     def get_power_difference(cls):

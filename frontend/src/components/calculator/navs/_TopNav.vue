@@ -24,7 +24,13 @@
               <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.6.6 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0z"/>
             </svg>
           </button-comp>
-          <button-comp title="" class="neomorphic right-angle p-2 p-sm-3 p-md-4 p-xl-2 text-purple">
+          <button-comp
+              title=""
+              class="neomorphic right-angle p-2 p-sm-3 p-md-4 p-xl-2 text-purple"
+              data-bs-toggle="modal"
+              href="#PowerGenerationByMonthModal"
+              role="button"
+              aria-label="Power generation by month">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-graph-up additional-button-icon" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07"/>
             </svg>
