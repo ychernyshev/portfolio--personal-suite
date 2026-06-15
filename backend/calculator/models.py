@@ -144,22 +144,17 @@ class DataEntryLineModel(models.Model):
 
             # IF AFTERNOON CHARGE IS EGUAL ZERO
             if self.afternoon_data_charge == 0:
+                raw_meters_power = round((((
+                                                       self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE) * 100) / 43.2) * 100,
+                                         2)
+                battery_power = (
+                                            self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE) * self.ONE_POWER_UNIT
+
                 if self.morning_data_charge > self.evening_data_charge:
-                    power_meters = round(
-                        (((
-                                  self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE) * 100) / 43.2) * 100 + self.extra_power,
-                        2)
-                    power_battery = (
-                                            self.morning_data_charge - self.evening_data_charge - self.MORNING_CORRECTION_CHARGE + self.extra_power) * self.ONE_POWER_UNIT
-                    return power_meters - power_battery
+                    return raw_meters_power - battery_power + self.extra_power
+
                 if self.morning_data_charge < self.evening_data_charge:
-                    power_meters = round(
-                        (((
-                                  self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE) * 100) / 43.2) * 100 + self.extra_power,
-                        2)
-                    power_battery = (
-                                   self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE + self.extra_power) * self.ONE_POWER_UNIT
-                    return  power_battery + power_meters
+                    return raw_meters_power + battery_power + self.extra_power
             return self.FALLBACK_COST
         except(TypeError, ZeroDivisionError):
             return self.FALLBACK_COST
@@ -185,16 +180,8 @@ class DataEntryLineModel(models.Model):
 
             # IF AFTERNOON COSTS IS EQUAL ZERO
             if self.afternoon_data_price == 0:
-                if self.morning_data_charge > self.evening_data_charge:
-                    power_battery = (((
-                                     self.morning_data_charge - self.evening_data_charge - self.MORNING_CORRECTION_CHARGE + self.extra_power) * self.ONE_POWER_UNIT) / 1000) * self.power_tariff
-                    power_meters = (self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE)
-                    return  power_meters - power_battery
-                if self.morning_data_charge < self.evening_data_charge:
-                    power_battery = (((
-                                     self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE + self.extra_power) * self.ONE_POWER_UNIT) / 1000) * self.power_tariff
-                    power_meters = (self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE)
-                    return  power_battery + power_meters
+                day_power_watts = self._calculate_full_day_power()
+                return round((day_power_watts / 1000) * self.power_tariff, 2)
             return self.FALLBACK_COST
         except(TypeError, ZeroDivisionError):
             return self.FALLBACK_COST
