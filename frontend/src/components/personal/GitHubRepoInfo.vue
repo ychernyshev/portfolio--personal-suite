@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import axios from "axios";
   import { ref, onMounted } from "vue";
-  import {S} from "vue-router/dist/router-CWoNjPRp";
 
   const repoData = ref<any>(null);
   const props = defineProps<{

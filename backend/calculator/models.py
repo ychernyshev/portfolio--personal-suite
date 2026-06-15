@@ -1,8 +1,8 @@
-import calendar
 from datetime import date
 
 from django.db import models
 from django.db.models import Sum, Avg
+from django.db.models.functions import TruncMonth
 from django.utils import timezone
 
 
@@ -38,38 +38,48 @@ class CurrentTariffModel(models.Model):
 # ====================================================================
 
 class DataEntryLineModel(models.Model):
-    # --- КОНСТАНТИ ---
+    # ============================================================
+    # --------------------- CONSTANTS ---------------------------
+    # ============================================================
     POWER = [
         ('200', '200'), ('400', '400'), ('600', '600'), ('800', '800'),
     ]
 
-    UNIT_CONVERSION_FACTOR = 20.48  # Коефіцієнт перетворення заряду в потужність
-    CHARGE_DIFFERENCE_THRESHOLD = 10  # Порогова різниця заряду
-    MORNING_CORRECTION_CHARGE = 6  # Корекція ранкового заряду
-    MORNING_CORRECTION_PRICE = 0.6  # Корекція ранкової ціни
+    ONE_POWER_UNIT = 20.48
+    CHARGE_DIFFERENCE_THRESHOLD = 10
+    MORNING_CORRECTION_CHARGE = 6
+    MORNING_CORRECTION_PRICE = 0.6
 
-    DEFAULT_COST_LOW = 0.86  # дефолтна формула при низькій різниці
-    DEFAULT_COST_HIGH = 0.43  # дефолтна формула при високій різниці
-    FALLBACK_COST = 0.0  # запасне значення
+    DEFAULT_COST_LOW = 0.86
+    DEFAULT_COST_HIGH = 0.43
+    FALLBACK_COST = 0.0
 
-    POWER_LOW = 200  # дефолтна потужність при низькій різниці
-    POWER_HIGH = 100  # дефолтна потужність при високій різниці
+    POWER_LOW = 200
+    POWER_HIGH = 100
 
+    # --- ПОЛЯ ---
     date = models.DateField(verbose_name='Дата')
     power = models.CharField(choices=POWER, max_length=3, default='600', verbose_name='Потужність системи')
-    weather = models.ManyToManyField('WeatherConditionModel', db_index=True, related_name='weather', verbose_name='Погода')
+    weather = models.ManyToManyField('WeatherConditionModel', db_index=True, related_name='weather',
+                                     verbose_name='Погода')
+
     morning_data_charge = models.IntegerField(verbose_name='Ранковий рівень заряду')
     morning_data_price = models.FloatField(verbose_name='Вартість використаної енергії на ранок')
+
     afternoon_data_charge = models.IntegerField(default=0, verbose_name='Денний рівень заряду')
     afternoon_data_price = models.FloatField(default=0, verbose_name='Вартість використаної енергії на день')
+
     evening_data_charge = models.IntegerField(verbose_name='Вечірній рівень заряду')
     evening_data_price = models.FloatField(verbose_name='Вартість використаної енергії на вечір')
+
     default_day_energy_formula = models.BooleanField(default=False)
-    extra_power = models.IntegerField(default=0, verbose_name='Приблизна потужність використана на USB')
+    extra_power = models.IntegerField(default=0, verbose_name='Приблизна потужність використана на USB', null=True,
+                                      blank=True)
+
     full_day_power = models.FloatField(blank=True, verbose_name='Вироблена потужність за день')
     full_day_cost = models.FloatField(blank=True, null=True, verbose_name='Вартість виробленої енергії за день')
-    power_tariff = models.FloatField(verbose_name='Вартість за Кв')
 
+    power_tariff = models.FloatField(verbose_name='Вартість за Кв')
 
     def _calculate_power_delta_based_on_price(self, start_cost, end_cost):
         price_diff = end_cost - start_cost
@@ -85,31 +95,80 @@ class DataEntryLineModel(models.Model):
         else:
             return self.POWER_LOW
 
+    def _day_charge_equal(self):
+        return self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0
+
+    def _morning_price_equal_evening_price(self):
+        return self.morning_data_price == self.evening_data_price
+
+    def _afternoon_price_equal_evening_price(self):
+        return self.afternoon_data_price == self.evening_data_price
+
+    def _afternoon_charge_bigger_zero(self):
+        return 0 < self.afternoon_data_charge
+
+    def _afternoon_charge_equal_zero(self):
+        return self.afternoon_data_charge == 0
+
+    def _evening_afternoon_power_result(self, evening_data_charge, afternoon_data_charge):
+        return (evening_data_charge - afternoon_data_charge) * self.ONE_POWER_UNIT
+
+    def _power_to_price(self, bigger_charge, lower_charge):
+        return (((bigger_charge - lower_charge) * self.ONE_POWER_UNIT) / 1000) * self.power_tariff
+
+    def _price_to_power(self, bigger_price, lower_price):
+        return round(
+            (((bigger_price - lower_price) * 100) / 43.2) * 100, 2)
+
+    def _evening_to_afternoon_price(self, evening_price, afternoon_price):
+        power_dif = evening_price - afternoon_price
+        curren_tariff_unit = (CurrentTariffModel.power_tariff * 100) / 100
+
+        return round(((power_dif * 100) / curren_tariff_unit) * 100, 2)
+
     def _calculate_full_day_power(self):
         try:
+            usb_power = self.extra_power if self.extra_power is not None else 0
+
             if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
                 return 0
+
+            base_power = 0
+
             if self.afternoon_data_price == self.evening_data_price or self.morning_data_price == self.evening_data_price:
-                return (self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR
+                base_power = (self.evening_data_charge - self.afternoon_data_charge) * self.ONE_POWER_UNIT
+                return base_power + usb_power
+
             if 0 < self.afternoon_data_charge < self.evening_data_charge:
-                return (self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR + round(
+                base_power = (self.evening_data_charge - self.afternoon_data_charge) * self.ONE_POWER_UNIT + round(
                     (((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100, 2)
+                return base_power + usb_power
+
+            # IF AFTERNOON CHARGE BIGGER THEN EVENING
             if 0 < self.afternoon_data_charge > self.evening_data_charge:
-                if self.afternoon_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return self.POWER_HIGH
-                if self.afternoon_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return self.POWER_LOW
+                if 0 < self.afternoon_data_charge > self.evening_data_charge:
+                    if self.evening_data_charge < self.afternoon_data_charge:
+                        power_meters = self._price_to_power(self.evening_data_price, self.afternoon_data_price)
+                        power_battery = (self.afternoon_data_charge - self.evening_data_charge) * self.ONE_POWER_UNIT
+                        base_power = power_meters - power_battery
+                        return base_power + usb_power
+
+            # IF AFTERNOON CHARGE IS EGUAL ZERO
             if self.afternoon_data_charge == 0:
+                raw_meters_power = round((((
+                                                   self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE) * 100) / 43.2) * 100,
+                                         2)
+                battery_power = (
+                                        self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE) * self.ONE_POWER_UNIT
+
+                if self.morning_data_charge > self.evening_data_charge:
+                    base_power = raw_meters_power - battery_power
+
                 if self.morning_data_charge < self.evening_data_charge:
-                    return (
-                                   self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE) * self.UNIT_CONVERSION_FACTOR + round(
-                        (((
-                                  self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE) * 100) / 43.2) * 100 + self.extra_power,
-                        2)
-                if self.morning_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return self.POWER_HIGH
-                if self.morning_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return self.POWER_LOW
+                    base_power = raw_meters_power + battery_power
+
+                return base_power + usb_power
+
             return self.FALLBACK_COST
         except(TypeError, ZeroDivisionError):
             return self.FALLBACK_COST
@@ -118,32 +177,9 @@ class DataEntryLineModel(models.Model):
         try:
             if self.morning_data_charge == self.afternoon_data_charge == self.evening_data_charge == 0:
                 return 0.0
-            if self.afternoon_data_price == self.evening_data_price or self.morning_data_price == self.evening_data_price:
-                return (((
-                                 self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * self.power_tariff
-            if 0 < self.afternoon_data_charge < self.evening_data_charge:
-                return (((
-                                 self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * self.power_tariff + (
-                               self.evening_data_price - self.afternoon_data_price)
-            if 0 < self.afternoon_data_charge > self.evening_data_charge and self.default_day_energy_formula:
-                if self.afternoon_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return self.DEFAULT_COST_LOW
-                if self.afternoon_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return self.DEFAULT_COST_HIGH
-            if 0 < self.afternoon_data_charge > self.evening_data_charge:
-                return (((
-                                 self.evening_data_charge - self.afternoon_data_charge) * self.UNIT_CONVERSION_FACTOR) / 1000) * self.power_tariff + (
-                               self.evening_data_price - self.afternoon_data_price)
-            if self.afternoon_data_price == 0:
-                if self.morning_data_charge < self.evening_data_charge:
-                    return (((
-                                     self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE + self.extra_power) * self.UNIT_CONVERSION_FACTOR) / 1000) * self.power_tariff + (
-                                   self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE)
-                if self.morning_data_charge - self.evening_data_charge <= self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return self.DEFAULT_COST_LOW
-                if self.morning_data_charge - self.evening_data_charge > self.CHARGE_DIFFERENCE_THRESHOLD:
-                    return self.DEFAULT_COST_HIGH
-            return self.FALLBACK_COST
+
+            day_power_watts = self._calculate_full_day_power()
+            return round((day_power_watts / 1000) * self.power_tariff, 2)
         except(TypeError, ZeroDivisionError):
             return self.FALLBACK_COST
 
@@ -189,7 +225,8 @@ class DataEntryLineModel(models.Model):
     @classmethod
     def get_count_of_month_total_power(cls):
         current_month = cls.get_current_month()
-        current_month_total_power = cls.objects.filter(date__month=current_month).aggregate(total_power=Sum('full_day_power'))
+        current_month_total_power = cls.objects.filter(date__month=current_month).aggregate(
+            total_power=Sum('full_day_power'))
 
         return current_month_total_power['total_power'] or 0
 
@@ -200,6 +237,28 @@ class DataEntryLineModel(models.Model):
             total_power=Sum('full_day_cost'))
 
         return round(current_month_savings['total_power'], 2) or 0
+
+    @classmethod
+    def get_monthly_comparison_data(cls):
+        monthly_stats = (
+            cls.objects.annotate(month=TruncMonth('date'))
+            .values('month')
+            .annotate(
+                total_power=Sum('full_day_power'),
+                total_cost=Sum('full_day_cost')
+            )
+            .order_by('month')
+        )
+
+        result = []
+        for stat in monthly_stats:
+            if stat['month']:
+                result.append({
+                    "month": stat['month'].strftime("%Y-%m"),
+                    "total_power": round(stat['total_power'], 2) if stat['total_power'] else 0,
+                    "total_cost": round(stat['total_cost'], 2) if stat['total_cost'] else 0
+                })
+        return result
 
     @classmethod
     def get_power_difference(cls):
@@ -219,7 +278,6 @@ class DataEntryLineModel(models.Model):
         difference_power_percentage = ((current_total - previous_total) / previous_total) * 100
 
         return int(difference_power_percentage)
-
 
     @classmethod
     def get_empty_day_message(cls):

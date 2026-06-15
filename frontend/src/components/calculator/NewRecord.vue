@@ -10,6 +10,7 @@ const emit = defineEmits(["entry-added"]);
 // Messages
 const messageRef = ref(null);
 const notificationStore = useNotificationStore();
+const store = useCalculatorStore();
 const handleMessage = (payload) => {
   notificationStore.addNotification(payload);
 };
@@ -51,6 +52,8 @@ const toggleWeather = (id) => {
 const submitForm = async () => {
   try {
     await backendApi.post("calculator/entries/", formData.value);
+    await store.fetchStats();
+    await store.fetchEntries(1);
     notificationStore.addNotification({
       title: 'Data has been recorded',
       text: 'Power indicators successfully updated.',

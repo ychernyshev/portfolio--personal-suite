@@ -78,6 +78,22 @@ class CurrentMothStatsApiView(APIView):
         })
 
 
+class DifferenceMonthsStatsApiView(APIView):
+    def get(self, request):
+        chart_data = DataEntryLineModel.get_monthly_comparison_data()
+
+        if not chart_data:
+            return Response({
+                "is_empty": True,
+                "months_data": []
+            }, status=200)
+
+        return Response({
+            "is_empty": False,
+            "months_data": chart_data
+        }, status=200)
+
+
 class WeatherUpdateTaskView(APIView):
     def get(self, request):
         auth_header = request.headers.get('Authorization')
