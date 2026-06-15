@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 // stores/toast.ts
 import { defineStore } from 'pinia';
 import { ref } from 'vue';

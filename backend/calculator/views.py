@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
 from pyexpat.errors import messages
 from django.contrib import messages
 

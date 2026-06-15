@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from calculator.api.views import (DataEntryViewSet,

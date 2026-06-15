@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import {createRouter, createWebHistory} from "vue-router";
 import adminPageRoutes from "./DashboardRoutes.ts";
 import personalRoutes from "./PersonalRoutes";

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup lang="ts">
 import MailReply from "@/components/personal/user/dashboard/mail/MailReply.vue";
 import MailForward from "@/components/personal/user/dashboard/mail/MailForward.vue";

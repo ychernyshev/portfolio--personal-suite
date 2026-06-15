@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup>
 import { computed } from "vue";
 import sunnyIcon from "../../../public/assets/calculator/images/icons/weather/light/sunny.png";

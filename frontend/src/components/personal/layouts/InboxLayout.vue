@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup lang="ts">
   import InboxSidebar from "@/components/personal/user/dashboard/mail/InboxSidebar.vue";
   import SyncMail from "@/components/personal/user/dashboard/mail/SyncMail.vue";

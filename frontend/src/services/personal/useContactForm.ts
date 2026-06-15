@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 // src/composables/useContactForm.ts
 import { ref, reactive } from 'vue';
 import backendApi from "@/services/backendApi";

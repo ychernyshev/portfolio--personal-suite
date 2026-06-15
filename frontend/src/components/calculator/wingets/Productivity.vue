@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup>
 import { ref, onMounted } from 'vue';
 import backendApi from "../../../services/calculator/backendApi";

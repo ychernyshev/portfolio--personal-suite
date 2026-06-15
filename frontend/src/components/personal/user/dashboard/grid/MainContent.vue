@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup lang="ts">
   import Toast from "@/components/personal/user/dashboard/Toast.vue";
 </script>

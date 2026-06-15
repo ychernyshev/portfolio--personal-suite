@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+
 import os
 
 from django.core.mail import get_connection, EmailMessage
