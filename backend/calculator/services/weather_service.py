@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-
 import datetime
-import requests
+import os
+import asyncio
+import httpx
 from django.core.cache import cache
 from django.utils import timezone
 from calculator.models import CurrentTariffModel, SolarForecastRecordModel, WeatherDataModel, DataEntryLineModel
@@ -12,6 +13,41 @@ class WeatherForecastService:
     LAT = 49.8383
     LON = 24.0232
     URL = "https://api.open-meteo.com/v1/forecast"
+    VERCEL_PROXY_URL = os.getenv("VERCEL_PROXY_URL")
+
+    async def _fetch_api(self, client, url, params, source_name):
+        if not url:
+            print(f"WeatherService: URL for {source_name} is empty or not set.")
+            return None
+        try:
+            response = await client.get(url, params=params, timeout=4.0)
+            if response.status_code == 200:
+                print(f"WeatherService: {source_name} WON the race!")
+                return response.json()
+            else:
+                print(f"WeatherService: {source_name} returned status {response.status_code}")
+                return None
+        except Exception as e:
+            print(f"WeatherService: {source_name} failed during race: {e}")
+            return None
+
+    async def _race_requests(self, params):
+        async with httpx.AsyncClient() as client:
+            task_primary = asyncio.create_task(self._fetch_api(client, self.URL, params, "Primary Open-Meteo"))
+            task_backup = asyncio.create_task(self._fetch_api(client, self.VERCEL_PROXY_URL, params, "Vercel Proxy"))
+
+            pending = {task_primary, task_backup}
+
+            while pending:
+                done, pending = await asyncio.wait(pending, return_when=asyncio.FIRST_COMPLETED)
+
+                for completed_task in done:
+                    result = completed_task.result()
+                    if result is not None:
+                        for active_task in pending:
+                            active_task.cancel()
+                        return result
+            return None
 
     def get_solar_forecast(self, current_tariff=None):
         cache_key = 'solar_forecast_lviv'
@@ -38,85 +74,122 @@ class WeatherForecastService:
             "forecast_days": 1
         }
 
+        wmo_codes = {
+            0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
+            45: "Fog", 48: "Depositing rime fog",
+            51: "Light drizzle", 53: "Moderate drizzle", 55: "Dense drizzle",
+            61: "Slight rain", 63: "Moderate rain", 65: "Heavy rain",
+            71: "Slight snow fall", 73: "Moderate snow fall", 75: "Heavy snow fall",
+            80: "Slight rain showers", 81: "Moderate rain showers", 82: "Violent rain showers",
+            95: "Thunderstorm",
+        }
+
         try:
-            wmo_codes = {
-                0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
-                45: "Fog", 48: "Depositing rime fog",
-                51: "Light drizzle", 53: "Moderate drizzle", 55: "Dense drizzle",
-                61: "Slight rain", 63: "Moderate rain", 65: "Heavy rain",
-                71: "Slight snow fall", 73: "Moderate snow fall", 75: "Heavy snow fall",
-                80: "Slight rain showers", 81: "Moderate rain showers", 82: "Violent rain showers",
-                95: "Thunderstorm",
-            }
+            data = asyncio.run(self._race_requests(params))
+        except Exception as race_error:
+            print(f"WeatherService: Race crashed entirely: {race_error}")
+            data = None
 
-            response = requests.get(self.URL, params=params, timeout=10)
-            response.raise_for_status()
-            data = response.json()
+        if data and data.get('hourly', {}).get('shortwave_radiation'):
+            try:
+                radiation_data = data['hourly']['shortwave_radiation']
+                today = datetime.date.today()
+                year = today.year
+                month = today.month
+                start_date = datetime.date(year, month, 1)
+                yesterday = today - datetime.timedelta(days=1)
+                calibration_factor = 1.0
 
-            radiation_data = data.get('hourly', {}).get('shortwave_radiation', [])
-            if not radiation_data:
-                return {"status": "error", "message": "No radiation data found"}
+                if yesterday >= start_date:
+                    actual_qs = DataEntryLineModel.objects.filter(date__range=(start_date, yesterday))
+                    actual_dict = {q.date.day: float(q.full_day_power) for q in actual_qs if
+                                   q.full_day_power is not None}
 
-            today = datetime.date.today()
-            year = today.year
-            month = today.month
-            start_date = datetime.date(year, month, 1)
-            yesterday = today - datetime.timedelta(days=1)
-            calibration_factor = 1.0
+                    forecast_qs = SolarForecastRecordModel.objects.filter(date__range=(start_date, yesterday))
+                    forecast_dict = {q.date.day: float(q.predicted_kwh) for q in forecast_qs if
+                                     q.predicted_kwh is not None}
 
-            if yesterday >= start_date:
-                actual_qs = DataEntryLineModel.objects.filter(date__range=(start_date, yesterday))
-                actual_dict = {q.date.day: float(q.full_day_power) for q in actual_qs if q.full_day_power is not None}
+                    total_real = 0.0
+                    total_pred = 0.0
 
-                forecast_qs = SolarForecastRecordModel.objects.filter(date__range=(start_date, yesterday))
-                forecast_dict = {q.date.day: float(q.predicted_kwh) for q in forecast_qs if q.predicted_kwh is not None}
+                    for day_idx in actual_dict.keys():
+                        if day_idx in forecast_dict and forecast_dict[day_idx] > 0:
+                            real_kwh = actual_dict[day_idx] / 1000.0
+                            total_real += real_kwh
+                            total_pred += forecast_dict[day_idx]
 
-                total_real = 0.0
-                total_pred = 0.0
+                    if total_pred > 0 and total_real > 0:
+                        calibration_factor = total_real / total_pred
 
-                for day_idx in actual_dict.keys():
-                    if day_idx in forecast_dict and forecast_dict[day_idx] > 0:
-                        real_kwh = actual_dict[day_idx] / 1000.0
-                        total_real += real_kwh
-                        total_pred += forecast_dict[day_idx]
+                total_area = 3.45
+                panel_efficiency = 0.23
+                performance_ratio = 0.85
 
-                if total_pred > 0 and total_real > 0:
-                    calibration_factor = total_real / total_pred
+                system_factor = total_area * panel_efficiency * performance_ratio * calibration_factor
+                hourly_gen_wh = [round(rad * system_factor, 2) for rad in radiation_data]
 
-            total_area = 3.45
-            panel_efficiency = 0.23
-            performance_ratio = 0.85
+                current_hour = datetime.datetime.now().hour
+                weather_data = data.get('hourly', {})
 
-            system_factor = total_area * panel_efficiency * performance_ratio * calibration_factor
+                temp_list = weather_data.get('temperature_2m', [])
+                code_list = weather_data.get('weather_code', [])
 
-            hourly_gen_wh = [round(rad * system_factor, 2) for rad in radiation_data]
+                safe_hour = min(current_hour, len(temp_list) - 1) if temp_list else 0
 
-            current_hour = datetime.datetime.now().hour
-            weather_data = data.get('hourly', {})
+                current_temp = round(temp_list[safe_hour], 1) if temp_list else 0.0
+                weather_condition = wmo_codes.get(code_list[safe_hour], "Unknown") if code_list else "Unknown"
+                weather_code = code_list[safe_hour] if code_list else 0
 
-            total_kwh = sum(hourly_gen_wh) / 1000
-            predicted_savings = total_kwh * current_tariff
+                total_kwh = sum(hourly_gen_wh) / 1000
+                predicted_savings = total_kwh * current_tariff
 
-            result_dict = {
-                "predicted_total_kwh": round(total_kwh, 2),
-                "predicted_savings": round(predicted_savings, 2),
-                "hourly_forecast_wh": hourly_gen_wh,
+                result_dict = {
+                    "predicted_total_kwh": round(total_kwh, 2),
+                    "predicted_savings": round(predicted_savings, 2),
+                    "hourly_forecast_wh": hourly_gen_wh,
+                    "currency": "UAH",
+                    "peak_hour": radiation_data.index(max(radiation_data)) if radiation_data else 0,
+                    "status": "success",
+                    "tariff_used": current_tariff,
+                    "current_temp": current_temp,
+                    "weather_condition": weather_condition,
+                    "weather_code": weather_code,
+                    "calibration_factor": round(calibration_factor, 2)
+                }
+
+                cache.set(cache_key, result_dict, 3600)
+                self.save_forecast_to_db(result_dict, data)
+
+                return result_dict
+            except Exception as calc_error:
+                print(f"WeatherService: Error during calculation: {calc_error}")
+
+        print("WeatherService: Both APIs failed the race or returned invalid data. Activating DB Fallback.")
+        today = datetime.date.today()
+        last_record = SolarForecastRecordModel.objects.filter(date=today).first()
+        if not last_record:
+            last_record = SolarForecastRecordModel.objects.order_by('-date').first()
+
+        if last_record:
+            return {
+                "predicted_total_kwh": float(last_record.predicted_kwh),
+                "predicted_savings": float(last_record.predicted_savings),
+                "hourly_forecast_wh": [0.0] * 24,
                 "currency": "UAH",
-                "peak_hour": radiation_data.index(max(radiation_data)) if radiation_data else 0,
-                "status": "success",
+                "peak_hour": int(last_record.peak_hour),
+                "status": "fallback",
                 "tariff_used": current_tariff,
-                "current_temp": round(weather_data.get('temperature_2m', [])[current_hour], 1),
-                "weather_condition": wmo_codes.get(weather_data.get('weather_code', [])[current_hour], "Unknown"),
-                "weather_code": weather_data.get('weather_code', [])[current_hour],
-                "calibration_factor": round(calibration_factor, 2)
+                "current_temp": 0.0,
+                "weather_condition": "APIs High Latency (DB Cache)",
+                "weather_code": 0,
+                "calibration_factor": 1.0
             }
 
-            cache.set(cache_key, result_dict, 3600)
-            self.save_forecast_to_db(result_dict, data)
-
-            return result_dict
-        except Exception as e:
-            return {"status": "error", "message": str(e)}
+        return {
+            "predicted_total_kwh": 0.0, "predicted_savings": 0.0, "hourly_forecast_wh": [0.0] * 24,
+            "currency": "UAH", "peak_hour": 0, "status": "error", "tariff_used": current_tariff,
+            "current_temp": 0.0, "weather_condition": "Unavailable", "weather_code": 0, "calibration_factor": 1.0
+        }
 
     def save_forecast_to_db(self, forecast_data, raw_api_data):
         try:
@@ -133,26 +206,36 @@ class WeatherForecastService:
 
             hourly = raw_api_data.get('hourly', {})
             timestamps = hourly.get('time', [])
+            if not timestamps:
+                return True
+
             temps = hourly.get('temperature_2m', [])
             codes = hourly.get('weather_code', [])
             clouds = hourly.get('cloud_cover', [])
             humidities = hourly.get('relative_humidity_2m', [])
             pressures = hourly.get('surface_pressure', [])
 
-            for i in range(len(timestamps)):
-                naive_dt = datetime.datetime.strptime(timestamps[i], '%Y-%m-%dT%H:%M')
-                aware_dt = timezone.make_aware(naive_dt)
+            parsed_timestamps = []
+            for ts in timestamps:
+                naive_dt = datetime.datetime.strptime(ts, '%Y-%m-%dT%H:%M')
+                parsed_timestamps.append(timezone.make_aware(naive_dt))
 
-                WeatherDataModel.objects.update_or_create(
-                    timestamp=aware_dt,
-                    defaults={
-                        'temperature': temps[i],
-                        'condition_code': str(codes[i]),
-                        'cloud_cover': clouds[i],
-                        'humidity': humidities[i],
-                        'pressure': pressures[i],
-                    }
+            WeatherDataModel.objects.filter(timestamp__in=parsed_timestamps).delete()
+
+            weather_objects = []
+            for i in range(len(timestamps)):
+                weather_objects.append(
+                    WeatherDataModel(
+                        timestamp=parsed_timestamps[i],
+                        temperature=temps[i],
+                        condition_code=str(codes[i]),
+                        cloud_cover=clouds[i],
+                        humidity=humidities[i],
+                        pressure=pressures[i],
+                    )
                 )
+
+            WeatherDataModel.objects.bulk_create(weather_objects)
             return True
         except Exception as e:
             print(f"DB loading error: {e}")
