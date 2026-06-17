@@ -13,6 +13,7 @@ import {
   Legend,
   Filler,
 } from "chart.js";
+import { useCalculatorStore } from "../../../../store/useCalculatorStore.js";
 
 ChartJS.register(
   CategoryScale,
@@ -25,37 +26,38 @@ ChartJS.register(
   Filler,
 );
 
-const props = defineProps({
-  labels: Array,
-  power: Array,
-});
+const store = useCalculatorStore();
 
-const chartData = computed(() => ({
-  labels: props.labels,
-  datasets: [
-    {
-      label: "Power generation (Wh)",
-      backgroundColor: "rgba(52, 86, 173, 0.1)",
-      borderColor: "#3456AD",
-      data: props.power,
-      fill: true,
-      tension: 0.4,
-      borderWidth: 3,
-      pointRadius: 4,
-      pointBackgroundColor: "#3456AD",
-      pointBorderColor: "#fff",
-      pointHoverRadius: 6,
-    },
-  ],
-}));
+const chartData = computed(() => {
+  const dates = store.entries.map(entry => entry.date);
+
+  const powerValues = store.entries.map(entry => entry.full_day_power || 0);
+
+  return {
+    labels: dates,
+    datasets: [
+      {
+        label: "Power generation (Wh)",
+        backgroundColor: "rgba(52, 86, 173, 0.1)",
+        borderColor: "#3456AD",
+        data: powerValues,
+        fill: true,
+        tension: 0.4,
+        borderWidth: 3,
+        pointRadius: 4,
+        pointBackgroundColor: "#3456AD",
+        pointBorderColor: "#fff",
+        pointHoverRadius: 6,
+      },
+    ],
+  };
+});
 
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
-    legend: {
-      display: false,
-    },
+    legend: { display: false },
     tooltip: {
       backgroundColor: "rgba(255, 255, 255, 0.8)",
       titleColor: "#3456AD",
@@ -91,7 +93,10 @@ const chartOptions = {
 
 <template>
   <div class="chart-container">
-    <Line :data="chartData" :options="chartOptions" />
+    <Line v-if="store.entries.length > 0" :data="chartData" :options="chartOptions" />
+    <div v-else class="text-center text-muted pt-5">
+      No data available for chart
+    </div>
   </div>
 </template>
 

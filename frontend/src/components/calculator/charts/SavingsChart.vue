@@ -1,18 +1,19 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup>
-import { computed } from "vue";
-import { Line } from "vue-chartjs";
+import {computed} from "vue";
+import {Line} from "vue-chartjs";
 import {
-  Chart as ChartJS,
   CategoryScale,
+  Chart as ChartJS,
+  Filler,
+  Legend,
   LinearScale,
-  PointElement,
   LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend,
-  Filler,
 } from "chart.js";
+import {useCalculatorStore} from "../../../../store/useCalculatorStore.js";
 
 ChartJS.register(
     CategoryScale,
@@ -25,30 +26,31 @@ ChartJS.register(
     Filler,
 );
 
-const props = defineProps({
-  labels: Array,
-  cost: Array,
-});
+const store = useCalculatorStore();
 
-const chartData = computed(() => ({
-  labels: props.labels,
-  datasets: [
-    {
-      label: "Cost savings (UAH)",
-      // Використовуємо трохи насиченіший синій для фону, щоб підкреслити "фінансову" частину
-      backgroundColor: "rgba(52, 86, 173, 0.15)",
-      borderColor: "#3456AD",
-      data: props.cost,
-      fill: true,
-      tension: 0.4,
-      borderWidth: 3,
-      pointRadius: 4,
-      pointBackgroundColor: "#3456AD",
-      pointBorderColor: "#fff",
-      pointHoverRadius: 6,
-    },
-  ],
-}));
+const chartData = computed(() => {
+  const dates = store.entries.map((entry) => (entry.date));
+  const powerValues = store.entries.map(entry => entry.full_day_power || 0);
+
+  return {
+    labels: dates,
+    datasets: [
+      {
+        label: "Cost savings (UAH)",
+        backgroundColor: "rgba(52, 86, 173, 0.15)",
+        borderColor: "#3456AD",
+        data: powerValues,
+        fill: true,
+        tension: 0.4,
+        borderWidth: 3,
+        pointRadius: 4,
+        pointBackgroundColor: "#3456AD",
+        pointBorderColor: "#fff",
+        pointHoverRadius: 6,
+      },
+    ],
+  }
+});
 
 const chartOptions = {
   responsive: true,
@@ -80,15 +82,15 @@ const chartOptions = {
       },
       ticks: {
         color: "rgba(52, 86, 173, 0.8)", // Темно-синій, але напівпрозорий
-        font: { size: 11 },
+        font: {size: 11},
         callback: (value) => `${value} ₴` // Символ гривні на осі
       },
     },
     x: {
-      grid: { display: false },
+      grid: {display: false},
       ticks: {
         color: "rgba(52, 86, 173, 0.8)",
-        font: { size: 11 }
+        font: {size: 11}
       },
     },
   },
@@ -97,7 +99,10 @@ const chartOptions = {
 
 <template>
   <div class="chart-container">
-    <Line :data="chartData" :options="chartOptions" />
+    <Line v-if="store.entries.length > 0" :data="chartData" :options="chartOptions"/>
+    <div v-else class="text-center text-muted pt-5">
+      No data available for chart
+    </div>
   </div>
 </template>
 
