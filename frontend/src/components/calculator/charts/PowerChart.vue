@@ -102,7 +102,7 @@ const chartOptions = {
 
 <style scoped>
 .chart-container {
-  height: 430px;
+  height: 338px;
   background: transparent;
   padding: 20px;
   border-radius: 12px;
