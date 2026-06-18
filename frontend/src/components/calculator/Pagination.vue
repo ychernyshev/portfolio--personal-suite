@@ -58,7 +58,7 @@ onMounted(() => {
   >
     <ul class="pagination mb-0">
       <li class="page-item" :class="{ disabled: store.currentPage === 1 }">
-        <button class="page-link card-light p-3 p-md-3 p-xl-3 border-0"
+        <button class="page-link btn btn-transform card-shadow neomorphic text-purple p-md-3 p-xl-3 border-0"
                 @click="store.setPage(store.currentPage - 1)">
           &laquo;
         </button>
@@ -69,7 +69,7 @@ onMounted(() => {
         </span>
       </li>
       <li class="page-item" :class="{ disabled: store.currentPage === store.totalPages }">
-        <button class="page-link card-light p-3 p-md-3 p-xl-3 border-0"
+        <button class="page-link btn btn-transform card-shadow neomorphic text-purple p-md-3 p-xl-3 border-0"
                 @click="store.setPage(store.currentPage + 1)">
           &raquo;
         </button>

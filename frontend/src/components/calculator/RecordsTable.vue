@@ -34,7 +34,7 @@ const currentPage = ref(1);
           key="table"
         >
           <div class="row g-3 m-0 align-items-start">
-            <div :class="store.isChartsExpanded ? 'col-12 col-xl-9 p-0' : 'col-12 p-0'">
+            <div :class="store.isChartsExpanded ? 'col-12 col-xl-9 p-0' : 'col-12 p-0 m-0'">
               <div class="table-responsive">
                 <table class="table table-borderless mb-1">
                   <thead>

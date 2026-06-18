@@ -41,15 +41,14 @@ const handleSave = async (newData) => {
 
 <template>
   <div class="row align-items-end data-navigation-group">
-    <div class="col-sm-12 col-xl-7">
+    <div class="col-sm-12 col-xl-6">
       <div class="input-group">
         <form action="" class="w-100">
-          <div class="row p-0 justify-content-center align-items-center">
+          <div class="row p-0 align-items-center">
             <div
-                class="col-sm-12 col-md-8 col-xl-6 col-xxl-8 input-group-dynamic-grid border-bottom right-angle-end p-0">
+                class="col-sm-12 col-md-8 col-xl-7 col-xxl-8 input-group-dynamic-grid right-angle-end p-0">
               <input
-                  class="form-control form-control border-top border-start"
-                  style="border: none"
+                  class="form-control form-control neomorphic border-top border-start p-2"
                   id="formFileSm"
                   placeholder="Select the CSV file to import"
                   type="file"
@@ -57,38 +56,69 @@ const handleSave = async (newData) => {
                   accept=".csv"
               />
             </div>
-            <div class="col-12 col-sm-12 col-md-4 col-xl-6 col-xxl-4 pl-0 pr-0 pt-3 pb-3 pr-xl-2">
+            <div class="col-12 col-sm-12 col-md-4 col-xl-5 col-xxl-4 pl-0 pr-0 pt-3 pb-3 pl-xl-2 pr-xl-2">
               <div class="btn-group w-100" role="group" aria-label="Basic example">
-                <button class="btn btn-secondary c-border"
+                <button class="btn btn-secondary c-border neomorphic p-2"
                         id="inputGroupFileAddon04"
                         type="button"
                         @click="importData">Import data
                 </button>
-                <button type="button" @click="exportData" class="btn btn-success c-border">Export data</button>
+                <button type="button" @click="exportData" class="btn btn-secondary c-border neomorphic p-2">Export data</button>
               </div>
             </div>
           </div>
         </form>
       </div>
     </div>
-    <div class="col-sm-12 col-xl-2 col-md-3 add-record-section card-light p-0 mb-md-1 p-xl-2">
-      <button class="btn btn-primary text-light w-100 p-md-3 p-xl-1 mb-xl-2"
+    <!--    <div class="col-sm-12 col-xl-2 col-md-3 add-record-section p-0 mb-md-1 p-xl-3 pb-xl-3">-->
+    <!--      <button class="btn btn-primary text-light w-100 p-md-3 p-xl-2"-->
+    <!--              @click="store.setView(store.currentView === 'form' ? 'table' : 'form')"-->
+    <!--      >-->
+    <!--        {{ store.currentView === 'form' ? 'Records table' : 'Add Record' }}-->
+    <!--      </button>-->
+    <!--    </div>-->
+    <div data-v-09d6a0f5="" class="col-12 col-md-9 col-xl-3 card-light d-flex flex-row justify-content-center align-items-start ps-1 pe-1 pt-1 pb-4">
+      <button type="button"
               @click="store.setView(store.currentView === 'form' ? 'table' : 'form')"
-      >
+              class="btn btn-primary c-border w-50">
         {{ store.currentView === 'form' ? 'Records table' : 'Add Record' }}
       </button>
+      <button
+          type="button"
+          @click="store.toggleCharts()"
+          class="btn btn-success w-50"
+          :class="{ 'is-active': store.isChartsExpanded }"
+          title="Toggle analytics panel"
+      >
+<!--        <svg v-if="store.isChartsExpanded" xmlns="http://www.w3.org/2000/svg" width="16" height="16"-->
+<!--             fill="currentColor" class="bi bi-box-arrow-in-left" viewBox="0 0 16 16">-->
+<!--          <path fill-rule="evenodd"-->
+<!--                d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0z"/>-->
+<!--          <path fill-rule="evenodd"-->
+<!--                d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>-->
+<!--        </svg>-->
+
+<!--        <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"-->
+<!--             class="bi bi-graph-up" viewBox="0 0 16 16">-->
+<!--          <path fill-rule="evenodd"-->
+<!--                d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07"/>-->
+<!--        </svg>-->
+
+        <span class="ms-2 d-none d-sm-inline">
+                    {{ store.isChartsExpanded ? "Hide Charts" : "Show Charts" }}
+                  </span>
+      </button>
     </div>
-    <div class="col-12 col-md-9 col-xl-3">
-      <div class="row setup-data-section p-0 pr-1 pt-2 pb-2 pt-md-0 pb-md-0 pb-xl-1">
-        <div class="col-10 col-xl-10 p-0 pr-2 pl-md-2">
+    <div data-v-09d6a0f5="" class="col-12 col-md-9 col-xl-3 mb-2">
+      <div data-v-09d6a0f5="" class="row setup-data-section p-2 pe-1 pt-2 pb-2 pt-md-0 pb-md-0">
+        <div data-v-09d6a0f5="" class="col-10 col-xl-10 p-0 pr-2 pl-md-2">
           <pagination/>
         </div>
-        <div class="col-2 col-md-2 p-0 pb-md-1 pb-xl-1">
-
-          <button class="btn card-light card-shadow text-purple w-100 h-100"
+        <div data-v-09d6a0f5="" class="col-2 col-md-2 p-0 pb-md-1 pb-xl-1">
+          <button type="button"
+                  class="btn btn-transform card-shadow card-light neomorphic radius-0 text-purple w-100 h-100"
                   @click="store.setView(store.currentView === 'settings' ? 'table' : 'settings')"
-                  :title="store.currentView === 'settings' ? 'Back to Table' : 'Settings'"
-          >
+                  :title="store.currentView === 'settings' ? 'Back to Table' : 'Settings'">
             <svg v-if="store.currentView === 'settings'" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                  fill="currentColor" class="bi bi-table" viewBox="0 0 16 16">
               <path
@@ -103,30 +133,6 @@ const handleSave = async (newData) => {
             </svg>
           </button>
         </div>
-        <button
-            @click="store.toggleCharts()"
-            class="btn-expand-table"
-            :class="{ 'is-active': store.isChartsExpanded }"
-            title="Toggle analytics panel"
-        >
-          <svg v-if="store.isChartsExpanded" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-               fill="currentColor" class="bi bi-box-arrow-in-left" viewBox="0 0 16 16">
-            <path fill-rule="evenodd"
-                  d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0z"/>
-            <path fill-rule="evenodd"
-                  d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>
-          </svg>
-
-          <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-               class="bi bi-graph-up" viewBox="0 0 16 16">
-            <path fill-rule="evenodd"
-                  d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07"/>
-          </svg>
-
-          <span class="ms-2 d-none d-sm-inline">
-            {{ store.isChartsExpanded ? "Hide Charts" : "Show Charts" }}
-          </span>
-        </button>
       </div>
     </div>
   </div>
@@ -166,12 +172,15 @@ const handleSave = async (newData) => {
   box-shadow: 0.2rem 0.3rem 1rem var(--bg-color);
 }
 
+.radius-0 {
+  border-radius: 0;
+}
+
 .btn-expand-table {
   background: rgba(52, 86, 173, 0.06);
   border: 1px solid rgba(52, 86, 173, 0.15);
   color: #3456AD;
   padding: 6px 16px;
-  border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 500;
   display: flex;
