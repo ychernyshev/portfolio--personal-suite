@@ -34,7 +34,7 @@ const currentPage = ref(1);
           key="table"
         >
           <div class="row g-3 m-0 align-items-start">
-            <div :class="store.isChartsExpanded ? 'col-12 col-xl-9 p-0' : 'col-12 p-0 m-0'">
+            <div :class="store.isChartsExpanded ? 'col-12 col-xl-9 m-0 p-0' : 'col-12 p-0 m-0'">
               <div class="table-responsive">
                 <table class="table table-borderless mb-1">
                   <thead>
@@ -80,7 +80,7 @@ const currentPage = ref(1);
             </div>
 
             <transition name="fade-in-quick">
-              <div v-if="store.isChartsExpanded" class="col-12 col-xl-3 charts-side-panel" :class="{ 'bg-white' : store.isChartsExpanded }">
+              <div v-if="store.isChartsExpanded" class="col-12 col-xl-3 charts-side-panel m-0" :class="{ 'bg-white' : store.isChartsExpanded }">
                 <ul class="nav nav-pills mb-2" id="pills-tab" role="tablist">
                   <li class="nav-item w-50" role="presentation">
                     <button
@@ -147,14 +147,13 @@ const currentPage = ref(1);
   .table-container.expanded-right {
     position: absolute;
     left: 0;
-    width: 139%;
+    width: 134%;
     max-width: 139%;
     z-index: 100;
   }
 }
 
 .charts-side-panel {
-  padding-left: 20px !important;
   border-left: 1px dashed rgba(52, 86, 173, 0.15);
 }
 

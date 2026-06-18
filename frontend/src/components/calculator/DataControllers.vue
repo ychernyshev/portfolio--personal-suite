@@ -63,7 +63,9 @@ const handleSave = async (newData) => {
                         type="button"
                         @click="importData">Import data
                 </button>
-                <button type="button" @click="exportData" class="btn btn-secondary c-border neomorphic p-2">Export data</button>
+                <button type="button" @click="exportData" class="btn btn-secondary c-border neomorphic p-2">Export
+                  data
+                </button>
               </div>
             </div>
           </div>
@@ -77,11 +79,23 @@ const handleSave = async (newData) => {
     <!--        {{ store.currentView === 'form' ? 'Records table' : 'Add Record' }}-->
     <!--      </button>-->
     <!--    </div>-->
-    <div data-v-09d6a0f5="" class="col-12 col-md-9 col-xl-3 card-light d-flex flex-row justify-content-center align-items-start ps-1 pe-1 pt-1 pb-4">
+    <div data-v-09d6a0f5=""
+         class="col-12 col-md-9 col-xl-3 card-light d-flex flex-row justify-content-center align-items-start ps-1 pe-1 pt-1 pb-4">
       <button type="button"
               @click="store.setView(store.currentView === 'form' ? 'table' : 'form')"
-              class="btn btn-primary c-border w-50">
-        {{ store.currentView === 'form' ? 'Records table' : 'Add Record' }}
+              class="btn btn-primary c-border w-50 d-flex align-items-center justify-content-center">
+        <svg v-if="store.currentView !== 'form'" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+             fill="currentColor" class="bi bi-plus"
+             viewBox="0 0 16 16">
+          <path
+              d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+        </svg>
+        <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-table"
+             viewBox="0 0 16 16">
+          <path
+              d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 2h-4v3h4zm0 4h-4v3h4zm0 4h-4v3h3a1 1 0 0 0 1-1zm-5 3v-3H6v3zm-5 0v-3H1v2a1 1 0 0 0 1 1zm-4-4h4V8H1zm0-4h4V4H1zm5-3v3h4V4zm4 4H6v3h4z"/>
+        </svg>
+        <span class="ms-1">{{ store.currentView === 'form' ? 'Records table' : 'Add Record' }}</span>
       </button>
       <button
           type="button"
@@ -90,19 +104,19 @@ const handleSave = async (newData) => {
           :class="{ 'is-active': store.isChartsExpanded }"
           title="Toggle analytics panel"
       >
-<!--        <svg v-if="store.isChartsExpanded" xmlns="http://www.w3.org/2000/svg" width="16" height="16"-->
-<!--             fill="currentColor" class="bi bi-box-arrow-in-left" viewBox="0 0 16 16">-->
-<!--          <path fill-rule="evenodd"-->
-<!--                d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0z"/>-->
-<!--          <path fill-rule="evenodd"-->
-<!--                d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>-->
-<!--        </svg>-->
+        <svg v-if="store.isChartsExpanded" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+             fill="currentColor" class="bi bi-box-arrow-in-left" viewBox="0 0 16 16">
+          <path fill-rule="evenodd"
+                d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0z"/>
+          <path fill-rule="evenodd"
+                d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>
+        </svg>
 
-<!--        <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"-->
-<!--             class="bi bi-graph-up" viewBox="0 0 16 16">-->
-<!--          <path fill-rule="evenodd"-->
-<!--                d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07"/>-->
-<!--        </svg>-->
+        <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+             class="bi bi-graph-up" viewBox="0 0 16 16">
+          <path fill-rule="evenodd"
+                d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07"/>
+        </svg>
 
         <span class="ms-2 d-none d-sm-inline">
                     {{ store.isChartsExpanded ? "Hide Charts" : "Show Charts" }}
