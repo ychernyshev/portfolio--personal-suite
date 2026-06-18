@@ -80,27 +80,18 @@ const currentPage = ref(1);
             </div>
 
             <transition name="fade-in-quick">
-              <div v-if="store.isChartsExpanded" class="col-12 col-xl-3 charts-side-panel m-0" :class="{ 'bg-white' : store.isChartsExpanded }">
-                <ul class="nav nav-pills mb-2" id="pills-tab" role="tablist">
-                  <li class="nav-item w-50" role="presentation">
-                    <button
-                      class="nav-link btn btn-sm w-100 btn-graphic-tab"
-                      :class="{ active: activeTab === 'power', 'btn-light text-sky-blue-4': activeTab !== 'power', 'bg-gradient-blue-2 text-light': activeTab === 'power' }"
-                      @click="activeTab = 'power'"
-                    >
-                      <span>Power generated</span>
-                    </button>
-                  </li>
-                  <li class="nav-item w-50" role="presentation">
-                    <button
-                      class="nav-link btn btn-sm w-100 btn-graphic-tab"
-                      :class="{ active: activeTab === 'cost', 'btn-light text-sky-blue-4': activeTab !== 'cost', 'bg-gradient-blue-2 text-light': activeTab === 'cost' }"
-                      @click="activeTab = 'cost'"
-                    >
-                      <span>Power cost</span>
-                    </button>
-                  </li>
-                </ul>
+              <div v-if="store.isChartsExpanded" class="col-12 col-xl-3 charts-side-panel m-0 p-0" :class="{ 'bg-white' : store.isChartsExpanded }">
+<!--                <ul class="nav nav-pills mb-2" id="pills-tab" role="tablist">-->
+<!--                  <li class="nav-item w-100" role="presentation">-->
+<!--                    <button-->
+<!--                      class="nav-link btn btn-sm w-100 btn-graphic-tab p-1"-->
+<!--                      :class="{ active: activeTab === 'power', 'btn-light text-sky-blue-4': activeTab !== 'power', 'bg-gradient-blue-2 text-light': activeTab === 'power' }"-->
+<!--                      @click="activeTab = 'power'"-->
+<!--                    >-->
+<!--                      <span class="fw-bold">Count of power generation and cost</span>-->
+<!--                    </button>-->
+<!--                  </li>-->
+<!--                </ul>-->
 
                 <div class="tab-content">
                   <div v-show="activeTab === 'power'" class="tab-pane fade show active inner-chart-card">
@@ -147,7 +138,7 @@ const currentPage = ref(1);
   .table-container.expanded-right {
     position: absolute;
     left: 0;
-    width: 134%;
+    width: 136.7%;
     max-width: 139%;
     z-index: 100;
   }

@@ -49,6 +49,19 @@ const chartData = computed(() => {
         pointBorderColor: "#fff",
         pointHoverRadius: 6,
       },
+        {
+        label: "Cost savings (UAH)",
+        backgroundColor: "rgba(52, 86, 173, 0.15)",
+        borderColor: "#3456AD",
+        data: powerValues,
+        fill: true,
+        tension: 0.4,
+        borderWidth: 3,
+        pointRadius: 4,
+        pointBackgroundColor: "#3456AD",
+        pointBorderColor: "#fff",
+        pointHoverRadius: 6,
+      },
     ],
   };
 });
@@ -92,7 +105,7 @@ const chartOptions = {
 </script>
 
 <template>
-  <div class="chart-container">
+  <div class="chart-container p-1">
     <Line v-if="store.entries.length > 0" :data="chartData" :options="chartOptions" />
     <div v-else class="text-center text-muted pt-5">
       No data available for chart
@@ -102,7 +115,7 @@ const chartOptions = {
 
 <style scoped>
 .chart-container {
-  height: 338px;
+  height: 388px;
   background: transparent;
   padding: 20px;
   border-radius: 12px;
