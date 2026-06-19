@@ -78,35 +78,7 @@ onMounted(() => {
         <messages-stack ref="messagesRef" />
       </div>
       <div class="col-xxl-12 p-0">
-        <ul class="nav nav-pills mb-1" id="pills-tab" role="tablist">
-          <li class="nav-item w-50" role="presentation">
-            <button
-                class="nav-link btn btn-sm w-100 btn-graphic-tab"
-                :class="{ active: activeTab === 'power', 'btn-light text-sky-blue-4': activeTab !== 'power', 'bg-gradient-blue-2 text-light': activeTab === 'power' }"
-                @click="activeTab = 'power'"
-            >
-              <span class="">Power generated</span>
-            </button>
-          </li>
-          <li class="nav-item w-50" role="presentation">
-            <button
-                class="nav-link btn btn-sm w-100 btn-graphic-tab"
-                :class="{ active: activeTab === 'cost', 'btn-light text-sky-blue-4': activeTab !== 'cost', 'bg-gradient-blue-2 text-light': activeTab === 'cost' }"
-                @click="activeTab = 'cost'"
-            >
-              <span class="">Power cost</span>
-            </button>
-          </li>
-        </ul>
 
-        <div class="tab-content">
-          <div v-show="activeTab === 'power'" class="tab-pane fade show active card-light">
-            <power-chart :labels="chartLabels" :power="chartValues" @goToPage="fetchEntries" />
-          </div>
-          <div v-show="activeTab === 'cost'" class="tab-pane fade show active card-light">
-            <savings-chart :labels="chartLabels" :cost="chartCosts" @goToPage="fetchEntries" />
-          </div>
-        </div>
       </div>
     </div>
   </aside>

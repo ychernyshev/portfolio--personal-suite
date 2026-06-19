@@ -1,17 +1,19 @@
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 import backendApi from '../src/services/calculator/backendApi';
 
 export const useCalculatorStore = defineStore('calculator', {
     state: () => ({
         entries: [],
-        stats: { total_power: 0, total_cost: 0 },
+        stats: {total_power: 0, total_cost: 0},
 
         currentPage: 1,
         totalPages: 1,
         totalCount: 0,
         loading: false,
 
-        currentView: 'table'
+        currentView: 'table',
+
+        isChartsExpanded: false,
     }),
 
     actions: {
@@ -47,6 +49,10 @@ export const useCalculatorStore = defineStore('calculator', {
 
         setView(view) {
             this.currentView = view;
+        },
+
+        toggleCharts() {
+            this.isChartsExpanded = !this.isChartsExpanded;
         }
     }
 });
