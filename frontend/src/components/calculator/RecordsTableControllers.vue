@@ -80,7 +80,9 @@ const handleSave = async (newData) => {
     <!--      </button>-->
     <!--    </div>-->
     <div data-v-09d6a0f5=""
-         class="col-12 col-md-9 col-xl-3 card-light d-flex flex-row justify-content-center align-items-start ps-1 pe-1 pt-1 pb-4">
+         class="col-12 col-md-9 col-xl-3 card-light d-flex flex-row justify-content-center align-items-start ps-1 pe-1 pt-1 pb-4 btn-group"
+         role="group"
+         aria-label="Basic example">
       <button type="button"
               @click="store.setView(store.currentView === 'form' ? 'table' : 'form')"
               class="btn btn-primary c-border w-50 d-flex align-items-center justify-content-center">
