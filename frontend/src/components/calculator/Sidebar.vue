@@ -77,7 +77,7 @@ onMounted(() => {
         </div>
         <messages-stack ref="messagesRef" />
       </div>
-      <div class="col-xxl-12 p-0" style="height: 450px">
+      <div class="col-xxl-12 p-0">
 
       </div>
     </div>

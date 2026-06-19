@@ -80,7 +80,8 @@ const handleSave = async (newData) => {
     <!--      </button>-->
     <!--    </div>-->
     <div data-v-09d6a0f5=""
-         class="col-12 col-md-9 col-xl-3 card-light d-flex flex-row justify-content-center align-items-start ps-1 pe-1 pt-1 pb-4 btn-group"
+         class="col-12 col-md-12 col-xl-3 card-light d-flex flex-row justify-content-center align-items-start ps-1 pe-1 pt-1 pb-4 btn-group"
+         style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;"
          role="group"
          aria-label="Basic example">
       <button type="button"
@@ -120,12 +121,12 @@ const handleSave = async (newData) => {
                 d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07"/>
         </svg>
 
-        <span class="ms-2 d-none d-sm-inline">
-                    {{ store.isChartsExpanded ? "Hide Charts" : "Show Charts" }}
-                  </span>
+        <span class="ms-2">
+          {{ store.isChartsExpanded ? "Hide Charts" : "Show Charts" }}
+        </span>
       </button>
     </div>
-    <div data-v-09d6a0f5="" class="col-12 col-md-9 col-xl-3 mb-2">
+    <div data-v-09d6a0f5="" class="col-12 col-md-12 col-xl-3 mb-2">
       <div data-v-09d6a0f5="" class="row setup-data-section p-2 pe-1 pt-2 pb-2 pt-md-0 pb-md-0">
         <div data-v-09d6a0f5="" class="col-10 col-xl-10 p-0 pr-2 pl-md-2">
           <pagination/>
@@ -225,6 +226,10 @@ const handleSave = async (newData) => {
 
 .fade-in-quick-enter-from, .fade-in-quick-leave-to {
   opacity: 0;
+}
+
+@media (min-width: 768px) {
+
 }
 
 @media (min-width: 1200px) {
