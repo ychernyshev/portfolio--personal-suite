@@ -7,7 +7,6 @@ import NewRecord from "./NewRecord.vue";
 
 import PowerChart from "./charts/PowerChart.vue";
 import SavingsChart from "./charts/SavingsChart.vue";
-import backendApi from "../../services/calculator/backendApi.js";
 
 import { useCalculatorStore } from "../../../store/useCalculatorStore";
 const store = useCalculatorStore();

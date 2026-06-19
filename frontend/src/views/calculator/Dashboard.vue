@@ -5,7 +5,7 @@
   import NewRecord from "../../components/calculator/NewRecord.vue";
   import Settings from "../../components/calculator/Settings.vue";
   import StatWidget from "../../components/calculator/wingets/StatWidget.vue";
-  import DataControllers from "../../components/calculator/DataControllers.vue";
+  import RecordsTableControllers from "../../components/calculator/RecordsTableControllers.vue";
   import Sidebar from "../../components/calculator/Sidebar.vue";
   import RecordsTable from "../../components/calculator/RecordsTable.vue";
 
@@ -71,7 +71,7 @@
     </div>
 
     <section class="table-section neomorphic pl-4 pr-4">
-      <data-controllers />
+      <records-table-controllers />
 
       <records-table v-if="currentView === 'table'" :entries="entries" />
       <new-record    v-else-if="currentView === 'form'" />
