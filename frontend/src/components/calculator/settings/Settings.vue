@@ -2,6 +2,7 @@
 <script setup>
 
 import EnergyTariffSetup from "@/components/calculator/settings/EnergyTariffSetup.vue";
+import SystemFactorSetup from "@/components/calculator/settings/SystemFactorSetup.vue";
 </script>
 
 <template>
@@ -10,6 +11,8 @@ import EnergyTariffSetup from "@/components/calculator/settings/EnergyTariffSetu
 
 
       <energy-tariff-setup />
+      <hr>
+      <system-factor-setup />
     </div>
   </div>
 </template>
