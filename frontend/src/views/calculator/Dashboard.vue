@@ -3,7 +3,7 @@
   import { ref, onMounted, computed } from "vue";
   import WeatherWidget from "../../components/calculator/wingets/WeatherWidget.vue";
   import NewRecord from "../../components/calculator/NewRecord.vue";
-  import Settings from "../../components/calculator/Settings.vue";
+  import Settings from "../../components/calculator/settings/Settings.vue";
   import StatWidget from "../../components/calculator/wingets/StatWidget.vue";
   import RecordsTableControllers from "../../components/calculator/RecordsTableControllers.vue";
   import Sidebar from "../../components/calculator/Sidebar.vue";
