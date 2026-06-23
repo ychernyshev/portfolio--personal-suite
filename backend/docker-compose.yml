@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:15-alpine
+    image: docker.io/library/postgres:15-alpine
     container_name: espace_db
     restart: always
     environment:
@@ -15,7 +15,7 @@ services:
       - "5432:5432"
 
   redis:
-    image: redis:7-alpine
+    image: docker.io/library/redis:alpine
     container_name: espace_redis
     restart: always
     ports:
