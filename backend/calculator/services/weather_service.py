@@ -68,7 +68,11 @@ class WeatherForecastService:
                 "weather_code",
                 "cloud_cover",
                 "relative_humidity_2m",
-                "surface_pressure"
+                "surface_pressure",
+            ],
+            "daily": [
+                "sunrise",
+                "sunset",
             ],
             "timezone": "auto",
             "forecast_days": 1
@@ -191,9 +195,19 @@ class WeatherForecastService:
             "current_temp": 0.0, "weather_condition": "Unavailable", "weather_code": 0, "calibration_factor": 1.0
         }
 
+    def convert_iso_to_datetime(self, data):
+        sunrise_str = data['daily']['sunrise'][0]
+        sunset_str = data['daily']['sunset'][0]
+
+        sunrise_dt = datetime.fromisoformat(sunrise_str)
+        sunset_dt = datetime.fromisoformat(sunset_str)
+
+        return sunrise_dt, sunset_dt
+
     def save_forecast_to_db(self, forecast_data, raw_api_data):
         try:
             today = datetime.date.today()
+            sunrise_dt, sunset_dt = self.convert_iso_to_datetime(raw_api_data)
 
             SolarForecastRecordModel.objects.update_or_create(
                 date=today,
@@ -201,6 +215,8 @@ class WeatherForecastService:
                     'predicted_kwh': forecast_data['predicted_total_kwh'],
                     'predicted_savings': forecast_data['predicted_savings'],
                     'peak_hour': forecast_data['peak_hour'],
+                    'sunrise': sunrise_dt,
+                    'sunset': sunset_dt,
                 }
             )
 

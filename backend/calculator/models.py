@@ -322,9 +322,8 @@ class SolarForecastRecordModel(models.Model):
     predicted_kwh = models.FloatField(verbose_name="Forecast (kWh)")
     predicted_savings = models.FloatField(verbose_name="Projected savings (UAH)")
     peak_hour = models.IntegerField(verbose_name="Rush hour")
-    sunrise = models.CharField(max_length=16, null=True, blank=True, verbose_name="Sunrise sunrise")
-    sunset = models.CharField(max_length=16, null=True, blank=True, verbose_name="Sunrise sunset")
-
+    sunrise = models.DateTimeField(auto_nuw=True, null=True, blank=True, verbose_name="Sunrise sunrise")
+    sunset = models.DateTimeField(auto_nuw=True, null=True, blank=True, verbose_name="Sunrise sunset")
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -348,6 +347,12 @@ class SolarForecastRecordModel(models.Model):
         diff = abs(self.predicted_kwh - (actual.full_day_power / 1000))
         accuracy = max(0, 100 - (diff / (actual.full_day_power / 1000) * 100))
         return round(accuracy, 1)
+
+    @classmethod
+    def day_length(cls):
+        if self.sunrise and self.sunset:
+            return (self.sunset - self.sunrise).total_seconds() / 3600
+        return 0.0
 
 
 class WeatherDataModel(models.Model):
