@@ -322,8 +322,8 @@ class SolarForecastRecordModel(models.Model):
     predicted_kwh = models.FloatField(verbose_name="Forecast (kWh)")
     predicted_savings = models.FloatField(verbose_name="Projected savings (UAH)")
     peak_hour = models.IntegerField(verbose_name="Rush hour")
-    sunrise = models.DateTimeField(auto_nuw=True, null=True, blank=True, verbose_name="Sunrise sunrise")
-    sunset = models.DateTimeField(auto_nuw=True, null=True, blank=True, verbose_name="Sunrise sunset")
+    sunrise = models.DateTimeField(null=True, blank=True, verbose_name="Sunrise")
+    sunset = models.DateTimeField(null=True, blank=True, verbose_name="Sunset")
 
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -199,8 +199,8 @@ class WeatherForecastService:
         sunrise_str = data['daily']['sunrise'][0]
         sunset_str = data['daily']['sunset'][0]
 
-        sunrise_dt = datetime.fromisoformat(sunrise_str)
-        sunset_dt = datetime.fromisoformat(sunset_str)
+        sunrise_dt = datetime.datetime.fromisoformat(sunrise_str)
+        sunset_dt = datetime.datetime.fromisoformat(sunset_str)
 
         return sunrise_dt, sunset_dt
 

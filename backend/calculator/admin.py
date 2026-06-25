@@ -104,7 +104,7 @@ class WeatherConditionAdmin(admin.ModelAdmin):
 
 @admin.register(SolarForecastRecordModel)
 class SolarForecastRecordAdmin(admin.ModelAdmin):
-    list_display = ['date', 'predicted_kwh', 'predicted_savings', 'peak_hour', 'created_at']
+    list_display = ['date', 'predicted_kwh', 'predicted_savings', 'peak_hour', 'sunrise', 'sunset', 'created_at']
 
 
 @admin.register(WeatherDataModel)
