@@ -38,7 +38,7 @@ const getIcon = (type) => {
 
 const pushLocalMessage = (newMsg) => {
   messages.value.unshift({
-    id: Date.now(), // тимчасовий ID
+    id: Date.now(),
     ...newMsg
   });
   if (messages.value.length > 2) {
