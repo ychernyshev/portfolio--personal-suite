@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from calculator.api.serializers import DataEntrySerializer, CurrentTariffSerializer, WeatherConditionSerializer, \
-    WeatherDataSerializer
+    WeatherDataSerializer, SolarForecastRecordSerializer
 from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel, SolarForecastRecordModel, WeatherDataModel
 from calculator.services.data_export import export_data_logic
 from calculator.services.data_import import import_data_logic
@@ -262,3 +262,8 @@ class SolarComparisonAPIView(APIView):
 class WeatherDataViewSet(viewsets.ModelViewSet):
     queryset = WeatherDataModel.objects.all()
     serializer_class = WeatherDataSerializer
+
+
+class SolarForecastRecordViewSet(viewsets.ModelViewSet):
+    queryset = SolarForecastRecordModel.objects.all()
+    serializer_class = SolarForecastRecordSerializer
