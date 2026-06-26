@@ -226,6 +226,14 @@ body {
   font-size: 1.1rem;
 }
 
+.radius-top-2 {
+    border-top-radius: 20px;
+}
+
+.radius-bottom-2 {
+    border-bottom-radius: 20px;
+}
+
 /* >576px */
 /*@media (min-width: 576px) {*/
 /*}*/

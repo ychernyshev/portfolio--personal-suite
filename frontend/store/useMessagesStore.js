@@ -20,7 +20,7 @@ export const useMessagesStore = defineStore('messages', {
                 return date.toLocaleTimeString([], {
                     hour: '2-digit',
                     minute: '2-digit',
-                    timeZone: state.userTimeZone
+                    timeZone: 'UTC'
                 });
             };
         }
