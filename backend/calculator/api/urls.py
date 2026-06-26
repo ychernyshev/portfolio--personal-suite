@@ -19,7 +19,7 @@ router = DefaultRouter()
 router.register(r'entries', DataEntryViewSet, basename='entries')
 router.register(r'weather-conditions', WeatherConditionViewSet, basename='weather-conditions')
 router.register('forecast/details', WeatherDataViewSet, basename='forecast-details')
-router.register('sunrise-sinset-time', SolarForecastRecordViewSet, basename='sunrise-sinset-time')
+router.register('sunrise-sunset-time', SolarForecastRecordViewSet, basename='sunrise-sinset-time')
 
 urlpatterns = [
     path('', include(router.urls)),

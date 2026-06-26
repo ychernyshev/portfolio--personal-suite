@@ -8,6 +8,7 @@ import MessagesStack from "./MessagesStack.vue";
 import backendApi from "../../services/calculator/backendApi.js";
 import {useNotificationStore} from "../../../store/useNotificationStore.js";
 import {storeToRefs} from "pinia";
+import SidebarStaticMessages from "@/components/calculator/messages/SidebarStaticMessages.vue";
 
 const entries = ref([]);
 const activeTab = ref('power');
@@ -78,7 +79,7 @@ onMounted(() => {
         <messages-stack ref="messagesRef" />
       </div>
       <div class="col-xxl-12 p-0">
-
+        <sidebar-static-messages />
       </div>
     </div>
   </aside>

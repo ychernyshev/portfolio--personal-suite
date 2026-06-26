@@ -49,7 +49,7 @@ class WeatherForecastService:
                         return result
             return None
 
-    def get_solar_forecast(self, current_tariff=None):
+    def get_solar_forecast(self, current_tariff=None, user_timezone="Europe/Kyiv"):
         cache_key = 'solar_forecast_lviv'
         cached_data = cache.get(cache_key)
 
@@ -74,7 +74,7 @@ class WeatherForecastService:
                 "sunrise",
                 "sunset",
             ],
-            "timezone": "auto",
+            "timezone": user_timezone,
             "forecast_days": 1
         }
 

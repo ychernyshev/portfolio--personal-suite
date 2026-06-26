@@ -4,6 +4,8 @@
 import io
 import os
 from datetime import datetime, date, timedelta
+from django.utils.dateparse import parse_datetime
+from django.utils import timezone
 
 import pandas as pd
 import requests
@@ -265,5 +267,16 @@ class WeatherDataViewSet(viewsets.ModelViewSet):
 
 
 class SolarForecastRecordViewSet(viewsets.ModelViewSet):
-    queryset = SolarForecastRecordModel.objects.all()
     serializer_class = SolarForecastRecordSerializer
+
+    def get_queryset(self):
+        queryset = SolarForecastRecordModel.objects.all()
+        date_param = self.request.query_params.get('date')
+
+        if date_param:
+            naive_dt = parse_datetime(date_param)
+            if naive_dt:
+                aware_dt = timezone.make_aware(naive_dt)
+                queryset = queryset.filter(date=aware_dt.date())
+
+        return queryset.order_by('-date')
