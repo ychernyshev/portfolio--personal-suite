@@ -358,10 +358,9 @@ class SolarForecastRecordModel(models.Model):
         return 0.0
 
     @property
-    def check_wind_speed(self, hourly_data):
-        max_gust = max(hourly_data.get("wind_gusts_10m", [0]))
-
-        if max_gust >= 15.0:  # якщо у м/с
+    def check_wind_speed(self):
+        max_gust = self.wind_gusts_10m if self.wind_gusts_10m is not None else 0.0
+        if max_gust >= 15.0:
             return {
                 "type": "warning",
                 "title": "Storm warning!",
