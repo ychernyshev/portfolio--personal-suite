@@ -32,7 +32,9 @@ class WeatherDataSerializer(serializers.ModelSerializer):
 
 
 class SolarForecastRecordSerializer(serializers.ModelSerializer):
+    day_length = serializers.ReadOnlyField(source='get_day_length')
+
     class Meta:
         model = SolarForecastRecordModel
         fields = '__all__'
-        read_only_fields = ['sunrise', 'sunrise']
+        read_only_fields = ['sunrise', 'sunset']

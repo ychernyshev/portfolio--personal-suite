@@ -348,8 +348,8 @@ class SolarForecastRecordModel(models.Model):
         accuracy = max(0, 100 - (diff / (actual.full_day_power / 1000) * 100))
         return round(accuracy, 1)
 
-    @classmethod
-    def day_length(cls):
+    @property
+    def get_day_length(self):
         if self.sunrise and self.sunset:
             return (self.sunset - self.sunrise).total_seconds() / 3600
         return 0.0
