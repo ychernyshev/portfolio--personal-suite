@@ -324,6 +324,9 @@ class SolarForecastRecordModel(models.Model):
     peak_hour = models.IntegerField(verbose_name="Rush hour")
     sunrise = models.DateTimeField(null=True, blank=True, verbose_name="Sunrise")
     sunset = models.DateTimeField(null=True, blank=True, verbose_name="Sunset")
+    wind_speed_10m = models.IntegerField(verbose_name="Wind speed 10m", blank=True, null=True)
+    wind_gusts_10m = models.IntegerField(verbose_name="Wind gusts 10m", blank=True, null=True)
+    wind_direction_10m = models.IntegerField(verbose_name="Wind direction 10m", blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -353,6 +356,18 @@ class SolarForecastRecordModel(models.Model):
         if self.sunrise and self.sunset:
             return (self.sunset - self.sunrise).total_seconds() / 3600
         return 0.0
+
+    @property
+    def check_wind_speed(self, hourly_data):
+        max_gust = max(hourly_data.get("wind_gusts_10m", [0]))
+
+        if max_gust >= 15.0:  # якщо у м/с
+            return {
+                "type": "warning",
+                "title": "Storm warning!",
+                "message": f"Strong wind gusts of up to {max_gust} m/s are expected today. Check the fastening of the panels."
+            }
+        return None
 
 
 class WeatherDataModel(models.Model):

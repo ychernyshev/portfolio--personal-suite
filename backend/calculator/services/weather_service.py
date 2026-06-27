@@ -69,11 +69,14 @@ class WeatherForecastService:
                 "cloud_cover",
                 "relative_humidity_2m",
                 "surface_pressure",
+                "wind_gusts_10m",
+                "wind_direction_10m",
             ],
             "daily": [
                 "sunrise",
                 "sunset",
             ],
+            "wind_speed_unit": "ms",
             "timezone": user_timezone,
             "forecast_days": 1
         }
@@ -217,6 +220,9 @@ class WeatherForecastService:
                     'peak_hour': forecast_data['peak_hour'],
                     'sunrise': sunrise_dt,
                     'sunset': sunset_dt,
+                    'wind_speed_10m': forecast_data['wind_speed_10m'],
+                    'wind_gusts_10m': forecast_data['wind_gusts_10m'],
+                    'wind_direction_10m': forecast_data['wind_direction_10m'],
                 }
             )
 

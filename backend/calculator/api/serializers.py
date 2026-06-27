@@ -33,6 +33,7 @@ class WeatherDataSerializer(serializers.ModelSerializer):
 
 class SolarForecastRecordSerializer(serializers.ModelSerializer):
     day_length = serializers.ReadOnlyField(source='get_day_length')
+    wind_speed_alert = serializers.ReadOnlyField(source='check_wind_speed')
 
     class Meta:
         model = SolarForecastRecordModel
