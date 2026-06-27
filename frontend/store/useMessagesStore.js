@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 import backendApi from "@/services/calculator/backendApi";
 
 export const useMessagesStore = defineStore('messages', {
@@ -23,7 +23,18 @@ export const useMessagesStore = defineStore('messages', {
                     timeZone: 'UTC'
                 });
             };
-        }
+        },
+
+        formatDayLength: (state) => {
+        return (hoursDecimal) => {
+            if (!hoursDecimal) return { h: 0, m: 0 };
+
+            const h = Math.floor(hoursDecimal);
+            const m = Math.round((hoursDecimal - h) * 60);
+
+            return { h, m };
+        };
+    }
     },
 
     actions: {

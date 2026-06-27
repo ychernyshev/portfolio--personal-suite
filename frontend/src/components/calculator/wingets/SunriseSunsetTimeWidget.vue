@@ -4,7 +4,7 @@ import {storeToRefs} from 'pinia';
 import {useMessagesStore} from '../../../../store/useMessagesStore.js';
 
 const messageStore = useMessagesStore();
-const {loading, currentForecast, formatTime} = storeToRefs(messageStore);
+const {loading, currentForecast, formatTime, formatDayLength} = storeToRefs(messageStore);
 
 const currentDateTime = ref(messageStore.getCurrentDateTimeISO());
 
@@ -59,13 +59,13 @@ onMounted(() => {
 <!--</template>-->
 
 <template>
-  <div class="neomorphic">
+  <div class="neomorphic p-0">
     <div v-if="loading" class="widget-loading">
       <span>Updating solar times...</span>
     </div>
 
     <div v-else-if="currentForecast" class="widget-content">
-      <div class="time-block d-flex align-items-end">
+      <div class="time-block d-flex align-items-end bg-white pl-3 pr-3 p-2 border-bottom-left-2">
         <svg xmlns="http://www.w3.org/2000/svg"
              width="30" height="30"
              fill="currentColor"
@@ -75,23 +75,30 @@ onMounted(() => {
               d="M7.646 1.146a.5.5 0 0 1 .708 0l1.5 1.5a.5.5 0 0 1-.708.708L8.5 2.707V4.5a.5.5 0 0 1-1 0V2.707l-.646.647a.5.5 0 1 1-.708-.708zM2.343 4.343a.5.5 0 0 1 .707 0l1.414 1.414a.5.5 0 0 1-.707.707L2.343 5.05a.5.5 0 0 1 0-.707m11.314 0a.5.5 0 0 1 0 .707l-1.414 1.414a.5.5 0 1 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0M11.709 11.5a4 4 0 1 0-7.418 0H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1h-3.79zM0 10a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2A.5.5 0 0 1 0 10m13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5"/>
         </svg>
         <div class="info">
-          <span class="label text-center">Sunrise</span>
+          <span class="label text-end">Sunrise</span>
           <span class="time">{{ formatTime(currentForecast.sunrise) }}</span>
         </div>
       </div>
 
-      <div class="time-divider"></div>
+      <!--      <div class="time-divider"></div>-->
       <div class="d-flex flex-column">
         <span class="label text-center">Day Length</span>
-        <span class="length-value time">
-          {{ currentForecast.day_length ? currentForecast.day_length.toFixed(2) : 0 }}
+        <span class="length-value">
+          <span class="time">
+            {{ formatDayLength(currentForecast.day_length).h }}
+          </span>
+          <span class="small text-success mr-1">h</span>
+          <span class="time">
+            {{ formatDayLength(currentForecast.day_length).m }}
+          </span>
+          <span class="small text-success">m</span>
         </span>
       </div>
-      <div class="time-divider"></div>
+      <!--      <div class="time-divider"></div>-->
 
-      <div class="time-block d-flex align-items-end">
+      <div class="time-block d-flex align-items-end bg-white pl-3 pr-3 p-2 border-bottom-right-2">
         <div class="info">
-          <span class="label text-center">Sunset</span>
+          <span class="label text-start">Sunset</span>
           <span class="time">{{ formatTime(currentForecast.sunset) }}</span>
         </div>
         <svg xmlns="http://www.w3.org/2000/svg"
