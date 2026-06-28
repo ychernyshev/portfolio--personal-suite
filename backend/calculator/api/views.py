@@ -2,6 +2,7 @@
 
 
 import io
+import json
 import os
 from datetime import datetime, date, timedelta
 from django.utils.dateparse import parse_datetime
@@ -9,7 +10,9 @@ from django.utils import timezone
 
 import pandas as pd
 import requests
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -23,8 +26,30 @@ from calculator.services.data_import import import_data_logic
 from calculator.services.weather_service import WeatherForecastService
 
 
+@csrf_exempt
+def process_client_weather(request):
+    if request.method == 'POST':
+        try:
+            weather_data = json.loads(request.body)
+
+            # Ініціалізуємо сервіс погоди
+            service = WeatherForecastService()
+
+            # Викликаємо правильний метод твоєї структури класу!
+            result_dict = service.get_solar_forecast(weather_data)
+
+            return JsonResponse(result_dict)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
+        except Exception as e:
+            print(f"Error in process_client_weather: {e}")
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+
+
 def current_month():
     return datetime.now().month
+
 
 class DataEntryViewSet(viewsets.ModelViewSet):
     queryset = DataEntryLineModel.objects.all().order_by('-date')
@@ -107,10 +132,27 @@ class WeatherUpdateTaskView(APIView):
         if auth_header != f"Bearer {cron_secret}":
             return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        service = WeatherForecastService()
-        result = service.get_solar_forecast()
+        try:
+            api_url = "https://api.open-meteo.com/v1/forecast"
+            params = {
+                "latitude": 49.84,
+                "longitude": 24.03,
+                "hourly": "shortwave_radiation,temperature_2m,weather_code,cloud_cover,relative_humidity_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,wind_direction_10m",
+                "daily": "sunrise,sunset",
+                "wind_speed_unit": "ms",
+                "timezone": "Europe/Kyiv",
+                "forecast_days": 1
+            }
+            response = requests.get(api_url, params=params, timeout=10)
+            response.raise_for_status()
+            weather_data = response.json()
 
-        return Response({"status": "success", "data": result})
+            service = WeatherForecastService()
+            result = service.get_solar_forecast(weather_data)
+
+            return Response({"status": "success", "data": result})
+        except Exception as e:
+            return Response({"status": "error", "message": str(e)}, status=500)
 
 
 class WeatherConditionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -120,15 +162,27 @@ class WeatherConditionViewSet(viewsets.ReadOnlyModelViewSet):
 
 class SolarForecastAPIView(APIView):
     def get(self, request, *args, **kwargs):
-        service = WeatherForecastService()
-        forecast_data = service.get_solar_forecast()
+        # Отримуємо сьогоднішню дату з урахуванням локального часу таймзони
+        today = timezone.localtime(timezone.now()).date()
 
-        if forecast_data.get("status") == "success":
-            return Response(forecast_data, status=status.HTTP_200_OK)
+        # Шукаємо сьогоднішній запис прогнозу, який створив POST-запит з фронту
+        record = SolarForecastRecordModel.objects.filter(date=today).first()
+
+        if record:
+            return Response({
+                "status": "success",
+                "predicted_total_kwh": float(record.predicted_kwh),
+                "predicted_savings": float(record.predicted_savings),
+                "peak_hour": record.peak_hour,
+                "currency": "UAH",
+                "wind_speed_10m": float(record.wind_speed_10m) if record.wind_speed_10m else 0.0,
+                "wind_gusts_10m": float(record.wind_gusts_10m) if record.wind_gusts_10m else 0.0,
+                "wind_direction_10m": record.wind_direction_10m or 0,
+            }, status=status.HTTP_200_OK)
 
         return Response(
-            {"error": forecast_data.get("message", "Unknown error")},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            {"status": "error", "message": "No forecast data available for today yet. Please wait for frontend sync."},
+            status=status.HTTP_404_NOT_FOUND
         )
 
 
@@ -186,7 +240,7 @@ class SolarMonthAnalyticsAPIView(APIView):
                     calibration_factor = 1.0
                     if total_pred_db > 0 and total_real > 0:
                         calibration_factor = total_real / total_pred_db
-                        
+
                     base_system_factor = 3.45 * 0.23 * 0.85
 
                     calibrated_factor = base_system_factor * calibration_factor

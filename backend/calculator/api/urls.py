@@ -3,6 +3,7 @@
 
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+
 from calculator.api.views import (DataEntryViewSet,
                                   CurrentTariffViewSet,
                                   StatsViewApiView,
@@ -13,7 +14,8 @@ from calculator.api.views import (DataEntryViewSet,
                                   WeatherDataViewSet,
                                   SolarMonthAnalyticsAPIView,
                                   DifferenceMonthsStatsApiView,
-                                  SolarForecastRecordViewSet,)
+                                  SolarForecastRecordViewSet,
+                                  process_client_weather,)
 
 router = DefaultRouter()
 router.register(r'entries', DataEntryViewSet, basename='entries')
@@ -31,4 +33,5 @@ urlpatterns = [
     path('power_generation_month_analytics/', SolarMonthAnalyticsAPIView.as_view(), name='month_analytics'),
     path('forecast/comparison/', SolarComparisonAPIView.as_view(), name='comparison'),
     path('data-export/', SolarForecastAPIView.as_view(), name='data-export'),
+    path('process-weather/', process_client_weather, name='process_client_weather'),
 ]

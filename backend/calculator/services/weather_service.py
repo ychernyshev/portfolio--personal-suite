@@ -1,86 +1,32 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-import asyncio
 import datetime
-import httpx
-import os
 from calculator.models import CurrentTariffModel, SolarForecastRecordModel, WeatherDataModel, DataEntryLineModel
 from django.core.cache import cache
 from django.utils import timezone
 
 
 class WeatherForecastService:
-    LAT = 49.8383
-    LON = 24.0232
-    URL = "https://api.open-meteo.com/v1/forecast"
-    VERCEL_PROXY_URL = os.getenv("VERCEL_PROXY_URL")
 
-    async def _fetch_api(self, client, url, params, source_name):
-        if not url:
-            print(f"WeatherService: URL for {source_name} is empty or not set.")
-            return None
-        try:
-            response = await client.get(url, params=params, timeout=4.0)
-            if response.status_code == 200:
-                print(f"WeatherService: {source_name} WON the race!")
-                return response.json()
-            else:
-                print(f"WeatherService: {source_name} returned status {response.status_code}")
-                return None
-        except Exception as e:
-            print(f"WeatherService: {source_name} failed during race: {e}")
-            return None
+    def get_solar_forecast(self, data, current_tariff=None):
+        if not data or 'hourly' not in data:
+            return {
+                "predicted_total_kwh": 0.0, "predicted_savings": 0.0, "hourly_forecast_wh": [0.0] * 24,
+                "currency": "UAH", "peak_hour": 0, "status": "error", "tariff_used": current_tariff,
+                "current_temp": 0.0, "weather_condition": "Invalid Data Passed", "weather_code": 0,
+                "calibration_factor": 1.0
+            }
 
-    async def _race_requests(self, params):
-        async with httpx.AsyncClient() as client:
-            task_primary = asyncio.create_task(self._fetch_api(client, self.URL, params, "Primary Open-Meteo"))
-            task_backup = asyncio.create_task(self._fetch_api(client, self.VERCEL_PROXY_URL, params, "Vercel Proxy"))
+        api_lat = round(data.get('latitude', 0.0), 2)
+        api_lon = round(data.get('longitude', 0.0), 2)
+        cache_key = f'solar_forecast_{api_lat}_{api_lon}'
 
-            pending = {task_primary, task_backup}
-
-            while pending:
-                done, pending = await asyncio.wait(pending, return_when=asyncio.FIRST_COMPLETED)
-
-                for completed_task in done:
-                    result = completed_task.result()
-                    if result is not None:
-                        for active_task in pending:
-                            active_task.cancel()
-                        return result
-            return None
-
-    def get_solar_forecast(self, current_tariff=None, user_timezone="Europe/Kyiv"):
-        cache_key = 'solar_forecast_lviv'
         cached_data = cache.get(cache_key)
-
         if cached_data:
             return cached_data
 
         if current_tariff is None:
             current_tariff = CurrentTariffModel.load().power_tariff
-
-        params = {
-            "latitude": self.LAT,
-            "longitude": self.LON,
-            "hourly": [
-                "shortwave_radiation",
-                "temperature_2m",
-                "weather_code",
-                "cloud_cover",
-                "relative_humidity_2m",
-                "surface_pressure",
-                "wind_speed_10m",
-                "wind_gusts_10m",
-                "wind_direction_10m",
-            ],
-            "daily": [
-                "sunrise",
-                "sunset",
-            ],
-            "wind_speed_unit": "ms",
-            "timezone": user_timezone,
-            "forecast_days": 1
-        }
 
         wmo_codes = {
             0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
@@ -92,13 +38,7 @@ class WeatherForecastService:
             95: "Thunderstorm",
         }
 
-        try:
-            data = asyncio.run(self._race_requests(params))
-        except Exception as race_error:
-            print(f"WeatherService: Race crashed entirely: {race_error}")
-            data = None
-
-        if data and data.get('hourly', {}).get('shortwave_radiation'):
+        if data.get('hourly', {}).get('shortwave_radiation'):
             try:
                 radiation_data = data['hourly']['shortwave_radiation']
                 today = datetime.date.today()
@@ -146,7 +86,6 @@ class WeatherForecastService:
                 avg_direction = int(sum(wind_directions) / len(wind_directions)) if wind_directions else 0
 
                 current_hour = datetime.datetime.now().hour
-                weather_data = data.get('hourly', {})
 
                 temp_list = weather_data.get('temperature_2m', [])
                 code_list = weather_data.get('weather_code', [])
@@ -184,27 +123,6 @@ class WeatherForecastService:
             except Exception as calc_error:
                 print(f"WeatherService: Error during calculation: {calc_error}")
 
-        print("WeatherService: Both APIs failed the race or returned invalid data. Activating DB Fallback.")
-        today = datetime.date.today()
-        last_record = SolarForecastRecordModel.objects.filter(date=today).first()
-        if not last_record:
-            last_record = SolarForecastRecordModel.objects.order_by('-date').first()
-
-        if last_record:
-            return {
-                "predicted_total_kwh": float(last_record.predicted_kwh),
-                "predicted_savings": float(last_record.predicted_savings),
-                "hourly_forecast_wh": [0.0] * 24,
-                "currency": "UAH",
-                "peak_hour": int(last_record.peak_hour),
-                "status": "fallback",
-                "tariff_used": current_tariff,
-                "current_temp": 0.0,
-                "weather_condition": "APIs High Latency (DB Cache)",
-                "weather_code": 0,
-                "calibration_factor": 1.0
-            }
-
         return {
             "predicted_total_kwh": 0.0, "predicted_savings": 0.0, "hourly_forecast_wh": [0.0] * 24,
             "currency": "UAH", "peak_hour": 0, "status": "error", "tariff_used": current_tariff,
@@ -214,11 +132,7 @@ class WeatherForecastService:
     def convert_iso_to_datetime(self, data):
         sunrise_str = data['daily']['sunrise'][0]
         sunset_str = data['daily']['sunset'][0]
-
-        sunrise_dt = datetime.datetime.fromisoformat(sunrise_str)
-        sunset_dt = datetime.datetime.fromisoformat(sunset_str)
-
-        return sunrise_dt, sunset_dt
+        return datetime.datetime.fromisoformat(sunrise_str), datetime.datetime.fromisoformat(sunset_str)
 
     def save_forecast_to_db(self, forecast_data, raw_api_data):
         try:
