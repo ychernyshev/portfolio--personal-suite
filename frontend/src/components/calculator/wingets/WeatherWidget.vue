@@ -2,78 +2,19 @@
 <script setup>
 import {onMounted, ref} from 'vue';
 import {storeToRefs} from "pinia";
-import backendApi from "../../../services/calculator/backendApi.js";
 import IconsMap from "../IconsMap.vue";
 import MonthStats from "./MonthStats.vue";
 import {useMovementOfTheSunStore} from "../../../../store/useMovementOfTheSunStore.js";
+import {useSolarForecastStore} from "../../../../store/useOpenMeteoForecastStore.js";
 
-const forecast = ref(null);
-const loading = ref(true);
-const showCalendar = ref(false);
 const sunMovementStore = useMovementOfTheSunStore();
 const {windSpeedAlert} = storeToRefs(sunMovementStore);
 
-const browserLat = ref(null);
-const browserLon = ref(null);
-
-const STABLE_LAT = 49.84;
-const STABLE_LON = 24.03;
-
-const getUserCoordinates = () => {
-  return new Promise((resolve) => {
-    if (!navigator.geolocation) {
-      console.warn("Geolocation is not supported by this browser.");
-      return resolve({ lat: STABLE_LAT, lon: STABLE_LON });
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        resolve({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude
-        });
-      },
-      (error) => {
-        console.warn("Geolocation denied or error. Falling back to default coordinates.", error);
-        resolve({ lat: STABLE_LAT, lon: STABLE_LON });
-      },
-      { timeout: 5000 }
-    );
-  });
-};
-
-const fetchForecast = async () => {
-  try {
-    loading.value = true;
-
-    const coords = await getUserCoordinates();
-    browserLat.value = coords.lat.toFixed(4);
-    browserLon.value = coords.lon.toFixed(4);
-
-    const { lat, lon } = await getUserCoordinates();
-
-    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Europe/Kyiv";
-
-    const openMeteoUrl =
-`https://api.open-meteo.com/v1/forecast?latitude=${STABLE_LAT}&longitude=${STABLE_LON}&hourly=shortwave_radiation,temperature_2m,weather_code,cloud_cover,relative_humidity_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,wind_direction_10m&daily=sunrise,sunset&wind_speed_unit=ms&timezone=${encodeURIComponent(userTimezone)}&forecast_days=1`;
-
-    const openMeteoResponse = await fetch(openMeteoUrl);
-    if (!openMeteoResponse.ok) throw new Error(`Open-Meteo API error: ${openMeteoResponse.status}`);
-
-    const weatherData = await openMeteoResponse.json();
-
-    const response = await backendApi.post('calculator/process-weather/', weatherData);
-
-    forecast.value = response.data;
-
-  } catch (error) {
-    console.error("Error retrieving or processing solar forecast:", error);
-  } finally {
-    loading.value = false;
-  }
-};
+const solarForecastStore = useSolarForecastStore();
+const {forecast, loading, browserLat, browserLon} = storeToRefs(solarForecastStore);
 
 // Mini calendar
+const showCalendar = ref(false);
 const showDetailChart = ref(false);
 const activeDate = ref(null);
 
@@ -83,7 +24,7 @@ const onDatePicked = (day) => {
 };
 
 onMounted(() => {
-  fetchForecast();
+  solarForecastStore.fetchForecast();
 });
 </script>
 
@@ -91,14 +32,16 @@ onMounted(() => {
   <div class="card border-0 neomorphic p-3">
     <div class="row" v-if="!loading && forecast">
       <div class="col-sm-12 col-md-6 col-xl-6 border-sm-end-0 border-md-end-1">
-        <p class="title-text my-auto text-start text-purple d-flex flex-row align-items-center">
+        <p class="title-text my-auto text-start text-purple d-flex flex-row justify-content-between align-items-center">
           Forecast: Today
-          <icons-map
-              v-if="forecast"
-              :wmoCode="forecast.weather_code"
-              class="weather-icon mr-1"
-          />
-          <p class="text-muted small mb-1 text-end sky-condition">{{ forecast.weather_condition }}</p>
+          <span>
+            <icons-map
+                v-if="forecast"
+                :wmoCode="forecast.weather_code"
+                class="weather-icon mr-1"
+            />
+            <span class="text-muted small mb-1 text-end sky-condition">{{ forecast.weather_condition }}</span>
+          </span>
         </p>
         <!--        <small class="text-muted">Click a date to see comparison</small>-->
         <div class="d-flex justify-content-between align-items-center">
@@ -122,20 +65,20 @@ onMounted(() => {
                   <span class="fw-bold">{{ windSpeedAlert.speed }}</span> m/s
                 </span>
                 <span>Gusts: <span class="fw-bold">{{ windSpeedAlert.maxGust }}</span> m/s</span>
-<!--                <span>-->
-<!--                  Direction:-->
-<!--                  <span-->
-<!--                      class="wind-arrow d-inline-block mr-1"-->
-<!--                      :style="{ transform: `rotate(${windSpeedAlert.direction}deg)` }"-->
-<!--                      title="Напрямок вітру"-->
-<!--                  >-->
-<!--                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"-->
-<!--                         class="bi bi-arrow-down" viewBox="0 0 16 16">-->
-<!--                      <path fill-rule="evenodd"-->
-<!--                            d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1"/>-->
-<!--                    </svg>-->
-<!--                  </span>-->
-<!--                </span>-->
+                <!--                <span>-->
+                <!--                  Direction:-->
+                <!--                  <span-->
+                <!--                      class="wind-arrow d-inline-block mr-1"-->
+                <!--                      :style="{ transform: `rotate(${windSpeedAlert.direction}deg)` }"-->
+                <!--                      title="Напрямок вітру"-->
+                <!--                  >-->
+                <!--                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"-->
+                <!--                         class="bi bi-arrow-down" viewBox="0 0 16 16">-->
+                <!--                      <path fill-rule="evenodd"-->
+                <!--                            d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1"/>-->
+                <!--                    </svg>-->
+                <!--                  </span>-->
+                <!--                </span>-->
               </div>
             </div>
           </div>
