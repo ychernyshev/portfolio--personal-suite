@@ -1,7 +1,7 @@
 import {defineStore} from 'pinia';
 import backendApi from "@/services/calculator/backendApi";
 
-export const useMessagesStore = defineStore('messages', {
+export const useMovementOfTheSunStore = defineStore('messages', {
     state: () => ({
         messages: null,
         loading: false,
