@@ -72,7 +72,7 @@ onMounted(() => {
           Total power:
           <span class="fw-bold text-success-1">0Wh</span>
         </span>
-        <span v-else class="small">Total power: <span class="fw-bold text-success-1">{{ current_month_details.current_month_total_power }}Wh</span></span>
+        <span v-else class="small">Total power: <span class="fw-bold text-success-1">{{ current_month_details.current_month_total_power.toFixed(2) }}Wh</span></span>
         <span v-if="current_month_details.length === 0" class="small">
           Total savings:
           <span class="fw-bold text-sky-blue-4">0UAH</span>
