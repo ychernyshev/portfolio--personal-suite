@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-import datetime
-import os
 import asyncio
+import datetime
 import httpx
+import os
+from calculator.models import CurrentTariffModel, SolarForecastRecordModel, WeatherDataModel, DataEntryLineModel
 from django.core.cache import cache
 from django.utils import timezone
-from calculator.models import CurrentTariffModel, SolarForecastRecordModel, WeatherDataModel, DataEntryLineModel
 
 
 class WeatherForecastService:
@@ -69,6 +69,7 @@ class WeatherForecastService:
                 "cloud_cover",
                 "relative_humidity_2m",
                 "surface_pressure",
+                "wind_speed_10m",
                 "wind_gusts_10m",
                 "wind_direction_10m",
             ],
@@ -135,6 +136,15 @@ class WeatherForecastService:
                 system_factor = total_area * panel_efficiency * performance_ratio * calibration_factor
                 hourly_gen_wh = [round(rad * system_factor, 2) for rad in radiation_data]
 
+                weather_data = data.get('hourly', {})
+                wind_speeds = weather_data.get('wind_speed_10m', [])
+                wind_gusts = weather_data.get('wind_gusts_10m', [])
+                wind_directions = weather_data.get('wind_direction_10m', [])
+
+                avg_speed = round(sum(wind_speeds) / len(wind_speeds), 1) if wind_speeds else 0.0
+                max_gust = max(wind_gusts) if wind_gusts else 0.0
+                avg_direction = int(sum(wind_directions) / len(wind_directions)) if wind_directions else 0
+
                 current_hour = datetime.datetime.now().hour
                 weather_data = data.get('hourly', {})
 
@@ -161,7 +171,10 @@ class WeatherForecastService:
                     "current_temp": current_temp,
                     "weather_condition": weather_condition,
                     "weather_code": weather_code,
-                    "calibration_factor": round(calibration_factor, 2)
+                    "calibration_factor": round(calibration_factor, 2),
+                    "wind_speed_10m": avg_speed,
+                    "wind_gusts_10m": max_gust,
+                    "wind_direction_10m": avg_direction
                 }
 
                 cache.set(cache_key, result_dict, 3600)
@@ -209,8 +222,17 @@ class WeatherForecastService:
 
     def save_forecast_to_db(self, forecast_data, raw_api_data):
         try:
-            today = datetime.date.today()
+            today = timezone.localtime(timezone.now()).date()
             sunrise_dt, sunset_dt = self.convert_iso_to_datetime(raw_api_data)
+
+            hourly_raw = raw_api_data.get('hourly', {})
+            wind_speeds = hourly_raw.get('wind_speed_10m', [])
+            wind_gusts = hourly_raw.get('wind_gusts_10m', [])
+            wind_directions = hourly_raw.get('wind_direction_10m', [])
+
+            avg_speed = round(sum(wind_speeds) / len(wind_speeds), 1) if wind_speeds else None
+            max_gust = max(wind_gusts) if wind_gusts else None
+            avg_direction = int(sum(wind_directions) / len(wind_directions)) if wind_directions else None
 
             SolarForecastRecordModel.objects.update_or_create(
                 date=today,
@@ -220,9 +242,9 @@ class WeatherForecastService:
                     'peak_hour': forecast_data['peak_hour'],
                     'sunrise': sunrise_dt,
                     'sunset': sunset_dt,
-                    'wind_speed_10m': forecast_data['wind_speed_10m'],
-                    'wind_gusts_10m': forecast_data['wind_gusts_10m'],
-                    'wind_direction_10m': forecast_data['wind_direction_10m'],
+                    'wind_speed_10m': avg_speed,
+                    'wind_gusts_10m': max_gust,
+                    'wind_direction_10m': avg_direction
                 }
             )
 
@@ -259,6 +281,7 @@ class WeatherForecastService:
 
             WeatherDataModel.objects.bulk_create(weather_objects)
             return True
+
         except Exception as e:
             print(f"DB loading error: {e}")
             return False
