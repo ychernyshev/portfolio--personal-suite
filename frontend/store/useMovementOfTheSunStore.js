@@ -10,7 +10,23 @@ export const useMovementOfTheSunStore = defineStore('messages', {
 
     getters: {
         currentForecast: (state) => {
-            return state.messages?.results?.[0] || null;
+            return state.messages?.results?.[0] || state.messages || null;
+        },
+
+        windSpeedAlert: (bindings) => {
+            const forecast = bindings.currentForecast;
+            if (!forecast) return null;
+
+            const maxGust = forecast.wind_gusts_10m !== undefined ? forecast.wind_gusts_10m : 0.0;
+            const speed = forecast.wind_speed_10m !== undefined ? forecast.wind_speed_10m : 0.0;
+            const direction = forecast.wind_direction_10m !== undefined ? forecast.wind_direction_10m : 0;
+
+            return {
+                speed,
+                maxGust,
+                direction,
+                isDangerous: maxGust >= 15.0
+            };
         },
 
         formatTime: (state) => {
@@ -26,15 +42,15 @@ export const useMovementOfTheSunStore = defineStore('messages', {
         },
 
         formatDayLength: (state) => {
-        return (hoursDecimal) => {
-            if (!hoursDecimal) return { h: 0, m: 0 };
+            return (hoursDecimal) => {
+                if (!hoursDecimal) return { h: 0, m: 0 };
 
-            const h = Math.floor(hoursDecimal);
-            const m = Math.round((hoursDecimal - h) * 60);
+                const h = Math.floor(hoursDecimal);
+                const m = Math.round((hoursDecimal - h) * 60);
 
-            return { h, m };
-        };
-    }
+                return { h, m };
+            };
+        },
     },
 
     actions: {
