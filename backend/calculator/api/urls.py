@@ -3,6 +3,7 @@
 
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+
 from calculator.api.views import (DataEntryViewSet,
                                   CurrentTariffViewSet,
                                   StatsViewApiView,
@@ -12,12 +13,16 @@ from calculator.api.views import (DataEntryViewSet,
                                   SolarComparisonAPIView,
                                   WeatherDataViewSet,
                                   SolarMonthAnalyticsAPIView,
-                                  DifferenceMonthsStatsApiView)
+                                  DifferenceMonthsStatsApiView,
+                                  SolarForecastRecordViewSet,
+                                  process_client_weather,
+                                  SolarYearAnalyticsAPIView, )
 
 router = DefaultRouter()
 router.register(r'entries', DataEntryViewSet, basename='entries')
 router.register(r'weather-conditions', WeatherConditionViewSet, basename='weather-conditions')
 router.register('forecast/details', WeatherDataViewSet, basename='forecast-details')
+router.register('sunrise-sunset-time', SolarForecastRecordViewSet, basename='sunrise-sinset-time')
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -27,6 +32,8 @@ urlpatterns = [
     path('difference_months_stats/', DifferenceMonthsStatsApiView.as_view(), name='difference_months_stats'),
     path('forecast/', SolarForecastAPIView.as_view(), name='forecast'),
     path('power_generation_month_analytics/', SolarMonthAnalyticsAPIView.as_view(), name='month_analytics'),
+    path('power_generation_year_analytics/', SolarYearAnalyticsAPIView.as_view(), name='year_analytics'),
     path('forecast/comparison/', SolarComparisonAPIView.as_view(), name='comparison'),
     path('data-export/', SolarForecastAPIView.as_view(), name='data-export'),
+    path('process-weather/', process_client_weather, name='process_client_weather'),
 ]

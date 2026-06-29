@@ -1,28 +1,21 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <script setup>
-import { ref, onMounted, nextTick } from 'vue';
-import backendApi from "../../../services/calculator/backendApi.js";
+import {onMounted, ref} from 'vue';
+import {storeToRefs} from "pinia";
 import IconsMap from "../IconsMap.vue";
-import Productivity from "./Productivity.vue";
-import MiniCalendar from "./MiniCalendar.vue";
 import MonthStats from "./MonthStats.vue";
+import {useMovementOfTheSunStore} from "../../../../store/useMovementOfTheSunStore.js";
+import {useOpenMeteoForecastStore} from "../../../../store/useOpenMeteoForecastStore.js";
+import LocationRequiredPlaceholder from "@/components/calculator/wingets/LocationRequiredPlaceholder.vue";
 
-const forecast = ref(null);
-const loading = ref(true);
-const showCalendar = ref(false);
+const sunMovementStore = useMovementOfTheSunStore();
+const {windSpeedAlert} = storeToRefs(sunMovementStore);
 
-const fetchForecast = async () => {
-  try {
-    const response = await backendApi.get('calculator/forecast/');
-    forecast.value = response.data;
-  } catch (error) {
-    console.error("Error retrieving forecast:", error);
-  } finally {
-    loading.value = false;
-  }
-};
+const solarForecastStore = useOpenMeteoForecastStore();
+const {forecast, loading, browserLat, browserLon, isLocationDenied} = storeToRefs(solarForecastStore);
 
 // Mini calendar
+const showCalendar = ref(false);
 const showDetailChart = ref(false);
 const activeDate = ref(null);
 
@@ -32,107 +25,80 @@ const onDatePicked = (day) => {
 };
 
 onMounted(() => {
-   fetchForecast();
+  solarForecastStore.fetchForecast();
 });
 </script>
 
 <template>
-  <div class="card border-0 neomorphic p-3">
-    <div class="row" v-if="!loading && forecast">
-      <div class="col-sm-12 col-md-6 col-xl-6 border-sm-end-0 border-md-end-1">
-        <p class="title-text my-auto text-start text-purple d-flex flex-row align-items-center">
-          Forecast: Today
-          <icons-map
-              v-if="forecast"
-              :wmoCode="forecast.weather_code"
-              class="weather-icon mr-1"
-          />
-        </p>
-<!--        <small class="text-muted">Click a date to see comparison</small>-->
-        <div class="d-flex justify-content-between align-items-center">
-          <div class="energy-block">
-            <p class="text-sky-blue-4 huge-number">{{ forecast.predicted_total_kwh }} <span class="unit-text">kWh</span></p>
-            <p class="text-success mb-0 savings-text">+{{ forecast.predicted_savings }} UAH savings</p>
-          </div>
-          <div class="text-muted small temp-block">
-            <div class="text-end peak-time">
-              Peak: {{ forecast.peak_hour }}:00
+  <div class="card neomorphic p-3 border-0">
+    <div class="row">
+      <div class="col-sm-12 col-md-6 col-xl-6 border-sm-end-0 border-md-end-1 d-flex flex-column justify-content-center">
+
+        <div v-if="isLocationDenied" class="w-100">
+          <p class="title-text my-auto text-start text-purple d-flex flex-row justify-content-between align-items-center mb-3">
+            Forecast: Today
+          </p>
+          <LocationRequiredPlaceholder/>
+        </div>
+
+        <div v-else-if="!loading && forecast" class="w-100">
+          <p class="title-text my-auto text-start text-purple d-flex flex-row justify-content-between align-items-center">
+            Forecast: Today
+            <span>
+              <icons-map
+                  v-if="forecast"
+                  :wmoCode="forecast.weather_code"
+                  class="weather-icon mr-1"
+              />
+              <span class="text-muted small mb-1 text-end sky-condition">{{ forecast.weather_condition }}</span>
+            </span>
+          </p>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="energy-block">
+              <p class="text-sky-blue-4 huge-number">{{ forecast.predicted_total_kwh }} <span class="unit-text">kWh</span></p>
+              <p class="text-success mb-0 savings-text">+{{ forecast.predicted_savings }} UAH savings</p>
             </div>
-            <h2 class="mb-0 temperature">{{ forecast.current_temp }}°C</h2>
-            <p class="text-muted small mb-1 text-end sky-condition">{{ forecast.weather_condition }}</p>
+
+            <div class="text-muted small temp-block">
+              <div class="text-end peak-time">
+                Peak: {{ forecast.peak_hour }}:00
+              </div>
+              <h2 class="mb-0 temperature">{{ forecast.current_temp }}°C</h2>
+
+              <div class="sky-condition"
+                   :class="{'badge bg-danger-subtle text-danger border border-danger-subtle p-1 rounded-3 text-end animation-pulse': windSpeedAlert.isDangerous}">
+                <div
+                    class="d-flex flex-column align-items-end"
+                    :class="{ 'text-danger fw-bold': windSpeedAlert.isDangerous, 'text-muted': !windSpeedAlert.isDangerous }"
+                    style="line-height: 1.3rem">
+                  <span v-if="windSpeedAlert.isDangerous">⚠ Strong wind! </span>
+                  <span>
+                    <span class="fw-medium">
+                      Wind:
+                      <span class="fw-bold">{{ windSpeedAlert.speed }}</span>
+                      m/s
+                    </span>
+                  </span>
+                  <span class="fw-medium">
+                    Gusts:
+                    <span class="fw-bold">{{ windSpeedAlert.maxGust }}</span>
+                    m/s
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+
+        <div v-else class="h-100 d-flex justify-content-center align-items-center py-4">
+          <span class="text-muted">Loading forecast...</span>
+        </div>
       </div>
+
       <div class="col-sm-12 col-md-6 col-xl-6">
-        <month-stats />
-<!--        <div class="flex-grow-1 ps-4 position-relative d-flex align-items-center justify-content-start">-->
-<!--          <div class="d-flex justify-content-between align-items-center mt-2">-->
-<!--            <div class="position-relative d-inline-block d-flex flex-row">-->
-<!--              <transition v-if="showCalendar" class="custom-tooltip-box" name="fade-slide" mode="out-in">-->
-<!--                <mini-calendar-->
-<!--                    transparent-->
-<!--                    borderless-->
-<!--                    trim-weeks-->
-<!--                    :attributes="attributes"-->
-<!--                    @dayclick="onDayClick"-->
-<!--                    locale="uk"-->
-<!--                    class="calendar-card w-100"-->
-<!--                />-->
-<!--              </transition>-->
-<!--            </div>-->
-            <!--        MODAL-->
-<!--            <div class="d-flex justify-content-start">-->
-              <!--            <button>-->
-              <!--              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">-->
-              <!--                <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>-->
-              <!--                <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>-->
-              <!--              </svg>-->
-              <!--            </button>-->
-
-              <!--            <button type="button" class="btn btn-light btn-c-light btn-sm d-flex align-items-center justify-content-center text-purple" data-bs-toggle="modal" data-bs-target="#exampleModal">-->
-              <!--              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-table pr-2" viewBox="0 0 16 16">-->
-              <!--                <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 2h-4v3h4zm0 4h-4v3h4zm0 4h-4v3h3a1 1 0 0 0 1-1zm-5 3v-3H6v3zm-5 0v-3H1v2a1 1 0 0 0 1 1zm-4-4h4V8H1zm0-4h4V4H1zm5-3v3h4V4zm4 4H6v3h4z"/>-->
-              <!--              </svg> comparison table-->
-              <!--            </button>-->
-<!--            </div>-->
-
-            <!-- Modal -->
-<!--            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
-<!--              <div class="modal-dialog modal-dialog-centered">-->
-<!--                <div class="modal-content">-->
-<!--                  <div class="modal-header">-->
-<!--                    <h1 class="modal-title fs-5" id="exampleModalLabel">Comparison table of actual and real solar energy production rates</h1>-->
-<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--                  </div>-->
-<!--                  <div class="modal-body">-->
-<!--                    <productivity/>-->
-<!--                  </div>-->
-<!--                  <div class="modal-footer">-->
-<!--                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-            <!--        END MODAL-->
-<!--          </div>-->
-<!--          <div v-if="!showDetailChart" class="w-100 text-center">-->
-<!--            <div id="mini-calendar"></div>-->
-
-<!--          </div>-->
-
-<!--          <div v-else class="w-100 h-100">-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <button @click="showCalendar = !showCalendar" class="btn btn-sm text-purple">-->
-<!--          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">-->
-<!--            <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>-->
-<!--            <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>-->
-<!--          </svg>-->
-<!--        </button>-->
+        <month-stats/>
       </div>
-    </div>
-    <div v-else-if="loading" class="text-center p-3">
-      <span>Loading forecast...</span>
     </div>
   </div>
 </template>
@@ -190,32 +156,15 @@ onMounted(() => {
   margin: 0;
 }
 
-.custom-tooltip-box {
-  position: absolute;
-  z-index: 1050;
-  top: 130%;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.fade-slide-enter-active,
-.fade-slide-leave-active {
-  transition: opacity 0.3s, transform 0.3s;
-}
-
-.fade-slide-enter-from {
-  opacity: 0;
-  transform: translateX(-50%) translateY(-10px);
-}
-
-.fade-slide-leave-to {
-  opacity: 0;
-  transform: translateX(-50%) translateY(-10px);
-}
-
 .weather-icon {
   width: clamp(2rem, 1vw, 4.5rem);
   height: clamp(2rem, 1vw, 4.5rem);
   opacity: 0.8;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
 }
 </style>

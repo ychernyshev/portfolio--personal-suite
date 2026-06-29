@@ -2,7 +2,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import IconsMap from "./IconsMap.vue";
-import Settings from "./Settings.vue";
+import Settings from "./settings/Settings.vue";
 import NewRecord from "./NewRecord.vue";
 
 import PowerChart from "./charts/PowerChart.vue";

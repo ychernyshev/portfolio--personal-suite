@@ -3,7 +3,7 @@
 
 from rest_framework import serializers
 
-from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel, WeatherDataModel
+from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel, WeatherDataModel, SolarForecastRecordModel
 
 class WeatherConditionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,3 +29,13 @@ class WeatherDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WeatherDataModel
         fields = '__all__'
+
+
+class SolarForecastRecordSerializer(serializers.ModelSerializer):
+    day_length = serializers.ReadOnlyField(source='get_day_length')
+    wind_speed_alert = serializers.ReadOnlyField(source='check_wind_speed')
+
+    class Meta:
+        model = SolarForecastRecordModel
+        fields = '__all__'
+        read_only_fields = ['sunrise', 'sunset']

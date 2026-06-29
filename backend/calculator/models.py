@@ -322,6 +322,12 @@ class SolarForecastRecordModel(models.Model):
     predicted_kwh = models.FloatField(verbose_name="Forecast (kWh)")
     predicted_savings = models.FloatField(verbose_name="Projected savings (UAH)")
     peak_hour = models.IntegerField(verbose_name="Rush hour")
+    sunrise = models.DateTimeField(null=True, blank=True, verbose_name="Sunrise")
+    sunset = models.DateTimeField(null=True, blank=True, verbose_name="Sunset")
+    wind_speed_10m = models.IntegerField(verbose_name="Wind speed 10m", blank=True, null=True)
+    wind_gusts_10m = models.IntegerField(verbose_name="Wind gusts 10m", blank=True, null=True)
+    wind_direction_10m = models.IntegerField(verbose_name="Wind direction 10m", blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -344,6 +350,23 @@ class SolarForecastRecordModel(models.Model):
         diff = abs(self.predicted_kwh - (actual.full_day_power / 1000))
         accuracy = max(0, 100 - (diff / (actual.full_day_power / 1000) * 100))
         return round(accuracy, 1)
+
+    @property
+    def get_day_length(self):
+        if self.sunrise and self.sunset:
+            return (self.sunset - self.sunrise).total_seconds() / 3600
+        return 0.0
+
+    @property
+    def check_wind_speed(self):
+        max_gust = self.wind_gusts_10m if self.wind_gusts_10m is not None else 0.0
+        if max_gust >= 15.0:
+            return {
+                "type": "warning",
+                "title": "Storm warning!",
+                "message": f"Strong wind gusts of up to {max_gust} m/s are expected today. Check the fastening of the panels."
+            }
+        return None
 
 
 class WeatherDataModel(models.Model):

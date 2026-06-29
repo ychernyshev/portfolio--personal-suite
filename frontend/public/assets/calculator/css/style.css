@@ -226,6 +226,22 @@ body {
   font-size: 1.1rem;
 }
 
+.border-top-left-2 {
+  border-top-left-radius: 20px;
+}
+
+.border-top-right-2 {
+  border-top-right-radius: 20px;
+}
+
+.border-bottom-left-2 {
+  border-bottom-left-radius: 20px;
+}
+
+.border-bottom-right-2 {
+  border-bottom-right-radius: 20px;
+}
+
 /* >576px */
 /*@media (min-width: 576px) {*/
 /*}*/

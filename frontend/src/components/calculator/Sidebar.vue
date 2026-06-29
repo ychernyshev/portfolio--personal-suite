@@ -8,6 +8,7 @@ import MessagesStack from "./MessagesStack.vue";
 import backendApi from "../../services/calculator/backendApi.js";
 import {useNotificationStore} from "../../../store/useNotificationStore.js";
 import {storeToRefs} from "pinia";
+import SunriseSunsetTimeWidget from "@/components/calculator/wingets/SunriseSunsetTimeWidget.vue";
 
 const entries = ref([]);
 const activeTab = ref('power');
@@ -66,7 +67,7 @@ onMounted(() => {
 
 <template>
   <aside class="sidebar m-0 row justify-content-center">
-    <div class="row neomorphic graphics-card align-items-end">
+    <div class="row neomorphic graphics-card align-items-end p-0">
       <div class="col-xxl-12 d-none d-lg-block message-card">
         <div v-if="!isMessage" class="no-messages text-center d-flex flex-column justify-content-center align-items-center p-3">
           <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-mailbox-flag " viewBox="0 0 16 16">
@@ -78,7 +79,7 @@ onMounted(() => {
         <messages-stack ref="messagesRef" />
       </div>
       <div class="col-xxl-12 p-0">
-
+        <sunrise-sunset-time-widget />
       </div>
     </div>
   </aside>
