@@ -33,12 +33,16 @@ onMounted(() => {
   <div class="card neomorphic p-3 border-0">
     <div class="row">
       <div v-if="isLocationDenied" class="col-sm-12 col-md-6 col-xl-6 border-sm-end-0 border-md-end-1">
-        <LocationRequiredPlaceholder/>
-      </div>
-      <div class="col-sm-12 col-md-6 col-xl-6 border-sm-end-0 border-md-end-1" v-if="!loading && forecast">
         <p class="title-text my-auto text-start text-purple d-flex flex-row justify-content-between align-items-center">
           Forecast: Today
-          <span>
+        </p>
+        <LocationRequiredPlaceholder/>
+      </div>
+      <div class="col-sm-12 col-md-6 col-xl-6 border-sm-end-0 border-md-end-1">
+        <div v-if="!loading && forecast">
+          <p class="title-text my-auto text-start text-purple d-flex flex-row justify-content-between align-items-center">
+            Forecast: Today
+            <span>
             <icons-map
                 v-if="forecast"
                 :wmoCode="forecast.weather_code"
@@ -46,38 +50,43 @@ onMounted(() => {
             />
             <span class="text-muted small mb-1 text-end sky-condition">{{ forecast.weather_condition }}</span>
           </span>
-        </p>
-        <!--        <small class="text-muted">Click a date to see comparison</small>-->
-        <div class="d-flex justify-content-between align-items-center">
-          <div class="energy-block">
-            <p class="text-sky-blue-4 huge-number">{{ forecast.predicted_total_kwh }} <span class="unit-text">kWh</span>
-            </p>
-            <p class="text-success mb-0 savings-text">+{{ forecast.predicted_savings }} UAH savings</p>
-          </div>
-          <div class="text-muted small temp-block">
-            <div class="text-end peak-time">
-              Peak: {{ forecast.peak_hour }}:00
+          </p>
+          <!--        <small class="text-muted">Click a date to see comparison</small>-->
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="energy-block">
+              <p class="text-sky-blue-4 huge-number">{{ forecast.predicted_total_kwh }} <span
+                  class="unit-text">kWh</span>
+              </p>
+              <p class="text-success mb-0 savings-text">+{{ forecast.predicted_savings }} UAH savings</p>
             </div>
-            <h2 class="mb-0 temperature">{{ forecast.current_temp }}°C</h2>
-            <div v-if="windSpeedAlert"
-                 class="sky-condition badge bg-danger-subtle text-danger border border-danger-subtle p-1 rounded-3 text-end animation-pulse">
-              <div
-                  class="d-flex flex-column align-items-end"
-                  :class="{ 'text-danger fw-bold': windSpeedAlert.isDangerous, 'text-muted': !windSpeedAlert.isDangerous }"
-                  style="line-height: 1rem">
-                <span v-if="windSpeedAlert.isDangerous">⚠ Strong wind! </span>
-                <span>
+            <div class="text-muted small temp-block">
+              <div class="text-end peak-time">
+                Peak: {{ forecast.peak_hour }}:00
+              </div>
+              <h2 class="mb-0 temperature">{{ forecast.current_temp }}°C</h2>
+              <div v-if="windSpeedAlert"
+                   class="sky-condition badge bg-danger-subtle text-danger border border-danger-subtle p-1 rounded-3 text-end animation-pulse">
+                <div
+                    class="d-flex flex-column align-items-end"
+                    :class="{ 'text-danger fw-bold': windSpeedAlert.isDangerous, 'text-muted': !windSpeedAlert.isDangerous }"
+                    style="line-height: 1rem">
+                  <span v-if="windSpeedAlert.isDangerous">⚠ Strong wind! </span>
+                  <span>
                   <span class="fw-medium">Wind: <span class="fw-bold">{{ windSpeedAlert.speed }}</span> m/s</span>
                 </span>
-                <span class="fw-medium">Gusts: <span class="fw-bold">{{ windSpeedAlert.maxGust }}</span> m/s</span>
+                  <span class="fw-medium">Gusts: <span class="fw-bold">{{ windSpeedAlert.maxGust }}</span> m/s</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-<!--        <div v-else-if="loading" class="text-center p-3">-->
-<!--          <span>Loading forecast...</span>-->
-<!--        </div>-->
+        <div v-else="loading"
+             class="h-100 d-flex justify-content-center align-items-center">
+          <span class="my-auto"
+                :class="{'d-none': isLocationDenied}">Loading forecast...</span>
+        </div>
       </div>
+
       <div class="col-sm-12 col-md-6 col-xl-6">
         <month-stats/>
         <!--        <div class="flex-grow-1 ps-4 position-relative d-flex align-items-center justify-content-start">-->
