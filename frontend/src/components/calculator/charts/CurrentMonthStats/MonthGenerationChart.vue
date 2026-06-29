@@ -158,7 +158,6 @@ const chartOptions = computed(() => ({
 .solar-chart-card {
   border-radius: 20px;
   margin: 20px 0;
-  background: #ffffff;
 }
 .chart-container {
   position: relative;

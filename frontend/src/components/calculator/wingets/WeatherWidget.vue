@@ -54,7 +54,7 @@ onMounted(() => {
             </span>
           </p>
 
-          <div class="d-flex justify-content-between align-items-center mt-2">
+          <div class="d-flex justify-content-between align-items-center">
             <div class="energy-block">
               <p class="text-sky-blue-4 huge-number">{{ forecast.predicted_total_kwh }} <span class="unit-text">kWh</span></p>
               <p class="text-success mb-0 savings-text">+{{ forecast.predicted_savings }} UAH savings</p>
@@ -66,17 +66,25 @@ onMounted(() => {
               </div>
               <h2 class="mb-0 temperature">{{ forecast.current_temp }}°C</h2>
 
-              <div v-if="windSpeedAlert"
-                   class="sky-condition badge bg-danger-subtle text-danger border border-danger-subtle p-1 rounded-3 text-end animation-pulse">
+              <div class="sky-condition"
+                   :class="{'badge bg-danger-subtle text-danger border border-danger-subtle p-1 rounded-3 text-end animation-pulse': windSpeedAlert.isDangerous}">
                 <div
                     class="d-flex flex-column align-items-end"
                     :class="{ 'text-danger fw-bold': windSpeedAlert.isDangerous, 'text-muted': !windSpeedAlert.isDangerous }"
                     style="line-height: 1rem">
                   <span v-if="windSpeedAlert.isDangerous">⚠ Strong wind! </span>
                   <span>
-                    <span class="fw-medium">Wind: <span class="fw-bold">{{ windSpeedAlert.speed }}</span> m/s</span>
+                    <span class="fw-medium">
+                      Wind:
+                      <span class="fw-bold">{{ windSpeedAlert.speed }}</span>
+                      m/s
+                    </span>
                   </span>
-                  <span class="fw-medium">Gusts: <span class="fw-bold">{{ windSpeedAlert.maxGust }}</span> m/s</span>
+                  <span class="fw-medium">
+                    Gusts:
+                    <span class="fw-bold">{{ windSpeedAlert.maxGust }}</span>
+                    m/s
+                  </span>
                 </div>
               </div>
             </div>
