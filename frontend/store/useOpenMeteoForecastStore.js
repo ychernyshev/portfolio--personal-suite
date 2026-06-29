@@ -7,6 +7,7 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
   const forecast = ref(null);
   const loading = ref(false);
   const error = ref(null);
+  const isLocationDenied = ref(false);
 
   const browserLat = ref(null);
   const browserLon = ref(null);
@@ -23,6 +24,7 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
 
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          isLocationDenied.value = false;
           resolve({
             lat: position.coords.latitude,
             lon: position.coords.longitude
@@ -30,6 +32,7 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
         },
         (error) => {
           console.warn("Geolocation denied or error. Falling back to default coordinates.", error);
+          isLocationDenied.value = true;
           resolve({ lat: STABLE_LAT, lon: STABLE_LON });
         },
         { timeout: 5000 }
@@ -45,6 +48,12 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
       error.value = null;
 
       const coords = await getUserCoordinates();
+
+      if (isLocationDenied.value) {
+        forecast.value = null;
+        return;
+      }
+
       browserLat.value = coords.lat.toFixed(4);
       browserLon.value = coords.lon.toFixed(4);
 
