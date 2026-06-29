@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-<script setup lang="ts">
+<script setup>
   import MonthGenerationChart from "@/components/calculator/charts/CurrentMonthStats/MonthGenerationChart.vue";
   import backendApi from "@/services/backendApi.js";
   import {onMounted, ref} from "vue";

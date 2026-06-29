@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Line } from 'vue-chartjs';
@@ -12,6 +12,11 @@ import {
   Tooltip,
   Legend
 } from 'chart.js';
+import {useOpenMeteoForecastStore} from "../../../../../store/useOpenMeteoForecastStore";
+import {storeToRefs} from "pinia";
+
+const solarForecastStore = useOpenMeteoForecastStore();
+const {isLocationDenied} = storeToRefs(solarForecastStore);
 
 ChartJS.register(
     CategoryScale,
@@ -39,9 +44,8 @@ const props = withDefaults(defineProps<ChartDataProps>(), {
 
 const todayDay = computed(() => new Date().getDate());
 
-const chartData = computed(() => ({
-  labels: props.labels,
-  datasets: [
+const chartData = computed(() => {
+  const datasets = [
     {
       label: 'Actual generation (kWh)',
       data: props.actualPower,
@@ -52,8 +56,11 @@ const chartData = computed(() => ({
       pointRadius: (context: any) => context.dataIndex + 1 === todayDay.value ? 6 : 3,
       pointBackgroundColor: '#a855f7',
       spanGaps: true
-    },
-    {
+    }
+  ];
+
+  if (!isLocationDenied.value) {
+    datasets.push({
       label: 'Forecast generation (kWh)',
       data: props.forecastPower,
       borderColor: '#9ca3af',
@@ -63,9 +70,14 @@ const chartData = computed(() => ({
       borderDash: [6, 4],
       pointRadius: 0,
       spanGaps: true
-    }
-  ]
-}));
+    });
+  }
+
+  return {
+    labels: props.labels,
+    datasets
+  };
+});
 
 const todayLinePlugin = {
   id: 'todayLine',
@@ -108,8 +120,8 @@ const chartOptions = computed(() => ({
       }
     },
     tooltip: {
-      mode: 'index' as const,
-      intersect: false,
+      mode: isLocationDenied.value ? ('nearest' as const) : ('index' as const),
+      intersect: isLocationDenied.value,
       padding: 12,
       backgroundColor: '#1f2937'
     }
@@ -129,7 +141,13 @@ const chartOptions = computed(() => ({
 </script>
 
 <template>
-  <div class="solar-chart-card p-0">
+  <div class="solar-chart-card p-3 position-relative">
+    <div v-if="isLocationDenied" class="w-100 text-center mb-2">
+      <span class="badge-content px-3 py-1-5 text-muted small tracking-wider fw-bold">
+        ⚠ Forecast: Geolocation Required
+      </span>
+    </div>
+
     <div class="chart-container p-0">
       <Line :data="chartData" :options="chartOptions" :plugins="[todayLinePlugin]" />
     </div>
@@ -140,11 +158,31 @@ const chartOptions = computed(() => ({
 .solar-chart-card {
   border-radius: 20px;
   margin: 20px 0;
+  background: #ffffff;
 }
 .chart-container {
   position: relative;
-  height: 380px;
+  height: 350px;
   width: 100%;
-  padding: 15px 10px 10px 10px;
+}
+
+.forecast-denied-badge {
+  position: absolute;
+  top: 40px;
+  right: 20px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.badge-content {
+  display: inline-block;
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px dashed #ced4da;
+  border-radius: 10px;
+  font-size: 0.85rem;
+}
+
+.tracking-wider {
+  letter-spacing: 0.05em;
 }
 </style>
