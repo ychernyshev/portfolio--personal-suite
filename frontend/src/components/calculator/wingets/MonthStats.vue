@@ -2,7 +2,11 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import backendApi from "../../../services/calculator/backendApi.js";
+import {useOpenMeteoForecastStore} from "../../../../store/useOpenMeteoForecastStore.js";
+import {storeToRefs} from "pinia";
 
+const solarForecastStore = useOpenMeteoForecastStore();
+const {isLocationDenied} = storeToRefs(solarForecastStore);
 const current_month_details = ref([]);
 const loading = ref(true);
 const errorMsg = ref("");
@@ -55,9 +59,15 @@ onMounted(() => {
     <div class="col-6 d-inline-flex flex-column align-items-start widget-item">
       <div v-if="!loading && current_month_details" class="w-100 d-flex flex-column small align-items-start text-purple">
         <span class="fw-bold"></span>
-        <span v-if="current_month_details.length === 0" class="small">Sun days: <span class="fw-bold">0</span></span>
+        <span v-if="isLocationDenied" class="small">
+          Sun days: <span class="fw-bold">Geolocation Required</span>
+        </span>
+        <span v-else-if="current_month_details.length === 0" class="small">Sun days: <span class="fw-bold">0</span></span>
         <span v-else class="small">Sun days: <span class="fw-bold">{{ current_month_details.sun_days }}</span></span>
-        <span v-if="current_month_details.length === 0" class="small">Avr temperature:
+        <span v-if="isLocationDenied" class="small">
+          Avr temperature: <span class="fw-bold">Geolocation Required</span>
+        </span>
+        <span v-else-if="current_month_details.length === 0" class="small">Avr temperature:
           <span class="fw-bold">
             no data
           </span>
