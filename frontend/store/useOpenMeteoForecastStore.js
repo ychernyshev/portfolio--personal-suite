@@ -19,7 +19,8 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
     return new Promise((resolve) => {
       if (!navigator.geolocation) {
         console.warn("Geolocation is not supported by this browser.");
-        return resolve({ lat: STABLE_LAT, lon: STABLE_LON });
+        isLocationDenied.value = true;
+        return resolve(null);
       }
 
       navigator.geolocation.getCurrentPosition(
@@ -30,12 +31,16 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
             lon: position.coords.longitude
           });
         },
-        (error) => {
-          console.warn("Geolocation denied or error. Falling back to default coordinates.", error);
-          isLocationDenied.value = true;
-          resolve({ lat: STABLE_LAT, lon: STABLE_LON });
+        (geoError) => {
+          console.warn("Geolocation error code:", geoError.code, geoError.message);
+
+          if (geoError.code === 1) {
+            isLocationDenied.value = true;
+          }
+
+          resolve(null);
         },
-        { timeout: 5000 }
+        { timeout: 4000 }
       );
     });
   };
@@ -50,12 +55,19 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
       const coords = await getUserCoordinates();
 
       if (isLocationDenied.value) {
+        browserLat.value = null;
+        browserLon.value = null;
         forecast.value = null;
         return;
       }
 
-      browserLat.value = coords.lat.toFixed(4);
-      browserLon.value = coords.lon.toFixed(4);
+      if (coords) {
+        browserLat.value = coords.lat.toFixed(4);
+        browserLon.value = coords.lon.toFixed(4);
+      } else {
+        browserLat.value = STABLE_LAT.toFixed(4);
+        browserLon.value = STABLE_LON.toFixed(4);
+      }
 
       const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Europe/Kyiv";
 
@@ -65,7 +77,6 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
       if (!openMeteoResponse.ok) throw new Error(`Open-Meteo API error: ${openMeteoResponse.status}`);
 
       const weatherData = await openMeteoResponse.json();
-
       const response = await backendApi.post('calculator/process-weather/', weatherData);
 
       forecast.value = response.data;
@@ -81,6 +92,7 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
     forecast,
     loading,
     error,
+    isLocationDenied,
     browserLat,
     browserLon,
     fetchForecast

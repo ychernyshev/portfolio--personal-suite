@@ -6,12 +6,13 @@ import IconsMap from "../IconsMap.vue";
 import MonthStats from "./MonthStats.vue";
 import {useMovementOfTheSunStore} from "../../../../store/useMovementOfTheSunStore.js";
 import {useOpenMeteoForecastStore} from "../../../../store/useOpenMeteoForecastStore.js";
+import LocationRequiredPlaceholder from "@/components/calculator/wingets/LocationRequiredPlaceholder.vue";
 
 const sunMovementStore = useMovementOfTheSunStore();
 const {windSpeedAlert} = storeToRefs(sunMovementStore);
 
 const solarForecastStore = useOpenMeteoForecastStore();
-const {forecast, loading, browserLat, browserLon} = storeToRefs(solarForecastStore);
+const {forecast, loading, browserLat, browserLon, isLocationDenied} = storeToRefs(solarForecastStore);
 
 // Mini calendar
 const showCalendar = ref(false);
@@ -30,8 +31,11 @@ onMounted(() => {
 
 <template>
   <div class="card neomorphic p-3 border-0">
-    <div class="row" v-if="!loading && forecast">
-      <div class="col-sm-12 col-md-6 col-xl-6 border-sm-end-0 border-md-end-1">
+    <div class="row">
+      <div v-if="isLocationDenied" class="col-sm-12 col-md-6 col-xl-6 border-sm-end-0 border-md-end-1">
+        <LocationRequiredPlaceholder/>
+      </div>
+      <div class="col-sm-12 col-md-6 col-xl-6 border-sm-end-0 border-md-end-1" v-if="!loading && forecast">
         <p class="title-text my-auto text-start text-purple d-flex flex-row justify-content-between align-items-center">
           Forecast: Today
           <span>
@@ -55,10 +59,12 @@ onMounted(() => {
               Peak: {{ forecast.peak_hour }}:00
             </div>
             <h2 class="mb-0 temperature">{{ forecast.current_temp }}°C</h2>
-            <div v-if="windSpeedAlert" class="sky-condition badge bg-danger-subtle text-danger border border-danger-subtle p-1 rounded-3 text-end animation-pulse">
+            <div v-if="windSpeedAlert"
+                 class="sky-condition badge bg-danger-subtle text-danger border border-danger-subtle p-1 rounded-3 text-end animation-pulse">
               <div
                   class="d-flex flex-column align-items-end"
-                  :class="{ 'text-danger fw-bold': windSpeedAlert.isDangerous, 'text-muted': !windSpeedAlert.isDangerous }" style="line-height: 1rem">
+                  :class="{ 'text-danger fw-bold': windSpeedAlert.isDangerous, 'text-muted': !windSpeedAlert.isDangerous }"
+                  style="line-height: 1rem">
                 <span v-if="windSpeedAlert.isDangerous">⚠ Strong wind! </span>
                 <span>
                   <span class="fw-medium">Wind: <span class="fw-bold">{{ windSpeedAlert.speed }}</span> m/s</span>
@@ -68,6 +74,9 @@ onMounted(() => {
             </div>
           </div>
         </div>
+<!--        <div v-else-if="loading" class="text-center p-3">-->
+<!--          <span>Loading forecast...</span>-->
+<!--        </div>-->
       </div>
       <div class="col-sm-12 col-md-6 col-xl-6">
         <month-stats/>
@@ -136,9 +145,6 @@ onMounted(() => {
         <!--          </svg>-->
         <!--        </button>-->
       </div>
-    </div>
-    <div v-else-if="loading" class="text-center p-3">
-      <span>Loading forecast...</span>
     </div>
   </div>
 </template>
@@ -235,15 +241,21 @@ onMounted(() => {
 .storm-warning-active {
   border: 1px solid rgba(220, 53, 69, 0.4) !important; /* Напівпрозорий червоний */
   box-shadow: 0 0 12px rgba(241, 196, 15, 0.2),
-              inset 0 0 8px rgba(220, 53, 69, 0.1) !important;
+  inset 0 0 8px rgba(220, 53, 69, 0.1) !important;
   transition: all 0.5s ease;
 }
 
 /* Додатково можна пустити легку пульсацію для алерту */
 @keyframes pulse {
-  0% { opacity: 0.8; }
-  50% { opacity: 1; }
-  100% { opacity: 0.8; }
+  0% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.8;
+  }
 }
 
 </style>
