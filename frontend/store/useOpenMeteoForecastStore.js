@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import backendApi from "@/services/backendApi.ts";
 
-export const useSolarForecastStore = defineStore('solarForecast', () => {
+export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
   const forecast = ref(null);
   const loading = ref(false);
   const error = ref(null);

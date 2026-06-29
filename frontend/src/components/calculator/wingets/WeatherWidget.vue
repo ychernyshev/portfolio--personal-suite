@@ -5,12 +5,12 @@ import {storeToRefs} from "pinia";
 import IconsMap from "../IconsMap.vue";
 import MonthStats from "./MonthStats.vue";
 import {useMovementOfTheSunStore} from "../../../../store/useMovementOfTheSunStore.js";
-import {useSolarForecastStore} from "../../../../store/useOpenMeteoForecastStore.js";
+import {useOpenMeteoForecastStore} from "../../../../store/useOpenMeteoForecastStore.js";
 
 const sunMovementStore = useMovementOfTheSunStore();
 const {windSpeedAlert} = storeToRefs(sunMovementStore);
 
-const solarForecastStore = useSolarForecastStore();
+const solarForecastStore = useOpenMeteoForecastStore();
 const {forecast, loading, browserLat, browserLon} = storeToRefs(solarForecastStore);
 
 // Mini calendar
@@ -29,7 +29,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="card border-0 neomorphic p-3">
+  <div class="card neomorphic p-3 border-0">
     <div class="row" v-if="!loading && forecast">
       <div class="col-sm-12 col-md-6 col-xl-6 border-sm-end-0 border-md-end-1">
         <p class="title-text my-auto text-start text-purple d-flex flex-row justify-content-between align-items-center">
@@ -55,30 +55,15 @@ onMounted(() => {
               Peak: {{ forecast.peak_hour }}:00
             </div>
             <h2 class="mb-0 temperature">{{ forecast.current_temp }}°C</h2>
-            <div v-if="windSpeedAlert" class="text-end mb-2 small sky-condition">
+            <div v-if="windSpeedAlert" class="sky-condition badge bg-danger-subtle text-danger border border-danger-subtle p-1 rounded-3 text-end animation-pulse">
               <div
                   class="d-flex flex-column align-items-end"
-                  :class="{ 'text-danger fw-bold': windSpeedAlert.isDangerous, 'text-muted': !windSpeedAlert.isDangerous }">
-                <span v-if="windSpeedAlert.isDangerous">⚠ Storm warning! </span>
+                  :class="{ 'text-danger fw-bold': windSpeedAlert.isDangerous, 'text-muted': !windSpeedAlert.isDangerous }" style="line-height: 1rem">
+                <span v-if="windSpeedAlert.isDangerous">⚠ Strong wind! </span>
                 <span>
-                  Wind:
-                  <span class="fw-bold">{{ windSpeedAlert.speed }}</span> m/s
+                  <span class="fw-medium">Wind: <span class="fw-bold">{{ windSpeedAlert.speed }}</span> m/s</span>
                 </span>
-                <span>Gusts: <span class="fw-bold">{{ windSpeedAlert.maxGust }}</span> m/s</span>
-                <!--                <span>-->
-                <!--                  Direction:-->
-                <!--                  <span-->
-                <!--                      class="wind-arrow d-inline-block mr-1"-->
-                <!--                      :style="{ transform: `rotate(${windSpeedAlert.direction}deg)` }"-->
-                <!--                      title="Напрямок вітру"-->
-                <!--                  >-->
-                <!--                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"-->
-                <!--                         class="bi bi-arrow-down" viewBox="0 0 16 16">-->
-                <!--                      <path fill-rule="evenodd"-->
-                <!--                            d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1"/>-->
-                <!--                    </svg>-->
-                <!--                  </span>-->
-                <!--                </span>-->
+                <span class="fw-medium">Gusts: <span class="fw-bold">{{ windSpeedAlert.maxGust }}</span> m/s</span>
               </div>
             </div>
           </div>
@@ -246,4 +231,19 @@ onMounted(() => {
   font-size: 1.1rem;
   color: var(--green-1);
 }
+
+.storm-warning-active {
+  border: 1px solid rgba(220, 53, 69, 0.4) !important; /* Напівпрозорий червоний */
+  box-shadow: 0 0 12px rgba(241, 196, 15, 0.2),
+              inset 0 0 8px rgba(220, 53, 69, 0.1) !important;
+  transition: all 0.5s ease;
+}
+
+/* Додатково можна пустити легку пульсацію для алерту */
+@keyframes pulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
+}
+
 </style>
