@@ -1,18 +1,15 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 
-import io
 import json
 import os
 from datetime import datetime, date, timedelta
-from django.utils.dateparse import parse_datetime
-from django.utils import timezone
 
-import pandas as pd
 import requests
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
+from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -20,7 +17,8 @@ from rest_framework.views import APIView
 
 from calculator.api.serializers import DataEntrySerializer, CurrentTariffSerializer, WeatherConditionSerializer, \
     WeatherDataSerializer, SolarForecastRecordSerializer
-from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel, SolarForecastRecordModel, WeatherDataModel
+from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel, SolarForecastRecordModel, \
+    WeatherDataModel
 from calculator.services.data_export import export_data_logic
 from calculator.services.data_import import import_data_logic
 from calculator.services.weather_service import WeatherForecastService
@@ -104,7 +102,7 @@ class CurrentMothStatsApiView(APIView):
             "current_month_total_power": DataEntryLineModel.get_count_of_month_total_power(),
             "current_month_savings": DataEntryLineModel.get_count_of_month_total_savings(),
             "difference_power_percentage":
-            DataEntryLineModel.get_power_difference(),
+                DataEntryLineModel.get_power_difference(),
         })
 
 
@@ -162,10 +160,8 @@ class WeatherConditionViewSet(viewsets.ReadOnlyModelViewSet):
 
 class SolarForecastAPIView(APIView):
     def get(self, request, *args, **kwargs):
-        # Отримуємо сьогоднішню дату з урахуванням локального часу таймзони
         today = timezone.localtime(timezone.now()).date()
 
-        # Шукаємо сьогоднішній запис прогнозу, який створив POST-запит з фронту
         record = SolarForecastRecordModel.objects.filter(date=today).first()
 
         if record:
@@ -184,6 +180,73 @@ class SolarForecastAPIView(APIView):
             {"status": "error", "message": "No forecast data available for today yet. Please wait for frontend sync."},
             status=status.HTTP_404_NOT_FOUND
         )
+
+
+class SolarYearAnalyticsAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            current_year = date.today().year
+
+            entries = DataEntryLineModel.objects.filter(
+                date__year=current_year
+            ).prefetch_related('weather')
+
+            categories = {
+                "sunny": {"label": "Sunny Days", "days_count": 0, "total_power": 0.0, "total_cost": 0.0},
+                "cloudy": {"label": "Cloudy Days", "days_count": 0, "total_power": 0.0, "total_cost": 0.0},
+                "rain_snow": {"label": "Rain / Snow", "days_count": 0, "total_power": 0.0, "total_cost": 0.0},
+                "other": {"label": "Other Weather", "days_count": 0, "total_power": 0.0, "total_cost": 0.0},
+            }
+
+            for entry in entries:
+                weather_names = [w.name.lower() for w in entry.weather.all()]
+
+                try:
+                    power = float(entry.full_day_power) if entry.full_day_power is not None else 0.0
+                except (TypeError, ValueError):
+                    power = 0.0
+
+                try:
+                    cost = float(entry.full_day_cost) if entry.full_day_cost is not None else 0.0
+                except (TypeError, ValueError):
+                    cost = 0.0
+
+                if any("sunny" in name for name in weather_names):
+                    categories["sunny"]["days_count"] += 1
+                    categories["sunny"]["total_power"] += power
+                    categories["sunny"]["total_cost"] += cost
+
+                elif any("cloudy" in name for name in weather_names):
+                    categories["cloudy"]["days_count"] += 1
+                    categories["cloudy"]["total_power"] += power
+                    categories["cloudy"]["total_cost"] += cost
+
+                elif any("rain" in name or "snow" in name for name in weather_names):
+                    categories["rain_snow"]["days_count"] += 1
+                    categories["rain_snow"]["total_power"] += power
+                    categories["rain_snow"]["total_cost"] += cost
+
+                else:
+                    categories["other"]["days_count"] += 1
+                    categories["other"]["total_power"] += power
+                    categories["other"]["total_cost"] += cost
+
+            for key in categories:
+                categories[key]["total_power"] = round(categories[key]["total_power"], 2)
+                categories[key]["total_cost"] = round(categories[key]["total_cost"], 2)
+
+            response_data = {
+                "year": current_year,
+                "categories": categories
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response(
+                {"error": "Failed to calculate analytics", "details": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class SolarMonthAnalyticsAPIView(APIView):
@@ -296,6 +359,7 @@ class SolarMonthAnalyticsAPIView(APIView):
 
         except Exception as e:
             return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class SolarComparisonAPIView(APIView):
     def get(self, request):

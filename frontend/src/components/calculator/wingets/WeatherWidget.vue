@@ -71,7 +71,7 @@ onMounted(() => {
                 <div
                     class="d-flex flex-column align-items-end"
                     :class="{ 'text-danger fw-bold': windSpeedAlert.isDangerous, 'text-muted': !windSpeedAlert.isDangerous }"
-                    style="line-height: 1rem">
+                    style="line-height: 1.3rem">
                   <span v-if="windSpeedAlert.isDangerous">⚠ Strong wind! </span>
                   <span>
                     <span class="fw-medium">
