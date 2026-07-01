@@ -15,10 +15,20 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from calculator.api.serializers import DataEntrySerializer, CurrentTariffSerializer, WeatherConditionSerializer, \
-    WeatherDataSerializer, SolarForecastRecordSerializer
-from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel, SolarForecastRecordModel, \
-    WeatherDataModel
+from calculator.api.serializers import (
+    DataEntrySerializer,
+    CurrentTariffSerializer,
+    WeatherConditionSerializer,
+    WeatherDataSerializer,
+    SolarForecastRecordSerializer,
+    GeolocationSerializer, )
+from calculator.models import (
+    DataEntryLineModel,
+    CurrentTariffModel,
+    WeatherConditionModel,
+    SolarForecastRecordModel,
+    WeatherDataModel,
+    GeolocationModel, )
 from calculator.services.data_export import export_data_logic
 from calculator.services.data_import import import_data_logic
 from calculator.services.weather_service import WeatherForecastService
@@ -398,3 +408,8 @@ class SolarForecastRecordViewSet(viewsets.ModelViewSet):
                 queryset = queryset.filter(date=aware_dt.date())
 
         return queryset.order_by('-date')
+
+
+class GeolocationViewSet(viewsets.ModelViewSet):
+    queryset = GeolocationModel.objects.all()
+    serializer_class = GeolocationSerializer

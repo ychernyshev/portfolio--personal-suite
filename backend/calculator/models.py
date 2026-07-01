@@ -412,3 +412,15 @@ class SystemMessage(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+
+class GeolocationModel(models.Model):
+    lat = models.FloatField(help_text="Latitude")
+    lon = models.FloatField(help_text="Longitude")
+
+    def __str__(self):
+        return f'Current coordinates: Latitude is {self.lat}, longitude is {self.lon}'
+
+    class Meta:
+        verbose_name = 'add coordinates'
+        verbose_name_plural = 'Coordinates'
