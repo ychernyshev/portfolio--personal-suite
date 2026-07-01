@@ -370,16 +370,13 @@ class SolarForecastRecordModel(models.Model):
 
 
 class WeatherDataModel(models.Model):
-    # Дата та час виміру/прогнозу
     timestamp = models.DateTimeField(db_index=True)
 
-    # Основні показники для Pandas
     temperature = models.FloatField(help_text="Celsius")
     cloud_cover = models.IntegerField(help_text="Cloud percentage 0-100")
     pressure = models.FloatField(null=True, blank=True)
     humidity = models.IntegerField(null=True, blank=True)
 
-    # Опади (важливо для очищення панелей або їх забруднення)
     precipitation_prob = models.FloatField(default=0, help_text="Chance of precipitation")
     condition_code = models.CharField(max_length=20, help_text="For example: 'sunny', 'rain'")
 
@@ -404,10 +401,8 @@ class SystemMessage(models.Model):
     title = models.CharField(max_length=150)
     text = models.TextField()
 
-    # Зв'язок з конкретним типом події (для іконок у Vue)
     msg_type = models.CharField(max_length=50, default='weather')
 
-    # Поле для зв'язку з календарем (щоб швидко фільтрувати повідомлення за день)
     event_date = models.DateField(db_index=True, auto_now_add=True)
 
     class Meta:
@@ -415,11 +410,11 @@ class SystemMessage(models.Model):
 
 
 class GeolocationModel(models.Model):
-    lat = models.FloatField(help_text="Latitude")
-    lon = models.FloatField(help_text="Longitude")
+    latitude = models.FloatField(blank=True, null=True, help_text="Latitude")
+    longitude = models.FloatField(blank=True, null=True, help_text="Longitude")
 
     def __str__(self):
-        return f'Current coordinates: Latitude is {self.lat}, longitude is {self.lon}'
+        return f'Current coordinates: Latitude is {self.latitude}, longitude is {self.longitude}'
 
     class Meta:
         verbose_name = 'add coordinates'

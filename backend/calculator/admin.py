@@ -4,9 +4,9 @@ from django.utils.html import format_html
 
 from .models import (
     DataEntryLineModel,
-     WeatherConditionModel,
-     SolarForecastRecordModel,
-     WeatherDataModel
+    WeatherConditionModel,
+    SolarForecastRecordModel,
+    WeatherDataModel, GeolocationModel
 )
 
 
@@ -110,3 +110,8 @@ class SolarForecastRecordAdmin(admin.ModelAdmin):
 @admin.register(WeatherDataModel)
 class WeatherDataAdmin(admin.ModelAdmin):
     list_display = ['timestamp', 'temperature', 'cloud_cover', 'pressure', 'humidity', 'precipitation_prob', 'condition_code']
+
+
+@admin.register(GeolocationModel)
+class GeolocationAdmin(admin.ModelAdmin):
+    list_display = ['latitude', 'longitude']
