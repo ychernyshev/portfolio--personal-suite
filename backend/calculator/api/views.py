@@ -6,6 +6,7 @@ import os
 from datetime import datetime, date, timedelta
 
 import requests
+from django.contrib.gis.geos.prototypes import coordseq
 from django.http import JsonResponse
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
@@ -142,9 +143,14 @@ class WeatherUpdateTaskView(APIView):
 
         try:
             api_url = "https://api.open-meteo.com/v1/forecast"
+            coords = GeolocationModel.objects.first()
+
+            if not coords:
+                return Response({"error": "No coordinates found in database"}, status=404)
+
             params = {
-                "latitude": 49.84,
-                "longitude": 24.03,
+                "latitude": coords.latitude,
+                "longitude": coords.longitude,
                 "hourly": "shortwave_radiation,temperature_2m,weather_code,cloud_cover,relative_humidity_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,wind_direction_10m",
                 "daily": "sunrise,sunset",
                 "wind_speed_unit": "ms",
