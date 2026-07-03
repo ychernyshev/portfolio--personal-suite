@@ -16,7 +16,9 @@ from calculator.api.views import (DataEntryViewSet,
                                   DifferenceMonthsStatsApiView,
                                   SolarForecastRecordViewSet,
                                   process_client_weather,
-                                  SolarYearAnalyticsAPIView, GeolocationViewSet, )
+                                  SolarYearAnalyticsAPIView,
+                                  GeolocationViewSet,
+                                  get_user_profile, )
 
 router = DefaultRouter()
 router.register(r'entries', DataEntryViewSet, basename='entries')
@@ -27,6 +29,7 @@ router.register(r'station_coordinates', GeolocationViewSet, basename='station_co
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('user-profile/', get_user_profile, name='user-profile'),
     path('current-tariff/', CurrentTariffViewSet.as_view({'get': 'retrieve'}), name='current-tariff'),
     path('stats/', StatsViewApiView.as_view(), name='stats'),
     path('current_month_stats/', CurrentMothStatsApiView.as_view(), name='current_month_stats'),

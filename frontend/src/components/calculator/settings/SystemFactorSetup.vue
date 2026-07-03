@@ -1,5 +1,21 @@
-<script setup lang="ts">
+<script setup>
   import ButtonComp from "@/components/personal/ButtonComp.vue";
+  import {useUserAccountStore} from "../../../../store/useUserAccountStore.js";
+  import {storeToRefs} from "pinia";
+  import {onMounted} from "vue";
+
+  const user_profile = useUserAccountStore();
+  const { currentUser, error, loading } = storeToRefs(user_profile);
+
+  const loadProfile = async () => {
+    try {
+      await user_profile.fetchUserProfile();
+    } catch (err) {}
+  };
+
+  onMounted(() => {
+    loadProfile();
+  });
 </script>
 
 <template>
@@ -15,7 +31,19 @@
 
         <div class="col-2">
           <span class="input-group-text">Username</span>
-          <input type="text" class="form-control" placeholder="Username" aria-label="Username">
+          <input v-if="currentUser"
+                 type="text"
+                 class="form-control"
+                 aria-label="Username"
+                 v-model="currentUser"
+                 disabled>
+          <input v-else
+                 type="text"
+                 class="form-control"
+                 aria-label="Username"
+                 placeholder="You didn't log in"
+                 disabled
+          >
         </div>
 
         <div class="col-2">
@@ -40,7 +68,7 @@
       </div>
     </div>
     <div class="col-12 col-xl-1 pl-0">
-      <button-comp title="Add" class="btn btn-primary w-100 h-100" />
+      <button-comp :disabled="!userProfile" title="Add" class="btn btn-primary w-100 h-100"/>
     </div>
   </div>
   <p class="pt-3 pb-1 border-bottom">Added panel/panels group</p>
