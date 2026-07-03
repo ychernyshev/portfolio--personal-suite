@@ -6,7 +6,6 @@ import os
 from datetime import datetime, date, timedelta
 
 import requests
-from django.contrib.gis.geos.prototypes import coordseq
 from django.http import JsonResponse
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
@@ -40,11 +39,8 @@ def process_client_weather(request):
     if request.method == 'POST':
         try:
             weather_data = json.loads(request.body)
-
-            # Ініціалізуємо сервіс погоди
             service = WeatherForecastService()
 
-            # Викликаємо правильний метод твоєї структури класу!
             result_dict = service.get_solar_forecast(weather_data)
 
             return JsonResponse(result_dict)
@@ -75,7 +71,6 @@ class DataEntryViewSet(viewsets.ModelViewSet):
 
 
 class CurrentTariffViewSet(viewsets.ReadOnlyModelViewSet):
-    """Тариф можна тільки читати через API (або додати Update)"""
     queryset = CurrentTariffModel.objects.all()
     serializer_class = CurrentTariffSerializer
 

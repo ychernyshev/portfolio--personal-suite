@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 from datetime import date
 
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Sum, Avg
 from django.db.models.functions import TruncMonth
@@ -419,3 +420,25 @@ class GeolocationModel(models.Model):
     class Meta:
         verbose_name = 'add coordinates'
         verbose_name_plural = 'Coordinates'
+
+
+class PanelsArrayModel(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Name of the array")
+    peak_power_kwp = models.FloatField(verbose_name='Peak power (kWp)')
+    area = models.FloatField(verbose_name='Panel(s) area')
+    angle = models.FloatField(verbose_name='Panel(s) angle of inclination of the panel')
+    azimuth = models.FloatField(verbose_name='Panel(s) azimuth')
+    efficiency = models.FloatField(default=0.20, verbose_name='Efficiency of the panel(s) (напр. 0.20)')
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return (f'Panel(s): '
+                f'area - {self.area}, '
+                f'angle - {self.angle}, '
+                f'azimuth - {self.azimuth}',
+                f'efficiency - {self.efficiency}')
+
+    class Meta:
+        verbose_name = 'panel(s) area'
+        verbose_name_plural = 'panels(s) area'
