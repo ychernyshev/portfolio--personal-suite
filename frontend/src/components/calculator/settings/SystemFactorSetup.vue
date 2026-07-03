@@ -1,21 +1,31 @@
 <script setup>
-  import ButtonComp from "@/components/personal/ButtonComp.vue";
-  import {useUserAccountStore} from "../../../../store/useUserAccountStore.js";
-  import {storeToRefs} from "pinia";
-  import {onMounted} from "vue";
+import ButtonComp from "@/components/personal/ButtonComp.vue";
+import {useUserAccountStore} from "../../../../store/useUserAccountStore.js";
+import {storeToRefs} from "pinia";
+import {computed, onMounted, ref} from "vue";
 
-  const user_profile = useUserAccountStore();
-  const { currentUser, error, loading } = storeToRefs(user_profile);
+const user_profile = useUserAccountStore();
+const {currentUser, error, loading} = storeToRefs(user_profile);
+const groupName = ref('');
+const panelArea = ref(0.0);
+const panelEfficiency = ref(0.0);
+const panelTileAngle = ref(0.0);
+const panelAzimuth = ref(0.0);
 
-  const loadProfile = async () => {
-    try {
-      await user_profile.fetchUserProfile();
-    } catch (err) {}
-  };
+const isFormInvalid = computed(() => {
+  return groupName.value === '' || !currentUser || panelArea.value <= 0 || panelEfficiency.value <= 0 || panelTileAngle.value <= 0 || panelAzimuth.value <= 0;
+});
 
-  onMounted(() => {
-    loadProfile();
-  });
+const loadProfile = async () => {
+  try {
+    await user_profile.fetchUserProfile();
+  } catch (err) {
+  }
+};
+
+onMounted(() => {
+  loadProfile();
+});
 </script>
 
 <template>
@@ -26,7 +36,7 @@
       <div class="row input-group">
         <div class="col-2">
           <span class="input-group-text">Group name</span>
-          <input type="text" class="form-control" placeholder="Group name" aria-label="GroupName">
+          <input type="text" v-model="groupName" class="form-control" placeholder="Group name" aria-label="GroupName">
         </div>
 
         <div class="col-2">
@@ -35,7 +45,7 @@
                  type="text"
                  class="form-control"
                  aria-label="Username"
-                 v-model="currentUser"
+                 :value="currentUser"
                  disabled>
           <input v-else
                  type="text"
@@ -48,27 +58,31 @@
 
         <div class="col-2">
           <span class="input-group-text">Panel Area (m<sup>2</sup>)</span>
-          <input type="text" class="form-control" placeholder="Panel area" aria-label="PanelArea">
+          <input type="number" v-model="panelArea" class="form-control" placeholder="Panel area">
         </div>
 
         <div class="col-2">
           <span class="input-group-text">Panel efficiency (%)</span>
-          <input type="text" class="form-control" placeholder="Panel efficiency" aria-label="PanelEfficiency">
+          <input type="number" v-model="panelEfficiency" class="form-control" placeholder="Panel efficiency">
         </div>
 
         <div class="col-2">
           <span class="input-group-text">Panel tilt angle (&deg;)</span>
-          <input type="text" class="form-control" placeholder="Panel tilt angle" aria-label="PanelTileAngle">
+          <input type="number" v-model="panelTileAngle" class="form-control" placeholder="Panel tilt angle">
         </div>
 
         <div class="col-2">
           <span class="input-group-text">Azimuth (&deg;)</span>
-          <input type="text" class="form-control" placeholder="Azimuth" aria-label="Azimuth">
+          <input type="number" v-model="panelAzimuth" class="form-control" placeholder="Azimuth">
         </div>
       </div>
     </div>
     <div class="col-12 col-xl-1 pl-0">
-      <button-comp :disabled="!userProfile" title="Add" class="btn btn-primary w-100 h-100"/>
+      <button-comp
+          :disabled="isFormInvalid"
+          title="Add"
+          class="btn btn-primary w-100 h-100"
+      />
     </div>
   </div>
   <p class="pt-3 pb-1 border-bottom">Added panel/panels group</p>
