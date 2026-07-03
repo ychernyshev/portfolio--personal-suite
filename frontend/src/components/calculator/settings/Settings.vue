@@ -31,7 +31,7 @@ import GeolocationSetup from "@/components/calculator/settings/GeolocationSetup.
              tabindex="0">
           <energy-tariff-setup/>
         </div>
-        <div class="tab-pane fade" id="pills-system-factor" role="tabpanel" aria-labelledby="pills-system-factor-tab" tabindex="0">
+        <div class="tab-pane fade text-start" id="pills-system-factor" role="tabpanel" aria-labelledby="pills-system-factor-tab" tabindex="0">
           <system-factor-setup/>
         </div>
         <div class="tab-pane fade" id="pills-geolocation" role="tabpanel" aria-labelledby="pills-geolocation-tab" tabindex="0">
