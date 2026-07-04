@@ -325,9 +325,13 @@ class SolarForecastRecordModel(models.Model):
     peak_hour = models.IntegerField(verbose_name="Rush hour")
     sunrise = models.DateTimeField(null=True, blank=True, verbose_name="Sunrise")
     sunset = models.DateTimeField(null=True, blank=True, verbose_name="Sunset")
+    shortwave_radiation = models.FloatField(verbose_name="Shortwave Radiation", blank=True, null=True)
+    direct_radiation = models.FloatField(verbose_name="Direct Radiation", blank=True, null=True)
+    diffuse_radiation = models.FloatField(verbose_name="Diffuse Radiation", blank=True, null=True)
     wind_speed_10m = models.IntegerField(verbose_name="Wind speed 10m", blank=True, null=True)
     wind_gusts_10m = models.IntegerField(verbose_name="Wind gusts 10m", blank=True, null=True)
     wind_direction_10m = models.IntegerField(verbose_name="Wind direction 10m", blank=True, null=True)
+    surface_pressure = models.FloatField(verbose_name="Surface pressure", blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
