@@ -4,7 +4,7 @@
 from rest_framework import serializers
 
 from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel, WeatherDataModel, \
-    SolarForecastRecordModel, GeolocationModel
+    SolarForecastRecordModel, GeolocationModel, PanelsArrayModel
 
 
 class WeatherConditionSerializer(serializers.ModelSerializer):
@@ -46,4 +46,10 @@ class SolarForecastRecordSerializer(serializers.ModelSerializer):
 class GeolocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = GeolocationModel
+        fields = '__all__'
+
+
+class PanelsArraySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PanelsArrayModel
         fields = '__all__'

@@ -433,11 +433,11 @@ class PanelsArrayModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return (f'Panel(s): '
-                f'area - {self.area}, '
+        return (f'Array "{self.name}" '
+                f'(Area: {self.area}m², '
                 f'angle - {self.angle}, '
                 f'azimuth - {self.azimuth}',
-                f'efficiency - {self.efficiency}')
+                f'Efficiency: {self.efficiency * 100}%)',)
 
     class Meta:
         verbose_name = 'panel(s) area'

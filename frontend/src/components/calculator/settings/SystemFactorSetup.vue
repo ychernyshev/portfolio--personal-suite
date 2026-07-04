@@ -3,9 +3,12 @@ import ButtonComp from "@/components/personal/ButtonComp.vue";
 import {useUserAccountStore} from "../../../../store/useUserAccountStore.js";
 import {storeToRefs} from "pinia";
 import {computed, onMounted, ref} from "vue";
+import {useCalculatorStore} from "../../../../store/useCalculatorStore.js";
 
 const user_profile = useUserAccountStore();
-const {currentUser, error, loading} = storeToRefs(user_profile);
+const calculatorStore = useCalculatorStore();
+
+const {currentUser, error, loading, panels} = storeToRefs(user_profile);
 const groupName = ref('');
 const panelArea = ref(0.0);
 const panelEfficiency = ref(0.0);
@@ -23,8 +26,27 @@ const loadProfile = async () => {
   }
 };
 
+const submitPanel = async () => {
+  const data = {
+    name: groupName.value,
+    area: panelArea.value,
+    efficiency: panelEfficiency.value,
+    tilt: panelTileAngle.value,
+    azimuth: panelAzimuth.value
+  };
+
+  try {
+    await calculatorStore.addPanel(data);
+    alert("Панель успішно додана!");
+    // Очистити поля форми...
+  } catch (e) {
+    alert("Помилка при збереженні");
+  }
+};
+
 onMounted(() => {
   loadProfile();
+  calculatorStore.fetchPanels();
 });
 </script>
 
@@ -79,6 +101,7 @@ onMounted(() => {
     </div>
     <div class="col-12 col-xl-1 pl-0">
       <button-comp
+          @click="submitPanel"
           :disabled="isFormInvalid"
           title="Add"
           class="btn btn-primary w-100 h-100"
@@ -97,12 +120,12 @@ onMounted(() => {
     </tr>
     </thead>
     <tbody>
-    <tr>
-      <td>1</td>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-      <td>@mdo</td>
+    <tr v-for="panel in panels" :key="panel.id">
+      <td>{{ panel.name }}</td>
+      <td>{{ currentUser }}</td>
+      <td>{{ panel.area }}</td>
+      <td>{{ panel.efficiency * 100 }}%</td>
+      <td>{{ panel.angle }}</td>
     </tr>
     </tbody>
   </table>

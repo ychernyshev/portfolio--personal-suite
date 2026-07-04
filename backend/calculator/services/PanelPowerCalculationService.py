@@ -5,8 +5,12 @@ class PanelPowerCalculationService:
         array_factor = array.area * array.efficiency * 0.85 * calibration_factor
         return [round(rad * array_factor, 2) for rad in radiation_data]
 
-    def get_total_forecast(self, radiation_data, calibration_factor):
-        arrays = PanelsArrayModel.objects.all()
+    def get_total_forecast(self, radiation_data, calibration_factor, user):
+        if user:
+            arrays = PanelsArrayModel.objects.filter(user=user)
+        else:
+            arrays = PanelsArrayModel.objects.all()
+
         total_hourly_wh = [0.0] * len(radiation_data)
         detailed_reports = []
 

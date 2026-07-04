@@ -1,6 +1,4 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-
-
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
@@ -18,7 +16,8 @@ from calculator.api.views import (DataEntryViewSet,
                                   process_client_weather,
                                   SolarYearAnalyticsAPIView,
                                   GeolocationViewSet,
-                                  get_user_profile, )
+                                  get_user_profile,
+                                  add_panel_array, )
 
 router = DefaultRouter()
 router.register(r'entries', DataEntryViewSet, basename='entries')
@@ -40,4 +39,5 @@ urlpatterns = [
     path('forecast/comparison/', SolarComparisonAPIView.as_view(), name='comparison'),
     path('data-export/', SolarForecastAPIView.as_view(), name='data-export'),
     path('process-weather/', process_client_weather, name='process_client_weather'),
+    path('panels/add/', add_panel_array, name='add_panel_array'),
 ]

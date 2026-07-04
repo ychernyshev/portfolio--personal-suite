@@ -1,6 +1,4 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-
-
 import json
 import os
 from datetime import datetime, date, timedelta
@@ -29,7 +27,8 @@ from calculator.models import (
     WeatherConditionModel,
     SolarForecastRecordModel,
     WeatherDataModel,
-    GeolocationModel, )
+    GeolocationModel,
+    PanelsArrayModel, )
 from calculator.services.data_export import export_data_logic
 from calculator.services.data_import import import_data_logic
 from calculator.services.weather_service import WeatherForecastService
@@ -41,26 +40,57 @@ def get_user_profile(request):
     return Response({'username': request.user.username})
 
 
-@csrf_exempt
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def process_client_weather(request):
-    if request.method == 'POST':
-        try:
-            weather_data = json.loads(request.body)
-            service = WeatherForecastService()
+    try:
+        weather_data = request.data
+        service = WeatherForecastService()
+        result_dict = service.get_solar_forecast(weather_data, user=request.user)
+        return Response({"status": "success", "data": result_dict})
+    except Exception as e:
+        return Response({"status": "error", "message": str(e)}, status=500)
 
-            result_dict = service.get_solar_forecast(weather_data)
 
-            return JsonResponse(result_dict)
-
-        except json.JSONDecodeError:
-            return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
-        except Exception as e:
-            print(f"Error in process_client_weather: {e}")
-            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+# @csrf_exempt
+# def process_client_weather(request):
+#     if request.method == 'POST':
+#         try:
+#             weather_data = json.loads(request.body)
+#             service = WeatherForecastService()
+#
+#             result_dict = service.get_solar_forecast(weather_data)
+#
+#             return JsonResponse(result_dict)
+#
+#         except json.JSONDecodeError:
+#             return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
+#         except Exception as e:
+#             print(f"Error in process_client_weather: {e}")
+#             return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
 
 def current_month():
     return datetime.now().month
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_panel_array(request):
+    data = request.data
+    try:
+        new_array = PanelsArrayModel.objects.create(
+            user=request.user,
+            name=data.get('name'),
+            area=data.get('area'),
+            efficiency=data.get('efficiency'),
+            angle=data.get('tilt'),
+            azimuth=data.get('azimuth'),
+            peak_power_kwp=0.0
+        )
+        return Response({'status': 'success', 'id': new_array.id}, status=201)
+    except Exception as e:
+        return Response({'status': 'error', 'message': str(e)}, status=400)
 
 
 class DataEntryViewSet(viewsets.ModelViewSet):
@@ -164,7 +194,8 @@ class WeatherUpdateTaskView(APIView):
             weather_data = response.json()
 
             service = WeatherForecastService()
-            result = service.get_solar_forecast(weather_data)
+            # result = service.get_solar_forecast(weather_data)
+            result = service.get_solar_forecast(weather_data, user=None)
 
             return Response({"status": "success", "data": result})
         except Exception as e:

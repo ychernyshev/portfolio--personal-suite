@@ -14,6 +14,8 @@ export const useCalculatorStore = defineStore('calculator', {
         currentView: 'table',
 
         isChartsExpanded: false,
+
+        panels: [],
     }),
 
     actions: {
@@ -53,6 +55,29 @@ export const useCalculatorStore = defineStore('calculator', {
 
         toggleCharts() {
             this.isChartsExpanded = !this.isChartsExpanded;
+        },
+
+        async addPanel(panelData) {
+            const token = localStorage.getItem('access_token');
+            try {
+                const response = await backendApi.post("calculator/panels/add/", panelData, {
+                    headers: {Authorization: `Bearer ${token}`}
+                });
+                this.panels.push(response.data);
+                return {success: true};
+            } catch (error) {
+                console.error("Add panel error:", error);
+                throw error;
+            }
+        },
+
+        async fetchPanels() {
+            try {
+                const response = await backendApi.get("calculator/panels/");
+                this.panels = response.data;
+            } catch (error) {
+                console.error("Fetch panels error:", error);
+            }
         }
     }
 });
