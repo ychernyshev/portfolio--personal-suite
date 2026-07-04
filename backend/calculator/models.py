@@ -424,7 +424,7 @@ class GeolocationModel(models.Model):
 
 class PanelsArrayModel(models.Model):
     name = models.CharField(max_length=100, verbose_name="Name of the array")
-    peak_power_kwp = models.FloatField(verbose_name='Peak power (kWp)')
+    peak_power_kwp = models.FloatField(blank=True, null=True, default=0, verbose_name='Peak power (kWp)')
     area = models.FloatField(verbose_name='Panel(s) area')
     angle = models.FloatField(verbose_name='Panel(s) angle of inclination of the panel')
     azimuth = models.FloatField(verbose_name='Panel(s) azimuth')
@@ -436,8 +436,8 @@ class PanelsArrayModel(models.Model):
         return (f'Array "{self.name}" '
                 f'(Area: {self.area}m², '
                 f'angle - {self.angle}, '
-                f'azimuth - {self.azimuth}',
-                f'Efficiency: {self.efficiency * 100}%)',)
+                f'azimuth - {self.azimuth}'
+                f'Efficiency: {self.efficiency * 100}%)')
 
     class Meta:
         verbose_name = 'panel(s) area'

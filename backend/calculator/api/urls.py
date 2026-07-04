@@ -17,14 +17,15 @@ from calculator.api.views import (DataEntryViewSet,
                                   SolarYearAnalyticsAPIView,
                                   GeolocationViewSet,
                                   get_user_profile,
-                                  add_panel_array, )
+                                  PanelsArrayViewSet, )
 
 router = DefaultRouter()
 router.register(r'entries', DataEntryViewSet, basename='entries')
 router.register(r'weather-conditions', WeatherConditionViewSet, basename='weather-conditions')
-router.register('forecast/details', WeatherDataViewSet, basename='forecast-details')
+router.register(r'forecast/details', WeatherDataViewSet, basename='forecast-details')
 router.register('sunrise-sunset-time', SolarForecastRecordViewSet, basename='sunrise-sinset-time')
 router.register(r'station_coordinates', GeolocationViewSet, basename='station_coordinated')
+router.register(r'panels', PanelsArrayViewSet, basename='panels')
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -39,5 +40,4 @@ urlpatterns = [
     path('forecast/comparison/', SolarComparisonAPIView.as_view(), name='comparison'),
     path('data-export/', SolarForecastAPIView.as_view(), name='data-export'),
     path('process-weather/', process_client_weather, name='process_client_weather'),
-    path('panels/add/', add_panel_array, name='add_panel_array'),
 ]

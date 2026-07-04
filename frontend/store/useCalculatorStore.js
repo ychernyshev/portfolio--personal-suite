@@ -1,5 +1,4 @@
 import {defineStore} from 'pinia';
-import backendApi from '../src/services/calculator/backendApi';
 
 export const useCalculatorStore = defineStore('calculator', {
     state: () => ({
@@ -58,11 +57,8 @@ export const useCalculatorStore = defineStore('calculator', {
         },
 
         async addPanel(panelData) {
-            const token = localStorage.getItem('access_token');
             try {
-                const response = await backendApi.post("calculator/panels/add/", panelData, {
-                    headers: {Authorization: `Bearer ${token}`}
-                });
+                const response = await backendApi.post("calculator/panels/", panelData);
                 this.panels.push(response.data);
                 return {success: true};
             } catch (error) {
@@ -72,11 +68,14 @@ export const useCalculatorStore = defineStore('calculator', {
         },
 
         async fetchPanels() {
+            this.loading = true;
             try {
                 const response = await backendApi.get("calculator/panels/");
-                this.panels = response.data;
+                this.panels = response.data.results;
             } catch (error) {
                 console.error("Fetch panels error:", error);
+            } finally {
+                this.loading = false;
             }
         }
     }

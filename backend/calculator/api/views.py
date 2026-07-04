@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -20,7 +20,8 @@ from calculator.api.serializers import (
     WeatherConditionSerializer,
     WeatherDataSerializer,
     SolarForecastRecordSerializer,
-    GeolocationSerializer, )
+    GeolocationSerializer,
+    PanelsArraySerializer, )
 from calculator.models import (
     DataEntryLineModel,
     CurrentTariffModel,
@@ -74,23 +75,15 @@ def current_month():
     return datetime.now().month
 
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def add_panel_array(request):
-    data = request.data
-    try:
-        new_array = PanelsArrayModel.objects.create(
-            user=request.user,
-            name=data.get('name'),
-            area=data.get('area'),
-            efficiency=data.get('efficiency'),
-            angle=data.get('tilt'),
-            azimuth=data.get('azimuth'),
-            peak_power_kwp=0.0
-        )
-        return Response({'status': 'success', 'id': new_array.id}, status=201)
-    except Exception as e:
-        return Response({'status': 'error', 'message': str(e)}, status=400)
+class PanelsArrayViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = PanelsArraySerializer
+
+    def get_queryset(self):
+        return PanelsArrayModel.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class DataEntryViewSet(viewsets.ModelViewSet):

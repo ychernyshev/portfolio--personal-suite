@@ -8,7 +8,8 @@ import {useCalculatorStore} from "../../../../store/useCalculatorStore.js";
 const user_profile = useUserAccountStore();
 const calculatorStore = useCalculatorStore();
 
-const {currentUser, error, loading, panels} = storeToRefs(user_profile);
+const {currentUser, error, loading} = storeToRefs(user_profile);
+const { panels } = storeToRefs(calculatorStore);
 const groupName = ref('');
 const panelArea = ref(0.0);
 const panelEfficiency = ref(0.0);
@@ -31,14 +32,13 @@ const submitPanel = async () => {
     name: groupName.value,
     area: panelArea.value,
     efficiency: panelEfficiency.value,
-    tilt: panelTileAngle.value,
+    angle: panelTileAngle.value,
     azimuth: panelAzimuth.value
   };
 
   try {
     await calculatorStore.addPanel(data);
     alert("Панель успішно додана!");
-    // Очистити поля форми...
   } catch (e) {
     alert("Помилка при збереженні");
   }
@@ -108,7 +108,7 @@ onMounted(() => {
       />
     </div>
   </div>
-  <p class="pt-3 pb-1 border-bottom">Added panel/panels group</p>
+  <p class="pt-3 pb-0">Added panel/panels group</p>
   <table class="table">
     <thead>
     <tr>

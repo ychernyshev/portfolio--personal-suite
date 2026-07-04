@@ -53,3 +53,8 @@ class PanelsArraySerializer(serializers.ModelSerializer):
     class Meta:
         model = PanelsArrayModel
         fields = '__all__'
+
+        extra_kwargs = {
+            'user': {'required': False},
+            'peak_power_kwp': {'required': False}
+        }
