@@ -18,7 +18,6 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
     const dbLat = ref(null);
     const dbLon = ref(null);
 
-    // Метод для отримання з БД
     const fetchDbCoordinates = async () => {
         try {
             const response = await backendApi.get('calculator/station_coordinates/');
@@ -33,7 +32,6 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
         }
     };
 
-    // Метод для запису в БД
     const saveCoordinates = async (lat, lon) => {
         try {
             loading.value = true;
@@ -107,7 +105,6 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
 
             const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Europe/Kyiv";
 
-            // Заміни в URL змінні на реактивні:
             const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${browserLat.value}&longitude=${browserLon.value}&hourly=shortwave_radiation,temperature_2m,weather_code,cloud_cover,relative_humidity_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,wind_direction_10m&daily=sunrise,sunset&wind_speed_unit=ms&timezone=${encodeURIComponent(userTimezone)}&forecast_days=1`;
 
             const openMeteoResponse = await fetch(openMeteoUrl);
@@ -116,7 +113,7 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
             const weatherData = await openMeteoResponse.json();
             const response = await backendApi.post('calculator/process-weather/', weatherData);
 
-            forecast.value = response.data;
+            forecast.value = response.data.data;
         } catch (err) {
             console.error("Error retrieving or processing solar forecast:", err);
             error.value = err.message;
