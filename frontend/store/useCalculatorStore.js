@@ -1,4 +1,5 @@
 import {defineStore} from 'pinia';
+import backendApi from '../src/services/backendApi';
 
 export const useCalculatorStore = defineStore('calculator', {
     state: () => ({
