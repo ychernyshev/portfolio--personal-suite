@@ -28,12 +28,16 @@ api.interceptors.response.use(
             try {
                 const refreshToken = localStorage.getItem('refresh_token');
 
-                const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/jwt/refresh/`, {
+                const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}auth/jwt/refresh/`, {
                     refresh: refreshToken
                 });
 
-                const { access } = response.data;
+                const {access, refresh} = response.data;
                 localStorage.setItem('access_token', access);
+
+                if (refresh) {
+                    localStorage.setItem('refresh_token', refresh);
+                }
 
                 originalRequest.headers.Authorization = `Bearer ${access}`;
                 return api(originalRequest);
