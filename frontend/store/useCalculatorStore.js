@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia';
-import backendApi from '../src/services/calculator/backendApi';
+import backendApi from '../src/services/backendApi';
 
 export const useCalculatorStore = defineStore('calculator', {
     state: () => ({
@@ -14,6 +14,8 @@ export const useCalculatorStore = defineStore('calculator', {
         currentView: 'table',
 
         isChartsExpanded: false,
+
+        panels: [],
     }),
 
     actions: {
@@ -53,6 +55,29 @@ export const useCalculatorStore = defineStore('calculator', {
 
         toggleCharts() {
             this.isChartsExpanded = !this.isChartsExpanded;
+        },
+
+        async addPanel(panelData) {
+            try {
+                const response = await backendApi.post("calculator/panels/", panelData);
+                this.panels.push(response.data);
+                return {success: true};
+            } catch (error) {
+                console.error("Add panel error:", error);
+                throw error;
+            }
+        },
+
+        async fetchPanels() {
+            this.loading = true;
+            try {
+                const response = await backendApi.get("calculator/panels/");
+                this.panels = response.data.results;
+            } catch (error) {
+                console.error("Fetch panels error:", error);
+            } finally {
+                this.loading = false;
+            }
         }
     }
 });

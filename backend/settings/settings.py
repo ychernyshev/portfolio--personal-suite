@@ -5,6 +5,7 @@
 
 
 import os
+from datetime import timedelta
 from pathlib import Path
 
 import dj_database_url
@@ -227,6 +228,14 @@ DJOSER = {
     'PERMISSIONS': {
         'token_create': ['rest_framework.permissions.AllowAny'],
     },
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=3),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 CACHES = {

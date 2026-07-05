@@ -3,7 +3,9 @@
 
 from rest_framework import serializers
 
-from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel, WeatherDataModel, SolarForecastRecordModel
+from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel, WeatherDataModel, \
+    SolarForecastRecordModel, GeolocationModel, PanelsArrayModel
+
 
 class WeatherConditionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,3 +41,24 @@ class SolarForecastRecordSerializer(serializers.ModelSerializer):
         model = SolarForecastRecordModel
         fields = '__all__'
         read_only_fields = ['sunrise', 'sunset']
+
+
+class GeolocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GeolocationModel
+        fields = '__all__'
+
+
+class PanelsArraySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PanelsArrayModel
+        fields = '__all__'
+        extra_kwargs = {
+            'user': {'required': False},
+            'peak_power_kwp': {'required': False}
+        }
+
+    def validate_efficiency(self, value):
+        if value > 1.0:
+            return value / 100.0
+        return value

@@ -1,6 +1,4 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-
-
 import json
 import os
 from datetime import datetime, date, timedelta
@@ -10,43 +8,82 @@ from django.http import JsonResponse
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import viewsets, status
-from rest_framework.decorators import action
+from rest_framework import viewsets, status, permissions
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from calculator.api.serializers import DataEntrySerializer, CurrentTariffSerializer, WeatherConditionSerializer, \
-    WeatherDataSerializer, SolarForecastRecordSerializer
-from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel, SolarForecastRecordModel, \
-    WeatherDataModel
+from calculator.api.serializers import (
+    DataEntrySerializer,
+    CurrentTariffSerializer,
+    WeatherConditionSerializer,
+    WeatherDataSerializer,
+    SolarForecastRecordSerializer,
+    GeolocationSerializer,
+    PanelsArraySerializer, )
+from calculator.models import (
+    DataEntryLineModel,
+    CurrentTariffModel,
+    WeatherConditionModel,
+    SolarForecastRecordModel,
+    WeatherDataModel,
+    GeolocationModel,
+    PanelsArrayModel, )
 from calculator.services.data_export import export_data_logic
 from calculator.services.data_import import import_data_logic
 from calculator.services.weather_service import WeatherForecastService
 
 
-@csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_profile(request):
+    return Response({'username': request.user.username})
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def process_client_weather(request):
-    if request.method == 'POST':
-        try:
-            weather_data = json.loads(request.body)
+    try:
+        weather_data = request.data
+        service = WeatherForecastService()
+        result_dict = service.get_solar_forecast(weather_data, user=request.user)
+        return Response({"status": "success", "data": result_dict})
+    except Exception as e:
+        return Response({"status": "error", "message": str(e)}, status=500)
 
-            # Ініціалізуємо сервіс погоди
-            service = WeatherForecastService()
 
-            # Викликаємо правильний метод твоєї структури класу!
-            result_dict = service.get_solar_forecast(weather_data)
-
-            return JsonResponse(result_dict)
-
-        except json.JSONDecodeError:
-            return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
-        except Exception as e:
-            print(f"Error in process_client_weather: {e}")
-            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+# @csrf_exempt
+# def process_client_weather(request):
+#     if request.method == 'POST':
+#         try:
+#             weather_data = json.loads(request.body)
+#             service = WeatherForecastService()
+#
+#             result_dict = service.get_solar_forecast(weather_data)
+#
+#             return JsonResponse(result_dict)
+#
+#         except json.JSONDecodeError:
+#             return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
+#         except Exception as e:
+#             print(f"Error in process_client_weather: {e}")
+#             return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
 
 def current_month():
     return datetime.now().month
+
+
+class PanelsArrayViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = PanelsArraySerializer
+
+    def get_queryset(self):
+        return PanelsArrayModel.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class DataEntryViewSet(viewsets.ModelViewSet):
@@ -64,7 +101,6 @@ class DataEntryViewSet(viewsets.ModelViewSet):
 
 
 class CurrentTariffViewSet(viewsets.ReadOnlyModelViewSet):
-    """Тариф можна тільки читати через API (або додати Update)"""
     queryset = CurrentTariffModel.objects.all()
     serializer_class = CurrentTariffSerializer
 
@@ -132,9 +168,14 @@ class WeatherUpdateTaskView(APIView):
 
         try:
             api_url = "https://api.open-meteo.com/v1/forecast"
+            coords = GeolocationModel.objects.first()
+
+            if not coords:
+                return Response({"error": "No coordinates found in database"}, status=404)
+
             params = {
-                "latitude": 49.84,
-                "longitude": 24.03,
+                "latitude": coords.latitude,
+                "longitude": coords.longitude,
                 "hourly": "shortwave_radiation,temperature_2m,weather_code,cloud_cover,relative_humidity_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,wind_direction_10m",
                 "daily": "sunrise,sunset",
                 "wind_speed_unit": "ms",
@@ -146,7 +187,8 @@ class WeatherUpdateTaskView(APIView):
             weather_data = response.json()
 
             service = WeatherForecastService()
-            result = service.get_solar_forecast(weather_data)
+            # result = service.get_solar_forecast(weather_data)
+            result = service.get_solar_forecast(weather_data, user=None)
 
             return Response({"status": "success", "data": result})
         except Exception as e:
@@ -398,3 +440,8 @@ class SolarForecastRecordViewSet(viewsets.ModelViewSet):
                 queryset = queryset.filter(date=aware_dt.date())
 
         return queryset.order_by('-date')
+
+
+class GeolocationViewSet(viewsets.ModelViewSet):
+    queryset = GeolocationModel.objects.all()
+    serializer_class = GeolocationSerializer

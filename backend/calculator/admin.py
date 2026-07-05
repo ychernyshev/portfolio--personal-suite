@@ -4,9 +4,11 @@ from django.utils.html import format_html
 
 from .models import (
     DataEntryLineModel,
-     WeatherConditionModel,
-     SolarForecastRecordModel,
-     WeatherDataModel
+    WeatherConditionModel,
+    SolarForecastRecordModel,
+    WeatherDataModel,
+    GeolocationModel,
+    PanelsArrayModel
 )
 
 
@@ -28,54 +30,45 @@ class DataEntryLineAdmin(admin.ModelAdmin):
 
     get_weather.short_description = "Погода"
 
-
-    def display_power(self,obj):
+    def display_power(self, obj):
         return format_html('{}Вт', obj.power)
 
     display_power.short_description = 'Потужність системи'
-
 
     def display_morning_charge(self, obj):
         return format_html('{}%', obj.morning_data_charge)
 
     display_morning_charge.short_description = 'Ранковий рівень заряду'
 
-
     def display_afternoon_charge(self, obj):
         return format_html('{}%', obj.afternoon_data_charge)
 
     display_afternoon_charge.short_description = 'Денний рівень заряду'
-
 
     def display_evening_charge(self, obj):
         return format_html('{}%', obj.evening_data_charge)
 
     display_evening_charge.short_description = 'Вечірній рівень заряду'
 
-
     def display_morning_price(self, obj):
         return format_html('{}₴', obj.morning_data_price)
 
     display_morning_price.short_description = 'Вартість використаної енергії на ранок'
-
 
     def display_afternoon_price(self, obj):
         return format_html('{}₴', obj.afternoon_data_price)
 
     display_afternoon_price.short_description = 'Вартість використаної енергії за день'
 
-
     def display_evening_price(self, obj):
         return format_html('{}₴', obj.evening_data_price)
 
     display_evening_price.short_description = 'Вартість використаної енергії на вечір'
 
-
     def display_extra_power(self, obj):
         return format_html('{}₴', obj.extra_power)
 
     display_extra_power.short_description = 'Приблизна потужність використана на USB'
-
 
     def display_full_day_cost(self, obj):
         formatted_tariff = f"{obj.full_day_cost:.2f}"
@@ -83,13 +76,11 @@ class DataEntryLineAdmin(admin.ModelAdmin):
 
     display_full_day_cost.short_description = 'Вартість виробленої енергії за день'
 
-
-    def display_full_day_power(self,obj):
+    def display_full_day_power(self, obj):
         formatted_power = f"{obj.full_day_power:.2f}"
         return format_html('{}Вт', formatted_power)
 
     display_full_day_power.short_description = 'Вироблена потужність за день'
-
 
     def display_power_tariff(self, obj):
         return format_html('{}₴', obj.power_tariff)
@@ -109,4 +100,19 @@ class SolarForecastRecordAdmin(admin.ModelAdmin):
 
 @admin.register(WeatherDataModel)
 class WeatherDataAdmin(admin.ModelAdmin):
-    list_display = ['timestamp', 'temperature', 'cloud_cover', 'pressure', 'humidity', 'precipitation_prob', 'condition_code']
+    list_display = ['timestamp', 'temperature',
+                    'cloud_cover', 'pressure',
+                    'humidity', 'precipitation_prob',
+                    'shortwave_radiation', 'direct_radiation',
+                    'diffuse_radiation', 'surface_pressure',
+                    'condition_code']
+
+
+@admin.register(GeolocationModel)
+class GeolocationAdmin(admin.ModelAdmin):
+    list_display = ['latitude', 'longitude']
+
+
+@admin.register(PanelsArrayModel)
+class PanelsArrayAdmin(admin.ModelAdmin):
+    list_display = ['name', 'peak_power_kwp', 'area', 'angle', 'azimuth', 'efficiency', 'user']

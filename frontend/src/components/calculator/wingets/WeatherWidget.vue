@@ -53,7 +53,6 @@ onMounted(() => {
               <span class="text-muted small mb-1 text-end sky-condition">{{ forecast.weather_condition }}</span>
             </span>
           </p>
-
           <div class="d-flex justify-content-between align-items-center">
             <div class="energy-block">
               <p class="text-sky-blue-4 huge-number">{{ forecast.predicted_total_kwh }} <span class="unit-text">kWh</span></p>

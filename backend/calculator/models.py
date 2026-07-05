@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 from datetime import date
 
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Sum, Avg
 from django.db.models.functions import TruncMonth
@@ -82,6 +83,11 @@ class DataEntryLineModel(models.Model):
 
     power_tariff = models.FloatField(verbose_name='Вартість за Кв')
 
+    @property
+    def one_tenth_of_tariff(self):
+        tariff = CurrentTariffModel.load().power_tariff
+        return (tariff * 100) / 10
+
     def _calculate_power_delta_based_on_price(self, start_cost, end_cost):
         price_diff = end_cost - start_cost
 
@@ -119,13 +125,12 @@ class DataEntryLineModel(models.Model):
 
     def _price_to_power(self, bigger_price, lower_price):
         return round(
-            (((bigger_price - lower_price) * 100) / 43.2) * 100, 2)
+            (((bigger_price - lower_price) * 100) / self.one_tenth_of_tariff) * 100, 2)
 
     def _evening_to_afternoon_price(self, evening_price, afternoon_price):
-        power_dif = evening_price - afternoon_price
-        curren_tariff_unit = (CurrentTariffModel.power_tariff * 100) / 100
+        power_dif = abs(evening_price - afternoon_price)
 
-        return round(((power_dif * 100) / curren_tariff_unit) * 100, 2)
+        return round(((power_dif * 100) / self.one_tenth_of_tariff) * 100, 2)
 
     def _calculate_full_day_power(self):
         try:
@@ -136,28 +141,19 @@ class DataEntryLineModel(models.Model):
 
             base_power = 0
 
-            if self.afternoon_data_price == self.evening_data_price or self.morning_data_price == self.evening_data_price:
-                base_power = (self.evening_data_charge - self.afternoon_data_charge) * self.ONE_POWER_UNIT
-                return base_power + usb_power
+            # IF THE AFTERNOON AND EVENING CHARGE IS EQUAL IN POWER AND USED ELECTRICITY
+            if self.evening_data_charge == self.afternoon_data_charge and self.afternoon_data_price == self.afternoon_data_price:
+                return 0
 
-            if 0 < self.afternoon_data_charge < self.evening_data_charge:
-                base_power = (self.evening_data_charge - self.afternoon_data_charge) * self.ONE_POWER_UNIT + round(
-                    (((self.evening_data_price - self.afternoon_data_price) * 100) / 43.2) * 100, 2)
-                return base_power + usb_power
+            # IF THE AFTERNOON AND EVENING CHARGE IS EQUAL
+            if self.evening_data_charge == self.afternoon_data_charge:
+                power_from_meters = self._evening_to_afternoon_price(self.evening_data_price, self.afternoon_data_price)
+                return power_from_meters + usb_power
 
-            # IF AFTERNOON CHARGE BIGGER THEN EVENING
-            if 0 < self.afternoon_data_charge > self.evening_data_charge:
-                if 0 < self.afternoon_data_charge > self.evening_data_charge:
-                    if self.evening_data_charge < self.afternoon_data_charge:
-                        power_meters = self._price_to_power(self.evening_data_price, self.afternoon_data_price)
-                        power_battery = (self.afternoon_data_charge - self.evening_data_charge) * self.ONE_POWER_UNIT
-                        base_power = power_meters - power_battery
-                        return base_power + usb_power
-
-            # IF AFTERNOON CHARGE IS EGUAL ZERO
+            # IF THE AFTERNOON CHARGE IS EGUAL ZERO
             if self.afternoon_data_charge == 0:
                 raw_meters_power = round((((
-                                                   self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE) * 100) / 43.2) * 100,
+                                                   self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE) * 100) / self.one_tenth_of_tariff) * 100,
                                          2)
                 battery_power = (
                                         self.evening_data_charge - self.morning_data_charge - self.MORNING_CORRECTION_CHARGE) * self.ONE_POWER_UNIT
@@ -169,6 +165,33 @@ class DataEntryLineModel(models.Model):
                     base_power = raw_meters_power + battery_power
 
                 return base_power + usb_power
+
+            # IF THE EVENING CHARGE IS BIGGER THAN AFTERNOON
+            if self.evening_data_charge > self.afternoon_data_charge:
+                meters_diff = (self.evening_data_price - self.afternoon_data_price)
+                power_from_meters = (meters_diff / self.power_tariff) * 1000
+
+                battery_diff = (self.evening_data_charge - self.afternoon_data_charge) * self.ONE_POWER_UNIT
+                total_power = power_from_meters + battery_diff + (self.extra_power or 0)
+                return total_power + usb_power
+
+            if self.afternoon_data_price == self.evening_data_price or self.morning_data_price == self.evening_data_price:
+                base_power = (self.evening_data_charge - self.afternoon_data_charge) * self.ONE_POWER_UNIT
+                return base_power + usb_power
+
+            if 0 < self.afternoon_data_charge < self.evening_data_charge:
+                base_power = (self.evening_data_charge - self.afternoon_data_charge) * self.ONE_POWER_UNIT + round(
+                    (((self.evening_data_price - self.afternoon_data_price) * 100) / self.one_tenth_of_tariff) * 100, 2)
+                return base_power + usb_power
+
+            # IF THE AFTERNOON CHARGE BIGGER THEN EVENING
+            if 0 < self.afternoon_data_charge > self.evening_data_charge:
+                if 0 < self.afternoon_data_charge > self.evening_data_charge:
+                    if self.evening_data_charge < self.afternoon_data_charge:
+                        power_meters = self._price_to_power(self.evening_data_price, self.afternoon_data_price)
+                        power_battery = (self.afternoon_data_charge - self.evening_data_charge) * self.ONE_POWER_UNIT
+                        base_power = power_meters - power_battery
+                        return base_power + usb_power
 
             return self.FALLBACK_COST
         except(TypeError, ZeroDivisionError):
@@ -324,9 +347,13 @@ class SolarForecastRecordModel(models.Model):
     peak_hour = models.IntegerField(verbose_name="Rush hour")
     sunrise = models.DateTimeField(null=True, blank=True, verbose_name="Sunrise")
     sunset = models.DateTimeField(null=True, blank=True, verbose_name="Sunset")
+    shortwave_radiation = models.FloatField(verbose_name="Shortwave Radiation", blank=True, null=True)
+    direct_radiation = models.FloatField(verbose_name="Direct Radiation", blank=True, null=True)
+    diffuse_radiation = models.FloatField(verbose_name="Diffuse Radiation", blank=True, null=True)
     wind_speed_10m = models.IntegerField(verbose_name="Wind speed 10m", blank=True, null=True)
     wind_gusts_10m = models.IntegerField(verbose_name="Wind gusts 10m", blank=True, null=True)
     wind_direction_10m = models.IntegerField(verbose_name="Wind direction 10m", blank=True, null=True)
+    surface_pressure = models.FloatField(verbose_name="Surface pressure", blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -370,16 +397,20 @@ class SolarForecastRecordModel(models.Model):
 
 
 class WeatherDataModel(models.Model):
-    # Дата та час виміру/прогнозу
     timestamp = models.DateTimeField(db_index=True)
 
-    # Основні показники для Pandas
     temperature = models.FloatField(help_text="Celsius")
     cloud_cover = models.IntegerField(help_text="Cloud percentage 0-100")
     pressure = models.FloatField(null=True, blank=True)
     humidity = models.IntegerField(null=True, blank=True)
+    shortwave_radiation = models.FloatField(verbose_name="Shortwave Radiation", blank=True, null=True)
+    direct_radiation = models.FloatField(verbose_name="Direct Radiation", blank=True, null=True)
+    diffuse_radiation = models.FloatField(verbose_name="Diffuse Radiation", blank=True, null=True)
+    wind_speed_10m = models.IntegerField(verbose_name="Wind speed 10m", blank=True, null=True)
+    wind_gusts_10m = models.IntegerField(verbose_name="Wind gusts 10m", blank=True, null=True)
+    wind_direction_10m = models.IntegerField(verbose_name="Wind direction 10m", blank=True, null=True)
+    surface_pressure = models.FloatField(verbose_name="Surface pressure", blank=True, null=True)
 
-    # Опади (важливо для очищення панелей або їх забруднення)
     precipitation_prob = models.FloatField(default=0, help_text="Chance of precipitation")
     condition_code = models.CharField(max_length=20, help_text="For example: 'sunny', 'rain'")
 
@@ -404,11 +435,47 @@ class SystemMessage(models.Model):
     title = models.CharField(max_length=150)
     text = models.TextField()
 
-    # Зв'язок з конкретним типом події (для іконок у Vue)
     msg_type = models.CharField(max_length=50, default='weather')
 
-    # Поле для зв'язку з календарем (щоб швидко фільтрувати повідомлення за день)
     event_date = models.DateField(db_index=True, auto_now_add=True)
 
     class Meta:
         ordering = ['-created_at']
+
+
+class GeolocationModel(models.Model):
+    latitude = models.FloatField(blank=True, null=True, help_text="Latitude")
+    longitude = models.FloatField(blank=True, null=True, help_text="Longitude")
+
+    def __str__(self):
+        return f'Current coordinates: Latitude is {self.latitude}, longitude is {self.longitude}'
+
+    class Meta:
+        verbose_name = 'add coordinates'
+        verbose_name_plural = 'Coordinates'
+
+
+class PanelsArrayModel(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Name of the array")
+    peak_power_kwp = models.FloatField(blank=True, null=True, default=0, verbose_name='Peak power (kWp)')
+    area = models.FloatField(verbose_name='Panel(s) area')
+    angle = models.FloatField(verbose_name='Panel(s) angle of inclination of the panel')
+    azimuth = models.FloatField(verbose_name='Panel(s) azimuth')
+    efficiency = models.FloatField(default=0.20, verbose_name='Efficiency of the panel(s)')
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    @property
+    def efficiency_percentage(self):
+        return self.efficiency * 100
+
+    def __str__(self):
+        return (f'Array "{self.name}" '
+                f'(Area: {self.area}m², '
+                f'angle - {self.angle}, '
+                f'azimuth - {self.azimuth}'
+                f'Efficiency: {self.efficiency * 100}%)')
+
+    class Meta:
+        verbose_name = 'panel(s) area'
+        verbose_name_plural = 'panels(s) area'
