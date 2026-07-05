@@ -439,9 +439,13 @@ class PanelsArrayModel(models.Model):
     area = models.FloatField(verbose_name='Panel(s) area')
     angle = models.FloatField(verbose_name='Panel(s) angle of inclination of the panel')
     azimuth = models.FloatField(verbose_name='Panel(s) azimuth')
-    efficiency = models.FloatField(default=0.20, verbose_name='Efficiency of the panel(s) (напр. 0.20)')
+    efficiency = models.FloatField(default=0.20, verbose_name='Efficiency of the panel(s)')
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    @property
+    def efficiency_percentage(self):
+        return self.efficiency * 100
 
     def __str__(self):
         return (f'Array "{self.name}" '

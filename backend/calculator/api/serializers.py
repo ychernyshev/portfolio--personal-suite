@@ -53,8 +53,12 @@ class PanelsArraySerializer(serializers.ModelSerializer):
     class Meta:
         model = PanelsArrayModel
         fields = '__all__'
-
         extra_kwargs = {
             'user': {'required': False},
             'peak_power_kwp': {'required': False}
         }
+
+    def validate_efficiency(self, value):
+        if value > 1.0:
+            return value / 100.0
+        return value

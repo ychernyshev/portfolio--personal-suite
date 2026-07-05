@@ -1,9 +1,20 @@
+import math
+
 from calculator.models import PanelsArrayModel
 
 class PanelPowerCalculationService:
     def calculate_array_production(self, array, radiation_data, calibration_factor):
-        array_factor = array.area * array.efficiency * 0.85 * calibration_factor
-        return [round(rad * array_factor, 2) for rad in radiation_data]
+        efficiency = array.efficiency
+        if efficiency > 1.0:
+            efficiency = efficiency / 100.0
+
+        array_factor = array.area * efficiency * 0.85 * calibration_factor
+        tilt_factor = math.cos(math.radians(abs(array.angle - 30)))
+
+        production = [round(rad * array_factor * tilt_factor, 2) for rad in radiation_data]
+
+        return production
+        # return [round(rad * array_factor, 2) for rad in radiation_data]
 
     def get_total_forecast(self, radiation_data, calibration_factor, user):
         if user:

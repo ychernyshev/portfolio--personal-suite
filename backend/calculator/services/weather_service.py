@@ -35,6 +35,7 @@ class WeatherForecastService:
         total_pred = sum(forecast_dict.values())
 
         return (total_real / total_pred) if total_pred > 0 and total_real > 0 else 1.0
+        # return 1.0
 
     def get_solar_forecast(self, data, user, current_tariff=None):
         if not data or 'hourly' not in data:
@@ -54,6 +55,7 @@ class WeatherForecastService:
 
         try:
             calibration_factor = self._calculate_calibration_factor()
+            print(f"DEBUG: Calibration Factor: {calibration_factor}")
 
             calc_service = PanelPowerCalculationService()
             total_hourly_wh, detailed_reports = calc_service.get_total_forecast(
