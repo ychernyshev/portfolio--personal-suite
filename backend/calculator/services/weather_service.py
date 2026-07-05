@@ -50,6 +50,8 @@ class WeatherForecastService:
         radiation_data = data.get('hourly', {}).get('shortwave_radiation', [])
         if not radiation_data: return self._get_error_response(current_tariff)
 
+        surface_pressure = data.get('hourly', {}).get('surface_pressure', [])
+
         try:
             calibration_factor = self._calculate_calibration_factor()
 
@@ -110,7 +112,7 @@ class WeatherForecastService:
                     'sunset': sunset_dt,
                     'wind_speed_10m': avg_speed,
                     'wind_gusts_10m': max_gust,
-                    'wind_direction_10m': avg_direction
+                    'wind_direction_10m': avg_direction,
                 }
             )
 
@@ -141,7 +143,10 @@ class WeatherForecastService:
                         condition_code=str(codes[i]),
                         cloud_cover=clouds[i],
                         humidity=humidities[i],
-                        pressure=pressures[i],
+                        pressure=pressures[i] if pressures else None,
+                        shortwave_radiation=hourly.get('shortwave_radiation', [])[i],
+                        direct_radiation=hourly.get('direct_radiation', [])[i],
+                        diffuse_radiation=hourly.get('diffuse_radiation', [])[i],
                     )
                 )
 

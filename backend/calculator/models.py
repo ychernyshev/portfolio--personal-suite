@@ -381,6 +381,13 @@ class WeatherDataModel(models.Model):
     cloud_cover = models.IntegerField(help_text="Cloud percentage 0-100")
     pressure = models.FloatField(null=True, blank=True)
     humidity = models.IntegerField(null=True, blank=True)
+    shortwave_radiation = models.FloatField(verbose_name="Shortwave Radiation", blank=True, null=True)
+    direct_radiation = models.FloatField(verbose_name="Direct Radiation", blank=True, null=True)
+    diffuse_radiation = models.FloatField(verbose_name="Diffuse Radiation", blank=True, null=True)
+    wind_speed_10m = models.IntegerField(verbose_name="Wind speed 10m", blank=True, null=True)
+    wind_gusts_10m = models.IntegerField(verbose_name="Wind gusts 10m", blank=True, null=True)
+    wind_direction_10m = models.IntegerField(verbose_name="Wind direction 10m", blank=True, null=True)
+    surface_pressure = models.FloatField(verbose_name="Surface pressure", blank=True, null=True)
 
     precipitation_prob = models.FloatField(default=0, help_text="Chance of precipitation")
     condition_code = models.CharField(max_length=20, help_text="For example: 'sunny', 'rain'")

@@ -100,7 +100,11 @@ class SolarForecastRecordAdmin(admin.ModelAdmin):
 
 @admin.register(WeatherDataModel)
 class WeatherDataAdmin(admin.ModelAdmin):
-    list_display = ['timestamp', 'temperature', 'cloud_cover', 'pressure', 'humidity', 'precipitation_prob',
+    list_display = ['timestamp', 'temperature',
+                    'cloud_cover', 'pressure',
+                    'humidity', 'precipitation_prob',
+                    'shortwave_radiation', 'direct_radiation',
+                    'diffuse_radiation', 'surface_pressure',
                     'condition_code']
 
 
