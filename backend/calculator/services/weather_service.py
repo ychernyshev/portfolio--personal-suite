@@ -79,14 +79,25 @@ class WeatherForecastService:
                 "current_temp": round(temp, 1),
                 "weather_condition": wmo_codes.get(code, "Unknown"),
                 "weather_code": code,
-                "calibration_factor": round(calibration_factor, 2)
+                "calibration_factor": round(calibration_factor, 2),
+                "peak_hour": total_hourly_wh.index(max(total_hourly_wh)) if total_hourly_wh else 0,
             }
 
             cache.set(cache_key, result_dict, 3600)
+            self.save_forecast_to_db(result_dict, data)
             return result_dict
         except Exception as e:
             print(f"WeatherService Error: {e}")
             return self._get_error_response(current_tariff)
+
+    def convert_iso_to_datetime(self, data):
+        sunrise_str = data.get('daily', {}).get('sunrise', [''])[0]
+        sunset_str = data.get('daily', {}).get('sunset', [''])[0]
+
+        sunrise = datetime.datetime.fromisoformat(sunrise_str)
+        sunset = datetime.datetime.fromisoformat(sunset_str)
+
+        return timezone.make_aware(sunrise), timezone.make_aware(sunset)
 
     def save_forecast_to_db(self, forecast_data, raw_api_data):
         try:
@@ -105,9 +116,9 @@ class WeatherForecastService:
             SolarForecastRecordModel.objects.update_or_create(
                 date=today,
                 defaults={
-                    'predicted_kwh': forecast_data['predicted_total_kwh'],
-                    'predicted_savings': forecast_data['predicted_savings'],
-                    'peak_hour': forecast_data['peak_hour'],
+                    'predicted_kwh': forecast_data.get('predicted_total_kwh', 0.0),
+                    'predicted_savings': forecast_data.get('predicted_savings', 0.0),
+                    'peak_hour': forecast_data.get('peak_hour', 0),
                     'sunrise': sunrise_dt,
                     'sunset': sunset_dt,
                     'wind_speed_10m': avg_speed,
@@ -125,7 +136,10 @@ class WeatherForecastService:
             codes = hourly.get('weather_code', [])
             clouds = hourly.get('cloud_cover', [])
             humidities = hourly.get('relative_humidity_2m', [])
-            pressures = hourly.get('surface_pressure', [])
+            surface_pressure = hourly.get('surface_pressure', [])
+            shortwave = hourly.get('shortwave_radiation', [])
+            direct = hourly.get('direct_radiation', [])
+            diffuse = hourly.get('diffuse_radiation', [])
 
             parsed_timestamps = []
             for ts in timestamps:
@@ -136,17 +150,20 @@ class WeatherForecastService:
 
             weather_objects = []
             for i in range(len(timestamps)):
+                def get_val(arr, idx):
+                    return arr[idx] if idx < len(arr) else None
+
                 weather_objects.append(
                     WeatherDataModel(
                         timestamp=parsed_timestamps[i],
-                        temperature=temps[i],
-                        condition_code=str(codes[i]),
-                        cloud_cover=clouds[i],
-                        humidity=humidities[i],
-                        pressure=pressures[i] if pressures else None,
-                        shortwave_radiation=hourly.get('shortwave_radiation', [])[i],
-                        direct_radiation=hourly.get('direct_radiation', [])[i],
-                        diffuse_radiation=hourly.get('diffuse_radiation', [])[i],
+                        temperature=get_val(temps, i),
+                        condition_code=str(get_val(codes, i)) if get_val(codes, i) is not None else "0",
+                        cloud_cover=get_val(clouds, i),
+                        humidity=get_val(humidities, i),
+                        surface_pressure=get_val(surface_pressure, i),
+                        shortwave_radiation=get_val(shortwave, i) or 0.0,
+                        direct_radiation=get_val(direct, i) or 0.0,
+                        diffuse_radiation=get_val(diffuse, i) or 0.0,
                     )
                 )
 
