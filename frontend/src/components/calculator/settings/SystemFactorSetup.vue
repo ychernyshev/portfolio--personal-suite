@@ -54,14 +54,14 @@ onMounted(() => {
   <label class="title text-purple">Panel(s) system factor</label>
   <p class="pb-1 border-bottom">New panel/panels group</p>
   <div class="row">
-    <div class="col-12 col-xl-11 pr-0">
-      <div class="row input-group">
-        <div class="col-2">
+    <div class="col-12 col-xl-11 pr-md-0">
+      <div class="row input-group mx-auto">
+        <div class="col-12 col-md-2 mb-2 mb-md-0">
           <span class="input-group-text">Group name</span>
           <input type="text" v-model="groupName" class="form-control" placeholder="Group name" aria-label="GroupName">
         </div>
 
-        <div class="col-2">
+        <div class="col-12 col-md-2 mb-2 mb-md-0">
           <span class="input-group-text">Username</span>
           <input v-if="currentUser"
                  type="text"
@@ -78,28 +78,28 @@ onMounted(() => {
           >
         </div>
 
-        <div class="col-2">
+        <div class="col-12 col-md-2 mb-2 mb-md-0">
           <span class="input-group-text">Panel Area (m<sup>2</sup>)</span>
           <input type="number" v-model="panelArea" class="form-control" placeholder="Panel area">
         </div>
 
-        <div class="col-2">
+        <div class="col-12 col-md-2 mb-2 mb-md-0">
           <span class="input-group-text">Panel efficiency (%)</span>
           <input type="number" v-model="panelEfficiency" class="form-control" placeholder="Panel efficiency">
         </div>
 
-        <div class="col-2">
+        <div class="col-12 col-md-2 mb-2 mb-md-0">
           <span class="input-group-text">Panel tilt angle (&deg;)</span>
           <input type="number" v-model="panelTileAngle" class="form-control" placeholder="Panel tilt angle">
         </div>
 
-        <div class="col-2">
+        <div class="col-12 col-md-2 mb-2 mb-md-0">
           <span class="input-group-text">Azimuth (&deg;)</span>
           <input type="number" v-model="panelAzimuth" class="form-control" placeholder="Azimuth">
         </div>
       </div>
     </div>
-    <div class="col-12 col-xl-1 pl-0">
+    <div class="col-11 col-xl-1 pl-md-0 mx-auto">
       <button-comp
           @click="submitPanel"
           :disabled="isFormInvalid"
@@ -113,7 +113,6 @@ onMounted(() => {
     <thead>
     <tr>
       <th scope="col">Group name</th>
-      <th scope="col">Username</th>
       <th scope="col">Panel Area (m<sup>2</sup>)</th>
       <th scope="col">Panel efficiency (%)</th>
       <th scope="col">Panel tilt angle (&deg;)</th>
@@ -122,7 +121,6 @@ onMounted(() => {
     <tbody>
     <tr v-for="panel in panels" :key="panel.id">
       <td>{{ panel.name }}</td>
-      <td>{{ currentUser }}</td>
       <td>{{ panel.area }}</td>
       <td>{{ panel.efficiency * 100 }}%</td>
       <td>{{ panel.angle }}</td>
