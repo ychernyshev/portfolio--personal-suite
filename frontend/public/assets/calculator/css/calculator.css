@@ -155,6 +155,14 @@ body {
   .border-radius-top-end-lg-4 {
     border-top-right-radius: 1.2rem;
   }
+
+  .border-radius-bottom-end-lg-0{
+    border-bottom-right-radius: 0;
+  }
+
+  .border-radius-top-end-lg-0 {
+    border-top-right-radius: 0;
+  }
 }
 
 .shadow-of-milk {
