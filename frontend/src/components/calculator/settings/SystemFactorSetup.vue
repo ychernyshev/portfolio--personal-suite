@@ -88,13 +88,13 @@ onMounted(() => {
             </div>
           </div>
         </div>
-        <div class="col-12 col-md-1 mb-2 mb-md-0">
+        <div class="col-12 col-md-1 pl-sm-0 pr-sm-0 pr-lg-3">
           <button-comp
               type="button"
               @click="submitPanel"
               :disabled="isFormInvalid"
               title="Add"
-              class="btn-blue-1 text-light w-100 h-100 border-radius-bottom-start-4 border-radius-bottom-end-4 border-radius-top-start-lg-0 border-radius-bottom-start-lg-0 border-radius-top-end-lg-4 rounded-md-4 ml-md-1"
+              class="btn-blue-1 text-light w-100 h-100 border-radius-bottom-start-4 border-radius-bottom-end-4 border-radius-top-start-lg-0 border-radius-bottom-start-lg-0 border-radius-top-end-lg-4 rounded-md-4 ml-md-1 p-2 p-lg-0"
           />
         </div>
       </div>
