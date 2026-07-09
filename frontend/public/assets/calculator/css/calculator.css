@@ -135,6 +135,28 @@ body {
   border-bottom-right-radius: none;
 }
 
+.border-radius-bottom-start-4 {
+  border-bottom-left-radius: 1.2rem;
+}
+
+.border-radius-bottom-end-4 {
+  border-bottom-right-radius: 1.2rem;
+}
+
+@media (min-width: 992px) {
+  .border-radius-bottom-start-lg-0{
+    border-bottom-left-radius: 0;
+  }
+
+  .border-radius-top-start-lg-0 {
+    border-top-left-radius: 0;
+  }
+
+  .border-radius-top-end-lg-4 {
+    border-top-right-radius: 1.2rem;
+  }
+}
+
 .shadow-of-milk {
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(8px);

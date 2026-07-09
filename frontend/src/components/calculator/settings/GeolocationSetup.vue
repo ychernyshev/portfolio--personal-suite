@@ -72,19 +72,20 @@
               </div>
               <div class="col-12 col-md-2 pl-0 pr-0">
                 <button-comp title="Save"
-                             class="btn btn-blue-1 text-light w-100 h-100 border-radius-bottom-start-4 border-radius-bottom-end-4 border-radius-top-start-lg-0 border-radius-bottom-start-lg-0 border-radius-top-end-lg-4 rounded-md-4" />
+                             type="button"
+                             class="btn-blue-1 text-light w-100 h-100 border-radius-bottom-start-4 border-radius-bottom-end-4 border-radius-top-start-lg-0 border-radius-bottom-start-lg-0 border-radius-top-end-lg-4 rounded-md-4" />
               </div>
             </div>
           </div>
           <div class="col-12 col-md-3 pt-3">
-            <div class="lat-lon-text mb-2">
+            <div class="lat-lon-text mb-2 text-center text-md-end">
               <small class="text-muted">Your stored coordinates.</small>
             </div>
             <div class="row">
               <div class="col-6 bg-gradient-blue-2 p-3 text-white fw-bold text-center">
                 <span class="">Latitude</span>
               </div>
-              <div class="col-6 p-3">
+              <div class="col-6 p-3 text-center">
                 {{ dbLat }}
               </div>
             </div>
@@ -92,7 +93,7 @@
               <div class="col-6 bg-gradient-blue-2 p-3 text-white fw-bold text-center">
                 <span class="">Longitude</span>
               </div>
-              <div class="col-6 p-3">
+              <div class="col-6 p-3 text-center">
                 {{ dbLon }}
               </div>
             </div>
@@ -108,31 +109,9 @@
     font-size: 0.9rem;
   }
 
-  .border-radius-bottom-start-4 {
-    border-bottom-left-radius: 1.2rem;
-  }
-
-  .border-radius-bottom-end-4 {
-    border-bottom-right-radius: 1.2rem;
-  }
-
   @media (min-width: 768px) {
-    .rounded-bottom-sm-4 {
-      border-radius: 0;
-    }
-  }
-
-  @media (min-width: 992px) {
-    .border-radius-bottom-start-lg-0{
-      border-bottom-left-radius: 0;
-    }
-
-    .border-radius-top-start-lg-0 {
-      border-top-left-radius: 0;
-    }
-
-    .border-radius-top-end-lg-4 {
-      border-top-right-radius: 1.2rem;
+    .text-md-end {
+      text-align: end;
     }
   }
 </style>
