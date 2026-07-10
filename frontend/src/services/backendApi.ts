@@ -20,9 +20,11 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     async (error) => {
+        console.log("INTERCEPTOR ERROR:", error);
         const originalRequest = error.config;
 
         if (error.response?.status === 401 && !originalRequest._retry) {
+            console.log("401 detected, attempting refresh...");
             originalRequest._retry = true;
 
             try {
@@ -40,8 +42,15 @@ api.interceptors.response.use(
                 }
 
                 originalRequest.headers.Authorization = `Bearer ${access}`;
-                return api(originalRequest);
+                return api({
+                    ...originalRequest,
+                    headers: {
+                        ...originalRequest.headers,
+                        Authorization: `Bearer ${access}`
+                    }
+                });
             } catch (refreshError) {
+                console.error("REFRESH FAILED:", refreshError);
                 localStorage.removeItem('access_token');
                 localStorage.removeItem('refresh_token');
                 window.location.href = `/login?next=${window.location.pathname}`;

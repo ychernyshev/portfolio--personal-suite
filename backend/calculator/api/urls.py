@@ -40,5 +40,6 @@ urlpatterns = [
     path('power_generation_year_analytics/', SolarYearAnalyticsAPIView.as_view(), name='year_analytics'),
     path('forecast/comparison/', SolarComparisonAPIView.as_view(), name='comparison'),
     path('data-export/', DataExportView.as_view(), name='data-export'),
+    # path('data-export/', data_export_view, name='data-export'),
     path('process-weather/', process_client_weather, name='process_client_weather'),
 ]

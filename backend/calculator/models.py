@@ -83,6 +83,8 @@ class DataEntryLineModel(models.Model):
 
     power_tariff = models.FloatField(verbose_name='Вартість за Кв')
 
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, verbose_name='User')
+
     @property
     def one_tenth_of_tariff(self):
         tariff = CurrentTariffModel.load().power_tariff

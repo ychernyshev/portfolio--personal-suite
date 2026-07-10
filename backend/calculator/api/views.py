@@ -9,10 +9,11 @@ from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, status, permissions
-from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.decorators import action, api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from calculator.api.serializers import (
     DataEntrySerializer,
@@ -86,14 +87,30 @@ class PanelsArrayViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-from rest_framework.views import APIView
-
-@permission_classes([IsAuthenticated])
 class DataExportView(APIView):
     def get(self, request):
-        entries = DataEntryLineModel.objects.filter(user=request.user).order_by('date')
+        return export_data_logic(request)
 
-        return export_data_logic(entries)
+# @permission_classes([IsAuthenticated])
+# class DataExportView(APIView):
+#     def get(self, request):
+#         if not request.user.is_authenticated:
+#             return Response({"error": "Authentication required"}, status=status.HTTP_401_UNAUTHORIZED)
+#
+#         entries = DataEntryLineModel.objects.filter(user_id=request.user.id).order_by('date')
+#
+#         return export_data_logic(entries)
+
+
+# @api_view(['GET'])
+# @authentication_classes([JWTAuthentication])
+# @permission_classes([IsAuthenticated])
+# def data_export_view(request):
+#     print(f"DEBUG: User object: {request.user}")
+#     print(f"DEBUG: Is authenticated: {request.user.is_authenticated}")
+#
+#     entries = DataEntryLineModel.objects.filter(user=request.user).order_by('date')
+#     return export_data_logic(entries)
 
 
 class DataEntryViewSet(viewsets.ModelViewSet):
