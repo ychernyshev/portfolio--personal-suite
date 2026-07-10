@@ -88,9 +88,12 @@ class PanelsArrayViewSet(viewsets.ModelViewSet):
 
 from rest_framework.views import APIView
 
+@permission_classes([IsAuthenticated])
 class DataExportView(APIView):
     def get(self, request):
-        return export_data_logic(request)
+        entries = DataEntryLineModel.objects.filter(user=request.user).order_by('date')
+
+        return export_data_logic(entries)
 
 
 class DataEntryViewSet(viewsets.ModelViewSet):
@@ -101,12 +104,6 @@ class DataEntryViewSet(viewsets.ModelViewSet):
     def import_data(self, request):
         result = import_data_logic(request.FILES.get('file'))
         return Response(result, status=status.HTTP_201_CREATED)
-
-    # @action(detail=False, methods=['get'], url_path='export')
-    # def export_data(self, request):
-    #     self.pagination_class = None
-    #
-    #     return export_data_logic(request)
 
 class CurrentTariffViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = CurrentTariffModel.objects.all()
