@@ -1,31 +1,39 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
-
-
 import csv
 import io
+from django.db import transaction
 from calculator.models import DataEntryLineModel
 
 
-def import_data_logic(file):  # Змінили назву, щоб не плутати, і прибрали self/request
+def import_data_logic(file):
     if not file:
         return {"error": "No file uploaded"}, 400
 
     try:
         decoded_file = file.read().decode('utf-8')
-        io_string = io.StringIO(decoded_file)
-        reader = csv.DictReader(io_string)
+        reader = csv.DictReader(io.StringIO(decoded_file), delimiter=';')
 
-        created_count = 0
-        for row in reader:
-            DataEntryLineModel.objects.update_or_create(
-                date=row['date'],
-                defaults={
-                    'power': row.get('power', 600),
-                    'morning_data_charge': row.get('morning_charge', 0),
-                }
-            )
-            created_count += 1
+        entries_to_create = []
 
-        return {"count": created_count}, 201
+        with transaction.atomic():
+            for row in reader:
+                DataEntryLineModel.objects.update_or_create(
+                    date=row['date'],
+                    defaults={
+                        'power': row['power'],
+                        'morning_data_charge': row['morning_data_charge'],
+                        'morning_data_price': row['morning_data_price'],
+                        'afternoon_data_charge': row['afternoon_data_charge'],
+                        'afternoon_data_price': row['afternoon_data_price'],
+                        'evening_data_charge': row['evening_data_charge'],
+                        'evening_data_price': row['evening_data_price'],
+                        'extra_power': row['extra_power'],
+                        'full_day_power': row['full_day_power'],
+                        'full_day_cost': row['full_day_cost'],
+                        'power_tariff': row['power_tariff'],
+                    }
+                )
+
+        return {"status": "success"}, 201
+
     except Exception as e:
-        return {"error": str(e)}, 400
+        return {"error": f"Помилка парсингу: {str(e)}"}, 400
