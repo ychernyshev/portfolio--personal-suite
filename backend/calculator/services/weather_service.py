@@ -23,18 +23,29 @@ class WeatherForecastService:
         today = datetime.date.today()
         start_date = datetime.date(today.year, today.month, 1)
         yesterday = today - datetime.timedelta(days=1)
-        if yesterday < start_date: return 1.0
+        if yesterday < start_date:
+            return 1.0
 
         actual_qs = DataEntryLineModel.objects.filter(date__range=(start_date, yesterday))
         forecast_qs = SolarForecastRecordModel.objects.filter(date__range=(start_date, yesterday))
 
-        actual_dict = {q.date.day: float(q.full_day_power) for q in actual_qs if q.full_day_power is not None}
-        forecast_dict = {q.date.day: float(q.predicted_kwh) for q in forecast_qs if q.predicted_kwh is not None}
+        actual_dict = {q.date.day: float(q.full_day_power)
+                       for q in actual_qs
+                       if q.full_day_power is not None and q.full_day_power > 0}
 
-        total_real = sum(actual_dict.values()) / 1000.0
-        total_pred = sum(forecast_dict.values())
+        forecast_dict = {q.date.day: float(q.predicted_kwh)
+                         for q in forecast_qs
+                         if q.predicted_kwh is not None}
 
-        return (total_real / total_pred) if total_pred > 0 and total_real > 0 else 1.0
+        total_real = 0.0
+        total_pred = 0.0
+
+        for day, real_power in actual_dict.items():
+            if day in forecast_dict:
+                total_real = sum(actual_dict.values()) / 1000.0
+                total_pred = sum(forecast_dict.values())
+
+        return (total_real / total_pred) if total_pred > 0 else 1.0
         # return 1.0
 
     def get_solar_forecast(self, data, user, current_tariff=None):
