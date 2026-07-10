@@ -17,7 +17,8 @@ from calculator.api.views import (DataEntryViewSet,
                                   SolarYearAnalyticsAPIView,
                                   GeolocationViewSet,
                                   get_user_profile,
-                                  PanelsArrayViewSet, )
+                                  PanelsArrayViewSet,
+                                  DataExportView, )
 
 router = DefaultRouter()
 router.register(r'entries', DataEntryViewSet, basename='entries')
@@ -38,6 +39,6 @@ urlpatterns = [
     path('power_generation_month_analytics/', SolarMonthAnalyticsAPIView.as_view(), name='month_analytics'),
     path('power_generation_year_analytics/', SolarYearAnalyticsAPIView.as_view(), name='year_analytics'),
     path('forecast/comparison/', SolarComparisonAPIView.as_view(), name='comparison'),
-    path('data-export/', SolarForecastAPIView.as_view(), name='data-export'),
+    path('data-export/', DataExportView.as_view(), name='data-export'),
     path('process-weather/', process_client_weather, name='process_client_weather'),
 ]

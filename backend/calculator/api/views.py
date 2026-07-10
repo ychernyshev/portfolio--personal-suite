@@ -86,6 +86,13 @@ class PanelsArrayViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
+from rest_framework.views import APIView
+
+class DataExportView(APIView):
+    def get(self, request):
+        return export_data_logic(request)
+
+
 class DataEntryViewSet(viewsets.ModelViewSet):
     queryset = DataEntryLineModel.objects.all().order_by('-date')
     serializer_class = DataEntrySerializer
@@ -95,10 +102,11 @@ class DataEntryViewSet(viewsets.ModelViewSet):
         result = import_data_logic(request.FILES.get('file'))
         return Response(result, status=status.HTTP_201_CREATED)
 
-    @action(detail=False, methods=['get'], url_path='export')
-    def export_data(self, request):
-        return export_data_logic(request)
-
+    # @action(detail=False, methods=['get'], url_path='export')
+    # def export_data(self, request):
+    #     self.pagination_class = None
+    #
+    #     return export_data_logic(request)
 
 class CurrentTariffViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = CurrentTariffModel.objects.all()
