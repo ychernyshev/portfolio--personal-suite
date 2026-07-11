@@ -483,7 +483,7 @@ class PanelsArrayModel(models.Model):
         verbose_name_plural = 'panels(s) area'
 
 
-class SystemEventsModel(models.Model):
+class SystemEventModel(models.Model):
     class SystemEvent(models.Model):
         TYPES = (
             ('FORECAST', 'Solar Forecast'),
@@ -499,6 +499,7 @@ class SystemEventsModel(models.Model):
         title = models.CharField(max_length=255)
 
         created_at = models.DateTimeField(auto_now_add=True)
+        event_timestamp = models.DateTimeField(null=True, blank=True, db_index=True)
         user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
         class Meta:

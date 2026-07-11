@@ -1,12 +1,15 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 import datetime
 from django.core.cache import cache
+from django.db.models import Model
 from django.utils import timezone
+from twisted.conch.client import default
+
 from calculator.models import (
     CurrentTariffModel,
     SolarForecastRecordModel,
     WeatherDataModel,
-    DataEntryLineModel
+    DataEntryLineModel, SystemEventModel
 )
 from calculator.services.PanelPowerCalculationService import PanelPowerCalculationService
 
@@ -98,6 +101,7 @@ class WeatherForecastService:
 
             cache.set(cache_key, result_dict, 3600)
             self.save_forecast_to_db(result_dict, data)
+            self.check_and_log_wind_alert(data)
             return result_dict
         except Exception as e:
             print(f"WeatherService Error: {e}")
@@ -186,6 +190,48 @@ class WeatherForecastService:
         except Exception as e:
             print(f"DB loading error: {e}")
             return False
+
+    def check_and_log_wind_alert(self, raw_api_data):
+        threshold = 15.0
+
+        hourly_raw = raw_api_data.get('hourly', {})
+        wind_speeds = hourly_raw.get('wind_speed_10m', [])
+        gust_speeds = hourly_raw.get('wind_gusts_10m', [])
+        wind_direction = hourly_raw.get('wind_direction_10m', [])
+        timestamps = hourly_raw.get('time', [])
+
+        for i in range(len(wind_speeds)):
+            max_wind = wind_speeds[i]
+            max_gust = gust_speeds[i]
+
+            dt = datetime.datetime.fromisoformat(timestamps[i])
+            aware_dt = timezone.make_aware(dt)
+
+            if max_wind >= threshold or max_gust >= threshold:
+                time_str = timestamps[i]
+
+                # today = timezone.localtime().date()
+                if not SystemEventModel.objects.filter(
+                        category='WARNING',
+                        message__contains=time_str
+                ):
+                    event_data = {
+                        'wind': max_wind,
+                        'gust': max_gust,
+                        'direction': wind_direction[i] if i < len(wind_direction) else None,
+                        'status': 'CRITICAL' if (max_wind >= threshold and max_gust >= threshold) else 'WARNING'
+                    }
+
+                    SystemEventModel.objects.update_or_create(
+                        category='WARNING',
+                        event_timestamp=aware_dt,
+                        defaults={
+                            'level': 'WARN',
+                            'title': f'Wind alert at {dt.strftime("%H:%M")}',
+                            'payload': event_data,
+                            'message': f"Recorded at {time_str}: Wind {max_wind} m/s, Gust {max_gust} m/s, Direction {wind_direction}"
+                        }
+                    )
 
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
