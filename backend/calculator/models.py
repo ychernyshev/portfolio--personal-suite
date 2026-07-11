@@ -484,26 +484,28 @@ class PanelsArrayModel(models.Model):
 
 
 class SystemEventModel(models.Model):
-    class SystemEvent(models.Model):
-        TYPES = (
-            ('FORECAST', 'Solar Forecast'),
-            ('REPORT', 'Analytics Report'),
-            ('NOTIFICATION', 'System Notification'),
-            ('WARNING', 'Warning'),
-        )
-        category = models.CharField(max_length=20, choices=TYPES)
-        level = models.CharField(max_length=10, choices=[('SUCC', 'Success'), ('INFO', 'Info'), ('WARN', 'Warn'), ('ERR', 'Error')])
+    TYPES = (
+        ('FORECAST', 'Solar Forecast'),
+        ('REPORT', 'Analytics Report'),
+        ('NOTIFICATION', 'System Notification'),
+        ('WARNING', 'Warning'),
+    )
+    category = models.CharField(max_length=20, choices=TYPES, default='FORECAST')
+    level = models.CharField(max_length=10,
+                             choices=[('SUCC', 'Success'), ('INFO', 'Info'), ('WARN', 'Warn'), ('ERR', 'Error')])
 
-        payload = models.JSONField(default=dict, help_text="Complex data")
+    payload = models.JSONField(default=dict, help_text="Complex data")
 
-        title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
 
-        created_at = models.DateTimeField(auto_now_add=True)
-        event_timestamp = models.DateTimeField(null=True, blank=True, db_index=True)
-        user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    event_timestamp = models.DateTimeField(null=True, blank=True, db_index=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
-        class Meta:
-            ordering = ['-created_at']
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'add system event'
+        verbose_name_plural = 'System events'
 
-        def __str__(self):
-            return f"{self.category} | {self.title}"
+    def __str__(self):
+        return f"{self.category} | {self.title}"
