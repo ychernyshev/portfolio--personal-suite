@@ -481,3 +481,28 @@ class PanelsArrayModel(models.Model):
     class Meta:
         verbose_name = 'panel(s) area'
         verbose_name_plural = 'panels(s) area'
+
+
+class SystemEventsModel(models.Model):
+    class SystemEvent(models.Model):
+        TYPES = (
+            ('FORECAST', 'Solar Forecast'),
+            ('REPORT', 'Analytics Report'),
+            ('NOTIFICATION', 'System Notification'),
+            ('WARNING', 'Warning'),
+        )
+        category = models.CharField(max_length=20, choices=TYPES)
+        level = models.CharField(max_length=10, choices=[('SUCC', 'Success'), ('INFO', 'Info'), ('WARN', 'Warn'), ('ERR', 'Error')])
+
+        payload = models.JSONField(default=dict, help_text="Complex data")
+
+        title = models.CharField(max_length=255)
+
+        created_at = models.DateTimeField(auto_now_add=True)
+        user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+
+        class Meta:
+            ordering = ['-created_at']
+
+        def __str__(self):
+            return f"{self.category} | {self.title}"
