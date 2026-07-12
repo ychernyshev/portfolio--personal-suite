@@ -3,6 +3,7 @@
   import EnergyTariffSetup from "@/components/calculator/settings/EnergyTariffSetup.vue";
   import SystemFactorSetup from "@/components/calculator/settings/SystemFactorSetup.vue";
   import GeolocationSetup from "@/components/calculator/settings/GeolocationSetup.vue";
+  import UserTimeZone from "@/components/calculator/settings/UserTimeZone.vue";
 </script>
 
 <template>
@@ -41,6 +42,17 @@
                   aria-selected="false">Geolocation
           </button>
         </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link nav-title"
+                  id="pills-time-zone-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#pills-time-zone"
+                  type="button"
+                  role="tab"
+                  aria-controls="pills-time-zone"
+                  aria-selected="false">Time Zone
+          </button>
+        </li>
       </ul>
     </div>
     <div class="row mx-auto">
@@ -57,6 +69,10 @@
           <div class="tab-pane fade" id="pills-geolocation" role="tabpanel" aria-labelledby="pills-geolocation-tab"
                tabindex="0">
             <geolocation-setup/>
+          </div>
+          <div class="tab-pane fade" id="pills-time-zone" role="tabpanel" aria-labelledby="pills-time-zone-tab"
+               tabindex="0">
+            <user-time-zone />
           </div>
         </div>
       </div>

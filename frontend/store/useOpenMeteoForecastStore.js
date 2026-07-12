@@ -18,6 +18,19 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
     const dbLat = ref(null);
     const dbLon = ref(null);
 
+    const detectedTimezone = ref('');
+
+    const detectTimezone = async (lat, lon) => {
+        try {
+            const response = await backendApi.get(`calculator/get_timezone/?lat=${lat}&lon=${lon}`);
+            console.log(response.data);
+            const data = await response.data;
+            detectedTimezone.value = data.timezone;
+        } catch (err) {
+            console.error("Timezone detect error:", err);
+        }
+    };
+
     const fetchDbCoordinates = async () => {
         try {
             const response = await backendApi.get('calculator/station_coordinates/');
@@ -111,7 +124,7 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
             if (!openMeteoResponse.ok) throw new Error(`Open-Meteo API error: ${openMeteoResponse.status}`);
 
             const weatherData = await openMeteoResponse.json();
-            const response = await backendApi.post('calculator/process-weather/', weatherData);
+            const response = await backendApi.post('calculator/process_weather/', weatherData);
 
             forecast.value = response.data.data;
         } catch (err) {
@@ -133,6 +146,9 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
         dbLon,
         fetchForecast,
         fetchDbCoordinates,
-        saveCoordinates
+        saveCoordinates,
+        detectTimezone,
+        detectedTimezone,
+        getUserCoordinates,
     };
 });
