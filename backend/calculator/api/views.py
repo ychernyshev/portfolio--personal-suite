@@ -14,6 +14,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from timezonefinder import TimezoneFinder
 
 from calculator.api.serializers import (
     DataEntrySerializer,
@@ -34,6 +35,18 @@ from calculator.models import (
 from calculator.services.data_export import export_data_logic
 from calculator.services.data_import import import_data_logic
 from calculator.services.weather_service import WeatherForecastService
+
+tf = TimezoneFinder()
+
+
+@csrf_exempt
+@permission_classes([IsAuthenticated])
+def get_timezone_by_coords(request):
+    if request.method == 'GET':
+        lat = float(request.GET.get('lat'))
+        lon = float(request.GET.get('lon'))
+        tz = tf.timezone_at(lng=lon, lat=lat) or "UTC"
+        return JsonResponse({'timezone': tz})
 
 
 @api_view(['GET'])

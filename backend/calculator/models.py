@@ -7,34 +7,6 @@ from django.db.models import Sum, Avg
 from django.db.models.functions import TruncMonth
 from django.utils import timezone
 
-
-# ====================================================================
-# MODEL 1: SINGLETON FOR CURRENT TARIFF
-# ====================================================================
-
-class CurrentTariffModel(models.Model):
-    power_tariff = models.FloatField(verbose_name='Актуальна вартість за Кв', default=4.32)
-    last_updated = models.DateTimeField(auto_now=True, verbose_name='Дата оновлення')
-
-    class Meta:
-        verbose_name = 'Актуальний Тариф'
-        verbose_name_plural = 'Актуальний Тариф'
-
-    def __str__(self):
-        return f"Актуальний тариф: {self.power_tariff} UAH/Кв"
-
-    def save(self, *args, **kwargs):
-        self.pk = 1
-        super().save(*args, **kwargs)
-
-    @classmethod
-    def load(cls):
-        try:
-            return cls.objects.get(pk=1)
-        except cls.DoesNotExist:
-            return cls.objects.create(pk=1)
-
-
 # ====================================================================
 # MODEL 2: ENTRIES
 # ====================================================================
@@ -342,6 +314,10 @@ class WeatherConditionModel(models.Model):
         return self.name
 
 
+# ====================================================================
+# WEATHER MODELS GROUP
+# ====================================================================
+
 class SolarForecastRecordModel(models.Model):
     date = models.DateField(verbose_name="Forecast date", unique=True, default=timezone.now)
     predicted_kwh = models.FloatField(verbose_name="Forecast (kWh)")
@@ -424,25 +400,31 @@ class WeatherDataModel(models.Model):
         return f"{self.timestamp.strftime('%d.%m %H:%M')} - {self.temperature}°C"
 
 
-class SystemMessage(models.Model):
-    LEVEL_CHOICES = (
-        ('info', 'Info'),
-        ('warning', 'Warning'),
-        ('danger', 'Danger'),
-        ('success', 'Success'),
-    )
+# ====================================================================
+# USER SETTINGS GROUP
+# ====================================================================
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    level = models.CharField(max_length=10, choices=LEVEL_CHOICES, default='info')
-    title = models.CharField(max_length=150)
-    text = models.TextField()
-
-    msg_type = models.CharField(max_length=50, default='weather')
-
-    event_date = models.DateField(db_index=True, auto_now_add=True)
+class CurrentTariffModel(models.Model):
+    power_tariff = models.FloatField(verbose_name='Актуальна вартість за Кв', default=4.32)
+    last_updated = models.DateTimeField(auto_now=True, verbose_name='Дата оновлення')
 
     class Meta:
-        ordering = ['-created_at']
+        verbose_name = 'Актуальний Тариф'
+        verbose_name_plural = 'Актуальний Тариф'
+
+    def __str__(self):
+        return f"Актуальний тариф: {self.power_tariff} UAH/Кв"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        try:
+            return cls.objects.get(pk=1)
+        except cls.DoesNotExist:
+            return cls.objects.create(pk=1)
 
 
 class GeolocationModel(models.Model):
@@ -462,6 +444,22 @@ class GeolocationModel(models.Model):
         verbose_name = 'add coordinates'
         verbose_name_plural = 'Coordinates'
 
+
+class UserTimeZoneModel(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
+    timezone = models.IntegerField(default=0, blank=True, null=True, verbose_name='Timezone of the user')
+
+    def __str__(self):
+        return f'User {self.user} time zone - {self.timezone}'
+
+    class Meta:
+        verbose_name = 'add user timezone'
+        verbose_name_plural = 'Users timezones'
+
+
+# ====================================================================
+# USER HARDWARE GROUP
+# ====================================================================
 
 class PanelsArrayModel(models.Model):
     name = models.CharField(max_length=100, verbose_name="Name of the array")
@@ -489,6 +487,10 @@ class PanelsArrayModel(models.Model):
         verbose_name_plural = 'panels(s) area'
 
 
+# ====================================================================
+# EVENTS GROUP
+# ====================================================================
+
 class SystemEventModel(models.Model):
     TYPES = (
         ('FORECAST', 'Solar Forecast'),
@@ -515,3 +517,24 @@ class SystemEventModel(models.Model):
 
     def __str__(self):
         return f"{self.category} | {self.title}"
+
+
+class SystemMessage(models.Model):
+    LEVEL_CHOICES = (
+        ('info', 'Info'),
+        ('warning', 'Warning'),
+        ('danger', 'Danger'),
+        ('success', 'Success'),
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    level = models.CharField(max_length=10, choices=LEVEL_CHOICES, default='info')
+    title = models.CharField(max_length=150)
+    text = models.TextField()
+
+    msg_type = models.CharField(max_length=50, default='weather')
+
+    event_date = models.DateField(db_index=True, auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
