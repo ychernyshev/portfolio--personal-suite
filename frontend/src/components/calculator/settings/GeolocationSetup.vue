@@ -70,6 +70,7 @@
               <div class="col-12 col-lg-2 pl-0 pr-0">
                 <button-comp title="Save"
                              type="button"
+                             @click=handleSave()
                              class="btn-blue-1 text-light w-100 h-100 border-radius-bottom-start-4 border-radius-bottom-end-4 border-radius-top-start-lg-0 border-radius-bottom-start-lg-0 border-radius-top-end-lg-4 rounded-md-4" />
               </div>
             </div>

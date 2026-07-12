@@ -446,6 +446,12 @@ class SystemMessage(models.Model):
 
 
 class GeolocationModel(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='geolocation',
+        null=True
+    )
     latitude = models.FloatField(blank=True, null=True, help_text="Latitude")
     longitude = models.FloatField(blank=True, null=True, help_text="Longitude")
 
