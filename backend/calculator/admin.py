@@ -8,7 +8,9 @@ from .models import (
     SolarForecastRecordModel,
     WeatherDataModel,
     GeolocationModel,
-    PanelsArrayModel
+    PanelsArrayModel,
+    SystemEventModel,
+    UserTimezoneModel,
 )
 
 
@@ -116,3 +118,13 @@ class GeolocationAdmin(admin.ModelAdmin):
 @admin.register(PanelsArrayModel)
 class PanelsArrayAdmin(admin.ModelAdmin):
     list_display = ['name', 'peak_power_kwp', 'area', 'angle', 'azimuth', 'efficiency', 'user']
+
+
+@admin.register(SystemEventModel)
+class SystemEventAdmin(admin.ModelAdmin):
+    list_display = ['category', 'level', 'payload', 'title', 'created_at', 'event_timestamp', 'user']
+
+
+@admin.register(UserTimezoneModel)
+class UserTimezoneAdmin(admin.ModelAdmin):
+    list_display = ['user', 'timezone']

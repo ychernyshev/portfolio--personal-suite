@@ -17,7 +17,10 @@ from calculator.api.views import (DataEntryViewSet,
                                   SolarYearAnalyticsAPIView,
                                   GeolocationViewSet,
                                   get_user_profile,
-                                  PanelsArrayViewSet, )
+                                  PanelsArrayViewSet,
+                                  DataExportView,
+                                  get_timezone_by_coords,
+                                  UserTimezoneViewSet, )
 
 router = DefaultRouter()
 router.register(r'entries', DataEntryViewSet, basename='entries')
@@ -26,6 +29,7 @@ router.register(r'forecast/details', WeatherDataViewSet, basename='forecast-deta
 router.register('sunrise-sunset-time', SolarForecastRecordViewSet, basename='sunrise-sinset-time')
 router.register(r'station_coordinates', GeolocationViewSet, basename='station_coordinated')
 router.register(r'panels', PanelsArrayViewSet, basename='panels')
+router.register(r'user_timezone', UserTimezoneViewSet, basename='user_timezone')
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -38,6 +42,8 @@ urlpatterns = [
     path('power_generation_month_analytics/', SolarMonthAnalyticsAPIView.as_view(), name='month_analytics'),
     path('power_generation_year_analytics/', SolarYearAnalyticsAPIView.as_view(), name='year_analytics'),
     path('forecast/comparison/', SolarComparisonAPIView.as_view(), name='comparison'),
-    path('data-export/', SolarForecastAPIView.as_view(), name='data-export'),
-    path('process-weather/', process_client_weather, name='process_client_weather'),
+    path('data-export/', DataExportView.as_view(), name='data-export'),
+    # path('data-export/', data_export_view, name='data-export'),
+    path('process_weather/', process_client_weather, name='process_client_weather'),
+    path('get_timezone/', get_timezone_by_coords, name='get_timezone'),
 ]

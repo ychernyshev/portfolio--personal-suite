@@ -9,10 +9,12 @@ from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, status, permissions
-from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.decorators import action, api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from timezonefinder import TimezoneFinder
 
 from calculator.api.serializers import (
     DataEntrySerializer,
@@ -21,7 +23,7 @@ from calculator.api.serializers import (
     WeatherDataSerializer,
     SolarForecastRecordSerializer,
     GeolocationSerializer,
-    PanelsArraySerializer, )
+    PanelsArraySerializer, UserTimezoneSerializer, )
 from calculator.models import (
     DataEntryLineModel,
     CurrentTariffModel,
@@ -29,10 +31,22 @@ from calculator.models import (
     SolarForecastRecordModel,
     WeatherDataModel,
     GeolocationModel,
-    PanelsArrayModel, )
+    PanelsArrayModel, UserTimezoneModel, )
 from calculator.services.data_export import export_data_logic
 from calculator.services.data_import import import_data_logic
 from calculator.services.weather_service import WeatherForecastService
+
+tf = TimezoneFinder()
+
+
+@csrf_exempt
+@permission_classes([IsAuthenticated])
+def get_timezone_by_coords(request):
+    if request.method == 'GET':
+        lat = float(request.GET.get('lat'))
+        lon = float(request.GET.get('lon'))
+        tz = tf.timezone_at(lng=lon, lat=lat) or "UTC"
+        return JsonResponse({'timezone': tz})
 
 
 @api_view(['GET'])
@@ -86,6 +100,32 @@ class PanelsArrayViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
+class DataExportView(APIView):
+    def get(self, request):
+        return export_data_logic(request)
+
+# @permission_classes([IsAuthenticated])
+# class DataExportView(APIView):
+#     def get(self, request):
+#         if not request.user.is_authenticated:
+#             return Response({"error": "Authentication required"}, status=status.HTTP_401_UNAUTHORIZED)
+#
+#         entries = DataEntryLineModel.objects.filter(user_id=request.user.id).order_by('date')
+#
+#         return export_data_logic(entries)
+
+
+# @api_view(['GET'])
+# @authentication_classes([JWTAuthentication])
+# @permission_classes([IsAuthenticated])
+# def data_export_view(request):
+#     print(f"DEBUG: User object: {request.user}")
+#     print(f"DEBUG: Is authenticated: {request.user.is_authenticated}")
+#
+#     entries = DataEntryLineModel.objects.filter(user=request.user).order_by('date')
+#     return export_data_logic(entries)
+
+
 class DataEntryViewSet(viewsets.ModelViewSet):
     queryset = DataEntryLineModel.objects.all().order_by('-date')
     serializer_class = DataEntrySerializer
@@ -94,11 +134,6 @@ class DataEntryViewSet(viewsets.ModelViewSet):
     def import_data(self, request):
         result = import_data_logic(request.FILES.get('file'))
         return Response(result, status=status.HTTP_201_CREATED)
-
-    @action(detail=False, methods=['get'], url_path='export')
-    def export_data(self, request):
-        return export_data_logic(request)
-
 
 class CurrentTariffViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = CurrentTariffModel.objects.all()
@@ -445,3 +480,32 @@ class SolarForecastRecordViewSet(viewsets.ModelViewSet):
 class GeolocationViewSet(viewsets.ModelViewSet):
     queryset = GeolocationModel.objects.all()
     serializer_class = GeolocationSerializer
+
+
+class UserTimezoneViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = UserTimezoneModel.objects.all()
+    serializer_class = UserTimezoneSerializer
+
+    def get_queryset(self):
+        return UserTimezoneModel.objects.filter(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        obj, created = UserTimezoneModel.objects.update_or_create(
+            user=request.user,
+            defaults={'timezone': serializer.validated_data['timezone']}
+        )
+
+        status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
+        return Response(serializer.data, status=status_code)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        obj = queryset.first()
+        if not obj:
+            return Response({"timezone": ""}, status=status.HTTP_200_OK)
+        serializer = self.get_serializer(obj)
+        return Response(serializer.data)

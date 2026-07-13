@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ref, onMounted} from "vue";
 import backendApi from "@/services/backendApi.ts";
+import ButtonComp from "@/components/personal/ButtonComp.vue";
 
 const tariff = ref(0);
 const lastUpdated = ref("");
@@ -44,40 +45,40 @@ onMounted(fetchTariff);
     {{ message.text }}
   </div>
 
-  <div class="form-group">
-    <label class="form-label pt-3 title text-purple"
-    >Energy Tariff Settings | Current Cost (UAH/kW) </label
-    >
-    <div class="row">
-      <div class="col-12 col-xxl-8">
-        <div class="input-group mb-2">
-          <input
-              type="number"
-              step="0.01"
-              v-model="tariff"
-              class="form-control text-purple"
-          />
-          <span class="input-group-text">₴</span>
+  <label class="form-label pt-3 pb-3 title text-purple">
+    Energy Tariff | Current Cost (UAH/kW)
+  </label>
+
+  <div class="row justify-content-center">
+    <p class="text-muted label-text">
+      Last update: {{ lastUpdated }}
+    </p>
+    <div class="col-12 col-lg-4 form-group neomorphic p-lg-0">
+      <div class="row">
+        <div class="col-12 col-lg-8">
+          <div class="input-group m-2">
+            <input
+                type="number"
+                step="0.01"
+                v-model="tariff"
+                class="form-control text-purple border-0 bg-transparent"
+            />
+            <span class="input-group-text bg-transparent border-0">₴</span>
+          </div>
         </div>
-        <p class="text-muted label-text">
-          Last update: {{ lastUpdated }}
-        </p>
-      </div>
-      <div class="col-12 col-xxl-4">
-        <button
-            @click="updateTariff"
-            :disabled="loading"
-            class="btn btn-c-warning text-light w-100 fw-bold"
-        >
-                  <span
-                      v-if="loading"
-                      class="spinner-border spinner-border-sm me-2"
-                  ></span>
-          Оновити тариф
-        </button>
+        <div class="col-12 col-lg-4">
+          <button-comp
+              type="button"
+              @click="updateTariff"
+              :disabled="loading"
+              title="Renew tariff"
+              class="btn-blue-1 text-light w-100 h-100 border-radius-bottom-start-4 border-radius-bottom-end-4 border-radius-top-start-lg-0 border-radius-bottom-start-lg-0 border-radius-top-end-lg-4 rounded-md-4 ml-md-1 p-2 p-lg-0"
+          />
+        </div>
       </div>
     </div>
   </div>
+
 </template>
 
 <style scoped>

@@ -71,10 +71,19 @@ body {
 /* Bottons */
 .btn-blue-1 {
   background-color: var(--sky-blue-2);
+  transition: background-color 0.3s ease;
+  cursor: pointer;
 }
 
-.btn-blue-1:hover {
+.btn-blue-1:hover:not(:disabled) {
   background-color: var(--sky-blue-1);
+}
+
+.btn-blue-1:disabled {
+  background-color: var(--sky-blue-2);
+  opacity: 0.5;
+  cursor: not-allowed;
+  border: none;
 }
 
 .btn-c-light {
@@ -93,7 +102,7 @@ body {
 .c-border {
   border: 0.1rem solid var(--dark-gray-rgba);
 }
-
+border-radius-bottom-start-lg-0
 .c-border-top {
   border: 0.1rem solid var(--dark-gray-rgba);
 }

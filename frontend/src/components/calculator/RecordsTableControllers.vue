@@ -45,25 +45,34 @@ const handleSave = async (newData) => {
       <div class="input-group">
         <form action="" class="w-100">
           <div class="row p-0 align-items-center">
-            <div
-                class="col-sm-12 col-md-8 col-xl-7 col-xxl-8 input-group-dynamic-grid right-angle-end p-0">
-              <input
-                  class="form-control form-control neomorphic border-top border-start p-2"
-                  id="formFileSm"
-                  placeholder="Select the CSV file to import"
-                  type="file"
-                  @change="handleFileChange"
-                  accept=".csv"
-              />
-            </div>
-            <div class="col-12 col-sm-12 col-md-4 col-xl-5 col-xxl-4 pl-0 pr-0 pt-3 pb-3 pl-xl-2 pr-xl-2">
+<!--            <div-->
+<!--                class="col-sm-12 col-md-8 col-xl-7 input-group-dynamic-grid right-angle-end p-0">-->
+<!--              -->
+<!--            </div>-->
+            <div class="col-12 col-sm-12 col-md-4 col-xl-12 pl-0 pr-0 pt-3 pb-3 pl-xl-2 pr-xl-2">
               <div class="btn-group w-100" role="group" aria-label="Basic example">
-                <button class="btn btn-secondary c-border neomorphic p-2"
+                <input
+                    class="form-control form-control neomorphic border-top border-start w-50 h-100 p-2 border-radius-bottom-end-lg-0 border-radius-top-end-lg-0"
+                    style="border-bottom-right-radius: 0; border-top-right-radius: 0;"
+                    id="formFileSm"
+                    placeholder="Select the CSV file to import"
+                    type="file"
+                    @change="handleFileChange"
+                    accept=".csv"
+                />
+<!--                <input type="file" id="file-upload" class="d-none" @change="handleFileChange" accept=".csv" />-->
+
+<!--                <label for="file-upload"-->
+<!--                       class="form-control neomorphic p-2 cursor-pointer w-50 h-100 my-auto border-radius-bottom-end-lg-0 border-radius-top-end-lg-0 text-center  "-->
+<!--                       style="border-bottom-right-radius: 0; border-top-right-radius: 0;">-->
+<!--                  <span class="my-auto">{{ fileName || "Select the CSV file to import" }}</span>-->
+<!--                </label>-->
+                <button class="btn btn-secondary c-border neomorphic btn-import p-2"
                         id="inputGroupFileAddon04"
                         type="button"
                         @click="importData">Import data
                 </button>
-                <button type="button" @click="exportData" class="btn btn-secondary c-border neomorphic p-2">Export
+                <button type="button" @click="exportData" class="btn btn-secondary c-border btn-export neomorphic p-2">Export
                   data
                 </button>
               </div>
@@ -72,13 +81,6 @@ const handleSave = async (newData) => {
         </form>
       </div>
     </div>
-    <!--    <div class="col-sm-12 col-xl-2 col-md-3 add-record-section p-0 mb-md-1 p-xl-3 pb-xl-3">-->
-    <!--      <button class="btn btn-primary text-light w-100 p-md-3 p-xl-2"-->
-    <!--              @click="store.setView(store.currentView === 'form' ? 'table' : 'form')"-->
-    <!--      >-->
-    <!--        {{ store.currentView === 'form' ? 'Records table' : 'Add Record' }}-->
-    <!--      </button>-->
-    <!--    </div>-->
     <div data-v-09d6a0f5=""
          class="col-12 col-md-12 col-xl-3 card-light d-flex flex-row justify-content-center align-items-start ps-1 pe-1 pt-1 pb-4 btn-group"
          style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;"
@@ -226,6 +228,20 @@ const handleSave = async (newData) => {
 
 .fade-in-quick-enter-from, .fade-in-quick-leave-to {
   opacity: 0;
+}
+
+.btn-export {}
+.btn-export:hover {
+  background: linear-gradient(
+      to bottom,
+      var(--sunrise-yelow),
+      var(--sunset-yelow)
+  );
+}
+
+.btn-import {}
+.btn-import:hover {
+  background: var(--green-1);
 }
 
 @media (min-width: 768px) {
