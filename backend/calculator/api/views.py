@@ -490,5 +490,14 @@ class UserTimezoneViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return UserTimezoneModel.objects.filter(user=self.request.user)
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        obj, created = UserTimezoneModel.objects.update_or_create(
+            user=request.user,
+            defaults={'timezone': serializer.validated_data['timezone']}
+        )
+
+        status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
+        return Response(serializer.data, status=status_code)
