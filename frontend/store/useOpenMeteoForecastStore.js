@@ -62,6 +62,25 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
         }
     };
 
+    const searchCity = async (name) => {
+        try {
+            const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${name}&count=1&language=en`);
+            const data = await response.json();
+
+            if (data.results && data.results.length > 0) {
+                const city = data.results[0];
+                return {
+                    lat: city.latitude,
+                    lon: city.longitude,
+                    timezone: city.timezone
+                };
+            }
+        } catch (err) {
+            console.error("Geocoding error:", err);
+        }
+        return null;
+    };
+
     const getUserCoordinates = () => {
         return new Promise((resolve) => {
             if (!navigator.geolocation) {
@@ -150,5 +169,6 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
         detectTimezone,
         detectedTimezone,
         getUserCoordinates,
+        searchCity,
     };
 });

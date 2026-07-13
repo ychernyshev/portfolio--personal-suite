@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, onMounted} from "vue";
+import {onMounted, ref} from "vue";
   import {useOpenMeteoForecastStore} from "../../../../store/useOpenMeteoForecastStore";
   import {storeToRefs} from "pinia";
 import backendApi from "@/services/backendApi.ts";
@@ -7,6 +7,7 @@ import ButtonComp from "@/components/personal/ButtonComp.vue";
 
   const browserCoordinates = useOpenMeteoForecastStore();
   const { browserLat, browserLon, dbLat, dbLon, detectedTimezone } = storeToRefs(browserCoordinates);
+  const cityName = ref("");
 
   const timezones = [
     { offset: -12, label: "(UTC-12:00) International Date Line West", zone: "Etc/GMT+12" },
@@ -35,6 +36,20 @@ import ButtonComp from "@/components/personal/ButtonComp.vue";
     { offset: 11,  label: "(UTC+11:00) Solomon Is., New Caledonia", zone: "Pacific/Guadalcanal" },
     { offset: 12,  label: "(UTC+12:00) Auckland, Fiji", zone: "Pacific/Auckland" },
   ];
+
+  const handleCitySearch = async () => {
+    if (!cityName.value || cityName.value.length < 2) return;
+
+    const result = await browserCoordinates.searchCity(cityName.value);
+
+    if (result) {
+      detectedTimezone.value = result.timezone;
+      browserLat.value = result.lat;
+      browserLon.value = result.lon;
+    } else {
+      alert("City not found");
+    }
+  };
 
   const saveTimezone = async () => {
     try {
@@ -75,7 +90,7 @@ import ButtonComp from "@/components/personal/ButtonComp.vue";
       <div class="col-12 pt-3 pb-3">
         <form action="" class="row">
           <div class="row">
-            <div class="col-12 col-lg-3 mb-2 mb-lg-0">
+            <div class="col-12 col-lg-4 mb-2 mb-lg-0">
               <input
                   v-model=detectedTimezone
                   type="text"
@@ -83,7 +98,6 @@ import ButtonComp from "@/components/personal/ButtonComp.vue";
                   placeholder="Determining timezone..."
                   disabled
               />
-              <small class="text-muted">Detected based on your browser coordinates</small>
             </div>
             <div class="col-12 col-lg-4 mb-2 mb-lg-0">
               <select v-model="detectedTimezone" class="form-select">
@@ -96,15 +110,35 @@ import ButtonComp from "@/components/personal/ButtonComp.vue";
                   {{ zone.label }}
                 </option>
               </select>
+            </div>
+            <div class="col-12 col-lg-4 mb-2 mb-lg-0 d-flex flex-row">
+              <span class="ml-lg-3 mr-lg-3 my-auto">or</span>
+              <div class="input-group">
+                <input
+                    v-model="cityName"
+                    @keyup.enter="handleCitySearch"
+                    type="text"
+                    class="form-control"
+                    placeholder="Enter the name of your settlement"
+                />
+                <button @click="handleCitySearch" class="btn btn-outline-secondary" type="button">
+                  Find
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4">
+              <small class="text-muted">Your timezone has been detected based on your browser coordinates</small>
+            </div>
+            <div class="col-lg-4">
               <small class="text-muted">Select your time zone through numbers</small>
             </div>
-            <div class="col-12 col-lg-3 mb-2 mb-lg-0">{{detectedTimezone.value}}</div>
-            <div class="col-12 col-lg-3 mb-2 mb-lg-0"></div>
           </div>
           <button-comp @click=saveTimezone
                        type="button"
                        title="Save Timezone"
-                       class="btn-blue-1" />
+                       class="btn-blue-1 text-light" />
         </form>
       </div>
     </div>
