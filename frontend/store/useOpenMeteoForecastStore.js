@@ -23,48 +23,9 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
 
     const message = ref({});
 
-    const detectTimezone = async (lat, lon) => {
-        try {
-            const response = await backendApi.get(`calculator/get_timezone/?lat=${lat}&lon=${lon}`);
-            console.log(response.data);
-            const data = await response.data;
-            detectedTimezone.value = data.timezone;
-        } catch (err) {
-            console.error("Timezone detect error:", err);
-        }
-    };
-
-    const fetchDbCoordinates = async () => {
-        try {
-            const response = await backendApi.get('calculator/station_coordinates/');
-            const data = response.data.results || response.data;
-            if (data && data.length > 0) {
-                const coords = Array.isArray(data) ? data[0] : data;
-                dbLat.value = Number(coords.latitude).toFixed(4);
-                dbLon.value = Number(coords.longitude).toFixed(4);
-            }
-        } catch (err) {
-            console.error("Error fetching from DB:", err);
-        }
-    };
-
-    const saveCoordinates = async (lat, lon) => {
-        try {
-            loading.value = true;
-            await backendApi.post('calculator/station_coordinates/', {
-                latitude: parseFloat(lat),
-                longitude: parseFloat(lon)
-            });
-            dbLat.value = Number(lat);
-            dbLon.value = Number(lon);
-        } catch (err) {
-            console.error("Error saving to DB:", err);
-            throw err;
-        } finally {
-            loading.value = false;
-        }
-    };
-
+    // ====================================================================
+    // TIMEZONE
+    // ====================================================================
     const searchCity = async (name) => {
         try {
             const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${name}&count=1&language=en`);
@@ -82,6 +43,72 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
             console.error("Geocoding error:", err);
         }
         return null;
+    };
+
+    const detectTimezone = async (lat, lon) => {
+        try {
+            const response = await backendApi.get(`calculator/get_timezone/?lat=${lat}&lon=${lon}`);
+            const data = await response.data;
+            detectedTimezone.value = data.timezone;
+        } catch (err) {
+            console.error("Timezone detect error:", err);
+        }
+    };
+
+    const saveTimezone = async (timezone) => {
+        try{
+            await backendApi.post('calculator/user_timezone/', {timezone});
+            storedTimezone.value = timezone;
+            message.value = {text: 'Timezone saved successfully!', type: 'success'};
+        } catch (error) {
+            message.value = { text: 'Error saving timezone.', type: 'danger' };
+            console.error("Error during timezone saving:", error);
+        }
+    };
+
+    const fetchTimezone = async () => {
+        try {
+            const response = await backendApi.get('calculator/user_timezone/');
+            storedTimezone.value = response.data.timezone || '';
+        } catch (err) {
+            message.value = { text: 'Error fetching timezone.', type: 'danger' };
+            console.error("Error fetching timezone:", err);
+        }
+    };
+    fetchTimezone();
+
+    // ====================================================================
+    // COORDINATES
+    // ====================================================================
+    const saveCoordinates = async (lat, lon) => {
+        try {
+            loading.value = true;
+            await backendApi.post('calculator/station_coordinates/', {
+                latitude: parseFloat(lat),
+                longitude: parseFloat(lon)
+            });
+            dbLat.value = Number(lat);
+            dbLon.value = Number(lon);
+        } catch (err) {
+            console.error("Error saving to DB:", err);
+            throw err;
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    const fetchDbCoordinates = async () => {
+        try {
+            const response = await backendApi.get('calculator/station_coordinates/');
+            const data = response.data.results || response.data;
+            if (data && data.length > 0) {
+                const coords = Array.isArray(data) ? data[0] : data;
+                dbLat.value = Number(coords.latitude).toFixed(4);
+                dbLon.value = Number(coords.longitude).toFixed(4);
+            }
+        } catch (err) {
+            console.error("Error fetching from DB:", err);
+        }
     };
 
     const getUserCoordinates = () => {
@@ -114,6 +141,9 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
         });
     };
 
+    // ====================================================================
+    // FORECAST
+    // ====================================================================
     const fetchForecast = async () => {
         if (forecast.value) return;
 
@@ -156,29 +186,6 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
             loading.value = false;
         }
     };
-
-    const fetchTimezone = async () => {
-        try {
-            const response = await backendApi.get('calculator/user_timezone/');
-            storedTimezone.value = response.data.timezone || '';
-        } catch (err) {
-            message.value = { text: 'Error fetching timezone.', type: 'danger' };
-            console.error("Error fetching timezone:", err);
-        }
-    };
-    fetchTimezone();
-
-    const saveTimezone = async (timezone) => {
-        try{
-            await backendApi.post('calculator/user_timezone/', {timezone});
-            storedTimezone.value = timezone;
-            message.value = {text: 'Timezone saved successfully!', type: 'success'};
-        } catch (error) {
-            message.value = { text: 'Error saving timezone.', type: 'danger' };
-            console.error("Error during timezone saving:", error);
-        }
-    };
-
 
     return {
         forecast,
