@@ -2,11 +2,10 @@
 import {onMounted, ref} from "vue";
   import {useOpenMeteoForecastStore} from "../../../../store/useOpenMeteoForecastStore";
   import {storeToRefs} from "pinia";
-import backendApi from "@/services/backendApi.ts";
 import ButtonComp from "@/components/personal/ButtonComp.vue";
 
   const browserCoordinates = useOpenMeteoForecastStore();
-  const { browserLat, browserLon, dbLat, dbLon, detectedTimezone } = storeToRefs(browserCoordinates);
+  const { browserLat, browserLon, dbLat, dbLon, detectedTimezone, storedTimezone, fetchTimezone } = storeToRefs(browserCoordinates);
   const cityName = ref("");
 
   const timezones = [
@@ -51,16 +50,9 @@ import ButtonComp from "@/components/personal/ButtonComp.vue";
     }
   };
 
-  const saveTimezone = async () => {
-    try {
-      await backendApi.post('calculator/user_timezone/', {
-        timezone: detectedTimezone.value
-      });
-      alert("Timezone saved successfully");
-    } catch (err) {
-      console.error("Error during timezone saving:", err);
-    }
-  };
+const handleSave = async () => {
+  await browserCoordinates.saveTimezone(detectedTimezone.value);
+};
 
   onMounted(async () => {
     await browserCoordinates.fetchDbCoordinates();
@@ -76,16 +68,11 @@ import ButtonComp from "@/components/personal/ButtonComp.vue";
       }
     }
   });
-
-  // + Дані з БД
-  // + Якщо немає - дані з браузера
-  // + Вказати time zone
-  // - Шукати за назвою
 </script>
 
 <template>
   <div class="timezone-wrapper mt-3 mb-3 text-start">
-    <p class="mb-1 fw-medium text-purple">User Time Zone</p>
+    <p class="mb-1 fw-medium text-purple">User's Power Station Time Zone</p>
     <div class="row">
       <div class="col-12 pt-3 pb-3">
         <form action="" class="row">
@@ -135,11 +122,28 @@ import ButtonComp from "@/components/personal/ButtonComp.vue";
               <small class="text-muted">Select your time zone through numbers</small>
             </div>
           </div>
-          <button-comp @click=saveTimezone
+          <button-comp @click=handleSave
                        type="button"
                        title="Save Timezone"
                        class="btn-blue-1 text-light" />
         </form>
+        <div class="row">
+          <div class="col-12 pt-3">
+            <div class="lat-lon-text mb-2 text-md-start">
+            </div>
+            <div class="row">
+              <div class="col-6 col-lg-3 bg-gradient-blue-2 p-3 text-white fw-bold text-center">
+                <span class="">Stored Power Station Timezone</span>
+              </div>
+              <div class="col-6 col-lg-3 p-3 text-center bg-body-tertiary">
+                <span v-if="storedTimezone">
+                  {{ storedTimezone || 'Loading...' }}
+                </span>
+                <span v-else>Add you your timezone</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

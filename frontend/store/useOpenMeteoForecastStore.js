@@ -19,6 +19,9 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
     const dbLon = ref(null);
 
     const detectedTimezone = ref('');
+    const storedTimezone = ref('');
+
+    const message = ref({});
 
     const detectTimezone = async (lat, lon) => {
         try {
@@ -154,6 +157,29 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
         }
     };
 
+    const fetchTimezone = async () => {
+        try {
+            const response = await backendApi.get('calculator/user_timezone/');
+            storedTimezone.value = response.data.timezone || '';
+        } catch (err) {
+            message.value = { text: 'Error fetching timezone.', type: 'danger' };
+            console.error("Error fetching timezone:", err);
+        }
+    };
+    fetchTimezone();
+
+    const saveTimezone = async (timezone) => {
+        try{
+            await backendApi.post('calculator/user_timezone/', {timezone});
+            storedTimezone.value = timezone;
+            message.value = {text: 'Timezone saved successfully!', type: 'success'};
+        } catch (error) {
+            message.value = { text: 'Error saving timezone.', type: 'danger' };
+            console.error("Error during timezone saving:", error);
+        }
+    };
+
+
     return {
         forecast,
         loading,
@@ -167,8 +193,14 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
         fetchDbCoordinates,
         saveCoordinates,
         detectTimezone,
+
         detectedTimezone,
         getUserCoordinates,
+
         searchCity,
+
+        saveTimezone,
+        storedTimezone,
+        fetchTimezone,
     };
 });
