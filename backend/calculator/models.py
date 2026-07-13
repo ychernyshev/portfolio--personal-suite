@@ -445,7 +445,7 @@ class GeolocationModel(models.Model):
         verbose_name_plural = 'Coordinates'
 
 
-class UserTimeZoneModel(models.Model):
+class UserTimezoneModel(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
     timezone = models.CharField(max_length=64, verbose_name='Timezone of the user')
 

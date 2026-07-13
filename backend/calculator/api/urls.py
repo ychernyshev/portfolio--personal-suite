@@ -19,7 +19,8 @@ from calculator.api.views import (DataEntryViewSet,
                                   get_user_profile,
                                   PanelsArrayViewSet,
                                   DataExportView,
-                                  get_timezone_by_coords, )
+                                  get_timezone_by_coords,
+                                  UserTimezoneViewSet, )
 
 router = DefaultRouter()
 router.register(r'entries', DataEntryViewSet, basename='entries')
@@ -28,6 +29,7 @@ router.register(r'forecast/details', WeatherDataViewSet, basename='forecast-deta
 router.register('sunrise-sunset-time', SolarForecastRecordViewSet, basename='sunrise-sinset-time')
 router.register(r'station_coordinates', GeolocationViewSet, basename='station_coordinated')
 router.register(r'panels', PanelsArrayViewSet, basename='panels')
+router.register('user_timezone', UserTimezoneViewSet, basename='user_timezone')
 
 urlpatterns = [
     path('', include(router.urls)),

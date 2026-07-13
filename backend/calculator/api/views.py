@@ -23,7 +23,7 @@ from calculator.api.serializers import (
     WeatherDataSerializer,
     SolarForecastRecordSerializer,
     GeolocationSerializer,
-    PanelsArraySerializer, )
+    PanelsArraySerializer, UserTimezoneSerializer, )
 from calculator.models import (
     DataEntryLineModel,
     CurrentTariffModel,
@@ -31,7 +31,7 @@ from calculator.models import (
     SolarForecastRecordModel,
     WeatherDataModel,
     GeolocationModel,
-    PanelsArrayModel, )
+    PanelsArrayModel, UserTimezoneModel, )
 from calculator.services.data_export import export_data_logic
 from calculator.services.data_import import import_data_logic
 from calculator.services.weather_service import WeatherForecastService
@@ -480,3 +480,15 @@ class SolarForecastRecordViewSet(viewsets.ModelViewSet):
 class GeolocationViewSet(viewsets.ModelViewSet):
     queryset = GeolocationModel.objects.all()
     serializer_class = GeolocationSerializer
+
+
+class UserTimezoneViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = UserTimezoneModel.objects.all()
+    serializer_class = UserTimezoneSerializer
+
+    def get_queryset(self):
+        return UserTimezoneModel.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

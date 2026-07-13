@@ -3,8 +3,14 @@
 
 from rest_framework import serializers
 
-from calculator.models import DataEntryLineModel, CurrentTariffModel, WeatherConditionModel, WeatherDataModel, \
-    SolarForecastRecordModel, GeolocationModel, PanelsArrayModel
+from calculator.models import (DataEntryLineModel,
+                               CurrentTariffModel,
+                               WeatherConditionModel,
+                               WeatherDataModel,
+                               SolarForecastRecordModel,
+                               GeolocationModel,
+                               PanelsArrayModel,
+                               UserTimezoneModel)
 
 
 class WeatherConditionSerializer(serializers.ModelSerializer):
@@ -62,3 +68,9 @@ class PanelsArraySerializer(serializers.ModelSerializer):
         if value > 1.0:
             return value / 100.0
         return value
+
+
+class UserTimezoneSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserTimezoneModel
+        fields = '__all__'
