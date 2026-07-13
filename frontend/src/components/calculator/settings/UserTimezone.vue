@@ -7,6 +7,7 @@ import ButtonComp from "@/components/personal/ButtonComp.vue";
   const browserCoordinates = useOpenMeteoForecastStore();
   const { browserLat, browserLon, dbLat, dbLon, detectedTimezone, storedTimezone, fetchTimezone } = storeToRefs(browserCoordinates);
   const cityName = ref("");
+  const message = ref({})
 
   const timezones = [
     { offset: -12, label: "(UTC-12:00) International Date Line West", zone: "Etc/GMT+12" },
@@ -46,7 +47,7 @@ import ButtonComp from "@/components/personal/ButtonComp.vue";
       browserLat.value = result.lat;
       browserLon.value = result.lon;
     } else {
-      alert("City not found");
+      message.value = { text: 'Error saving timezone.', type: 'danger' };
     }
   };
 
@@ -55,6 +56,7 @@ const handleSave = async () => {
 };
 
   onMounted(async () => {
+    await browserCoordinates.fetchTimezone();
     await browserCoordinates.fetchDbCoordinates();
 
     if (dbLat.value && dbLon.value) {
@@ -69,9 +71,7 @@ const handleSave = async () => {
     }
   });
 
-  // - Input шукає місто по enter
-  // - Переклад міста з української на англійську
-  // - Не падтягує timezone з БД
+  // - Use the Geocoding API to enter a city name in multiple languages
 </script>
 
 <template>
@@ -107,7 +107,7 @@ const handleSave = async () => {
                   <div class="input-group my-auto">
                     <input
                         v-model="cityName"
-                        @keyup.enter="handleCitySearch"
+                        @keyup.prevent="handleCitySearch"
                         type="text"
                         class="form-control bg-transparent border-0 my-auto"
                         placeholder="Enter the name of your settlement"

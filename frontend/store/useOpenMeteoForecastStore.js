@@ -69,7 +69,7 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
     const fetchTimezone = async () => {
         try {
             const response = await backendApi.get('calculator/user_timezone/');
-            storedTimezone.value = response.data.timezone || '';
+            storedTimezone.value = response.data.timezone || (Array.isArray(response.data) ? response.data[0]?.timezone : '');
         } catch (err) {
             message.value = { text: 'Error fetching timezone.', type: 'danger' };
             console.error("Error fetching timezone:", err);

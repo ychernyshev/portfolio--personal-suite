@@ -501,3 +501,11 @@ class UserTimezoneViewSet(viewsets.ModelViewSet):
 
         status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
         return Response(serializer.data, status=status_code)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        obj = queryset.first()
+        if not obj:
+            return Response({"timezone": ""}, status=status.HTTP_200_OK)
+        serializer = self.get_serializer(obj)
+        return Response(serializer.data)
