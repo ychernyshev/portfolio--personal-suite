@@ -74,3 +74,4 @@ class UserTimezoneSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserTimezoneModel
         fields = '__all__'
+        read_only_fields = ['user']

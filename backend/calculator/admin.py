@@ -10,6 +10,7 @@ from .models import (
     GeolocationModel,
     PanelsArrayModel,
     SystemEventModel,
+    UserTimezoneModel,
 )
 
 
@@ -122,3 +123,8 @@ class PanelsArrayAdmin(admin.ModelAdmin):
 @admin.register(SystemEventModel)
 class SystemEventAdmin(admin.ModelAdmin):
     list_display = ['category', 'level', 'payload', 'title', 'created_at', 'event_timestamp', 'user']
+
+
+@admin.register(UserTimezoneModel)
+class UserTimezoneAdmin(admin.ModelAdmin):
+    list_display = ['user', 'timezone']

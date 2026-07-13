@@ -29,7 +29,7 @@ router.register(r'forecast/details', WeatherDataViewSet, basename='forecast-deta
 router.register('sunrise-sunset-time', SolarForecastRecordViewSet, basename='sunrise-sinset-time')
 router.register(r'station_coordinates', GeolocationViewSet, basename='station_coordinated')
 router.register(r'panels', PanelsArrayViewSet, basename='panels')
-router.register('user_timezone', UserTimezoneViewSet, basename='user_timezone')
+router.register(r'user_timezone', UserTimezoneViewSet, basename='user_timezone')
 
 urlpatterns = [
     path('', include(router.urls)),
