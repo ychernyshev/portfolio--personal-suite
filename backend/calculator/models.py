@@ -447,7 +447,7 @@ class GeolocationModel(models.Model):
 
 class UserTimeZoneModel(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
-    timezone = models.IntegerField(default=0, blank=True, null=True, verbose_name='Timezone of the user')
+    timezone = models.CharField(max_length=64, verbose_name='Timezone of the user')
 
     def __str__(self):
         return f'User {self.user} time zone - {self.timezone}'

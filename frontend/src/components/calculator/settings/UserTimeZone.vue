@@ -1,38 +1,70 @@
 <script setup lang="ts">
-  import {onMounted} from "vue";
+import {computed, onMounted} from "vue";
   import {useOpenMeteoForecastStore} from "../../../../store/useOpenMeteoForecastStore";
   import {storeToRefs} from "pinia";
+import backendApi from "@/services/backendApi.ts";
+import ButtonComp from "@/components/personal/ButtonComp.vue";
 
   const browserCoordinates = useOpenMeteoForecastStore();
   const { browserLat, browserLon, dbLat, dbLon, detectedTimezone } = storeToRefs(browserCoordinates);
 
+  const timezones = [
+    { offset: -12, label: "(UTC-12:00) International Date Line West", zone: "Etc/GMT+12" },
+    { offset: -11, label: "(UTC-11:00) Midway Island, Samoa", zone: "Pacific/Midway" },
+    { offset: -10, label: "(UTC-10:00) Hawaii", zone: "Pacific/Honolulu" },
+    { offset: -9,  label: "(UTC-09:00) Alaska", zone: "America/Anchorage" },
+    { offset: -8,  label: "(UTC-08:00) Pacific Time (LA, Vancouver)", zone: "America/Los_Angeles" },
+    { offset: -7,  label: "(UTC-07:00) Mountain Time (Denver, Phoenix)", zone: "America/Denver" },
+    { offset: -6,  label: "(UTC-06:00) Central Time (Chicago, Mexico City)", zone: "America/Chicago" },
+    { offset: -5,  label: "(UTC-05:00) Eastern Time (NY, Toronto, Lima)", zone: "America/New_York" },
+    { offset: -4,  label: "(UTC-04:00) Caracas, Santiago, Halifax", zone: "America/Santiago" },
+    { offset: -3,  label: "(UTC-03:00) Brasilia, Buenos Aires, Greenland", zone: "America/Argentina/Buenos_Aires" },
+    { offset: -2,  label: "(UTC-02:00) Mid-Atlantic", zone: "Etc/GMT+2" },
+    { offset: -1,  label: "(UTC-01:00) Azores, Cape Verde", zone: "Atlantic/Azores" },
+    { offset: 0,   label: "(UTC+00:00) London, Lisbon, Casablanca", zone: "Europe/London" },
+    { offset: 1,   label: "(UTC+01:00) Paris, Berlin, Rome, Lagos", zone: "Europe/Paris" },
+    { offset: 2,   label: "(UTC+02:00) Kyiv, Cairo, Johannesburg", zone: "Europe/Kyiv" },
+    { offset: 3,   label: "(UTC+03:00) Istanbul, Moscow, Nairobi, Riyadh", zone: "Europe/Istanbul" },
+    { offset: 4,   label: "(UTC+04:00) Dubai, Baku, Tbilisi", zone: "Asia/Dubai" },
+    { offset: 5,   label: "(UTC+05:00) Karachi, Tashkent", zone: "Asia/Karachi" },
+    { offset: 6,   label: "(UTC+06:00) Dhaka, Almaty", zone: "Asia/Dhaka" },
+    { offset: 7,   label: "(UTC+07:00) Bangkok, Jakarta, Hanoi", zone: "Asia/Bangkok" },
+    { offset: 8,   label: "(UTC+08:00) Beijing, Singapore, Perth", zone: "Asia/Shanghai" },
+    { offset: 9,   label: "(UTC+09:00) Tokyo, Seoul", zone: "Asia/Tokyo" },
+    { offset: 10,  label: "(UTC+10:00) Sydney, Melbourne, Vladivostok", zone: "Australia/Sydney" },
+    { offset: 11,  label: "(UTC+11:00) Solomon Is., New Caledonia", zone: "Pacific/Guadalcanal" },
+    { offset: 12,  label: "(UTC+12:00) Auckland, Fiji", zone: "Pacific/Auckland" },
+  ];
+
+  const saveTimezone = async () => {
+    try {
+      await backendApi.post('calculator/user_timezone/', {
+        timezone: detectedTimezone.value
+      });
+      alert("Timezone saved successfully");
+    } catch (err) {
+      console.error("Error during timezone saving:", err);
+    }
+  };
+
   onMounted(async () => {
     await browserCoordinates.fetchDbCoordinates();
 
-    let lat, lon
-
     if (dbLat.value && dbLon.value) {
-      lat = dbLat.value;
-      lon = dbLon.value;
-    } if (browserLat.value && browserLon.value) {
-      lat = browserLat.value;
-      lon = browserLon.value;
+      await browserCoordinates.detectTimezone(dbLat.value, dbLon.value);
+    } else if (browserLat.value && browserLon.value) {
+      await browserCoordinates.detectTimezone(browserLat.value, browserLon.value);
     } else {
       const coords = await browserCoordinates.getUserCoordinates();
       if (coords) {
-        lat = coords.lat;
-        lon = coords.lon;
+        await browserCoordinates.detectTimezone(coords.lat, coords.lon);
       }
-    }
-
-    if (lat && lon) {
-      await browserCoordinates.detectTimezone(lat, lon);
     }
   });
 
   // + Дані з БД
   // + Якщо немає - дані з браузера
-  // - Вказати time zone
+  // + Вказати time zone
   // - Шукати за назвою
 </script>
 
@@ -42,15 +74,37 @@
     <div class="row">
       <div class="col-12 pt-3 pb-3">
         <form action="" class="row">
-          detectedTimezone: {{detectedTimezone}}
-          <input
-              v-model=detectedTimezone
-              type="text"
-              class="form-control"
-              placeholder="Determining timezone..."
-          />
-          <small class="text-muted">Detected based on your coordinates</small>
-<!--          <small class="text-muted">Select your time zone</small>-->
+          <div class="row">
+            <div class="col-12 col-lg-3 mb-2 mb-lg-0">
+              <input
+                  v-model=detectedTimezone
+                  type="text"
+                  class="form-control text-muted"
+                  placeholder="Determining timezone..."
+                  disabled
+              />
+              <small class="text-muted">Detected based on your browser coordinates</small>
+            </div>
+            <div class="col-12 col-lg-4 mb-2 mb-lg-0">
+              <select v-model="detectedTimezone" class="form-select">
+                <option value="" disabled>Select your time zone...</option>
+                <option
+                    v-for="zone in timezones"
+                    :key="zone.zone"
+                    :value="zone.zone"
+                >
+                  {{ zone.label }}
+                </option>
+              </select>
+              <small class="text-muted">Select your time zone through numbers</small>
+            </div>
+            <div class="col-12 col-lg-3 mb-2 mb-lg-0">{{detectedTimezone.value}}</div>
+            <div class="col-12 col-lg-3 mb-2 mb-lg-0"></div>
+          </div>
+          <button-comp @click=saveTimezone
+                       type="button"
+                       title="Save Timezone"
+                       class="btn-blue-1" />
         </form>
       </div>
     </div>
