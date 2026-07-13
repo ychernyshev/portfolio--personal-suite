@@ -68,6 +68,10 @@ const handleSave = async () => {
       }
     }
   });
+
+  // - Input шукає місто по enter
+  // - Переклад міста з української на англійську
+  // - Не падтягує timezone з БД
 </script>
 
 <template>
@@ -75,63 +79,65 @@ const handleSave = async () => {
     <p class="mb-1 fw-medium text-purple">User's Power Station Time Zone</p>
     <div class="row">
       <div class="col-12 pt-3 pb-3">
-        <form action="" class="row">
-          <div class="row">
-            <div class="col-12 col-lg-4 mb-2 mb-lg-0">
-              <input
-                  v-model=detectedTimezone
-                  type="text"
-                  class="form-control text-muted"
-                  placeholder="Determining timezone..."
-                  disabled
-              />
-            </div>
-            <div class="col-12 col-lg-4 mb-2 mb-lg-0">
-              <select v-model="detectedTimezone" class="form-select">
-                <option value="" disabled>Select your time zone...</option>
-                <option
-                    v-for="zone in timezones"
-                    :key="zone.zone"
-                    :value="zone.zone"
-                >
-                  {{ zone.label }}
-                </option>
-              </select>
-            </div>
-            <div class="col-12 col-lg-4 mb-2 mb-lg-0 d-flex flex-row">
-              <span class="ml-lg-3 mr-lg-3 my-auto">or</span>
-              <div class="input-group">
-                <input
-                    v-model="cityName"
-                    @keyup.enter="handleCitySearch"
-                    type="text"
-                    class="form-control"
-                    placeholder="Enter the name of your settlement"
-                />
-                <button @click="handleCitySearch" class="btn btn-outline-secondary" type="button">
-                  Find
-                </button>
+        <form action="">
+          <small class="text-muted">Your timezone has been detected based on your browser coordinates</small>
+          <div class="row neomorphic p-0 mt-2">
+            <div class="col-12 col-lg-10">
+              <div class="row">
+                <div class="col-12 col-lg-3 mb-2 mb-lg-0 d-flex justify-content-center align-items-center">
+                  <p class="my-auto" disabled>
+                    {{detectedTimezone}}
+                  </p>
+                </div>
+                <div class="col-12 col-lg-4 mb-2 mb-lg-0 pl-lg-0 pr-lg-0 d-flex justify-content-center align-items-center">
+                  <select v-model="detectedTimezone" class="form-select bg-transparent border-0">
+                    <option value="" disabled>Select your time zone...</option>
+                    <option
+                        v-for="zone in timezones"
+                        :key="zone.zone"
+                        :value="zone.zone"
+                        class="my-auto"
+                    >
+                      {{ zone.label }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-12 col-lg-5 mb-2 mb-lg-0 d-flex flex-row pl-lg-0 pr-lg-0 d-flex justify-content-center align-items-center">
+                  <span class="ml-lg-3 mr-lg-3 my-auto">or</span>
+                  <div class="input-group my-auto">
+                    <input
+                        v-model="cityName"
+                        @keyup.enter="handleCitySearch"
+                        type="text"
+                        class="form-control bg-transparent border-0 my-auto"
+                        placeholder="Enter the name of your settlement"
+                    />
+                    <button @click="handleCitySearch" class="btn btn-info right-angle p-3" type="button">
+                      Find
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-4">
-              <small class="text-muted">Your timezone has been detected based on your browser coordinates</small>
+            <div class="col-12 col-lg-2 pl-lg-0 pr-lg-0">
+              <button-comp @click=handleSave
+                           type="button"
+                           title="Set Timezone"
+                           class="btn-blue-1 text-light w-100 h-100 border-radius-bottom-start-4 border-radius-bottom-end-4 border-radius-top-start-lg-0 border-radius-bottom-start-lg-0 border-radius-top-end-lg-4 rounded-md-4" />
             </div>
-            <div class="col-lg-4">
+          </div>
+          <div class="row mt-2">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-4 pl-lg-0 pr-lg-0">
               <small class="text-muted">Select your time zone through numbers</small>
             </div>
           </div>
-          <button-comp @click=handleSave
-                       type="button"
-                       title="Save Timezone"
-                       class="btn-blue-1 text-light" />
         </form>
         <div class="row">
           <div class="col-12 pt-3">
             <div class="lat-lon-text mb-2 text-md-start">
             </div>
-            <div class="row">
+            <div class="row justify-content-center">
               <div class="col-6 col-lg-3 bg-gradient-blue-2 p-3 text-white fw-bold text-center">
                 <span class="">Stored Power Station Timezone</span>
               </div>

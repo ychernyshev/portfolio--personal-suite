@@ -3,7 +3,7 @@
   import EnergyTariffSetup from "@/components/calculator/settings/EnergyTariffSetup.vue";
   import SystemFactorSetup from "@/components/calculator/settings/SystemFactorSetup.vue";
   import GeolocationSetup from "@/components/calculator/settings/GeolocationSetup.vue";
-  import UserTimeZone from "@/components/calculator/settings/UserTimeZone.vue";
+  import UserTimezone from "@/components/calculator/settings/UserTimezone.vue";
 </script>
 
 <template>
@@ -72,7 +72,7 @@
           </div>
           <div class="tab-pane fade" id="pills-time-zone" role="tabpanel" aria-labelledby="pills-time-zone-tab"
                tabindex="0">
-            <user-time-zone />
+            <user-timezone />
           </div>
         </div>
       </div>
