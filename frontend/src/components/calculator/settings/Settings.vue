@@ -4,11 +4,12 @@
   import SystemFactorSetup from "@/components/calculator/settings/SystemFactorSetup.vue";
   import GeolocationSetup from "@/components/calculator/settings/GeolocationSetup.vue";
   import UserTimezone from "@/components/calculator/settings/UserTimezone.vue";
+  import LanguageSetup from "@/components/calculator/settings/LanguageSetup.vue";
 </script>
 
 <template>
   <div class="card row shadow-sm border-0 justify-content-center align-items-center align-items-md-start">
-    <div class="col-6 col-xxl-6">
+    <div class="col-12">
       <ul class="nav nav-tabs mt-3 mb-3" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
           <button class="nav-link active nav-title"
@@ -53,6 +54,28 @@
                   aria-selected="false">Time Zone
           </button>
         </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link nav-title"
+                  id="pills-language-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#pills-language"
+                  type="button"
+                  role="tab"
+                  aria-controls="pills-language"
+                  aria-selected="false">Language
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link nav-title"
+                  id="pills-currency-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#pills-currency"
+                  type="button"
+                  role="tab"
+                  aria-controls="pills-currency"
+                  aria-selected="false">Currency
+          </button>
+        </li>
       </ul>
     </div>
     <div class="row mx-auto">
@@ -73,6 +96,13 @@
           <div class="tab-pane fade" id="pills-time-zone" role="tabpanel" aria-labelledby="pills-time-zone-tab"
                tabindex="0">
             <user-timezone />
+          </div>
+          <div class="tab-pane fade" id="pills-language" role="tabpanel" aria-labelledby="pills-language-tab"
+               tabindex="0">
+            <language-setup />
+          </div>
+          <div class="tab-pane fade" id="pills-currency" role="tabpanel" aria-labelledby="pills-currency-tab"
+               tabindex="0">
           </div>
         </div>
       </div>
