@@ -23,7 +23,7 @@ from calculator.api.serializers import (
     WeatherDataSerializer,
     SolarForecastRecordSerializer,
     GeolocationSerializer,
-    PanelsArraySerializer, UserTimezoneSerializer, )
+    PanelsArraySerializer, UserTimezoneSerializer, UserLanguageSerializer, )
 from calculator.models import (
     DataEntryLineModel,
     CurrentTariffModel,
@@ -31,7 +31,7 @@ from calculator.models import (
     SolarForecastRecordModel,
     WeatherDataModel,
     GeolocationModel,
-    PanelsArrayModel, UserTimezoneModel, )
+    PanelsArrayModel, UserTimezoneModel, UserLanguageModel, )
 from calculator.services.data_export import export_data_logic
 from calculator.services.data_import import import_data_logic
 from calculator.services.weather_service import WeatherForecastService
@@ -509,3 +509,24 @@ class UserTimezoneViewSet(viewsets.ModelViewSet):
             return Response({"timezone": ""}, status=status.HTTP_200_OK)
         serializer = self.get_serializer(obj)
         return Response(serializer.data)
+
+
+class UserLanguageViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = UserLanguageModel.objects.all()
+    serializer_class = UserLanguageSerializer
+
+    def get_queryset(self):
+        return UserLanguageModel.objects.filter(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        obj, created = UserLanguageModel.objects.update_or_create(
+            user=request.user,
+            defaults={'language': serializer.validated_data['language']}
+        )
+
+        status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
+        return Response(serializer.data, status=status_code)

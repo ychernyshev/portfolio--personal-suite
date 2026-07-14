@@ -10,7 +10,7 @@ from calculator.models import (DataEntryLineModel,
                                SolarForecastRecordModel,
                                GeolocationModel,
                                PanelsArrayModel,
-                               UserTimezoneModel)
+                               UserTimezoneModel, UserLanguageModel)
 
 
 class WeatherConditionSerializer(serializers.ModelSerializer):
@@ -73,5 +73,12 @@ class PanelsArraySerializer(serializers.ModelSerializer):
 class UserTimezoneSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserTimezoneModel
+        fields = '__all__'
+        read_only_fields = ['user']
+
+
+class UserLanguageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserLanguageModel
         fields = '__all__'
         read_only_fields = ['user']
