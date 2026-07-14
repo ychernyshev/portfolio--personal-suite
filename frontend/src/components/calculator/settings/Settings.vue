@@ -5,6 +5,7 @@
   import GeolocationSetup from "@/components/calculator/settings/GeolocationSetup.vue";
   import UserTimezone from "@/components/calculator/settings/UserTimezone.vue";
   import LanguageSetup from "@/components/calculator/settings/LanguageSetup.vue";
+  import CurrencySetup from "@/components/calculator/settings/CurrencySetup.vue";
 </script>
 
 <template>
@@ -103,6 +104,7 @@
           </div>
           <div class="tab-pane fade" id="pills-currency" role="tabpanel" aria-labelledby="pills-currency-tab"
                tabindex="0">
+            <currency-setup />
           </div>
         </div>
       </div>
