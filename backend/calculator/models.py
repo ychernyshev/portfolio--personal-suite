@@ -457,6 +457,30 @@ class UserTimezoneModel(models.Model):
         verbose_name_plural = 'Users timezones'
 
 
+class UserLanguageModel(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
+    language = models.CharField(max_length=64, verbose_name='Language of the user')
+
+    def __str__(self):
+        return f'User {self.user} language - {self.language}'
+
+    class Meta:
+        verbose_name = 'add user default language'
+        verbose_name_plural = 'Users default languages'
+
+
+class UserCurrencyModel(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
+    currency = models.CharField(max_length=5, verbose_name='Currency of the user')
+
+    def __str__(self):
+        return f'User {self.user} language - {self.currency}'
+
+    class Meta:
+        verbose_name = 'add user default currency'
+        verbose_name_plural = 'Users default currency'
+
+
 # ====================================================================
 # USER HARDWARE GROUP
 # ====================================================================
