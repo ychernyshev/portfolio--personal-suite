@@ -11,6 +11,8 @@ from .models import (
     PanelsArrayModel,
     SystemEventModel,
     UserTimezoneModel,
+    UserLanguageModel,
+    UserCurrencyModel,
 )
 
 
@@ -128,3 +130,13 @@ class SystemEventAdmin(admin.ModelAdmin):
 @admin.register(UserTimezoneModel)
 class UserTimezoneAdmin(admin.ModelAdmin):
     list_display = ['user', 'timezone']
+
+
+@admin.register(UserLanguageModel)
+class UserLanguageAdmin(admin.ModelAdmin):
+    list_display = ['user', 'language']
+
+
+@admin.register(UserCurrencyModel)
+class UserCurrencyAdmin(admin.ModelAdmin):
+    list_display = ['user', 'currency']

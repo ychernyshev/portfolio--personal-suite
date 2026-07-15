@@ -6,6 +6,7 @@ import backendApi from "@/services/backendApi.ts";
 export const useUserAccountStore = defineStore('userAccount', () => {
   const currentUser = ref('');
   const currentLanguage = ref('');
+  const currentCurrency = ref('');
   const message = ref({});
   const error = ref({});
   const loading = ref(false);
@@ -26,6 +27,8 @@ export const useUserAccountStore = defineStore('userAccount', () => {
 
   // ====================================================================
   // DEFAULT USER PROFILE LANGUAGE
+  // ====================================================================
+  // LANGUAGE
   // ====================================================================
   const setUserLanguage = async (langValue) => {
     try {
@@ -64,13 +67,57 @@ export const useUserAccountStore = defineStore('userAccount', () => {
     }
   }
 
+  // ====================================================================
+  // CURRENCY
+  // ====================================================================
+  const setUserCurrency = async (currValue) => {
+    try {
+      loading.value = true;
+
+      const response = await backendApi.post('/calculator/user_currency/', {
+        currency: currValue
+      });
+      currentCurrency.value = response.data.currency;
+      message.value = {text: 'Currency saved successfully!', type: 'success'};
+    } catch (err) {
+      message.value = { text: 'Error saving default currency.', type: 'danger' };
+      console.error("Error saving currency:", err);
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  const fetchUserCurrency = async () => {
+    loading.value = true;
+
+    try {
+      const response = await backendApi.get('/calculator/user_currency/');
+      const data = response.data.results || response.data;
+
+      if (data && (Array.isArray(data) ? data.length > 0 : true)) {
+        const langData = Array.isArray(data) ? data[0] : data;
+
+        currentCurrency.value = langData.currency;
+      } else {
+        currentCurrency.value = "UAH";
+      }
+    } catch (err) {
+      console.error("Error fetching currency:", err);
+    } finally {
+      loading.value = false;
+    }
+  }
+
   return {
     currentUser,
     error,
     loading,
     currentLanguage,
+    currentCurrency,
     fetchUserProfile,
     setUserLanguage,
     fetchUserLanguage,
+    setUserCurrency,
+    fetchUserCurrency,
   };
 });

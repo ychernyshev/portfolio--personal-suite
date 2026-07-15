@@ -471,7 +471,7 @@ class UserLanguageModel(models.Model):
 
 class UserCurrencyModel(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
-    currency = models.CharField(max_length=5, verbose_name='Currency of the user')
+    currency = models.CharField(max_length=3, verbose_name='Currency of the user')
 
     def __str__(self):
         return f'User {self.user} language - {self.currency}'
