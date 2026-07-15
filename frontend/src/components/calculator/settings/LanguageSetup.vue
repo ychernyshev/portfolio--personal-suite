@@ -39,6 +39,7 @@
         <div class="col-12 col-lg-10">
           <form action="">
             <select v-model="languageValue" class="form-select bg-transparent border-0">
+              <option value="" disabled>Select your language...</option>
               <option v-for="lang in languages"
                       :key="lang.abbr"
                       :value="lang.abbr">{{ lang.name }}</option>
