@@ -7,12 +7,9 @@ from .models import (
     WeatherConditionModel,
     SolarForecastRecordModel,
     WeatherDataModel,
-    GeolocationModel,
     PanelsArrayModel,
     SystemEventModel,
-    UserTimezoneModel,
-    UserLanguageModel,
-    UserCurrencyModel,
+    UserProfileSettingsModel,
 )
 
 
@@ -112,11 +109,6 @@ class WeatherDataAdmin(admin.ModelAdmin):
                     'condition_code']
 
 
-@admin.register(GeolocationModel)
-class GeolocationAdmin(admin.ModelAdmin):
-    list_display = ['latitude', 'longitude']
-
-
 @admin.register(PanelsArrayModel)
 class PanelsArrayAdmin(admin.ModelAdmin):
     list_display = ['name', 'peak_power_kwp', 'area', 'angle', 'azimuth', 'efficiency', 'user']
@@ -127,16 +119,27 @@ class SystemEventAdmin(admin.ModelAdmin):
     list_display = ['category', 'level', 'payload', 'title', 'created_at', 'event_timestamp', 'user']
 
 
-@admin.register(UserTimezoneModel)
-class UserTimezoneAdmin(admin.ModelAdmin):
-    list_display = ['user', 'timezone']
+@admin.register(UserProfileSettingsModel)
+class UserProfileSettingsAdmin(admin.ModelAdmin):
+    list_display = ['user', 'latitude', 'longitude', 'timezone', 'language', 'currency']
 
 
-@admin.register(UserLanguageModel)
-class UserLanguageAdmin(admin.ModelAdmin):
-    list_display = ['user', 'language']
-
-
-@admin.register(UserCurrencyModel)
-class UserCurrencyAdmin(admin.ModelAdmin):
-    list_display = ['user', 'currency']
+# DEPRECATED
+# @admin.register(GeolocationModel)
+# class GeolocationAdmin(admin.ModelAdmin):
+#     list_display = ['latitude', 'longitude']
+#
+#
+# @admin.register(UserTimezoneModel)
+# class UserTimezoneAdmin(admin.ModelAdmin):
+#     list_display = ['user', 'timezone']
+#
+#
+# @admin.register(UserLanguageModel)
+# class UserLanguageAdmin(admin.ModelAdmin):
+#     list_display = ['user', 'language']
+#
+#
+# @admin.register(UserCurrencyModel)
+# class UserCurrencyAdmin(admin.ModelAdmin):
+#     list_display = ['user', 'currency']

@@ -8,9 +8,8 @@ from calculator.models import (DataEntryLineModel,
                                WeatherConditionModel,
                                WeatherDataModel,
                                SolarForecastRecordModel,
-                               GeolocationModel,
                                PanelsArrayModel,
-                               UserTimezoneModel, UserLanguageModel, UserCurrencyModel)
+                               UserProfileSettingsModel)
 
 
 class WeatherConditionSerializer(serializers.ModelSerializer):
@@ -49,12 +48,6 @@ class SolarForecastRecordSerializer(serializers.ModelSerializer):
         read_only_fields = ['sunrise', 'sunset']
 
 
-class GeolocationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = GeolocationModel
-        fields = '__all__'
-
-
 class PanelsArraySerializer(serializers.ModelSerializer):
     class Meta:
         model = PanelsArrayModel
@@ -70,22 +63,36 @@ class PanelsArraySerializer(serializers.ModelSerializer):
         return value
 
 
-class UserTimezoneSerializer(serializers.ModelSerializer):
+class UserProfileSettingsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserTimezoneModel
+        model = UserProfileSettingsModel
         fields = '__all__'
         read_only_fields = ['user']
 
 
-class UserLanguageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserLanguageModel
-        fields = '__all__'
-        read_only_fields = ['user']
-
-
-class UserCurrencySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserCurrencyModel
-        fields = '__all__'
-        read_only_fields = ['user']
+# DEPRECATED
+# class GeolocationSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = GeolocationModel
+#         fields = '__all__'
+#
+#
+# class UserTimezoneSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = UserTimezoneModel
+#         fields = '__all__'
+#         read_only_fields = ['user']
+#
+#
+# class UserLanguageSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = UserLanguageModel
+#         fields = '__all__'
+#         read_only_fields = ['user']
+#
+#
+# class UserCurrencySerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = UserCurrencyModel
+#         fields = '__all__'
+#         read_only_fields = ['user']

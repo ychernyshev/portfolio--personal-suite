@@ -10,6 +10,7 @@ from django.utils.dateparse import parse_datetime
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action, api_view, permission_classes, authentication_classes
+from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -22,22 +23,16 @@ from calculator.api.serializers import (
     WeatherConditionSerializer,
     WeatherDataSerializer,
     SolarForecastRecordSerializer,
-    GeolocationSerializer,
     PanelsArraySerializer,
-    UserTimezoneSerializer,
-    UserLanguageSerializer,
-    UserCurrencySerializer, )
+    UserProfileSettingsSerializer, )
 from calculator.models import (
     DataEntryLineModel,
     CurrentTariffModel,
     WeatherConditionModel,
     SolarForecastRecordModel,
     WeatherDataModel,
-    GeolocationModel,
     PanelsArrayModel,
-    UserTimezoneModel,
-    UserLanguageModel,
-    UserCurrencyModel, )
+    UserProfileSettingsModel, )
 from calculator.services.data_export import export_data_logic
 from calculator.services.data_import import import_data_logic
 from calculator.services.weather_service import WeatherForecastService
@@ -200,40 +195,80 @@ class DifferenceMonthsStatsApiView(APIView):
 
 
 class WeatherUpdateTaskView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
-        auth_header = request.headers.get('Authorization')
-        cron_secret = os.environ.get('CRON_SECRET')
-
-        if auth_header != f"Bearer {cron_secret}":
-            return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
-
         try:
-            api_url = "https://api.open-meteo.com/v1/forecast"
-            coords = GeolocationModel.objects.first()
+            user_settings = UserProfileSettingsModel.objects.get(user=request.user)
 
-            if not coords:
-                return Response({"error": "No coordinates found in database"}, status=404)
+            if user_settings.latitude is None or user_settings.longitude is None:
+                return Response({"error": "Coordinates not set"}, status=400)
+
+            api_url = "https://api.open-meteo.com/v1/forecast"
 
             params = {
-                "latitude": coords.latitude,
-                "longitude": coords.longitude,
+                "latitude": user_settings.latitude,
+                "longitude": user_settings.longitude,
                 "hourly": "shortwave_radiation,temperature_2m,weather_code,cloud_cover,relative_humidity_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,wind_direction_10m",
                 "daily": "sunrise,sunset",
                 "wind_speed_unit": "ms",
                 "timezone": "Europe/Kyiv",
                 "forecast_days": 1
             }
+
             response = requests.get(api_url, params=params, timeout=10)
             response.raise_for_status()
             weather_data = response.json()
 
             service = WeatherForecastService()
-            # result = service.get_solar_forecast(weather_data)
-            result = service.get_solar_forecast(weather_data, user=None)
+            result = service.get_solar_forecast(weather_data, user=request.user)
 
             return Response({"status": "success", "data": result})
+
+
+        except UserProfileSettingsModel.DoesNotExist:
+            return Response({"error": "Settings not found"}, status=404)
+
         except Exception as e:
             return Response({"status": "error", "message": str(e)}, status=500)
+
+
+# DEPRECATED
+# class WeatherUpdateTaskView(APIView):
+#     def get(self, request):
+#         auth_header = request.headers.get('Authorization')
+#         cron_secret = os.environ.get('CRON_SECRET')
+#
+#         if auth_header != f"Bearer {cron_secret}":
+#             return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+#
+#         try:
+#             api_url = "https://api.open-meteo.com/v1/forecast"
+#             coords = UserProfileSettingsModel.objects.first()
+#
+#             if not coords:
+#                 return Response({"error": "No coordinates found in database"}, status=404)
+#
+#             params = {
+#                 "latitude": coords.latitude,
+#                 "longitude": coords.longitude,
+#                 "hourly": "shortwave_radiation,temperature_2m,weather_code,cloud_cover,relative_humidity_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,wind_direction_10m",
+#                 "daily": "sunrise,sunset",
+#                 "wind_speed_unit": "ms",
+#                 "timezone": "Europe/Kyiv",
+#                 "forecast_days": 1
+#             }
+#             response = requests.get(api_url, params=params, timeout=10)
+#             response.raise_for_status()
+#             weather_data = response.json()
+#
+#             service = WeatherForecastService()
+#             # result = service.get_solar_forecast(weather_data)
+#             result = service.get_solar_forecast(weather_data, user=None)
+#
+#             return Response({"status": "success", "data": result})
+#         except Exception as e:
+#             return Response({"status": "error", "message": str(e)}, status=500)
 
 
 class WeatherConditionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -483,77 +518,87 @@ class SolarForecastRecordViewSet(viewsets.ModelViewSet):
         return queryset.order_by('-date')
 
 
-class GeolocationViewSet(viewsets.ModelViewSet):
-    queryset = GeolocationModel.objects.all()
-    serializer_class = GeolocationSerializer
-
-
-class UserTimezoneViewSet(viewsets.ModelViewSet):
+class UserProfileSettingsAPIView(RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = UserTimezoneModel.objects.all()
-    serializer_class = UserTimezoneSerializer
+    serializer_class = UserProfileSettingsSerializer
 
-    def get_queryset(self):
-        return UserTimezoneModel.objects.filter(user=self.request.user)
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        obj, created = UserTimezoneModel.objects.update_or_create(
-            user=request.user,
-            defaults={'timezone': serializer.validated_data['timezone']}
-        )
-
-        status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
-        return Response(serializer.data, status=status_code)
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        obj = queryset.first()
-        if not obj:
-            return Response({"timezone": ""}, status=status.HTTP_200_OK)
-        serializer = self.get_serializer(obj)
-        return Response(serializer.data)
+    def get_object(self):
+        obj, created = UserProfileSettingsModel.objects.get_or_create(user=self.request.user)
+        return obj
 
 
-class UserLanguageViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    queryset = UserLanguageModel.objects.all()
-    serializer_class = UserLanguageSerializer
-
-    def get_queryset(self):
-        return UserLanguageModel.objects.filter(user=self.request.user)
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        obj, created = UserLanguageModel.objects.update_or_create(
-            user=request.user,
-            defaults={'language': serializer.validated_data['language']}
-        )
-
-        status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
-        return Response(serializer.data, status=status_code)
-
-
-class UserCurrencyViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    queryset = UserCurrencyModel.objects.all()
-    serializer_class = UserCurrencySerializer
-
-    def get_queryset(self):
-        return UserCurrencyModel.objects.filter(user=self.request.user)
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        obj, created = UserCurrencyModel.objects.update_or_create(
-            user=request.user,
-            defaults={'currency': serializer.validated_data['currency']}
-        )
-
-        status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
-        return Response(serializer.data, status=status_code)
+# DEPRECATED
+# class GeolocationViewSet(viewsets.ModelViewSet):
+#     queryset = GeolocationModel.objects.all()
+#     serializer_class = GeolocationSerializer
+#
+#
+# class UserTimezoneViewSet(viewsets.ModelViewSet):
+#     permission_classes = [IsAuthenticated]
+#     queryset = UserTimezoneModel.objects.all()
+#     serializer_class = UserTimezoneSerializer
+#
+#     def get_queryset(self):
+#         return UserTimezoneModel.objects.filter(user=self.request.user)
+#
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#
+#         obj, created = UserTimezoneModel.objects.update_or_create(
+#             user=request.user,
+#             defaults={'timezone': serializer.validated_data['timezone']}
+#         )
+#
+#         status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
+#         return Response(serializer.data, status=status_code)
+#
+#     def list(self, request, *args, **kwargs):
+#         queryset = self.get_queryset()
+#         obj = queryset.first()
+#         if not obj:
+#             return Response({"timezone": ""}, status=status.HTTP_200_OK)
+#         serializer = self.get_serializer(obj)
+#         return Response(serializer.data)
+#
+#
+# class UserLanguageViewSet(viewsets.ModelViewSet):
+#     permission_classes = [IsAuthenticated]
+#     queryset = UserLanguageModel.objects.all()
+#     serializer_class = UserLanguageSerializer
+#
+#     def get_queryset(self):
+#         return UserLanguageModel.objects.filter(user=self.request.user)
+#
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#
+#         obj, created = UserLanguageModel.objects.update_or_create(
+#             user=request.user,
+#             defaults={'language': serializer.validated_data['language']}
+#         )
+#
+#         status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
+#         return Response(serializer.data, status=status_code)
+#
+#
+# class UserCurrencyViewSet(viewsets.ModelViewSet):
+#     permission_classes = [IsAuthenticated]
+#     queryset = UserCurrencyModel.objects.all()
+#     serializer_class = UserCurrencySerializer
+#
+#     def get_queryset(self):
+#         return UserCurrencyModel.objects.filter(user=self.request.user)
+#
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#
+#         obj, created = UserCurrencyModel.objects.update_or_create(
+#             user=request.user,
+#             defaults={'currency': serializer.validated_data['currency']}
+#         )
+#
+#         status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
+#         return Response(serializer.data, status=status_code)

@@ -401,8 +401,24 @@ class WeatherDataModel(models.Model):
 
 
 # ====================================================================
-# USER SETTINGS GROUP
+# USER PROFILE SETTINGS
 # ====================================================================
+class UserProfileSettingsModel(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='settings')
+
+    latitude = models.FloatField(blank=True, null=True, help_text="Latitude")
+    longitude = models.FloatField(blank=True, null=True, help_text="Longitude")
+    timezone = models.CharField(max_length=64, blank=True, default='', verbose_name='Timezone')
+    language = models.CharField(max_length=64, blank=True, default='en', verbose_name='Language')
+    currency = models.CharField(max_length=3, blank=True, default='UAH', verbose_name='Currency')
+
+    def __str__(self):
+        return f'Settings for {self.user.username}'
+
+    class Meta:
+        verbose_name = 'User Settings'
+        verbose_name_plural = 'Users Settings'
+
 
 class CurrentTariffModel(models.Model):
     power_tariff = models.FloatField(verbose_name='Актуальна вартість за Кв', default=4.32)
@@ -426,59 +442,59 @@ class CurrentTariffModel(models.Model):
         except cls.DoesNotExist:
             return cls.objects.create(pk=1)
 
-
-class GeolocationModel(models.Model):
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        related_name='geolocation',
-        null=True
-    )
-    latitude = models.FloatField(blank=True, null=True, help_text="Latitude")
-    longitude = models.FloatField(blank=True, null=True, help_text="Longitude")
-
-    def __str__(self):
-        return f'Current coordinates: Latitude is {self.latitude}, longitude is {self.longitude}'
-
-    class Meta:
-        verbose_name = 'add coordinates'
-        verbose_name_plural = 'Coordinates'
-
-
-class UserTimezoneModel(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
-    timezone = models.CharField(max_length=64, verbose_name='Timezone of the user')
-
-    def __str__(self):
-        return f'User {self.user} time zone - {self.timezone}'
-
-    class Meta:
-        verbose_name = 'add user timezone'
-        verbose_name_plural = 'Users timezones'
-
-
-class UserLanguageModel(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
-    language = models.CharField(max_length=64, verbose_name='Language of the user')
-
-    def __str__(self):
-        return f'User {self.user} language - {self.language}'
-
-    class Meta:
-        verbose_name = 'add user default language'
-        verbose_name_plural = 'Users default languages'
-
-
-class UserCurrencyModel(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
-    currency = models.CharField(max_length=3, verbose_name='Currency of the user')
-
-    def __str__(self):
-        return f'User {self.user} language - {self.currency}'
-
-    class Meta:
-        verbose_name = 'add user default currency'
-        verbose_name_plural = 'Users default currency'
+# DEPRECATED
+# class GeolocationModel(models.Model):
+#     user = models.OneToOneField(
+#         User,
+#         on_delete=models.CASCADE,
+#         related_name='geolocation',
+#         null=True
+#     )
+#     latitude = models.FloatField(blank=True, null=True, help_text="Latitude")
+#     longitude = models.FloatField(blank=True, null=True, help_text="Longitude")
+#
+#     def __str__(self):
+#         return f'Current coordinates: Latitude is {self.latitude}, longitude is {self.longitude}'
+#
+#     class Meta:
+#         verbose_name = 'add coordinates'
+#         verbose_name_plural = 'Coordinates'
+#
+#
+# class UserTimezoneModel(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
+#     timezone = models.CharField(max_length=64, verbose_name='Timezone of the user')
+#
+#     def __str__(self):
+#         return f'User {self.user} time zone - {self.timezone}'
+#
+#     class Meta:
+#         verbose_name = 'add user timezone'
+#         verbose_name_plural = 'Users timezones'
+#
+#
+# class UserLanguageModel(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
+#     language = models.CharField(max_length=64, verbose_name='Language of the user')
+#
+#     def __str__(self):
+#         return f'User {self.user} language - {self.language}'
+#
+#     class Meta:
+#         verbose_name = 'add user default language'
+#         verbose_name_plural = 'Users default languages'
+#
+#
+# class UserCurrencyModel(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
+#     currency = models.CharField(max_length=3, verbose_name='Currency of the user')
+#
+#     def __str__(self):
+#         return f'User {self.user} language - {self.currency}'
+#
+#     class Meta:
+#         verbose_name = 'add user default currency'
+#         verbose_name_plural = 'Users default currency'
 
 
 # ====================================================================

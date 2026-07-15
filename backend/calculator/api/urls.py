@@ -15,25 +15,23 @@ from calculator.api.views import (DataEntryViewSet,
                                   SolarForecastRecordViewSet,
                                   process_client_weather,
                                   SolarYearAnalyticsAPIView,
-                                  GeolocationViewSet,
                                   get_user_profile,
                                   PanelsArrayViewSet,
                                   DataExportView,
                                   get_timezone_by_coords,
-                                  UserTimezoneViewSet,
-                                  UserLanguageViewSet,
-                                  UserCurrencyViewSet, )
+                                  UserProfileSettingsAPIView, )
 
 router = DefaultRouter()
 router.register(r'entries', DataEntryViewSet, basename='entries')
 router.register(r'weather-conditions', WeatherConditionViewSet, basename='weather-conditions')
 router.register(r'forecast/details', WeatherDataViewSet, basename='forecast-details')
 router.register('sunrise-sunset-time', SolarForecastRecordViewSet, basename='sunrise-sinset-time')
-router.register(r'station_coordinates', GeolocationViewSet, basename='station_coordinated')
 router.register(r'panels', PanelsArrayViewSet, basename='panels')
-router.register(r'user_timezone', UserTimezoneViewSet, basename='user_timezone')
-router.register(r'user_language', UserLanguageViewSet, basename='user_language')
-router.register(r'user_currency', UserCurrencyViewSet, basename='user_currency')
+# DEPRECATED
+# router.register(r'station_coordinates', GeolocationViewSet, basename='station_coordinated')
+# router.register(r'user_timezone', UserTimezoneViewSet, basename='user_timezone')
+# router.register(r'user_language', UserLanguageViewSet, basename='user_language')
+# router.register(r'user_currency', UserCurrencyViewSet, basename='user_currency')
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -50,4 +48,5 @@ urlpatterns = [
     # path('data-export/', data_export_view, name='data-export'),
     path('process_weather/', process_client_weather, name='process_client_weather'),
     path('get_timezone/', get_timezone_by_coords, name='get_timezone'),
+    path('user_settings/', UserProfileSettingsAPIView.as_view(), name='user-settings'),
 ]

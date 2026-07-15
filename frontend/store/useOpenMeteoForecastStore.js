@@ -57,7 +57,7 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
 
     const saveTimezone = async (timezone) => {
         try{
-            await backendApi.post('calculator/user_timezone/', {timezone});
+            await backendApi.patch('calculator/user_settings/', {timezone});
             storedTimezone.value = timezone;
             message.value = {text: 'Timezone saved successfully!', type: 'success'};
         } catch (error) {
@@ -68,7 +68,7 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
 
     const fetchTimezone = async () => {
         try {
-            const response = await backendApi.get('calculator/user_timezone/');
+            const response = await backendApi.get('calculator/user_settings/');
             storedTimezone.value = response.data.timezone || (Array.isArray(response.data) ? response.data[0]?.timezone : '');
         } catch (err) {
             message.value = { text: 'Error fetching timezone.', type: 'danger' };
@@ -83,7 +83,7 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
     const saveCoordinates = async (lat, lon) => {
         try {
             loading.value = true;
-            await backendApi.post('calculator/station_coordinates/', {
+            await backendApi.patch('calculator/user_settings/', {
                 latitude: parseFloat(lat),
                 longitude: parseFloat(lon)
             });
@@ -99,7 +99,7 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
 
     const fetchDbCoordinates = async () => {
         try {
-            const response = await backendApi.get('calculator/station_coordinates/');
+            const response = await backendApi.get('calculator/user_settings/');
             const data = response.data.results || response.data;
             if (data && data.length > 0) {
                 const coords = Array.isArray(data) ? data[0] : data;

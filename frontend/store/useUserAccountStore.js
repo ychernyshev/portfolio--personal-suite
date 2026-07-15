@@ -34,7 +34,7 @@ export const useUserAccountStore = defineStore('userAccount', () => {
     try {
       loading.value = true;
 
-      const response = await backendApi.post('/calculator/user_language/', {
+      const response = await backendApi.patch('/calculator/user_settings/', {
         language: langValue
       });
       currentLanguage.value = response.data.language;
@@ -50,7 +50,7 @@ export const useUserAccountStore = defineStore('userAccount', () => {
   const fetchUserLanguage = async () => {
     loading.value = true;
     try {
-      const response = await backendApi.get('/calculator/user_language/');
+      const response = await backendApi.get('/calculator/user_settings/');
       const data = response.data.results || response.data;
 
       if (data && (Array.isArray(data) ? data.length > 0 : true)) {
@@ -74,7 +74,7 @@ export const useUserAccountStore = defineStore('userAccount', () => {
     try {
       loading.value = true;
 
-      const response = await backendApi.post('/calculator/user_currency/', {
+      const response = await backendApi.patch('/calculator/user_settings/', {
         currency: currValue
       });
       currentCurrency.value = response.data.currency;
@@ -91,7 +91,7 @@ export const useUserAccountStore = defineStore('userAccount', () => {
     loading.value = true;
 
     try {
-      const response = await backendApi.get('/calculator/user_currency/');
+      const response = await backendApi.get('/calculator/user_settings/');
       const data = response.data.results || response.data;
 
       if (data && (Array.isArray(data) ? data.length > 0 : true)) {
