@@ -23,7 +23,10 @@ from calculator.api.serializers import (
     WeatherDataSerializer,
     SolarForecastRecordSerializer,
     GeolocationSerializer,
-    PanelsArraySerializer, UserTimezoneSerializer, UserLanguageSerializer, )
+    PanelsArraySerializer,
+    UserTimezoneSerializer,
+    UserLanguageSerializer,
+    UserCurrencySerializer, )
 from calculator.models import (
     DataEntryLineModel,
     CurrentTariffModel,
@@ -31,7 +34,10 @@ from calculator.models import (
     SolarForecastRecordModel,
     WeatherDataModel,
     GeolocationModel,
-    PanelsArrayModel, UserTimezoneModel, UserLanguageModel, )
+    PanelsArrayModel,
+    UserTimezoneModel,
+    UserLanguageModel,
+    UserCurrencyModel, )
 from calculator.services.data_export import export_data_logic
 from calculator.services.data_import import import_data_logic
 from calculator.services.weather_service import WeatherForecastService
@@ -526,6 +532,27 @@ class UserLanguageViewSet(viewsets.ModelViewSet):
         obj, created = UserLanguageModel.objects.update_or_create(
             user=request.user,
             defaults={'language': serializer.validated_data['language']}
+        )
+
+        status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
+        return Response(serializer.data, status=status_code)
+
+
+class UserCurrencyViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = UserCurrencyModel.objects.all()
+    serializer_class = UserCurrencySerializer
+
+    def get_queryset(self):
+        return UserCurrencyModel.objects.filter(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        obj, created = UserCurrencyModel.objects.update_or_create(
+            user=request.user,
+            defaults={'currency': serializer.validated_data['currency']}
         )
 
         status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK

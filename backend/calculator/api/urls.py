@@ -20,7 +20,9 @@ from calculator.api.views import (DataEntryViewSet,
                                   PanelsArrayViewSet,
                                   DataExportView,
                                   get_timezone_by_coords,
-                                  UserTimezoneViewSet, UserLanguageViewSet, )
+                                  UserTimezoneViewSet,
+                                  UserLanguageViewSet,
+                                  UserCurrencyViewSet, )
 
 router = DefaultRouter()
 router.register(r'entries', DataEntryViewSet, basename='entries')
@@ -31,6 +33,7 @@ router.register(r'station_coordinates', GeolocationViewSet, basename='station_co
 router.register(r'panels', PanelsArrayViewSet, basename='panels')
 router.register(r'user_timezone', UserTimezoneViewSet, basename='user_timezone')
 router.register(r'user_language', UserLanguageViewSet, basename='user_language')
+router.register(r'user_currency', UserCurrencyViewSet, basename='user_currency')
 
 urlpatterns = [
     path('', include(router.urls)),
