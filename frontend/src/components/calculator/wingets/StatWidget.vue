@@ -23,7 +23,7 @@ const formatted = computed(() => {
 
 <template>
   <div class="row h-100 align-items-start justify-content-center">
-    <div class="d-inline-flex flex-column align-items-start widget-item">
+    <div class="d-inline-flex flex-column align-items-start widget-item p-0 pt-2 pt-lg-3 pr-2">
       <p data-v-80000e9e="" class="text-purple widget-title">
         {{ title }}
       </p>
@@ -50,7 +50,7 @@ const formatted = computed(() => {
 }
 
 .widget-title {
-  font-size: clamp(1.2rem, 2.8vw, 1.5rem);
+  font-size: clamp(1.2rem, 1vw, 1.5rem);
   font-weight: 500;
   margin-bottom: 0.5rem;
 }
@@ -63,7 +63,7 @@ const formatted = computed(() => {
 }
 
 .widget-huge-number {
-  font-size: clamp(3rem, 10vw, 5.5rem);
+  font-size: clamp(3rem, 10vw, 2.5rem);
   font-weight: 200;
   line-height: 0.5;
 }
@@ -76,7 +76,7 @@ const formatted = computed(() => {
 }
 
 .widget-label-text {
-  font-size: clamp(1.2rem, 2.8vw, 1.5rem);
+  font-size: clamp(1.2rem, 2.8vw, 1rem);
   margin: 0;
   text-transform: lowercase;
   font-weight: 500;

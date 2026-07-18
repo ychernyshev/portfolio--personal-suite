@@ -95,9 +95,9 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="col-sm-12 col-md-6 col-xl-6">
-        <month-stats/>
-      </div>
+<!--      <div class="col-sm-12 col-md-6 col-xl-6">-->
+<!--        <month-stats/>-->
+<!--      </div>-->
     </div>
   </div>
 </template>

@@ -12,6 +12,7 @@
   import { useNotificationStore } from "../../../store/useNotificationStore.js";
   import { useCalculatorStore } from "../../../store/useCalculatorStore";
   import WakeUpLoader from "@/components/calculator/WakeUpLoader.vue";
+  import MonthStats from "@/components/calculator/wingets/MonthStats.vue";
 
   const store = useCalculatorStore();
   const isLoading = ref(false);
@@ -51,23 +52,30 @@
   <main class="main-content">
     <div class="widgets-container">
       <div class="card border-0 neomorphic">
-        <stat-widget
-            title="Total generated"
-            label="power"
-            :value="stats.total_power"
-            unit="kWt"
-        />
-      </div>
-      <div class="card border-0 neomorphic d-flex">
-        <stat-widget
-            title="Total earnings"
-            label="cost"
-            :value="stats.total_cost"
-            unit="UAH"
-            colorClass="text-primary"
-        />
+        <div class="row">
+          <div class="col-6">
+            <stat-widget
+                title="Total generated"
+                label="power"
+                :value="stats.total_power"
+                unit="kWt"
+            />
+          </div>
+          <div class="col-6">
+            <stat-widget
+                title="Total earnings"
+                label="cost"
+                :value="stats.total_cost"
+                unit="UAH"
+                colorClass="text-primary"
+            />
+          </div>
+        </div>
       </div>
       <weather-widget />
+      <div class="card border-0 neomorphic d-flex">
+        <month-stats/>
+      </div>
     </div>
 
     <section class="table-section neomorphic pl-4 pr-4">
@@ -91,10 +99,13 @@
   gap: 20px;
   margin-bottom: 30px;
 }
-.widgets-container .card:nth-child(1),
-.widgets-container .card:nth-child(2) { width: 100%; }
+.widgets-container .card:nth-child(1) { grid-column: span 2; width: 100%; }
+.widgets-container .card:nth-child(2) { grid-column: span 2; width: 100%; }
 .widgets-container .card:nth-child(3) { grid-column: span 2; width: 100%; }
 @media (min-width: 1200px) {
   .widgets-container { grid-template-columns: repeat(4, 1fr); }
+  .widgets-container .card:nth-child(1) { grid-column: span 1; width: 100%; }
+  .widgets-container .card:nth-child(2) { grid-column: span 2; width: 100%; }
+  .widgets-container .card:nth-child(3) { grid-column: span 1; width: 100%; }
 }
 </style>
