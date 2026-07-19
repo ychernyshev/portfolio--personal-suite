@@ -19,7 +19,8 @@ from calculator.api.views import (DataEntryViewSet,
                                   PanelsArrayViewSet,
                                   DataExportView,
                                   get_timezone_by_coords,
-                                  UserProfileSettingsAPIView, )
+                                  UserProfileSettingsAPIView,
+                                  get_weather_day_data, )
 
 router = DefaultRouter()
 router.register(r'entries', DataEntryViewSet, basename='entries')
@@ -47,6 +48,7 @@ urlpatterns = [
     path('data-export/', DataExportView.as_view(), name='data-export'),
     # path('data-export/', data_export_view, name='data-export'),
     path('process_weather/', process_client_weather, name='process_client_weather'),
+    path('current_day_weather/', get_weather_day_data, name='current_day_weather_data'),
     path('get_timezone/', get_timezone_by_coords, name='get_timezone'),
     path('user_settings/', UserProfileSettingsAPIView.as_view(), name='user-settings'),
 ]

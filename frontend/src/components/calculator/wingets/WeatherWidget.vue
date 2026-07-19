@@ -2,11 +2,11 @@
 <script setup>
 import {onMounted, ref} from 'vue';
 import {storeToRefs} from "pinia";
-import IconsMap from "../IconsMap.vue";
-import MonthStats from "./MonthStats.vue";
+import IconsMap from "../IconsMap/IconsMap.vue";
 import {useMovementOfTheSunStore} from "../../../../store/useMovementOfTheSunStore.js";
 import {useOpenMeteoForecastStore} from "../../../../store/useOpenMeteoForecastStore.js";
 import LocationRequiredPlaceholder from "@/components/calculator/wingets/LocationRequiredPlaceholder.vue";
+import WeatherDuringTheDayChart from "@/components/calculator/charts/WeatherDuringTheDayChart/WeatherDuringTheDayChart.vue";
 
 const sunMovementStore = useMovementOfTheSunStore();
 const {windSpeedAlert} = storeToRefs(sunMovementStore);
@@ -95,9 +95,9 @@ onMounted(() => {
         </div>
       </div>
 
-<!--      <div class="col-sm-12 col-md-6 col-xl-6">-->
-<!--        <month-stats/>-->
-<!--      </div>-->
+      <div class="col-sm-12 col-md-6 col-xl-6">
+        <weather-during-the-day-chart />
+      </div>
     </div>
   </div>
 </template>

@@ -68,6 +68,25 @@ def process_client_weather(request):
         return Response({"status": "error", "message": str(e)}, status=500)
 
 
+# CURRENT DAY WEATHER
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_weather_day_data(request):
+    today = timezone.localtime().date()
+    records = WeatherDataModel.objects.filter(timestamp__date=today).order_by('timestamp')
+
+    result = [
+        {
+            "time": rec.timestamp.isoformat(),
+            "shortwave_radiation": rec.shortwave_radiation,
+            "weather_code": rec.condition_code,
+            "temperature": rec.temperature,
+        }
+        for rec in records
+    ]
+    return Response({"status": "success", "data": result})
+
+
 # @csrf_exempt
 # def process_client_weather(request):
 #     if request.method == 'POST':
@@ -136,7 +155,9 @@ class DataEntryViewSet(viewsets.ModelViewSet):
         result = import_data_logic(request.FILES.get('file'))
         return Response(result, status=status.HTTP_201_CREATED)
 
+
 class CurrentTariffViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset = CurrentTariffModel.objects.all()
     serializer_class = CurrentTariffSerializer
 

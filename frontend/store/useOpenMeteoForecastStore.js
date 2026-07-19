@@ -2,6 +2,7 @@
 import {defineStore} from 'pinia';
 import {ref} from 'vue';
 import backendApi from "@/services/backendApi.ts";
+import {useUserProfileSettingsStore} from "./useUserProfileSettingsStore.js";
 
 export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
     const forecast = ref(null);
@@ -22,6 +23,8 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
     const storedTimezone = ref('');
 
     const message = ref({});
+
+    const weatherDayData = ref([]);
 
     // ====================================================================
     // TIMEZONE
@@ -187,6 +190,15 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
         }
     };
 
+    const fetchDayForecast = async () => {
+        try {
+            const response = await backendApi.get('calculator/current_day_weather/');
+            weatherDayData.value = response.data.data;
+        } catch (err) {
+            console.error("Error fetching weather day data:", err);
+        }
+    };
+
     return {
         forecast,
         loading,
@@ -196,7 +208,11 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
         browserLon,
         dbLat,
         dbLon,
+
         fetchForecast,
+        fetchDayForecast,
+        weatherDayData,
+
         fetchDbCoordinates,
         saveCoordinates,
         detectTimezone,
