@@ -20,6 +20,7 @@ const solarForecastStore = useOpenMeteoForecastStore();
 const { forecast, weatherDayData } = storeToRefs(solarForecastStore);
 const currentTime = ref(new Date());
 const chartRef = ref<{ chart: Chart } | null>(null);
+const iconCache: Record<string, HTMLImageElement> = {};
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler);
 
@@ -31,13 +32,20 @@ const weatherIconPlugin = {
 
     meta.data.forEach((point: any, index: number) => {
       const weatherRecord = weatherDayData.value[index];
-      if (weatherRecord && weatherRecord.weather_code) {
+      if (weatherRecord?.weather_code) {
         const iconSrc = getWeatherIconSrc(weatherRecord.weather_code);
-        const img = new Image();
-        img.src = iconSrc;
 
+        if (!iconCache[iconSrc]) {
+          const img = new Image();
+          img.src = iconSrc;
+          iconCache[iconSrc] = img;
+        }
+
+        const img = iconCache[iconSrc];
         if (img.complete) {
           ctx.drawImage(img, point.x - 12, point.y - 35, 24, 24);
+        } else {
+          img.onload = () => chart.draw();
         }
       }
     });
@@ -81,7 +89,7 @@ onMounted(() => {
 
   const timer = setInterval(() => {
     currentTime.value = new Date();
-  }, 60000); // Оновлюємо кожну хвилину
+  }, 60000);
 
   onUnmounted(() => clearInterval(timer));
 })
@@ -157,7 +165,7 @@ const chartOptions = computed(() => ({
 </script>
 
 <template>
-  <div class="chart-container h-100">
+  <div class="chart-container">
     <Line
         ref="chartRef"
         v-if="forecast"
@@ -172,7 +180,7 @@ const chartOptions = computed(() => ({
 <style scoped>
 .chart-container {
   position: relative;
-  height: 170px;
+  height: 200px;
   width: 100%;
 }
 </style>
