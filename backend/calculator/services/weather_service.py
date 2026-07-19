@@ -86,6 +86,7 @@ class WeatherForecastService:
 
             temp = weather_h.get('temperature_2m', [0])[safe_h]
             code = weather_h.get('weather_code', [0])[safe_h]
+            wind_dir = weather_h.get('wind_direction_10m', [0])[safe_h]
 
             result_dict = {
                 "predicted_total_kwh": round(sum(total_hourly_wh) / 1000, 2),
@@ -98,6 +99,7 @@ class WeatherForecastService:
                 "weather_code": code,
                 "calibration_factor": round(calibration_factor, 2),
                 "peak_hour": total_hourly_wh.index(max(total_hourly_wh)) if total_hourly_wh else 0,
+                "wind_direction": wind_dir,
             }
 
             cache.set(cache_key, result_dict, 3600)

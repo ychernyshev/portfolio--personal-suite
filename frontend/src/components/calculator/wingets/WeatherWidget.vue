@@ -24,6 +24,22 @@ const onDatePicked = (day) => {
   showDetailChart.value = true;
 };
 
+const getWindDirectionData = (degrees) => {
+  const directions = [
+    { label: 'North', arrow: '↑' },
+    { label: 'North-East', arrow: '↗' },
+    { label: 'East', arrow: '→' },
+    { label: 'South-East', arrow: '↘' },
+    { label: 'South', arrow: '↓' },
+    { label: 'South-West', arrow: '↙' },
+    { label: 'West', arrow: '←' },
+    { label: 'North-West', arrow: '↖' }
+  ];
+
+  const index = Math.round((degrees % 360) / 45) % 8;
+  return directions[index];
+};
+
 onMounted(() => {
   solarForecastStore.fetchForecast();
 });
@@ -84,6 +100,16 @@ onMounted(() => {
                     <span class="fw-bold">{{ windSpeedAlert.maxGust }}</span>
                     m/s
                   </span>
+
+                  <div class="wind-direction">
+                    <span
+                        class="arrow text-warning fw-bold mr-1"
+                        :style="{ transform: `rotate(${forecast.wind_direction}deg)`, display: 'inline-block', transition: 'transform 0.5s ease' }"
+                    >
+                      ↑
+                    </span>
+                    <span>{{ getWindDirectionData(forecast.wind_direction).label }}</span>
+                  </div>
                 </div>
               </div>
             </div>
