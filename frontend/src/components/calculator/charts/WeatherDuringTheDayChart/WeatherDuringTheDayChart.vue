@@ -78,7 +78,7 @@ const currentTimePlugin = {
       ctx.fillStyle = '#9CA3AF';
       ctx.font = 'bold 9px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('NOW', xPos, top - 10);
+      ctx.fillText('NOW', xPos, 20);
       ctx.restore();
     }
   }
@@ -158,8 +158,8 @@ const chartOptions = computed(() => ({
     }
   },
   scales: {
-    x: { grid: { display: false }, ticks: { color: '#6b7280', maxRotation: 0 } },
-    y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#6b7280' } }
+    x: { beginAtZero: true, grace: '10%',grid: { display: false }, ticks: { color: '#6b7280', maxRotation: 0 } },
+    y: { beginAtZero: true, grace: '10%', grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#6b7280' } }
   }
 }));
 </script>
@@ -180,7 +180,7 @@ const chartOptions = computed(() => ({
 <style scoped>
 .chart-container {
   position: relative;
-  height: 200px;
+  height: 170px;
   width: 100%;
 }
 </style>
