@@ -26,14 +26,14 @@ const onDatePicked = (day) => {
 
 const getWindDirectionData = (degrees) => {
   const directions = [
-    { label: 'North', arrow: '↑' },
-    { label: 'North-East', arrow: '↗' },
-    { label: 'East', arrow: '→' },
-    { label: 'South-East', arrow: '↘' },
-    { label: 'South', arrow: '↓' },
-    { label: 'South-West', arrow: '↙' },
-    { label: 'West', arrow: '←' },
-    { label: 'North-West', arrow: '↖' }
+    { label: 'North', arrow: '↑', style: 'text-primary' },
+    { label: 'North-East', arrow: '↗', style: 'text-primary-emphasis' },
+    { label: 'East', arrow: '→', style: 'text-success' },
+    { label: 'South-East', arrow: '↘', style: 'text-warning-emphasis' },
+    { label: 'South', arrow: '↓', style: 'text-warning' },
+    { label: 'South-West', arrow: '↙', style: 'text-warning-emphasis' },
+    { label: 'West', arrow: '←', style: 'text-success' },
+    { label: 'North-West', arrow: '↖', style: 'text-primary-emphasis' }
   ];
 
   const index = Math.round((degrees % 360) / 45) % 8;
@@ -103,7 +103,8 @@ onMounted(() => {
 
                   <div class="wind-direction">
                     <span
-                        class="arrow text-warning fw-bold mr-1"
+                        class="arrow fw-bold mr-1"
+                        :class="getWindDirectionData(forecast.wind_direction).style"
                         :style="{ transform: `rotate(${forecast.wind_direction}deg)`, display: 'inline-block', transition: 'transform 0.5s ease' }"
                     >
                       ↑
