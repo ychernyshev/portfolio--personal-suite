@@ -15,7 +15,7 @@ export const useNotificationStore = defineStore('notifications', () => {
 
         messages.value.unshift(newMessage);
 
-        if (messages.value.length > 2) {
+        if (messages.value.length > 8) {
             messages.value.pop();
         }
     };

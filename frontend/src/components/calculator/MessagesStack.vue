@@ -53,9 +53,9 @@ defineExpose({ pushLocalMessage });
 </script>
 
 <template>
-  <div class="notification-stack">
+  <div class="notification-stack w-100 pl-4 pr-1">
     <transition-group name="list" tag="div">
-      <div v-for="msg in messages" :key="msg.id" class="msg-card shadow-sm" :class="msg.level">
+      <div v-for="msg in messages" :key="msg.id" class="msg-card shadow-sm rounded-2" :class="msg.level">
         <div class="d-flex align-items-center">
           <img :src="getIcon(msg.msg_type)" class="me-2 text-dark icon"  alt=""/>
           <div>
@@ -71,10 +71,10 @@ defineExpose({ pushLocalMessage });
 <style scoped>
 .notification-stack {
   position: absolute;
-  top: -5rem;
+  top: -20rem;
   right: 10px;
   z-index: 1000;
-  width: 300px;
+  width: 1400px;
 }
 
 .msg-card {
@@ -82,7 +82,6 @@ defineExpose({ pushLocalMessage });
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 12px;
   padding: 12px;
   margin-bottom: 8px;
   transition: all 0.5s ease;
@@ -98,17 +97,6 @@ defineExpose({ pushLocalMessage });
 @media (min-width: 1200px) {
   .notification-stack {
     width: 390px;
-  }
-
-  .msg-card {
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 8px;
-    transition: all 0.5s ease;
   }
 }
 
