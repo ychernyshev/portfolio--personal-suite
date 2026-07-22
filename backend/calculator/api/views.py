@@ -10,7 +10,7 @@ from django.utils.dateparse import parse_datetime
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action, api_view, permission_classes, authentication_classes
-from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.generics import RetrieveUpdateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -24,7 +24,8 @@ from calculator.api.serializers import (
     WeatherDataSerializer,
     SolarForecastRecordSerializer,
     PanelsArraySerializer,
-    UserProfileSettingsSerializer, )
+    UserProfileSettingsSerializer,
+    SystemEventSerializer, )
 from calculator.models import (
     DataEntryLineModel,
     CurrentTariffModel,
@@ -32,7 +33,8 @@ from calculator.models import (
     SolarForecastRecordModel,
     WeatherDataModel,
     PanelsArrayModel,
-    UserProfileSettingsModel, )
+    UserProfileSettingsModel,
+    SystemEventModel, )
 from calculator.services.data_export import export_data_logic
 from calculator.services.data_import import import_data_logic
 from calculator.services.weather_service import WeatherForecastService
@@ -546,6 +548,23 @@ class UserProfileSettingsAPIView(RetrieveUpdateAPIView):
     def get_object(self):
         obj, created = UserProfileSettingsModel.objects.get_or_create(user=self.request.user)
         return obj
+
+
+class SystemEventAPIView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = SystemEventSerializer
+
+    def get_queryset(self):
+        queryset = SystemEventModel.objects.all()
+        date_param = self.request.query_params.get('date')
+
+        if date_param:
+            naive_dt = parse_datetime(date_param)
+            if naive_dt:
+                aware_dt = timezone.make_aware(naive_dt)
+                queryset = queryset.filter(created_at__date=aware_dt.date())
+
+        return queryset.order_by('-created_at')
 
 
 # DEPRECATED

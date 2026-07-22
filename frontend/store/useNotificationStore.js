@@ -7,7 +7,7 @@ export const useNotificationStore = defineStore('notifications', () => {
 
     const initMessages = async () => {
         try {
-            const response = await backendApi.get('system-messages/?limit=8');
+            const response = await backendApi.get('calculator/system_messages/?limit=8');
             const data = response.data.results || response.data;
 
             if (Array.isArray(data)) {
@@ -51,7 +51,7 @@ export const useNotificationStore = defineStore('notifications', () => {
 });
 
 
-<!--DEPRECATED-->
+//DEPRECATED
 // import { defineStore } from 'pinia';
 // import { ref } from 'vue';
 //

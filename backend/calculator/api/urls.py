@@ -20,7 +20,8 @@ from calculator.api.views import (DataEntryViewSet,
                                   DataExportView,
                                   get_timezone_by_coords,
                                   UserProfileSettingsAPIView,
-                                  get_weather_day_data, )
+                                  get_weather_day_data,
+                                  SystemEventAPIView, )
 
 router = DefaultRouter()
 router.register(r'entries', DataEntryViewSet, basename='entries')
@@ -51,4 +52,5 @@ urlpatterns = [
     path('current_day_weather/', get_weather_day_data, name='current_day_weather_data'),
     path('get_timezone/', get_timezone_by_coords, name='get_timezone'),
     path('user_settings/', UserProfileSettingsAPIView.as_view(), name='user-settings'),
+    path('system_messages/', SystemEventAPIView.as_view(), name='system_messages'),
 ]
