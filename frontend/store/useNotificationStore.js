@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import backendApi from "@/services/calculator/backendApi.js";
+import backendApi from "@/services/backendApi.ts";
 
 export const useNotificationStore = defineStore('notifications', () => {
     const messages = ref([]);

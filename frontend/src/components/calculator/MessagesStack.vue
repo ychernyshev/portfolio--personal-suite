@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup>
+import {onMounted} from "vue";
 import { storeToRefs } from "pinia";
 import { useNotificationStore } from "../../../store/useNotificationStore.js";
 
@@ -11,8 +12,6 @@ import errorIcon from '../../../public/assets/calculator/images/icons/messages/e
 
 const notificationStore = useNotificationStore();
 const { messages } = storeToRefs(notificationStore);
-
-notificationStore.initMessages();
 
 const getIcon = (type) => {
   const icons = {
@@ -31,6 +30,10 @@ const pushLocalMessage = (newMsg) => {
 };
 
 defineExpose({ pushLocalMessage });
+
+onMounted(async () => {
+  await notificationStore.initMessages();
+});
 </script>
 
 <template>
