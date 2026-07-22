@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup>
-import {onMounted} from "vue";
+import {onMounted, onUnmounted} from "vue";
 import { storeToRefs } from "pinia";
 import { useNotificationStore } from "../../../store/useNotificationStore.js";
 
@@ -25,15 +25,21 @@ const getIcon = (type) => {
   return icons[type] || 'bi-bell';
 };
 
+onMounted(async () => {
+  await notificationStore.initMessages();
+
+  notificationStore.connectWebSocket();
+});
+
+onUnmounted(() => {
+  notificationStore.disconnectWebSocket();
+});
+
 const pushLocalMessage = (newMsg) => {
   notificationStore.addNotification(newMsg);
 };
 
 defineExpose({ pushLocalMessage });
-
-onMounted(async () => {
-  await notificationStore.initMessages();
-});
 </script>
 
 <template>
