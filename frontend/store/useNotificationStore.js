@@ -11,13 +11,15 @@ export const useNotificationStore = defineStore('notifications', () => {
             const data = response.data.results || response.data;
 
             if (Array.isArray(data)) {
-                messages.value = data.slice(0, 8).map(m => ({
+                const dbMessages = data.slice(0, 8).map(m => ({
                     id: m.id || Date.now() + Math.random(),
                     title: m.title || 'Notification',
                     text: m.text || '',
                     level: m.level || 'info',
                     msg_type: m.msg_type || 'info',
+                    isPersistent: true,
                 }));
+                messages.value = dbMessages;
             }
         } catch (e) {
             console.error("Помилка завантаження повідомлень з бази даних", e);
@@ -31,6 +33,7 @@ export const useNotificationStore = defineStore('notifications', () => {
             text: payload.text || '',
             level: payload.level || 'info',
             msg_type: payload.msg_type || 'info',
+            isPersistent: payload.isPersistent !== undefined ? payload.isPersistent : false,
         };
 
         messages.value.unshift(newMessage);

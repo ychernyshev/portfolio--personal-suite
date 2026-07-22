@@ -550,6 +550,8 @@ class SystemEventModel(models.Model):
     event_timestamp = models.DateTimeField(null=True, blank=True, db_index=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
+    isPersistent = models.BooleanField(default=True)
+
     class Meta:
         ordering = ['-created_at']
         verbose_name = 'add system event'
@@ -559,6 +561,7 @@ class SystemEventModel(models.Model):
         return f"{self.category} | {self.title}"
 
 
+# DEPRECATED
 class SystemMessage(models.Model):
     LEVEL_CHOICES = (
         ('info', 'Info'),

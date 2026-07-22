@@ -59,7 +59,8 @@ const submitForm = async () => {
       title: 'Data has been recorded',
       text: 'Power indicators successfully updated.',
       level: 'success',
-      msg_type: 'success'
+      msg_type: 'success',
+      isPersistent: false,
     });
     emit("entry-added", {
       title: "New solar power generation data for the day has been added"
@@ -87,7 +88,8 @@ const submitForm = async () => {
       title: 'Error',
       text: 'Failed to save data.',
       level: 'danger',
-      msg_type: 'warning'
+      msg_type: 'warning',
+      isPersistent: false,
     });
     emit("entry-added", { title: "Error", level: "danger", error: e });
   }
