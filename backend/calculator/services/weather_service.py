@@ -1,9 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 import datetime
+
 from django.core.cache import cache
-from django.db.models import Model
 from django.utils import timezone
-from twisted.conch.client import default
 
 from calculator.models import (
     CurrentTariffModel,
@@ -107,7 +106,7 @@ class WeatherForecastService:
             self.check_and_log_wind_alert(data)
 
             self.check_and_log_peak_events(data, result_dict.get('peak_hour'))
-            
+
             return result_dict
         except Exception as e:
             print(f"WeatherService Error: {e}")
@@ -121,6 +120,44 @@ class WeatherForecastService:
         sunset = datetime.datetime.fromisoformat(sunset_str)
 
         return timezone.make_aware(sunrise), timezone.make_aware(sunset)
+
+    # CELERY
+    def _fetch_raw_weather_from_api(self, lat, lon):
+        import requests
+        url = (
+            f"https://api.open-meteo.com/v1/forecast"
+            f"?latitude={lat}&longitude={lon}"
+            f"&hourly=temperature_2m,relative_humidity_2m,surface_pressure,cloud_cover,"
+            f"shortwave_radiation,direct_radiation,diffuse_radiation,wind_speed_10m,"
+            f"wind_gusts_10m,wind_direction_10m,weather_code"
+            f"&daily=sunrise,sunset&timezone=auto"
+        )
+        try:
+            response = requests.get(url, timeout=10)
+            if response.status_code == 200:
+                return response.json()
+        except Exception as e:
+            print(f"Weather API Fetch Error: {e}")
+        return None
+
+    def update_forecast_for_user(self, user):
+        try:
+            settings = getattr(user, 'settings', None)
+            if not settings or settings.latitude is None or settings.longitude is None:
+                return False
+
+            raw_data = self._fetch_raw_weather_from_api(settings.latitude, settings.longitude)
+            if not raw_data:
+                return False
+
+            self.get_solar_forecast(raw_data, user)
+            return True
+
+        except Exception as e:
+            print(f"Error updating forecast for user {user.username}: {e}")
+            return False
+    # END
+
 
     def save_forecast_to_db(self, forecast_data, raw_api_data):
         try:
@@ -239,7 +276,7 @@ class WeatherForecastService:
                         }
                     )
 
-    def check_and_log_peak_events(self, raw_api_data, peak_hour):
+    def check_and_log_peak_events(self, raw_api_data, peak_hour, user=None):
         if peak_hour is None:
             return
 
@@ -249,7 +286,6 @@ class WeatherForecastService:
             return
 
         now = timezone.localtime(timezone.now())
-        today = now.date()
 
         peak_start_dt = datetime.datetime.fromisoformat(timestamps[peak_hour])
         peak_start_aware = timezone.make_aware(peak_start_dt)
@@ -261,36 +297,42 @@ class WeatherForecastService:
         else:
             peak_end_aware = None
 
+        base_filter = {'category': 'FORECAST'}
+        if user:
+            base_filter['user'] = user
+
         if now.hour >= peak_start_dt.hour:
             if not SystemEventModel.objects.filter(
-                    category='FORECAST',
+                    **base_filter,
                     event_timestamp=peak_start_aware,
                     title__icontains='Peak generation started'
             ).exists():
                 SystemEventModel.objects.update_or_create(
-                    category='FORECAST',
+                    **base_filter,
                     event_timestamp=peak_start_aware,
                     defaults={
                         'level': 'SUCC',
                         'title': f'Peak generation started at {peak_start_dt.strftime("%H:%M")} ☀️',
                         'payload': {'peak_hour': peak_hour, 'status': 'PEAK_START'},
                         'is_persistent': True,
+                        'user': user
                     }
                 )
 
         if peak_end_aware and now.hour >= peak_end_dt.hour:
             if not SystemEventModel.objects.filter(
-                    category='FORECAST',
+                    **base_filter,
                     event_timestamp=peak_end_aware,
                     title__icontains='Peak generation ended'
             ).exists():
                 SystemEventModel.objects.update_or_create(
-                    category='FORECAST',
+                    **base_filter,
                     event_timestamp=peak_end_aware,
                     defaults={
                         'level': 'INFO',
                         'title': f'Peak generation ended at {peak_end_dt.strftime("%H:%M")} ⛅',
                         'payload': {'peak_hour': peak_hour, 'status': 'PEAK_END'},
                         'is_persistent': True,
+                        'user': user
                     }
                 )

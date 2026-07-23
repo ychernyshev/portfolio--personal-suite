@@ -9,6 +9,7 @@ from datetime import timedelta
 from pathlib import Path
 
 import dj_database_url
+from celery.schedules import crontab
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -243,4 +244,15 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'unique-snowflake',
     }
+}
+
+CELERY_BEAT_SCHEDULE = {
+    'daily-solar-planner-6am': {
+        'task': 'calculator.tasks.daily_solar_planner_task',
+        'schedule': crontab(hour=0, minute=1),
+    },
+    'hourly-weather-check': {
+        'task': 'calculator.tasks.hourly_weather_check_task',
+        'schedule': crontab(minute=0),
+    },
 }
