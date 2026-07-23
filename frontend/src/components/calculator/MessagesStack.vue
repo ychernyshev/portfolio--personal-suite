@@ -30,8 +30,6 @@ onMounted(async () => {
   notificationStore.initWebSocket();
 
   await notificationStore.initMessages();
-
-  notificationStore.connectWebSocket();
 });
 
 onUnmounted(() => {

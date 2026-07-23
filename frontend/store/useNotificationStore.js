@@ -79,38 +79,6 @@ export const useNotificationStore = defineStore('notifications', () => {
         messages.value = messages.value.filter(m => m.id !== id);
     };
 
-    const connectWebSocket = () => {
-        if (socket && socket.readyState === WebSocket.OPEN) return;
-
-        const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-        const host = window.location.host; 
-
-        socket = new WebSocket(`${protocol}${host}/ws/inbox/`);
-
-        socket.onopen = () => {
-            console.log("WebSocket підключено до inbox_updates");
-        };
-
-        socket.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                addNotification(data);
-            } catch (e) {
-                console.error("Помилка парсингу WebSocket повідомлення", e);
-            }
-        };
-
-        socket.onclose = () => {
-            console.log("WebSocket з'єднання закрите. Спроба перепідключення через 5 сек...");
-            setTimeout(connectWebSocket, 5000);
-        };
-
-        socket.onerror = (error) => {
-            console.error("WebSocket помилка:", error);
-            socket.close();
-        };
-    };
-
     const disconnectWebSocket = () => {
         if (socket) {
             socket.close();
@@ -124,7 +92,6 @@ export const useNotificationStore = defineStore('notifications', () => {
         addNotification,
         removeNotification,
         initWebSocket,
-        connectWebSocket,
         disconnectWebSocket
     };
 });
