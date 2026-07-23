@@ -6,4 +6,5 @@ from personal.services import consumers
 
 websocket_urlpatterns = [
     re_path(r"^ws/inbox/$", consumers.InboxConsumer.as_asgi()),
+    re_path(r"^ws/calculator/events/$", consumers.CalculatorEventConsumer.as_asgi()),
 ]

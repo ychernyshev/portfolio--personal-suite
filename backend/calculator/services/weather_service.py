@@ -217,7 +217,7 @@ class WeatherForecastService:
                 if not SystemEventModel.objects.filter(
                         category='WARNING',
                         message__contains=time_str
-                ):
+                ).exists():
                     event_data = {
                         'wind': max_wind,
                         'gust': max_gust,

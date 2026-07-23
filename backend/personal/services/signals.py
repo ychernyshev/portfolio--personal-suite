@@ -6,6 +6,9 @@ from django.dispatch import receiver
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
+# CALCULATOR
+from calculator.models import SystemEventModel
+
 
 @receiver(post_save, sender='personal.InboundMessageModel')
 def notify_new_message(sender, instance, created, **kwargs):
@@ -22,6 +25,26 @@ def notify_new_message(sender, instance, created, **kwargs):
             "inbox_updates",
             {
                 "type": "inbox.message",
+                "content": serializer.data
+            }
+        )
+
+
+@receiver(post_save, sender=SystemEventModel)
+def notify_system_event(sender, instance, created, **kwargs):
+    if kwargs.get('raw'):
+        return
+
+    if created:
+        from calculator.api.serializers import SystemEventSerializer
+
+        channel_layer = get_channel_layer()
+        serializer = SystemEventSerializer(instance)
+
+        async_to_sync(channel_layer.group_send)(
+            "calculator_events",
+            {
+                "type": "system.event",
                 "content": serializer.data
             }
         )

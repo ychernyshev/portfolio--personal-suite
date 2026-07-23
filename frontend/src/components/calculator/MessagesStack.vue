@@ -12,6 +12,7 @@ import errorIcon from '../../../public/assets/calculator/images/icons/messages/e
 
 const notificationStore = useNotificationStore();
 const { messages } = storeToRefs(notificationStore);
+let socketInstance = null;
 
 const getIcon = (type) => {
   const icons = {
@@ -26,6 +27,8 @@ const getIcon = (type) => {
 };
 
 onMounted(async () => {
+  notificationStore.initWebSocket();
+
   await notificationStore.initMessages();
 
   notificationStore.connectWebSocket();
@@ -33,6 +36,10 @@ onMounted(async () => {
 
 onUnmounted(() => {
   notificationStore.disconnectWebSocket();
+
+  if (socketInstance) {
+    socketInstance.close();
+  }
 });
 
 const pushLocalMessage = (newMsg) => {
