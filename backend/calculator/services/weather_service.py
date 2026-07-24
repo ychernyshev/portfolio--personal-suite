@@ -256,7 +256,7 @@ class WeatherForecastService:
                 # today = timezone.localtime().date()
                 if not SystemEventModel.objects.filter(
                         category='WARNING',
-                        message__contains=time_str
+                        title__icontains=time_str
                 ).exists():
                     event_data = {
                         'wind': max_wind,

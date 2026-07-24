@@ -252,8 +252,8 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'calculator.tasks.daily_solar_planner_task',
         'schedule': crontab(hour=0, minute=1),
     },
-    'hourly-weather-check': {
-        'task': 'calculator.tasks.hourly_weather_check_task',
+    'hourly-weather-and-peaks-check': {
+        'task': 'calculator.tasks.hourly_weather_and_peaks_check_task',
         'schedule': crontab(minute=0),
     },
 }
