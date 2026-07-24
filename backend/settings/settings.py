@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'djoser',
     "anymail",
+    'django_celery_beat',
     'personal.apps.PersonalConfig',
     'calculator.apps.CalculatorConfig',
 ]

@@ -21,6 +21,32 @@ services:
     ports:
       - "6379:6379"
 
+  celery_worker:
+    build: .
+    command: celery -A settings worker --loglevel=info
+    volumes:
+      - .:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=settings.settings
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+      - web
+
+  celery_beat:
+    build: .
+    command: celery -A settings beat -l info -S django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - .:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=settings.settings
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+      - web
+
   backend:
     build: .
     container_name: espace_backend_dev
