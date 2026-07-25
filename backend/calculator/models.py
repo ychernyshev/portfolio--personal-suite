@@ -586,9 +586,26 @@ class PeakEventModel(models.Model):
     def __str__(self):
         return f"{self.status} at {self.peak_hour}:00"
 
+    @property
+    def formatted_hour(self):
+        return f"{self.peak_hour:02d}:00"
+
+    @property
+    def formatted_time_range(self):
+        if self.status == 'PEAK_START':
+            end_hour = (self.peak_hour + 1) % 24
+            return f"{self.peak_hour:02d}:00 - {end_hour:02d}:00"
+        return f"{self.peak_hour:02d}:00"
+
     class Meta:
         verbose_name = 'Peak generation event'
         verbose_name_plural = 'Peak Generation Events'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['daily_event', 'user', 'peak_hour', 'status'],
+                name='unique_peak_event_per_user_day'
+            )
+        ]
 
 
 # DEPRECATED
