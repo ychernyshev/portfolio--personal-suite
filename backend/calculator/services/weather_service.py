@@ -105,7 +105,7 @@ class WeatherForecastService:
             self.save_forecast_to_db(result_dict, data)
             self.check_and_log_wind_alert(data)
 
-            self.check_and_log_peak_events(data, result_dict.get('peak_hour'))
+            self.check_and_log_peak_events(data, result_dict.get('peak_hour'), user=user)
 
             return result_dict
         except Exception as e:
@@ -239,21 +239,27 @@ class WeatherForecastService:
 
         hourly_raw = raw_api_data.get('hourly', {})
         wind_speeds = hourly_raw.get('wind_speed_10m', [])
-        gust_speeds = hourly_raw.get('wind_gusts_10m', [])
+        wind_gusts = hourly_raw.get('wind_gusts_10m', [])
         wind_direction = hourly_raw.get('wind_direction_10m', [])
         timestamps = hourly_raw.get('time', [])
 
-        for i in range(len(wind_speeds)):
-            max_wind = wind_speeds[i]
-            max_gust = gust_speeds[i]
+        # Отримуємо поточну локальну дату
+        today = timezone.localtime(timezone.now()).date()
 
+        for i in range(len(wind_speeds)):
             dt = datetime.datetime.fromisoformat(timestamps[i])
             aware_dt = timezone.make_aware(dt)
+
+            # Перевіряємо вітер ТІЛЬКИ для сьогоднішнього дня
+            if aware_dt.date() != today:
+                continue
+
+            max_wind = wind_speeds[i]
+            max_gust = wind_gusts[i]
 
             if max_wind >= threshold or max_gust >= threshold:
                 time_str = timestamps[i]
 
-                # today = timezone.localtime().date()
                 if not SystemEventModel.objects.filter(
                         category='WARNING',
                         title__icontains=time_str
@@ -278,61 +284,120 @@ class WeatherForecastService:
 
     def check_and_log_peak_events(self, raw_api_data, peak_hour, user=None):
         if peak_hour is None:
+            print("DEBUG PEAK: peak_hour is None")
             return
 
         hourly_raw = raw_api_data.get('hourly', {})
         timestamps = hourly_raw.get('time', [])
         if not timestamps or peak_hour >= len(timestamps):
+            print("DEBUG PEAK: Invalid timestamps or peak_hour index out of range")
             return
 
-        now = timezone.localtime(timezone.now())
-
-        peak_start_dt = datetime.datetime.fromisoformat(timestamps[peak_hour])
+        peak_start_str = timestamps[peak_hour]
+        peak_start_dt = datetime.datetime.strptime(peak_start_str, '%Y-%m-%dT%H:%M')
         peak_start_aware = timezone.make_aware(peak_start_dt)
 
         end_index = peak_hour + 1
+        peak_end_aware = None
         if end_index < len(timestamps):
-            peak_end_dt = datetime.datetime.fromisoformat(timestamps[end_index])
+            peak_end_dt = datetime.datetime.strptime(timestamps[end_index], '%Y-%m-%dT%H:%M')
             peak_end_aware = timezone.make_aware(peak_end_dt)
-        else:
-            peak_end_aware = None
 
         base_filter = {'category': 'FORECAST'}
         if user:
             base_filter['user'] = user
 
-        if now.hour >= peak_start_dt.hour:
-            if not SystemEventModel.objects.filter(
-                    **base_filter,
-                    event_timestamp=peak_start_aware,
-                    title__icontains='Peak generation started'
-            ).exists():
-                SystemEventModel.objects.update_or_create(
-                    **base_filter,
-                    event_timestamp=peak_start_aware,
-                    defaults={
-                        'level': 'SUCC',
-                        'title': f'Peak generation started at {peak_start_dt.strftime("%H:%M")} ☀️',
-                        'payload': {'peak_hour': peak_hour, 'status': 'PEAK_START'},
-                        'is_persistent': True,
-                        'user': user
-                    }
-                )
+        # Подія початку піка
+        if not SystemEventModel.objects.filter(
+                **base_filter,
+                event_timestamp=peak_start_aware,
+                payload__status='PEAK_START'
+        ).exists():
+            SystemEventModel.objects.create(
+                **base_filter,
+                event_timestamp=peak_start_aware,
+                level='SUCC',
+                title=f'Peak generation started at {peak_start_dt.strftime("%H:%M")} ☀️',
+                payload={'peak_hour': peak_hour, 'status': 'PEAK_START'},
+                is_persistent=True,
+                user=user
+            )
+            print(f"DEBUG PEAK: Створено подію початку піка для {peak_start_dt.strftime('%H:%M')}!")
 
-        if peak_end_aware and now.hour >= peak_end_dt.hour:
-            if not SystemEventModel.objects.filter(
-                    **base_filter,
-                    event_timestamp=peak_end_aware,
-                    title__icontains='Peak generation ended'
-            ).exists():
-                SystemEventModel.objects.update_or_create(
-                    **base_filter,
-                    event_timestamp=peak_end_aware,
-                    defaults={
-                        'level': 'INFO',
-                        'title': f'Peak generation ended at {peak_end_dt.strftime("%H:%M")} ⛅',
-                        'payload': {'peak_hour': peak_hour, 'status': 'PEAK_END'},
-                        'is_persistent': True,
-                        'user': user
-                    }
-                )
+        # Подія кінця піка
+        if peak_end_aware and not SystemEventModel.objects.filter(
+                **base_filter,
+                event_timestamp=peak_end_aware,
+                payload__status='PEAK_END'
+        ).exists():
+            SystemEventModel.objects.create(
+                **base_filter,
+                event_timestamp=peak_end_aware,
+                level='INFO',
+                title=f'Peak generation ended at {peak_end_dt.strftime("%H:%M")} ⛅',
+                payload={'peak_hour': peak_hour, 'status': 'PEAK_END'},
+                is_persistent=True,
+                user=user
+            )
+            print(f"DEBUG PEAK: Створено подію кінця піка для {peak_end_dt.strftime('%H:%M')}!")
+
+    # def check_and_log_peak_events(self, raw_api_data, peak_hour, user=None):
+    #     if peak_hour is None:
+    #         return
+    #
+    #     hourly_raw = raw_api_data.get('hourly', {})
+    #     timestamps = hourly_raw.get('time', [])
+    #     if not timestamps or peak_hour >= len(timestamps):
+    #         return
+    #
+    #     now = timezone.localtime(timezone.now())
+    #
+    #     peak_start_dt = datetime.datetime.fromisoformat(timestamps[peak_hour])
+    #     peak_start_aware = timezone.make_aware(peak_start_dt)
+    #
+    #     end_index = peak_hour + 1
+    #     if end_index < len(timestamps):
+    #         peak_end_dt = datetime.datetime.fromisoformat(timestamps[end_index])
+    #         peak_end_aware = timezone.make_aware(peak_end_dt)
+    #     else:
+    #         peak_end_aware = None
+    #
+    #     base_filter = {'category': 'FORECAST'}
+    #     if user:
+    #         base_filter['user'] = user
+    #
+    #     if now.hour >= peak_start_dt.hour:
+    #         if not SystemEventModel.objects.filter(
+    #                 **base_filter,
+    #                 event_timestamp=peak_start_aware,
+    #                 title__icontains='Peak generation started'
+    #         ).exists():
+    #             SystemEventModel.objects.update_or_create(
+    #                 **base_filter,
+    #                 event_timestamp=peak_start_aware,
+    #                 defaults={
+    #                     'level': 'SUCC',
+    #                     'title': f'Peak generation started at {peak_start_dt.strftime("%H:%M")} ☀️',
+    #                     'payload': {'peak_hour': peak_hour, 'status': 'PEAK_START'},
+    #                     'is_persistent': True,
+    #                     'user': user
+    #                 }
+    #             )
+    #
+    #     if peak_end_aware and now.hour >= peak_end_dt.hour:
+    #         if not SystemEventModel.objects.filter(
+    #                 **base_filter,
+    #                 event_timestamp=peak_end_aware,
+    #                 title__icontains='Peak generation ended'
+    #         ).exists():
+    #             SystemEventModel.objects.update_or_create(
+    #                 **base_filter,
+    #                 event_timestamp=peak_end_aware,
+    #                 defaults={
+    #                     'level': 'INFO',
+    #                     'title': f'Peak generation ended at {peak_end_dt.strftime("%H:%M")} ⛅',
+    #                     'payload': {'peak_hour': peak_hour, 'status': 'PEAK_END'},
+    #                     'is_persistent': True,
+    #                     'user': user
+    #                 }
+    #             )
