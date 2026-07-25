@@ -9,7 +9,9 @@ from calculator.models import (DataEntryLineModel,
                                WeatherDataModel,
                                SolarForecastRecordModel,
                                PanelsArrayModel,
-                               UserProfileSettingsModel, SystemEventModel)
+                               UserProfileSettingsModel,
+                               SystemEventModel,
+                               PeakEventModel, )
 
 
 class WeatherConditionSerializer(serializers.ModelSerializer):
@@ -75,6 +77,12 @@ class SystemEventSerializer(serializers.ModelSerializer):
         model = SystemEventModel
         fields = '__all__'
         read_only_fields = ['user']
+
+
+class PeakEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PeakEventModel
+        fields = '__all__'
 
 
 # DEPRECATED

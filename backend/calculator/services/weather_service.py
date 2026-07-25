@@ -10,6 +10,7 @@ from calculator.models import (
     WeatherDataModel,
     DataEntryLineModel,
     SystemEventModel,
+    PeakEventModel, WindEventModel,
 )
 from calculator.services.PanelPowerCalculationService import PanelPowerCalculationService
 
@@ -103,7 +104,7 @@ class WeatherForecastService:
 
             cache.set(cache_key, result_dict, 3600)
             self.save_forecast_to_db(result_dict, data)
-            self.check_and_log_wind_alert(data)
+            self.check_and_log_wind_alert(data, user=user)
 
             self.check_and_log_peak_events(data, result_dict.get('peak_hour'), user=user)
 
@@ -234,7 +235,11 @@ class WeatherForecastService:
             print(f"DB loading error: {e}")
             return False
 
-    def check_and_log_wind_alert(self, raw_api_data):
+    def check_and_log_wind_alert(self, raw_api_data, user=None):
+        if not user:
+            print("DEBUG WIND: User not transferred, skipping wind alerts.")
+            return
+
         threshold = 15.0
 
         hourly_raw = raw_api_data.get('hourly', {})
@@ -243,14 +248,14 @@ class WeatherForecastService:
         wind_direction = hourly_raw.get('wind_direction_10m', [])
         timestamps = hourly_raw.get('time', [])
 
-        # Отримуємо поточну локальну дату
         today = timezone.localtime(timezone.now()).date()
+
+        daily_event, _ = SystemEventModel.objects.get_or_create(date=today)
 
         for i in range(len(wind_speeds)):
             dt = datetime.datetime.fromisoformat(timestamps[i])
             aware_dt = timezone.make_aware(dt)
 
-            # Перевіряємо вітер ТІЛЬКИ для сьогоднішнього дня
             if aware_dt.date() != today:
                 continue
 
@@ -259,9 +264,10 @@ class WeatherForecastService:
 
             if max_wind >= threshold or max_gust >= threshold:
                 time_str = timestamps[i]
+                title_str = f'Wind alert at {dt.strftime("%H:%M")}'
 
-                if not SystemEventModel.objects.filter(
-                        category='WARNING',
+                if not WindEventModel.objects.filter(
+                        daily_event=daily_event,
                         title__icontains=time_str
                 ).exists():
                     event_data = {
@@ -271,18 +277,24 @@ class WeatherForecastService:
                         'status': 'CRITICAL' if (max_wind >= threshold and max_gust >= threshold) else 'WARNING'
                     }
 
-                    SystemEventModel.objects.update_or_create(
-                        category='WARNING',
+                    WindEventModel.objects.update_or_create(
+                        daily_event=daily_event,
+                        user=user,
                         event_timestamp=aware_dt,
                         defaults={
-                            'level': 'WARN',
-                            'title': f'Wind alert at {dt.strftime("%H:%M")}',
-                            'payload': event_data,
-                            'message': f"Recorded at {time_str}: Wind {max_wind} m/s, Gust {max_gust} m/s, Direction {wind_direction}"
+                            'category': 'WARNING',
+                            'title': title_str,
+                            'message': f"Recorded at {time_str}: Wind {max_wind} m/s, Gust {max_gust} m/s, Direction {wind_direction}",
+                            'is_persistent': True,
+                            'user': user
                         }
                     )
 
     def check_and_log_peak_events(self, raw_api_data, peak_hour, user=None):
+        if not user:
+            print("DEBUG PEAK: User not transferred, skipping peak generation hours.")
+            return
+
         if peak_hour is None:
             print("DEBUG PEAK: peak_hour is None")
             return
@@ -292,6 +304,10 @@ class WeatherForecastService:
         if not timestamps or peak_hour >= len(timestamps):
             print("DEBUG PEAK: Invalid timestamps or peak_hour index out of range")
             return
+
+        today = timezone.localtime(timezone.now()).date()
+
+        daily_event, _ = SystemEventModel.objects.get_or_create(date=today)
 
         peak_start_str = timestamps[peak_hour]
         peak_start_dt = datetime.datetime.strptime(peak_start_str, '%Y-%m-%dT%H:%M')
@@ -303,43 +319,28 @@ class WeatherForecastService:
             peak_end_dt = datetime.datetime.strptime(timestamps[end_index], '%Y-%m-%dT%H:%M')
             peak_end_aware = timezone.make_aware(peak_end_dt)
 
-        base_filter = {'category': 'FORECAST'}
-        if user:
-            base_filter['user'] = user
+        PeakEventModel.objects.get_or_create(
+            daily_event=daily_event,
+            user=user,
+            peak_hour=peak_hour,
+            status='PEAK_START',
+            defaults={
+                'created_at': timezone.now()
+            }
+        )
+        print(f"DEBUG PEAK: Created/Checked PeakEvent START for {peak_start_dt.strftime('%H:%M')}")
 
-        # Подія початку піка
-        if not SystemEventModel.objects.filter(
-                **base_filter,
-                event_timestamp=peak_start_aware,
-                payload__status='PEAK_START'
-        ).exists():
-            SystemEventModel.objects.create(
-                **base_filter,
-                event_timestamp=peak_start_aware,
-                level='SUCC',
-                title=f'Peak generation started at {peak_start_dt.strftime("%H:%M")} ☀️',
-                payload={'peak_hour': peak_hour, 'status': 'PEAK_START'},
-                is_persistent=True,
-                user=user
+        if peak_end_aware and peak_end_aware.date() == today:
+            PeakEventModel.objects.get_or_create(
+                daily_event=daily_event,
+                user=user,
+                peak_hour=peak_hour,
+                status='PEAK_END',
+                defaults={
+                    'created_at': timezone.now()
+                }
             )
-            print(f"DEBUG PEAK: Створено подію початку піка для {peak_start_dt.strftime('%H:%M')}!")
-
-        # Подія кінця піка
-        if peak_end_aware and not SystemEventModel.objects.filter(
-                **base_filter,
-                event_timestamp=peak_end_aware,
-                payload__status='PEAK_END'
-        ).exists():
-            SystemEventModel.objects.create(
-                **base_filter,
-                event_timestamp=peak_end_aware,
-                level='INFO',
-                title=f'Peak generation ended at {peak_end_dt.strftime("%H:%M")} ⛅',
-                payload={'peak_hour': peak_hour, 'status': 'PEAK_END'},
-                is_persistent=True,
-                user=user
-            )
-            print(f"DEBUG PEAK: Створено подію кінця піка для {peak_end_dt.strftime('%H:%M')}!")
+            print(f"DEBUG PEAK: Created/Checked PeakEvent END for {peak_end_dt.strftime('%H:%M')}")
 
     # def check_and_log_peak_events(self, raw_api_data, peak_hour, user=None):
     #     if peak_hour is None:

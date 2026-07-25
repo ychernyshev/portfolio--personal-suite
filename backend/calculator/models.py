@@ -593,8 +593,9 @@ class PeakEventModel(models.Model):
     @property
     def formatted_time_range(self):
         if self.status == 'PEAK_START':
+            start_h = self.peak_hour
             end_hour = (self.peak_hour + 1) % 24
-            return f"{self.peak_hour:02d}:00 - {end_hour:02d}:00"
+            return f"{start_h:02d}:00 - {end_hour:02d}:00"
         return f"{self.peak_hour:02d}:00"
 
     class Meta:

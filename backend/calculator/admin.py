@@ -142,7 +142,13 @@ class WindEventAdmin(admin.ModelAdmin):
 
 @admin.register(PeakEventModel)
 class PeakEventAdmin(admin.ModelAdmin):
-    list_display = ['created_at', 'daily_event', 'peak_hour', 'status']
+    list_display = ('daily_event', 'user', 'get_formatted_hour', 'status')
+    list_filter = ('status', 'created_at', 'user')
+    search_fields = ('daily_event__date', 'user__username')
+
+    @admin.display(description='Hour (24h)', ordering='peak_hour')
+    def get_formatted_hour(self, obj):
+        return obj.formatted_hour
 
 
 # DEPRECATED
