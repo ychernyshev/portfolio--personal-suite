@@ -550,6 +550,8 @@ class SystemEventModel(models.Model):
     event_timestamp = models.DateTimeField(null=True, blank=True, db_index=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
+    message = models.TextField(blank=True, null=True)
+
     is_persistent = models.BooleanField(default=True)
 
     class Meta:
