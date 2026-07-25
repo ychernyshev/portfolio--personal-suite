@@ -10,6 +10,7 @@ from .models import (
     PanelsArrayModel,
     SystemEventModel,
     UserProfileSettingsModel,
+    PeakEventModel,
 )
 
 
@@ -114,14 +115,25 @@ class PanelsArrayAdmin(admin.ModelAdmin):
     list_display = ['name', 'peak_power_kwp', 'area', 'angle', 'azimuth', 'efficiency', 'user']
 
 
+class PeakEventInline(admin.TabularInline):
+    model = PeakEventModel
+    extra = 0
+
+
 @admin.register(SystemEventModel)
 class SystemEventAdmin(admin.ModelAdmin):
-    list_display = ['category', 'level', 'payload', 'title', 'created_at', 'event_timestamp', 'user']
+    list_display = ['date', 'payload']
+    inlines = [PeakEventInline]
 
 
 @admin.register(UserProfileSettingsModel)
 class UserProfileSettingsAdmin(admin.ModelAdmin):
     list_display = ['user', 'latitude', 'longitude', 'timezone', 'language', 'currency']
+
+
+@admin.register(PeakEventModel)
+class PeakEventAdmin(admin.ModelAdmin):
+    list_display = ['created_at', 'daily_event', 'peak_hour', 'status']
 
 
 # DEPRECATED
