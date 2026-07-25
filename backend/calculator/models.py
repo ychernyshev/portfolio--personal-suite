@@ -533,6 +533,7 @@ class PanelsArrayModel(models.Model):
 class SystemEventModel(models.Model):
     date = models.DateField(unique=True, db_index=True, null=True, blank=True)
     payload = models.JSONField(default=dict, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -578,6 +579,7 @@ class PeakEventModel(models.Model):
     )
     peak_hour = models.IntegerField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True, null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 

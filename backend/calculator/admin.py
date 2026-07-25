@@ -10,7 +10,7 @@ from .models import (
     PanelsArrayModel,
     SystemEventModel,
     UserProfileSettingsModel,
-    PeakEventModel,
+    PeakEventModel, WindEventModel,
 )
 
 
@@ -120,15 +120,24 @@ class PeakEventInline(admin.TabularInline):
     extra = 0
 
 
+class WindEventInline(admin.TabularInline):
+    model = WindEventModel
+
+
 @admin.register(SystemEventModel)
 class SystemEventAdmin(admin.ModelAdmin):
     list_display = ['date', 'payload']
-    inlines = [PeakEventInline]
+    inlines = [PeakEventInline, WindEventInline]
 
 
 @admin.register(UserProfileSettingsModel)
 class UserProfileSettingsAdmin(admin.ModelAdmin):
     list_display = ['user', 'latitude', 'longitude', 'timezone', 'language', 'currency']
+
+
+@admin.register(WindEventModel)
+class WindEventAdmin(admin.ModelAdmin):
+    list_display = ['created_at', 'category', 'daily_event', 'message', 'user']
 
 
 @admin.register(PeakEventModel)
