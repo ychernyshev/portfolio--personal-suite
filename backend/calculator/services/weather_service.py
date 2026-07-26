@@ -157,8 +157,8 @@ class WeatherForecastService:
         except Exception as e:
             print(f"Error updating forecast for user {user.username}: {e}")
             return False
-    # END
 
+    # END
 
     def save_forecast_to_db(self, forecast_data, raw_api_data):
         try:
@@ -250,7 +250,7 @@ class WeatherForecastService:
 
         today = timezone.localtime(timezone.now()).date()
 
-        daily_event, _ = SystemEventModel.objects.get_or_create(
+        daily_event, _ = SystemEventModel.objects.update_or_create(
             date=today,
             user=user,
             defaults={
@@ -258,7 +258,9 @@ class WeatherForecastService:
                     "title": "Wind alert",
                     "message": "Strong wind detected",
                     "level": "warning",
-                    "category": "storm"
+                    "category": "warning",
+                    "max_wind_speed": max(wind_speeds) if wind_speeds else None,
+                    "max_wind_gust": max(wind_gusts) if wind_gusts else None,
                 }
             }
         )
@@ -318,7 +320,7 @@ class WeatherForecastService:
 
         today = timezone.localtime(timezone.now()).date()
 
-        daily_event, _ = SystemEventModel.objects.get_or_create(
+        daily_event, _ = SystemEventModel.objects.update_or_create(
             date=today,
             user=user,
             defaults={
@@ -326,7 +328,7 @@ class WeatherForecastService:
                     "title": "Wind alert",
                     "message": "Strong wind detected",
                     "level": "warning",
-                    "category": "storm"
+                    "category": "warning",
                 }
             }
         )

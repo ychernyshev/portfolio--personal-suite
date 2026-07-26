@@ -55,7 +55,7 @@ defineExpose({ pushLocalMessage });
           <img :src="getIcon(msg.msg_type)" class="me-2 text-dark icon" alt=""/>
           <div>
             <h6 class="mb-0 text-dark">{{ msg.title }}</h6>
-            <small class="text-muted">{{ msg.text }}</small>
+            <span class="text-muted">{{ msg.text }}</span>
           </div>
         </div>
       </div>
