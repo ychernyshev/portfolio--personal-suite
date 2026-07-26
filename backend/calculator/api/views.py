@@ -555,7 +555,7 @@ class SystemEventAPIView(ListAPIView):
     serializer_class = SystemEventSerializer
 
     def get_queryset(self):
-        queryset = SystemEventModel.objects.all()
+        queryset = SystemEventModel.objects.all().prefetch_related('wind_records', 'peak_records')
         date_param = self.request.query_params.get('date')
 
         if date_param:
@@ -568,6 +568,23 @@ class SystemEventAPIView(ListAPIView):
 
 
 # DEPRECATED
+# class SystemEventAPIView(ListAPIView):
+#     permission_classes = [IsAuthenticated]
+#     serializer_class = SystemEventSerializer
+#
+#     def get_queryset(self):
+#         queryset = SystemEventModel.objects.all()
+#         date_param = self.request.query_params.get('date')
+#
+#         if date_param:
+#             naive_dt = parse_datetime(date_param)
+#             if naive_dt:
+#                 aware_dt = timezone.make_aware(naive_dt)
+#                 queryset = queryset.filter(created_at__date=aware_dt.date())
+#
+#         return queryset.order_by('-created_at')
+
+
 # class GeolocationViewSet(viewsets.ModelViewSet):
 #     queryset = GeolocationModel.objects.all()
 #     serializer_class = GeolocationSerializer

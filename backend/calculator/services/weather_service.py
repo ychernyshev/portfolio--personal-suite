@@ -250,7 +250,18 @@ class WeatherForecastService:
 
         today = timezone.localtime(timezone.now()).date()
 
-        daily_event, _ = SystemEventModel.objects.get_or_create(date=today)
+        daily_event, _ = SystemEventModel.objects.get_or_create(
+            date=today,
+            user=user,
+            defaults={
+                "payload": {
+                    "title": "Wind alert",
+                    "message": "Strong wind detected",
+                    "level": "warning",
+                    "category": "storm"
+                }
+            }
+        )
 
         for i in range(len(wind_speeds)):
             dt = datetime.datetime.fromisoformat(timestamps[i])
@@ -307,7 +318,18 @@ class WeatherForecastService:
 
         today = timezone.localtime(timezone.now()).date()
 
-        daily_event, _ = SystemEventModel.objects.get_or_create(date=today)
+        daily_event, _ = SystemEventModel.objects.get_or_create(
+            date=today,
+            user=user,
+            defaults={
+                "payload": {
+                    "title": "Wind alert",
+                    "message": "Strong wind detected",
+                    "level": "warning",
+                    "category": "storm"
+                }
+            }
+        )
 
         peak_start_str = timestamps[peak_hour]
         peak_start_dt = datetime.datetime.strptime(peak_start_str, '%Y-%m-%dT%H:%M')
