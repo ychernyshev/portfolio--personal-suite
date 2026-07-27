@@ -119,7 +119,9 @@ class SystemEventSerializer(serializers.ModelSerializer):
         peak = obj.peak_records.first()
         return peak.status.lower() if peak else obj.payload.get('category', 'info')
 
-
+    def get_peak_hour(self, obj):
+        peak = obj.peak_records.first()
+        return peak.peak_hour if peak else obj.payload.get('peak_hour', None)
 
 # DEPRECATED
 # class GeolocationSerializer(serializers.ModelSerializer):
