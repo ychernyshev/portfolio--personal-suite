@@ -9,6 +9,7 @@ from datetime import timedelta
 from pathlib import Path
 
 import dj_database_url
+from celery.schedules import crontab
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -77,6 +78,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'djoser',
     "anymail",
+    'django_celery_beat',
     'personal.apps.PersonalConfig',
     'calculator.apps.CalculatorConfig',
 ]
@@ -243,4 +245,23 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'unique-snowflake',
     }
+}
+
+
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://redis:6379/0")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", "redis://redis:6379/0")
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+CELERY_BEAT_SCHEDULE = {
+    'daily-solar-planner-6am': {
+        'task': 'calculator.tasks.daily_solar_planner_task',
+        'schedule': crontab(hour=0, minute=1),
+    },
+    'hourly-weather-and-peaks-check': {
+        'task': 'calculator.tasks.hourly_weather_and_peaks_check_task',
+        'schedule': crontab(minute=0),
+    },
 }

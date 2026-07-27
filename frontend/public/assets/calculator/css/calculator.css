@@ -152,6 +152,10 @@ body {
     border-top-left-radius: 0;
   }
 
+  .border-radius-top-start-lg-4 {
+    border-top-left-radius: 1.2rem;
+  }
+
   .border-radius-top-end-lg-4 {
     border-top-right-radius: 1.2rem;
   }

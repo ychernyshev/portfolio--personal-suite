@@ -7,10 +7,10 @@ from .models import (
     WeatherConditionModel,
     SolarForecastRecordModel,
     WeatherDataModel,
-    GeolocationModel,
     PanelsArrayModel,
     SystemEventModel,
-    UserTimezoneModel,
+    UserProfileSettingsModel,
+    PeakEventModel, WindEventModel,
 )
 
 
@@ -110,21 +110,63 @@ class WeatherDataAdmin(admin.ModelAdmin):
                     'condition_code']
 
 
-@admin.register(GeolocationModel)
-class GeolocationAdmin(admin.ModelAdmin):
-    list_display = ['latitude', 'longitude']
-
-
 @admin.register(PanelsArrayModel)
 class PanelsArrayAdmin(admin.ModelAdmin):
     list_display = ['name', 'peak_power_kwp', 'area', 'angle', 'azimuth', 'efficiency', 'user']
 
 
+class PeakEventInline(admin.TabularInline):
+    model = PeakEventModel
+    extra = 0
+
+
+class WindEventInline(admin.TabularInline):
+    model = WindEventModel
+
+
 @admin.register(SystemEventModel)
 class SystemEventAdmin(admin.ModelAdmin):
-    list_display = ['category', 'level', 'payload', 'title', 'created_at', 'event_timestamp', 'user']
+    list_display = ['date', 'payload']
+    inlines = [PeakEventInline, WindEventInline]
 
 
-@admin.register(UserTimezoneModel)
-class UserTimezoneAdmin(admin.ModelAdmin):
-    list_display = ['user', 'timezone']
+@admin.register(UserProfileSettingsModel)
+class UserProfileSettingsAdmin(admin.ModelAdmin):
+    list_display = ['user', 'latitude', 'longitude', 'timezone', 'language', 'currency']
+
+
+@admin.register(WindEventModel)
+class WindEventAdmin(admin.ModelAdmin):
+    list_display = ['created_at', 'category', 'daily_event', 'message', 'user']
+
+
+@admin.register(PeakEventModel)
+class PeakEventAdmin(admin.ModelAdmin):
+    list_display = ('daily_event', 'user', 'get_formatted_hour', 'status')
+    list_filter = ('status', 'created_at', 'user')
+    search_fields = ('daily_event__date', 'user__username')
+
+    @admin.display(description='Hour (24h)', ordering='peak_hour')
+    def get_formatted_hour(self, obj):
+        return obj.formatted_hour
+
+
+# DEPRECATED
+# @admin.register(GeolocationModel)
+# class GeolocationAdmin(admin.ModelAdmin):
+#     list_display = ['latitude', 'longitude']
+#
+#
+# @admin.register(UserTimezoneModel)
+# class UserTimezoneAdmin(admin.ModelAdmin):
+#     list_display = ['user', 'timezone']
+#
+#
+# @admin.register(UserLanguageModel)
+# class UserLanguageAdmin(admin.ModelAdmin):
+#     list_display = ['user', 'language']
+#
+#
+# @admin.register(UserCurrencyModel)
+# class UserCurrencyAdmin(admin.ModelAdmin):
+#     list_display = ['user', 'currency']

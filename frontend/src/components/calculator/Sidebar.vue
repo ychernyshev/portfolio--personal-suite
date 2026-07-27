@@ -67,8 +67,8 @@ onMounted(() => {
 
 <template>
   <aside class="sidebar m-0 row justify-content-center">
-    <div class="row neomorphic graphics-card align-items-end p-0">
-      <div class="col-xxl-12 d-none d-lg-block message-card">
+    <div class="row neomorphic graphics-card justify-content-between align-items-end p-0">
+      <div class="col-xl-12 d-none d-lg-block message-card">
         <div v-if="!isMessage" class="no-messages text-center d-flex flex-column justify-content-center align-items-center p-3">
           <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-mailbox-flag " viewBox="0 0 16 16">
             <path d="M10.5 8.5V3.707l.854-.853A.5.5 0 0 0 11.5 2.5v-2A.5.5 0 0 0 11 0H9.5a.5.5 0 0 0-.5.5v8zM5 7c0 .334-.164.264-.415.157C4.42 7.087 4.218 7 4 7s-.42.086-.585.157C3.164 7.264 3 7.334 3 7a1 1 0 0 1 2 0"/>

@@ -24,14 +24,15 @@ const isWakeUp = ref(false);
 
 const wakeUpBackend = async () => {
   try {
-    const response = backendApi.get('calculator/entries/');
+    const response = await backendApi.get('calculator/entries/');
 
-    if(response.ok) {
+    if(response.status === 200) {
       const isBackendReady = false;
       const isWakeUp = false;
     }
   } catch (error) {
     console.log("Waiting for backend...");
+    isBackendReady.value = false;
   }
 }
 

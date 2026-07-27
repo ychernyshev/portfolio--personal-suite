@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup>
 import { computed } from "vue";
-import sunnyIcon from "../../../public/assets/calculator/images/icons/weather/light/sunny.png";
-import foggyIcon from "../../../public/assets/calculator/images/icons/weather/light/overcast.png";
-import overcastIcon from "../../../public/assets/calculator/images/icons/weather/light/overcast.png";
-import partlyCloudyIcon from "../../../public/assets/calculator/images/icons/weather/light/partly_cloudy.png";
-import rainyIcon from "../../../public/assets/calculator/images/icons/weather/light/rainy.png";
-import ThunderstormIcon from "../../../public/assets/calculator/images/icons/weather/light/rainy.png";
-import SnowyIcon from "../../../public/assets/calculator/images/icons/weather/light/rainy.png";
+import sunnyIcon from "../../../../public/assets/calculator/images/icons/weather/light/sunny.png";
+import foggyIcon from "../../../../public/assets/calculator/images/icons/weather/light/overcast.png";
+import overcastIcon from "../../../../public/assets/calculator/images/icons/weather/light/overcast.png";
+import partlyCloudyIcon from "../../../../public/assets/calculator/images/icons/weather/light/partly_cloudy.png";
+import rainyIcon from "../../../../public/assets/calculator/images/icons/weather/light/rainy.png";
+import ThunderstormIcon from "../../../../public/assets/calculator/images/icons/weather/light/rainy.png";
+import SnowyIcon from "../../../../public/assets/calculator/images/icons/weather/light/rainy.png";
 
 const props = defineProps({
   wmoCode: {

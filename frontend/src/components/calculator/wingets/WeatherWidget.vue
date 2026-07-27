@@ -2,11 +2,11 @@
 <script setup>
 import {onMounted, ref} from 'vue';
 import {storeToRefs} from "pinia";
-import IconsMap from "../IconsMap.vue";
-import MonthStats from "./MonthStats.vue";
+import IconsMap from "../IconsMap/IconsMap.vue";
 import {useMovementOfTheSunStore} from "../../../../store/useMovementOfTheSunStore.js";
 import {useOpenMeteoForecastStore} from "../../../../store/useOpenMeteoForecastStore.js";
 import LocationRequiredPlaceholder from "@/components/calculator/wingets/LocationRequiredPlaceholder.vue";
+import WeatherDuringTheDayChart from "@/components/calculator/charts/WeatherDuringTheDayChart/WeatherDuringTheDayChart.vue";
 
 const sunMovementStore = useMovementOfTheSunStore();
 const {windSpeedAlert} = storeToRefs(sunMovementStore);
@@ -22,6 +22,22 @@ const activeDate = ref(null);
 const onDatePicked = (day) => {
   activeDate.value = day;
   showDetailChart.value = true;
+};
+
+const getWindDirectionData = (degrees) => {
+  const directions = [
+    { label: 'North', arrow: '↑', style: 'text-primary' },
+    { label: 'North-East', arrow: '↗', style: 'text-primary-emphasis' },
+    { label: 'East', arrow: '→', style: 'text-success' },
+    { label: 'South-East', arrow: '↘', style: 'text-warning-emphasis' },
+    { label: 'South', arrow: '↓', style: 'text-warning' },
+    { label: 'South-West', arrow: '↙', style: 'text-warning-emphasis' },
+    { label: 'West', arrow: '←', style: 'text-success' },
+    { label: 'North-West', arrow: '↖', style: 'text-primary-emphasis' }
+  ];
+
+  const index = Math.round((degrees % 360) / 45) % 8;
+  return directions[index];
 };
 
 onMounted(() => {
@@ -84,6 +100,17 @@ onMounted(() => {
                     <span class="fw-bold">{{ windSpeedAlert.maxGust }}</span>
                     m/s
                   </span>
+
+                  <div class="wind-direction">
+                    <span
+                        class="arrow fw-bold mr-1"
+                        :class="getWindDirectionData(forecast.wind_direction).style"
+                        :style="{ transform: `rotate(${forecast.wind_direction}deg)`, display: 'inline-block', transition: 'transform 0.5s ease' }"
+                    >
+                      ↑
+                    </span>
+                    <span>{{ getWindDirectionData(forecast.wind_direction).label }}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -96,7 +123,7 @@ onMounted(() => {
       </div>
 
       <div class="col-sm-12 col-md-6 col-xl-6">
-        <month-stats/>
+        <weather-during-the-day-chart />
       </div>
     </div>
   </div>

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import IconsMap from "./IconsMap.vue";
+import IconsMap from "./IconsMap/IconsMap.vue";
 import Settings from "./settings/Settings.vue";
 import NewRecord from "./NewRecord.vue";
 

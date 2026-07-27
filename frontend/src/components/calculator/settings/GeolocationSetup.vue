@@ -27,71 +27,84 @@
 <template>
   <div class="geolocation-wrapper mt-3 mb-3 text-start">
     <p class="mb-1 fw-medium text-purple">Power Station Coordinates</p>
-    <div class="row">
+    <div class="row mb-4">
       <div class="col-12 pt-3 pb-3">
-        <form @submit.prevent="handleSave" class="row justify-content-between">
-          <div class="col-12 col-md-6 p-0 p-md-3">
-            <small v-if="isLocationDenied" class="text-muted">To see your browser coordinates, you need to enable <span class="fw-bold">geolocation</span></small>
+        <form @submit.prevent="handleSave">
+          <div class="row mb-3">
+            <div class="col-12 col-lg-6">
+              <small v-if="isLocationDenied" class="text-muted">To see your browser coordinates, you need to enable <span class="fw-bold">geolocation</span></small>
 
-            <div v-if="loading" class="text-muted small">
-              <span>Detecting coordinates...</span>
-            </div>
+              <div v-if="loading" class="text-muted small">
+                <span>Detecting coordinates...</span>
+              </div>
 
-            <div v-else-if="browserLat && browserLon" class="text-muted lat-lon-text mb-2">
-              <small>📍 Your browser coordinates. Latitude:
-                <span class="fw-bold text-dark">{{ browserLat }}</span>, Longitude: <span class="fw-bold text-dark">{{ browserLon }}</span>
-              </small>
-            </div>
-            <div class="row neomorphic m-0 p-0">
-              <div class="col-12 col-lg-10">
-                <div class="row">
-                  <div class="col-6 col-lg-3 text-purple p-3 text-center">
-                    <span class="">Latitude</span>
-                  </div>
-                  <div class="col-6 col-lg-3 p-2">
-                    <input type="text"
-                           class="form-control form-control-sm form-control-plaintext border-0 bg-transparent w-auto"
-                           v-model="browserLat"
-                           placeholder="For example: 49.8400"
-                           aria-label="Latitude">
-                  </div>
-                  <div class="col-6 col-lg-3 text-purple p-3 text-center">
-                    <span class="">Longitude</span>
-                  </div>
-                  <div class="col-6 col-lg-3 p-2">
-                    <input type="text"
-                           class="form-control form-control-sm form-control-plaintext border-0 bg-transparent w-auto"
-                           v-model=browserLon
-                           placeholder="For example: 24.0300"
-                           aria-label="Longitude">
+              <div class="lat-lon-text mb-2">
+                <span>📍 Your current browser coordinates.</span>
+                <div class="row m-0">
+                    <div class="col-12 bg-gradient-blue-2 p-3 text-white fw-bold text-center border-radius-top-start-lg-4 d-flex flex-row justify-content-around">
+                      <span class="w-50 text-center">Latitude</span>
+                      <span class="w-50 text-center">Longitude</span>
+                    </div>
+                </div>
+                <div class="row m-0">
+                  <div class="col-12 p-3 text-center bg-body-tertiary d-flex flex-row justify-content-around">
+                    <span class="w-50 text-center">{{ browserLat }}</span>
+                    <span class="w-50 text-center">{{ browserLon }}</span>
                   </div>
                 </div>
               </div>
-              <div class="col-12 col-lg-2 pl-0 pr-0">
-                <button-comp title="Save"
-                             type="button"
-                             @click=handleSave()
-                             class="btn-blue-1 text-light w-100 h-100 border-radius-bottom-start-4 border-radius-bottom-end-4 border-radius-top-start-lg-0 border-radius-bottom-start-lg-0 border-radius-top-end-lg-4 rounded-md-4" />
+            </div>
+            <div class="col-12 col-lg-6">
+              <div class="lat-lon-text ml-lg-4">
+                <span>Your stored coordinates.</span>
+              </div>
+              <div class="row m-0">
+                <div class="col-12 bg-gradient-blue-2 p-3 text-white fw-bold text-center border-radius-top-end-lg-4 d-flex flex-row justify-content-around">
+                  <span class="w-50 text-center">Latitude</span>
+                  <span class="w-50 text-center">Longitude</span>
+                </div>
+              </div>
+              <div class="row m-0">
+                <div class="col-12 p-3 text-center bg-body-tertiary d-flex flex-row justify-content-around">
+                  <span class="w-50 text-center">{{ dbLat }}</span>
+                  <span class="w-50 text-center">{{ dbLon }}</span>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-12 col-md-4 pt-3">
-            <div class="lat-lon-text mb-2 text-md-end">
-              <small class="text-muted">Your stored coordinates.</small>
+          <div class="lat-lon-text ml-lg-4 mb-1">
+            <span>Update your coordinates.</span>
+          </div>
+          <div class="row neomorphic m-0 p-0 rounded-top-0">
+            <div class="col-12 col-lg-9">
+              <div class="row">
+                <div class="col-6 col-lg-3 text-purple p-3 d-flex align-items-center justify-content-end">
+                  <span class="">Latitude:</span>
+                </div>
+                <div class="col-6 col-lg-3 p-3">
+                  <input type="text"
+                         class="form-control form-control-sm form-control-plaintext border-0 bg-transparent w-auto"
+                         v-model="browserLat"
+                         placeholder="For example: 49.8400"
+                         aria-label="Latitude">
+                </div>
+                <div class="col-6 col-lg-3 text-purple p-3 d-flex align-items-center justify-content-end">
+                  <span class="">Longitude:</span>
+                </div>
+                <div class="col-6 col-lg-3 p-3">
+                  <input type="text"
+                         class="form-control form-control-sm form-control-plaintext border-0 bg-transparent w-auto"
+                         v-model=browserLon
+                         placeholder="For example: 24.0300"
+                         aria-label="Longitude">
+                </div>
+              </div>
             </div>
-            <div class="row">
-              <div class="col-6 col-lg-3 bg-gradient-blue-2 p-3 text-white fw-bold text-center">
-                <span class="">Latitude</span>
-              </div>
-              <div class="col-6 col-lg-3 p-3 text-center bg-body-tertiary">
-                {{ dbLat }}
-              </div>
-              <div class="col-6 col-lg-3 bg-gradient-blue-2 p-3 text-white fw-bold text-center">
-                <span class="">Longitude</span>
-              </div>
-              <div class="col-6 col-lg-3 p-3 text-center bg-body-tertiary">
-                {{ dbLon }}
-              </div>
+            <div class="col-12 col-lg-3 pl-0 pr-0">
+              <button-comp title="Update Coordinates"
+                           type="button"
+                           @click=handleSave()
+                           class="btn-blue-1 text-light w-100 h-100 border-radius-bottom-start-4 border-radius-bottom-end-4 border-radius-top-start-lg-0 border-radius-bottom-start-lg-0 rounded-md-4 rounded-top-0" />
             </div>
           </div>
         </form>

@@ -1,6 +1,4 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-
-
 from rest_framework import serializers
 
 from calculator.models import (DataEntryLineModel,
@@ -8,9 +6,11 @@ from calculator.models import (DataEntryLineModel,
                                WeatherConditionModel,
                                WeatherDataModel,
                                SolarForecastRecordModel,
-                               GeolocationModel,
                                PanelsArrayModel,
-                               UserTimezoneModel)
+                               UserProfileSettingsModel,
+                               SystemEventModel,
+                               PeakEventModel,
+                               WindEventModel, )
 
 
 class WeatherConditionSerializer(serializers.ModelSerializer):
@@ -18,10 +18,12 @@ class WeatherConditionSerializer(serializers.ModelSerializer):
         model = WeatherConditionModel
         fields = ['id', 'name']
 
+
 class CurrentTariffSerializer(serializers.ModelSerializer):
     class Meta:
         model = CurrentTariffModel
         fields = ['power_tariff', 'last_updated']
+
 
 class DataEntrySerializer(serializers.ModelSerializer):
     empty_day_message = serializers.ReadOnlyField(source='get_empty_day_message')
@@ -49,12 +51,6 @@ class SolarForecastRecordSerializer(serializers.ModelSerializer):
         read_only_fields = ['sunrise', 'sunset']
 
 
-class GeolocationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = GeolocationModel
-        fields = '__all__'
-
-
 class PanelsArraySerializer(serializers.ModelSerializer):
     class Meta:
         model = PanelsArrayModel
@@ -70,8 +66,84 @@ class PanelsArraySerializer(serializers.ModelSerializer):
         return value
 
 
-class UserTimezoneSerializer(serializers.ModelSerializer):
+class UserProfileSettingsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserTimezoneModel
+        model = UserProfileSettingsModel
         fields = '__all__'
         read_only_fields = ['user']
+
+
+class PeakEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PeakEventModel
+        fields = '__all__'
+        read_only_fields = ['user']
+
+
+class WindEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WindEventModel
+        fields = '__all__'
+        read_only_fields = ['user']
+
+
+class SystemEventSerializer(serializers.ModelSerializer):
+    wind_records = WindEventSerializer(many=True, read_only=True)
+    peak_records = PeakEventSerializer(many=True, read_only=True)
+
+    title = serializers.SerializerMethodField()
+    text = serializers.SerializerMethodField()
+    level = serializers.SerializerMethodField()
+    msg_type = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SystemEventModel
+        fields = ['id', 'date', 'payload', 'created_at', 'updated_at',
+                  'title', 'text', 'level', 'msg_type',
+                  'wind_records', 'peak_records']
+        read_only_fields = ['user']
+
+    def get_title(self, obj):
+        wind = obj.wind_records.first()
+        return wind.title if wind else obj.payload.get('title', 'Notification')
+
+    def get_text(self, obj):
+        wind = obj.wind_records.first()
+        return wind.message if wind else obj.payload.get('message', '')
+
+    def get_level(self, obj):
+        wind = obj.wind_records.first()
+        return wind.category.lower() if wind else obj.payload.get('level', 'info')
+
+    def get_msg_type(self, obj):
+        peak = obj.peak_records.first()
+        return peak.status.lower() if peak else obj.payload.get('category', 'info')
+
+
+
+# DEPRECATED
+# class GeolocationSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = GeolocationModel
+#         fields = '__all__'
+#
+#
+# class UserTimezoneSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = UserTimezoneModel
+#         fields = '__all__'
+#         read_only_fields = ['user']
+#
+#
+# class UserLanguageSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = UserLanguageModel
+#         fields = '__all__'
+#         read_only_fields = ['user']
+#
+#
+# class UserCurrencySerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = UserCurrencyModel
+#         fields = '__all__'
+#         read_only_fields = ['user']

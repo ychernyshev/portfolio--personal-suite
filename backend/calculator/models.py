@@ -401,8 +401,24 @@ class WeatherDataModel(models.Model):
 
 
 # ====================================================================
-# USER SETTINGS GROUP
+# USER PROFILE SETTINGS
 # ====================================================================
+class UserProfileSettingsModel(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='settings')
+
+    latitude = models.FloatField(blank=True, null=True, help_text="Latitude")
+    longitude = models.FloatField(blank=True, null=True, help_text="Longitude")
+    timezone = models.CharField(max_length=64, blank=True, default='', verbose_name='Timezone')
+    language = models.CharField(max_length=64, blank=True, default='en', verbose_name='Language')
+    currency = models.CharField(max_length=3, blank=True, default='UAH', verbose_name='Currency')
+
+    def __str__(self):
+        return f'Settings for {self.user.username}'
+
+    class Meta:
+        verbose_name = 'User Settings'
+        verbose_name_plural = 'Users Settings'
+
 
 class CurrentTariffModel(models.Model):
     power_tariff = models.FloatField(verbose_name='Актуальна вартість за Кв', default=4.32)
@@ -426,35 +442,59 @@ class CurrentTariffModel(models.Model):
         except cls.DoesNotExist:
             return cls.objects.create(pk=1)
 
-
-class GeolocationModel(models.Model):
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        related_name='geolocation',
-        null=True
-    )
-    latitude = models.FloatField(blank=True, null=True, help_text="Latitude")
-    longitude = models.FloatField(blank=True, null=True, help_text="Longitude")
-
-    def __str__(self):
-        return f'Current coordinates: Latitude is {self.latitude}, longitude is {self.longitude}'
-
-    class Meta:
-        verbose_name = 'add coordinates'
-        verbose_name_plural = 'Coordinates'
-
-
-class UserTimezoneModel(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
-    timezone = models.CharField(max_length=64, verbose_name='Timezone of the user')
-
-    def __str__(self):
-        return f'User {self.user} time zone - {self.timezone}'
-
-    class Meta:
-        verbose_name = 'add user timezone'
-        verbose_name_plural = 'Users timezones'
+# DEPRECATED
+# class GeolocationModel(models.Model):
+#     user = models.OneToOneField(
+#         User,
+#         on_delete=models.CASCADE,
+#         related_name='geolocation',
+#         null=True
+#     )
+#     latitude = models.FloatField(blank=True, null=True, help_text="Latitude")
+#     longitude = models.FloatField(blank=True, null=True, help_text="Longitude")
+#
+#     def __str__(self):
+#         return f'Current coordinates: Latitude is {self.latitude}, longitude is {self.longitude}'
+#
+#     class Meta:
+#         verbose_name = 'add coordinates'
+#         verbose_name_plural = 'Coordinates'
+#
+#
+# class UserTimezoneModel(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
+#     timezone = models.CharField(max_length=64, verbose_name='Timezone of the user')
+#
+#     def __str__(self):
+#         return f'User {self.user} time zone - {self.timezone}'
+#
+#     class Meta:
+#         verbose_name = 'add user timezone'
+#         verbose_name_plural = 'Users timezones'
+#
+#
+# class UserLanguageModel(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
+#     language = models.CharField(max_length=64, verbose_name='Language of the user')
+#
+#     def __str__(self):
+#         return f'User {self.user} language - {self.language}'
+#
+#     class Meta:
+#         verbose_name = 'add user default language'
+#         verbose_name_plural = 'Users default languages'
+#
+#
+# class UserCurrencyModel(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
+#     currency = models.CharField(max_length=3, verbose_name='Currency of the user')
+#
+#     def __str__(self):
+#         return f'User {self.user} language - {self.currency}'
+#
+#     class Meta:
+#         verbose_name = 'add user default currency'
+#         verbose_name_plural = 'Users default currency'
 
 
 # ====================================================================
@@ -490,35 +530,86 @@ class PanelsArrayModel(models.Model):
 # ====================================================================
 # EVENTS GROUP
 # ====================================================================
-
 class SystemEventModel(models.Model):
-    TYPES = (
-        ('FORECAST', 'Solar Forecast'),
-        ('REPORT', 'Analytics Report'),
-        ('NOTIFICATION', 'System Notification'),
-        ('WARNING', 'Warning'),
-    )
-    category = models.CharField(max_length=20, choices=TYPES, default='FORECAST')
-    level = models.CharField(max_length=10,
-                             choices=[('SUCC', 'Success'), ('INFO', 'Info'), ('WARN', 'Warn'), ('ERR', 'Error')])
-
-    payload = models.JSONField(default=dict, help_text="Complex data")
-
-    title = models.CharField(max_length=255)
+    date = models.DateField(unique=True, db_index=True, null=True, blank=True)
+    payload = models.JSONField(default=dict, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Daily Report [{self.date}]"
+
+
+class WindEventModel(models.Model):
+    daily_event = models.ForeignKey(
+        SystemEventModel,
+        on_delete=models.CASCADE,
+        related_name='wind_records'
+    )
+    category = models.CharField(max_length=20, default='WARNING')
+    title = models.CharField(max_length=255)
+    message = models.TextField(blank=True, null=True)
+    is_persistent = models.BooleanField(default=True)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     event_timestamp = models.DateTimeField(null=True, blank=True, db_index=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-created_at']
-        verbose_name = 'add system event'
-        verbose_name_plural = 'System events'
+        verbose_name = 'Wind system event'
+        verbose_name_plural = 'Wind System Events'
 
     def __str__(self):
         return f"{self.category} | {self.title}"
 
 
+class PeakEventModel(models.Model):
+    STATUS_CHOICES = (
+        ('PEAK_START', 'Peak Start'),
+        ('PEAK_END', 'Peak End'),
+    )
+
+    daily_event = models.ForeignKey(
+        SystemEventModel,
+        on_delete=models.CASCADE,
+        related_name='peak_records'
+    )
+    peak_hour = models.IntegerField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True, null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.status} at {self.peak_hour}:00"
+
+    @property
+    def formatted_hour(self):
+        return f"{self.peak_hour:02d}:00"
+
+    @property
+    def formatted_time_range(self):
+        if self.status == 'PEAK_START':
+            start_h = self.peak_hour
+            end_hour = (self.peak_hour + 1) % 24
+            return f"{start_h:02d}:00 - {end_hour:02d}:00"
+        return f"{self.peak_hour:02d}:00"
+
+    class Meta:
+        verbose_name = 'Peak generation event'
+        verbose_name_plural = 'Peak Generation Events'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['daily_event', 'user', 'peak_hour', 'status'],
+                name='unique_peak_event_per_user_day'
+            )
+        ]
+
+
+# DEPRECATED
 class SystemMessage(models.Model):
     LEVEL_CHOICES = (
         ('info', 'Info'),

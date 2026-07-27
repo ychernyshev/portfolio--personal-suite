@@ -26,3 +26,16 @@ class InboxConsumer(AsyncWebsocketConsumer):
     async def inbox_message(self, event):
         # Send JSON to the client (Vue)
         await self.send(text_data=json.dumps(event["content"]))
+
+
+class CalculatorEventConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.group_name = "calculator_events"
+        await self.channel_layer.group_add(self.group_name, self.channel_name)
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(self.group_name, self.channel_name)
+
+    async def system_event(self, event):
+        await self.send(text_data=json.dumps(event["content"]))
