@@ -10,7 +10,8 @@ from calculator.models import (
     WeatherDataModel,
     DataEntryLineModel,
     SystemEventModel,
-    PeakEventModel, WindEventModel,
+    PeakEventModel,
+    WindEventModel,
 )
 from calculator.services.PanelPowerCalculationService import PanelPowerCalculationService
 
@@ -297,7 +298,10 @@ class WeatherForecastService:
                         defaults={
                             'category': 'WARNING',
                             'title': title_str,
-                            'message': f"Recorded at {time_str}: Wind {max_wind} m/s, Gust {max_gust} m/s, Direction {wind_direction}",
+                            'message': f"Wind {max_wind} m/s, Gust {max_gust} m/s",
+                            'wind_strength': max_wind,
+                            'gust_strength': max_gust,
+                            'wind_direction': wind_direction,
                             'is_persistent': True,
                             'user': user
                         }

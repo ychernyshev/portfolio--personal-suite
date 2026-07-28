@@ -96,32 +96,72 @@ class SystemEventSerializer(serializers.ModelSerializer):
     level = serializers.SerializerMethodField()
     msg_type = serializers.SerializerMethodField()
 
+    wind_speed = serializers.SerializerMethodField()
+    wind_gust = serializers.SerializerMethodField()
+    peak_time_range = serializers.SerializerMethodField()
+
+    wind_strength = serializers.SerializerMethodField()
+    gust_strength = serializers.SerializerMethodField()
+    wind_direction = serializers.SerializerMethodField()
+
     class Meta:
         model = SystemEventModel
-        fields = ['id', 'date', 'payload', 'created_at', 'updated_at',
-                  'title', 'text', 'level', 'msg_type',
-                  'wind_records', 'peak_records']
+        fields = [
+            'id', 'date', 'payload', 'created_at', 'updated_at',
+            'title', 'text', 'level', 'msg_type',
+            'wind_strength', 'gust_strength', 'wind_direction',
+            'wind_speed', 'wind_gust', 'peak_time_range',
+            'wind_records', 'peak_records'
+        ]
         read_only_fields = ['user']
 
     def get_title(self, obj):
-        wind = obj.wind_records.first()
-        return wind.title if wind else obj.payload.get('title', 'Notification')
+        if obj.wind_records.exists():
+            return obj.wind_records.first().title
+        if obj.peak_records.exists():
+            return f"Peak Generation ({obj.peak_records.first().status})"
+        return obj.payload.get('title', 'Notification')
 
     def get_text(self, obj):
-        wind = obj.wind_records.first()
-        return wind.message if wind else obj.payload.get('message', '')
+        if obj.wind_records.exists():
+            return obj.wind_records.first().message
+        if obj.peak_records.exists():
+            peak = obj.peak_records.first()
+            return f"Peak hour slot: {peak.formatted_time_range}"
+        return obj.payload.get('message', '')
 
     def get_level(self, obj):
-        wind = obj.wind_records.first()
-        return wind.category.lower() if wind else obj.payload.get('level', 'info')
+        if obj.wind_records.exists():
+            return obj.wind_records.first().category.lower()
+        return obj.payload.get('level', 'info')
 
     def get_msg_type(self, obj):
-        peak = obj.peak_records.first()
-        return peak.status.lower() if peak else obj.payload.get('category', 'info')
+        if obj.peak_records.exists():
+            return obj.peak_records.first().status.lower()
+        return obj.payload.get('category', 'info')
 
-    def get_peak_hour(self, obj):
+    def get_wind_speed(self, obj):
+        wind = obj.wind_records.first()
+        return wind.message if wind else None
+
+    def get_wind_gust(self, obj):
+        return None
+
+    def get_peak_time_range(self, obj):
         peak = obj.peak_records.first()
-        return peak.peak_hour if peak else obj.payload.get('peak_hour', None)
+        return peak.formatted_time_range if peak else None
+
+    def get_wind_strength(self, obj):
+        wind = obj.wind_records.first()
+        return wind.wind_strength if wind else None
+
+    def get_gust_strength(self, obj):
+        wind = obj.wind_records.first()
+        return wind.gust_strength if wind else None
+
+    def get_wind_direction(self, obj):
+        wind = obj.wind_records.first()
+        return wind.wind_direction if wind else []
 
 # DEPRECATED
 # class GeolocationSerializer(serializers.ModelSerializer):

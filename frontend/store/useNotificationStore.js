@@ -12,16 +12,45 @@ export const useNotificationStore = defineStore('notifications', () => {
             const data = response.data.results || response.data;
 
             if (Array.isArray(data)) {
-                const dbMessages = data.slice(0, 8).map(m => ({
-                    id: m.id || Date.now() + Math.random(),
-                    title: m.payload?.title || 'Notification',
-                    text: m.payload?.message || '',
-                    level: m.payload?.level || 'info',
-                    msg_type: m.payload?.category || 'info',
-                    message1: m.payload?.max_wind_speed || '',
-                    message2: m.payload?.max_wind_gust || '',
-                    isPersistent: true,
-                }));
+                const dbMessages = data.slice(0, 8).map(m => {
+                    const windRecord = m.wind_records?.[0];
+                    const peakRecord = m.peak_records?.[0];
+
+                    let message1 = '';
+                    let message2 = '';
+
+                    if (windRecord) {
+                        message1 = windRecord.title || '';
+                        message2 = windRecord.message || '';
+                    } else if (peakRecord) {
+                        message1 = `Hour: ${peakRecord.formatted_hour}`;
+                        message2 = `Range: ${peakRecord.formatted_time_range}`;
+                    }
+
+                    return {
+                        id: m.id || Date.now() + Math.random(),
+                        title: m.title || 'Notification',
+                        text: m.text || '',
+                        level: m.level || 'info',
+                        msg_type: m.msg_type || 'info',
+                        message1: message1,
+                        message2: message2,
+                        wind_strength: m.wind_strength,
+                        gust_strength: m.gust_strength,
+                        wind_direction: m.wind_direction,
+                        isPersistent: true,
+                    };
+                });
+                // const dbMessages = data.slice(0, 8).map(m => ({
+                //     id: m.id || Date.now() + Math.random(),
+                //     title: m.payload?.title || 'Notification',
+                //     text: m.payload?.message || '',
+                //     level: m.payload?.level || 'info',
+                //     msg_type: m.payload?.category || 'info',
+                //     message1: m.payload?.max_wind_speed || '',
+                //     message2: m.payload?.max_wind_gust || '',
+                //     isPersistent: true,
+                // }));
 
                 messages.value = dbMessages;
             }

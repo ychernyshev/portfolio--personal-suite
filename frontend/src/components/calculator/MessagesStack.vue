@@ -55,7 +55,13 @@ defineExpose({ pushLocalMessage });
           <img :src="getIcon(msg.msg_type)" class="me-2 text-dark icon" alt=""/>
           <div>
             <h6 class="mb-0 text-dark">{{ msg.title }}</h6>
-            <span class="text-muted">{{ msg.text }}</span>
+            <p class="text-muted">
+              <span>{{ msg.wind_strength }} m/s;&nbsp;</span>
+              <span :class="{ 'text-alert': Number(msg.gust_strength) >= 15 }">
+                {{ msg.gust_strength }}
+              </span>
+              m/s
+            </p>
           </div>
         </div>
       </div>
@@ -110,6 +116,11 @@ defineExpose({ pushLocalMessage });
 .list-leave-active {
   position: absolute;
   width: 100%;
+}
+
+.text-alert {
+  color: #dc3545 !important;
+  font-weight: bold;
 }
 </style>
 
