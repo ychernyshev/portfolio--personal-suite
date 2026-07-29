@@ -21,7 +21,7 @@ const getIcon = (type) => {
     'success': new URL(successIcon, import.meta.url).href,
     'warning': new URL(warningIcon, import.meta.url).href,
     'info': new URL(infoIcon, import.meta.url).href,
-    'error': new URL(errorIcon, import.meta.url).href,
+    'danger': new URL(errorIcon, import.meta.url).href,
   };
   return icons[type] || 'bi-bell';
 };
@@ -50,12 +50,12 @@ defineExpose({ pushLocalMessage });
 <template>
   <div class="notification-stack w-100 pl-4 pr-1">
     <transition-group name="list" tag="div">
-      <div v-for="msg in messages" :key="msg.id" class="msg-card shadow-sm rounded-2" :class="msg.level">
+      <div v-for="msg in messages" :key="msg.id" class="neomorphic msg-card shadow-sm rounded-2 p-2 pl-3 mb-2 border-0" :class="msg.level">
         <div class="d-flex align-items-center">
-          <img :src="getIcon(msg.msg_type)" class="me-2 text-dark icon" alt=""/>
-          <div>
-            <h6 class="mb-0 text-dark">{{ msg.title }}</h6>
-            <p class="text-muted">
+          <img :src="getIcon(msg.level)" class="me-2 text-dark icon" alt=""/>
+          <div class="my-auto">
+            <h6 class="mb-0 text-dark">{{ msg.title }} {{ msg.wind_time }}</h6>
+            <p class="text-muted my-auto">
               <span>{{ msg.wind_strength }} m/s;&nbsp;</span>
               <span :class="{ 'text-alert': Number(msg.gust_strength) >= 15 }">
                 {{ msg.gust_strength }}
@@ -79,7 +79,6 @@ defineExpose({ pushLocalMessage });
 }
 
 .msg-card {
-  background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
