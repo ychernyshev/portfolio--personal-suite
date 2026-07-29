@@ -1,4 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+from zoneinfo import ZoneInfo
+
+from django.utils import timezone
 from rest_framework import serializers
 
 from calculator.models import (DataEntryLineModel,
@@ -165,8 +168,38 @@ class SystemEventSerializer(serializers.ModelSerializer):
         return wind.wind_direction if wind else []
 
     def get_wind_time(self, obj):
-        wind = obj.wind_records.first()
-        return wind.wind_time if wind else []
+        user = getattr(obj, 'user', None)
+
+        user_tz_str = 'UTC'
+        if user and hasattr(user, 'settings'):
+            user_tz_str = user.settings.timezone or 'UTC'
+
+        try:
+            user_tz = ZoneInfo(user_tz_str)
+        except Exception:
+            user_tz = ZoneInfo('UTC')
+
+        now_user_time = timezone.now().astimezone(user_tz)
+        current_time_only = now_user_time.time()
+
+        records = obj.wind_records.all()
+        if not records.exists():
+            return None
+
+        next_or_current = records.filter(wind_time__gte=current_time_only).order_by('wind_time').first()
+
+        if next_or_current:
+            return next_or_current.wind_time
+
+        last_available = records.order_by('-wind_time').first()
+
+        return last_available.wind_time if last_available else None
+
+        # 2. Якщо наступних/точних немає (наприклад, вже вечір, а всі записи закінчилися раніше),
+        # беремо останній доступний за сьогодні (найбільший час)
+        last_available = records.order_by('-wind_time').first()
+
+        return last_available.wind_time if last_available else None
 
 # DEPRECATED
 # class GeolocationSerializer(serializers.ModelSerializer):
