@@ -137,7 +137,7 @@ class UserProfileSettingsAdmin(admin.ModelAdmin):
 
 @admin.register(WindEventModel)
 class WindEventAdmin(admin.ModelAdmin):
-    list_display = ['created_at', 'category', 'daily_event', 'wind_strength', 'gust_strength', 'wind_direction', 'message', 'user']
+    list_display = ['created_at', 'wind_time', 'category', 'daily_event', 'wind_strength', 'gust_strength', 'wind_direction', 'message', 'user']
 
 
 @admin.register(PeakEventModel)
