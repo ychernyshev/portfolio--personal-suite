@@ -100,6 +100,7 @@ class SystemEventSerializer(serializers.ModelSerializer):
     wind_gust = serializers.SerializerMethodField()
     peak_time_range = serializers.SerializerMethodField()
 
+    wind_time = serializers.SerializerMethodField()
     wind_strength = serializers.SerializerMethodField()
     gust_strength = serializers.SerializerMethodField()
     wind_direction = serializers.SerializerMethodField()
@@ -108,7 +109,7 @@ class SystemEventSerializer(serializers.ModelSerializer):
         model = SystemEventModel
         fields = [
             'id', 'date', 'payload', 'created_at', 'updated_at',
-            'title', 'text', 'level', 'msg_type',
+            'title', 'text', 'level', 'msg_type', 'wind_time',
             'wind_strength', 'gust_strength', 'wind_direction',
             'wind_speed', 'wind_gust', 'peak_time_range',
             'wind_records', 'peak_records'
@@ -162,6 +163,10 @@ class SystemEventSerializer(serializers.ModelSerializer):
     def get_wind_direction(self, obj):
         wind = obj.wind_records.first()
         return wind.wind_direction if wind else []
+
+    def get_wind_time(self, obj):
+        wind = obj.wind_records.first()
+        return wind.wind_time if wind else []
 
 # DEPRECATED
 # class GeolocationSerializer(serializers.ModelSerializer):

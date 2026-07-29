@@ -278,7 +278,7 @@ class WeatherForecastService:
 
             if max_wind >= threshold or max_gust >= threshold:
                 time_str = timestamps[i]
-                title_str = f'Wind alert at {dt.strftime("%H:%M")}'
+                title_str = f'Wind alert at '
 
                 if not WindEventModel.objects.filter(
                         daily_event=daily_event,
@@ -299,6 +299,7 @@ class WeatherForecastService:
                             'category': 'WARNING',
                             'title': title_str,
                             'message': f"Wind {max_wind} m/s, Gust {max_gust} m/s",
+                            'wind_time': dt.strftime("%H:%M"),
                             'wind_strength': max_wind,
                             'gust_strength': max_gust,
                             'wind_direction': wind_direction,
