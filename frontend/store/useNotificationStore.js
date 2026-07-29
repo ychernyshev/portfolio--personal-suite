@@ -35,6 +35,7 @@ export const useNotificationStore = defineStore('notifications', () => {
                         msg_type: m.msg_type || 'info',
                         message1: message1,
                         message2: message2,
+                        wind_time: m.wind_time,
                         wind_strength: m.wind_strength,
                         gust_strength: m.gust_strength,
                         wind_direction: m.wind_direction,
