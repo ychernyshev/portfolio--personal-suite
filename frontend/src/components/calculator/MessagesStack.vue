@@ -54,7 +54,7 @@ defineExpose({ pushLocalMessage });
         <div class="d-flex align-items-center">
           <img :src="getIcon(msg.level)" class="me-2 text-dark icon" alt=""/>
           <div class="my-auto">
-            <h6 class="mb-0 text-dark">{{ msg.title }} {{ msg.wind_time }}</h6>
+            <h6 class="mb-0 text-dark">{{ msg.title }} {{ msg.wind_time?.slice(0, 5) }}</h6>
             <p class="text-muted my-auto">
               <span>{{ msg.wind_strength }} m/s;&nbsp;</span>
               <span :class="{ 'text-alert': Number(msg.gust_strength) >= 15 }">
