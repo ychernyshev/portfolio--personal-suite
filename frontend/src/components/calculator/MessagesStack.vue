@@ -118,7 +118,7 @@ defineExpose({ pushLocalMessage });
 }
 
 .text-alert {
-  color: #dc3545 !important;
+  color: #FFB307 !important;
   font-weight: bold;
 }
 </style>
