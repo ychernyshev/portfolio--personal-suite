@@ -13,15 +13,26 @@ export const useNotificationStore = defineStore('notifications', () => {
 
             if (Array.isArray(data)) {
                 const dbMessages = data.slice(0, 8).map(m => {
-                    const windRecord = m.wind_records?.[0];
                     const peakRecord = m.peak_records?.[0];
+
+                    let adjustedTime = m.wind_time;
+                    if (adjustedTime) {
+                        const parts = adjustedTime.split(':');
+                        let hour = parseInt(parts[0], 10) - 1;
+                        if (hour < 0) hour = 23; // захист на випадок переходу через опівніч
+                        parts[0] = String(hour).padStart(2, '0');
+                        adjustedTime = parts.join(':');
+                    }
+
+                    const targetHourStr = adjustedTime ? adjustedTime.slice(0, 2) : '';
+                    const currentWindRecord = m.wind_records?.find(r => r.wind_time?.includes(targetHourStr)) || m.wind_records?.[0];
 
                     let message1 = '';
                     let message2 = '';
 
-                    if (windRecord) {
-                        message1 = windRecord.title || '';
-                        message2 = windRecord.message || '';
+                    if (currentWindRecord) {
+                        message1 = currentWindRecord.title || '';
+                        message2 = currentWindRecord.message || '';
                     } else if (peakRecord) {
                         message1 = `Hour: ${peakRecord.formatted_hour}`;
                         message2 = `Range: ${peakRecord.formatted_time_range}`;
@@ -35,10 +46,10 @@ export const useNotificationStore = defineStore('notifications', () => {
                         msg_type: m.msg_type || 'info',
                         message1: message1,
                         message2: message2,
-                        wind_time: m.wind_time,
-                        wind_strength: m.wind_strength,
-                        gust_strength: m.gust_strength,
-                        wind_direction: m.wind_direction,
+                        wind_time: adjustedTime,
+                        wind_strength: currentWindRecord?.wind_strength || m.wind_strength,
+                        gust_strength: currentWindRecord?.gust_strength || m.gust_strength,
+                        wind_direction: currentWindRecord?.wind_direction || m.wind_direction,
                         isPersistent: true,
                     };
                 });

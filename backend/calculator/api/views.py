@@ -553,6 +553,7 @@ class UserProfileSettingsAPIView(RetrieveUpdateAPIView):
 class SystemEventAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = SystemEventSerializer
+    pagination_class = None
 
     def get_queryset(self):
         queryset = SystemEventModel.objects.all().prefetch_related('wind_records', 'peak_records')

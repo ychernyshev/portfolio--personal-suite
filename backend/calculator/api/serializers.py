@@ -195,12 +195,6 @@ class SystemEventSerializer(serializers.ModelSerializer):
 
         return last_available.wind_time if last_available else None
 
-        # 2. Якщо наступних/точних немає (наприклад, вже вечір, а всі записи закінчилися раніше),
-        # беремо останній доступний за сьогодні (найбільший час)
-        last_available = records.order_by('-wind_time').first()
-
-        return last_available.wind_time if last_available else None
-
 # DEPRECATED
 # class GeolocationSerializer(serializers.ModelSerializer):
 #     class Meta:
