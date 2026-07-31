@@ -42,6 +42,7 @@ const { messages } = storeToRefs(notificationStore);
                 <span :class="{ 'text-alert': Number(msg.gust_strength) >= 15 }">
                   {{ msg.gust_strength }}
                 </span> m/s.
+                {{msg}}
               </div>
             </div>
           </div>
