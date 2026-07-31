@@ -1,27 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup>
-import MonthGenerationChart from "@/components/calculator/charts/CurrentMonthStats/MonthGenerationChart.vue";
-import backendApi from "@/services/backendApi.js";
-import {onMounted, ref} from "vue";
+import {useNotificationStore} from "../../../store/useNotificationStore.js";
+import {storeToRefs} from "pinia";
 
-const monthGenerationGraphiData = ref();
-const errorMsg = ref("");
-const errorClass = ref("");
-
-const getMonthGeneration = async () => {
-  try {
-    const response = await backendApi('calculator/power_generation_month_analytics/');
-    monthGenerationGraphiData.value = response.data;
-  } catch (error) {
-    console.log(error);
-    errorMsg.value = "No data is being received from the server.";
-    errorClass.value = "alert-warning";
-  }
-}
-
-onMounted(() => {
-  getMonthGeneration();
-})
+const notificationStore = useNotificationStore();
+const { messages } = storeToRefs(notificationStore);
 </script>
 
 <template>
@@ -36,20 +19,32 @@ onMounted(() => {
             </div>
           </div>
 
-          <table class="table">
-            <thead>
-            <tr>
-              <th scope="col">Date</th>
-              <th scope="col">Message description</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <th scope="row">11.11.1111</th>
-              <td>Message</td>
-            </tr>
-            </tbody>
-          </table>
+          <div class="container-fluid">
+            <div class="row mb-3 text-purple fw-bold p-2">
+              <div class="col-12 col-lg-2">
+                Date
+              </div>
+              <div class="col-12 col-lg-10">
+                Message description
+              </div>
+            </div>
+            <div class="row mb-2 bg-white p-2" v-for="msg in messages" :key="msg.id">
+              <div class="col-12 col-lg-2 fw-bold">
+                {{ msg.created_at }}
+              </div>
+              <div class="col-12 col-lg-10">
+                {{ msg.title }}{{ msg.event_time }}.
+                Wind strength
+                <span :class="{ 'text-alert': Number(msg.wind_strength) >= 15 }">
+                  {{ msg.wind_strength }}
+                </span> m/s.
+                Wind gust
+                <span :class="{ 'text-alert': Number(msg.gust_strength) >= 15 }">
+                  {{ msg.gust_strength }}
+                </span> m/s.
+              </div>
+            </div>
+          </div>
 
           <div v-if="errorMsg" :class="['alert', errorClass, 'text-center']">
             {{ errorMsg }}
@@ -61,5 +56,8 @@ onMounted(() => {
 </template>
 
 <style scoped>
-
+  .text-alert {
+    color: #FFB307 !important;
+    font-weight: bold;
+  }
 </style>

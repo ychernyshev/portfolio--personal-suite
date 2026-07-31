@@ -15,17 +15,17 @@ export const useNotificationStore = defineStore('notifications', () => {
                 const dbMessages = data.slice(0, 8).map(m => {
                     const peakRecord = m.peak_records?.[0];
 
-                    let adjustedTime = m.wind_time;
+                    let adjustedTime = m.event_time;
                     if (adjustedTime) {
                         const parts = adjustedTime.split(':');
                         let hour = parseInt(parts[0], 10) - 1;
-                        if (hour < 0) hour = 23; // захист на випадок переходу через опівніч
+                        if (hour < 0) hour = 23;
                         parts[0] = String(hour).padStart(2, '0');
                         adjustedTime = parts.join(':');
                     }
 
                     const targetHourStr = adjustedTime ? adjustedTime.slice(0, 2) : '';
-                    const currentWindRecord = m.wind_records?.find(r => r.wind_time?.includes(targetHourStr)) || m.wind_records?.[0];
+                    const currentWindRecord = m.wind_records?.find(r => r.event_time?.includes(targetHourStr)) || m.wind_records?.[0];
 
                     let message1 = '';
                     let message2 = '';
