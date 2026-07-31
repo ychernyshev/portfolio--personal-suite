@@ -191,11 +191,11 @@ class SystemEventSerializer(serializers.ModelSerializer):
         next_or_current = records.filter(wind_time__gte=current_time_only).order_by('wind_time').first()
 
         if next_or_current:
-            return next_or_current.wind_time
+            return next_or_current.wind_time.strftime('%H:%M') if next_or_current.wind_time else None
 
         last_available = records.order_by('-wind_time').first()
 
-        return last_available.wind_time if last_available else None
+        return last_available.wind_time.strftime('%H:%M') if last_available and last_available.wind_time else None
 
     def get_created_at(self, obj):
         wind = obj.wind_records.first()
