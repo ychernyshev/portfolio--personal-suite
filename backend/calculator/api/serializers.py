@@ -108,6 +108,8 @@ class SystemEventSerializer(serializers.ModelSerializer):
     gust_strength = serializers.SerializerMethodField()
     wind_direction = serializers.SerializerMethodField()
 
+    created_at = serializers.SerializerMethodField()
+
     class Meta:
         model = SystemEventModel
         fields = [
@@ -115,7 +117,7 @@ class SystemEventSerializer(serializers.ModelSerializer):
             'title', 'text', 'level', 'msg_type', 'wind_time',
             'wind_strength', 'gust_strength', 'wind_direction',
             'wind_speed', 'wind_gust', 'peak_time_range',
-            'wind_records', 'peak_records'
+            'wind_records', 'peak_records', 'created_at'
         ]
         read_only_fields = ['user']
 
@@ -194,6 +196,25 @@ class SystemEventSerializer(serializers.ModelSerializer):
         last_available = records.order_by('-wind_time').first()
 
         return last_available.wind_time if last_available else None
+
+    def get_created_at(self, obj):
+        wind = obj.wind_records.first()
+        if not wind or not wind.created_at:
+            return None
+
+        user = getattr(obj, 'user', None)
+        user_tz_str = 'UTC'
+        if user and hasattr(user, 'settings'):
+            user_tz_str = user.settings.timezone or 'UTC'
+
+        try:
+            user_tz = ZoneInfo(user_tz_str)
+        except Exception:
+            user_tz = ZoneInfo('UTC')
+
+        user_local_time = wind.created_at.astimezone(user_tz)
+
+        return user_local_time.strftime('%Y-%m-%d %H:%M:%S')
 
 # DEPRECATED
 # class GeolocationSerializer(serializers.ModelSerializer):
