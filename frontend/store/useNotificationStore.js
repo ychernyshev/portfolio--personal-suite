@@ -46,11 +46,12 @@ export const useNotificationStore = defineStore('notifications', () => {
                         msg_type: m.msg_type || 'info',
                         message1: message1,
                         message2: message2,
-                        wind_time: adjustedTime,
+                        event_time: adjustedTime,
                         wind_strength: currentWindRecord?.wind_strength || m.wind_strength,
                         gust_strength: currentWindRecord?.gust_strength || m.gust_strength,
                         wind_direction: currentWindRecord?.wind_direction || m.wind_direction,
                         isPersistent: true,
+                        created_at: m.created_at
                     };
                 });
                 // const dbMessages = data.slice(0, 8).map(m => ({

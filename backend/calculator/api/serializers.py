@@ -103,7 +103,7 @@ class SystemEventSerializer(serializers.ModelSerializer):
     wind_gust = serializers.SerializerMethodField()
     peak_time_range = serializers.SerializerMethodField()
 
-    wind_time = serializers.SerializerMethodField()
+    event_time = serializers.SerializerMethodField()
     wind_strength = serializers.SerializerMethodField()
     gust_strength = serializers.SerializerMethodField()
     wind_direction = serializers.SerializerMethodField()
@@ -114,7 +114,7 @@ class SystemEventSerializer(serializers.ModelSerializer):
         model = SystemEventModel
         fields = [
             'id', 'date', 'payload', 'created_at', 'updated_at',
-            'title', 'text', 'level', 'msg_type', 'wind_time',
+            'title', 'text', 'level', 'msg_type', 'event_time',
             'wind_strength', 'gust_strength', 'wind_direction',
             'wind_speed', 'wind_gust', 'peak_time_range',
             'wind_records', 'peak_records', 'created_at'
@@ -169,7 +169,7 @@ class SystemEventSerializer(serializers.ModelSerializer):
         wind = obj.wind_records.first()
         return wind.wind_direction if wind else []
 
-    def get_wind_time(self, obj):
+    def get_event_time(self, obj):
         user = getattr(obj, 'user', None)
 
         user_tz_str = 'UTC'
@@ -188,14 +188,14 @@ class SystemEventSerializer(serializers.ModelSerializer):
         if not records.exists():
             return None
 
-        next_or_current = records.filter(wind_time__gte=current_time_only).order_by('wind_time').first()
+        next_or_current = records.filter(event_time__gte=current_time_only).order_by('event_time').first()
 
         if next_or_current:
-            return next_or_current.wind_time.strftime('%H:%M') if next_or_current.wind_time else None
+            return next_or_current.event_time.strftime('%H:%M') if next_or_current.event_time else None
 
-        last_available = records.order_by('-wind_time').first()
+        last_available = records.order_by('-event_time').first()
 
-        return last_available.wind_time.strftime('%H:%M') if last_available and last_available.wind_time else None
+        return last_available.event_time.strftime('%H:%M') if last_available and last_available.event_time else None
 
     def get_created_at(self, obj):
         wind = obj.wind_records.first()
