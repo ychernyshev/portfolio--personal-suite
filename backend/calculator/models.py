@@ -551,6 +551,10 @@ class WindEventModel(models.Model):
     category = models.CharField(max_length=20, default='WARNING')
     title = models.CharField(max_length=255)
     message = models.TextField(blank=True, null=True)
+    event_time = models.TimeField(blank=True, null=True)
+    wind_strength = models.FloatField(blank=True, null=True)
+    gust_strength = models.FloatField(blank=True, null=True)
+    wind_direction = models.JSONField(default=list, blank=True)
     is_persistent = models.BooleanField(default=True)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)

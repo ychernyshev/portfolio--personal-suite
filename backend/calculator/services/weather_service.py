@@ -10,7 +10,8 @@ from calculator.models import (
     WeatherDataModel,
     DataEntryLineModel,
     SystemEventModel,
-    PeakEventModel, WindEventModel,
+    PeakEventModel,
+    WindEventModel,
 )
 from calculator.services.PanelPowerCalculationService import PanelPowerCalculationService
 
@@ -22,35 +23,100 @@ class WeatherForecastService:
             "currency": "UAH", "peak_hour": 0, "status": "error", "tariff_used": tariff,
             "current_temp": 0.0, "weather_condition": "Unavailable", "weather_code": 0, "calibration_factor": 1.0
         }
+    # 1
+    # def _calculate_calibration_factor(self):
+    #     today = datetime.date.today()
+    #     start_date = datetime.date(today.year, today.month, 1)
+    #     yesterday = today - datetime.timedelta(days=1)
+    #     if yesterday < start_date:
+    #         return 0.5
+    #
+    #     actual_qs = DataEntryLineModel.objects.filter(date__range=(start_date, yesterday))
+    #     forecast_qs = SolarForecastRecordModel.objects.filter(date__range=(start_date, yesterday))
+    #
+    #     actual_dict = {q.date.day: float(q.full_day_power)
+    #                    for q in actual_qs
+    #                    if q.full_day_power is not None and q.full_day_power > 0}
+    #
+    #     forecast_dict = {q.date.day: float(q.predicted_kwh)
+    #                      for q in forecast_qs
+    #                      if q.predicted_kwh is not None}
+    #
+    #     total_real = 0.0
+    #     total_pred = 0.0
+    #
+    #     for day, real_power in actual_dict.items():
+    #         if day in forecast_dict:
+    #             total_real = sum(actual_dict.values()) / 1000.0
+    #             total_pred = sum(forecast_dict.values())
+    #
+    #     return (total_real / total_pred) if total_pred > 0 else 0.5
+        # return 1.0
 
+    # 2
+    # def _calculate_calibration_factor(self):
+    #     today = datetime.date.today()
+    #     yesterday = today - datetime.timedelta(days=1)
+    #     start_date = datetime.date(yesterday.year, yesterday.month, 1)
+    #     if yesterday < start_date:
+    #         return 0.3
+    #
+    #     actual_qs = DataEntryLineModel.objects.filter(date__range=(start_date, yesterday))
+    #     forecast_qs = SolarForecastRecordModel.objects.filter(date__range=(start_date, yesterday))
+    #
+    #     actual_dict = {q.date.day: float(q.full_day_power)
+    #                    for q in actual_qs
+    #                    if q.full_day_power is not None and q.full_day_power > 0}
+    #
+    #     forecast_dict = {q.date.day: float(q.predicted_kwh)
+    #                      for q in forecast_qs
+    #                      if q.predicted_kwh is not None}
+    #
+    #     common_days = set(actual_dict.keys()).intersection(set(forecast_dict.keys()))
+    #     if not common_days:
+    #         return 0.3
+    #
+    #     total_real = sum(actual_dict[day] for day in common_days) / 1000.0
+    #     total_pred = sum(forecast_dict[day] for day in common_days)
+    #
+    #     print(f"DEBUG CALIBRATION: total_real={total_real}, total_pred={total_pred}")
+    #
+    #     return (total_real / total_pred) if total_pred > 0 else 0.3
+
+    #3 for last 14 days
     def _calculate_calibration_factor(self):
         today = datetime.date.today()
-        start_date = datetime.date(today.year, today.month, 1)
         yesterday = today - datetime.timedelta(days=1)
-        if yesterday < start_date:
-            return 1.0
+
+        # Беремо період за останні 14 днів до вчорашнього дня
+        start_date = yesterday - datetime.timedelta(days=14)
 
         actual_qs = DataEntryLineModel.objects.filter(date__range=(start_date, yesterday))
         forecast_qs = SolarForecastRecordModel.objects.filter(date__range=(start_date, yesterday))
 
-        actual_dict = {q.date.day: float(q.full_day_power)
-                       for q in actual_qs
-                       if q.full_day_power is not None and q.full_day_power > 0}
+        actual_dict = {
+            q.date: float(q.full_day_power)
+            for q in actual_qs
+            if q.full_day_power is not None and q.full_day_power > 0
+        }
 
-        forecast_dict = {q.date.day: float(q.predicted_kwh)
-                         for q in forecast_qs
-                         if q.predicted_kwh is not None}
+        forecast_dict = {
+            q.date: float(q.predicted_kwh)
+            for q in forecast_qs
+            if q.predicted_kwh is not None
+        }
 
-        total_real = 0.0
-        total_pred = 0.0
+        # Знаходимо спільні дати, які є і в фактах, і в прогнозах за цей період
+        common_dates = set(actual_dict.keys()).intersection(set(forecast_dict.keys()))
+        if not common_dates:
+            return 1.0
 
-        for day, real_power in actual_dict.items():
-            if day in forecast_dict:
-                total_real = sum(actual_dict.values()) / 1000.0
-                total_pred = sum(forecast_dict.values())
+        total_real = sum(actual_dict[d] for d in common_dates) / 1000.0
+        total_pred = sum(forecast_dict[d] for d in common_dates)
+
+        print(f"DEBUG CALIBRATION (Last 14 days): total_real={total_real}, total_pred={total_pred}")
 
         return (total_real / total_pred) if total_pred > 0 else 1.0
-        # return 1.0
 
     def get_solar_forecast(self, data, user, current_tariff=None):
         if not data or 'hourly' not in data:
@@ -132,6 +198,7 @@ class WeatherForecastService:
             f"shortwave_radiation,direct_radiation,diffuse_radiation,wind_speed_10m,"
             f"wind_gusts_10m,wind_direction_10m,weather_code"
             f"&daily=sunrise,sunset&timezone=auto"
+            f"&forecast_days=16"
         )
         try:
             response = requests.get(url, timeout=10)
@@ -277,7 +344,7 @@ class WeatherForecastService:
 
             if max_wind >= threshold or max_gust >= threshold:
                 time_str = timestamps[i]
-                title_str = f'Wind alert at {dt.strftime("%H:%M")}'
+                title_str = f'Wind alert at '
 
                 if not WindEventModel.objects.filter(
                         daily_event=daily_event,
@@ -297,7 +364,11 @@ class WeatherForecastService:
                         defaults={
                             'category': 'WARNING',
                             'title': title_str,
-                            'message': f"Recorded at {time_str}: Wind {max_wind} m/s, Gust {max_gust} m/s, Direction {wind_direction}",
+                            'message': f"Wind {max_wind} m/s, Gust {max_gust} m/s",
+                            'wind_time': dt.strftime("%H:%M"),
+                            'wind_strength': max_wind,
+                            'gust_strength': max_gust,
+                            'wind_direction': wind_direction,
                             'is_persistent': True,
                             'user': user
                         }
