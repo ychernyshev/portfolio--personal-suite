@@ -173,7 +173,7 @@ export const useOpenMeteoForecastStore = defineStore('solarForecast', () => {
 
             const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Europe/Kyiv";
 
-            const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${browserLat.value}&longitude=${browserLon.value}&hourly=shortwave_radiation,temperature_2m,weather_code,cloud_cover,relative_humidity_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,wind_direction_10m&daily=sunrise,sunset&wind_speed_unit=ms&timezone=${encodeURIComponent(userTimezone)}&forecast_days=1`;
+            const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${browserLat.value}&longitude=${browserLon.value}&hourly=shortwave_radiation,temperature_2m,weather_code,cloud_cover,relative_humidity_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,wind_direction_10m&daily=sunrise,sunset&wind_speed_unit=ms&timezone=${encodeURIComponent(userTimezone)}&forecast_days=16`;
 
             const openMeteoResponse = await fetch(openMeteoUrl);
             if (!openMeteoResponse.ok) throw new Error(`Open-Meteo API error: ${openMeteoResponse.status}`);
