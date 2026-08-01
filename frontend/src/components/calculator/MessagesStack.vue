@@ -58,18 +58,24 @@ defineExpose({ pushLocalMessage });
 
             <!-- 1. КАРТКА ВІТРУ -->
             <template v-if="msg.type === 'wind'">
-              <h6 class="mb-0 text-dark">{{ msg.title }} <span class="small text-muted">({{ msg.event_time?.slice(0, 5) }})</span></h6>
+              <h6 class="mb-0 text-dark">{{ msg.title }} <span class="small text-muted">({{ msg.date }} {{ msg.event_time?.slice(0, 5) }})</span></h6>
               <p class="text-muted my-auto">
-                Wind: <span>{{ msg.wind_strength }} m/s;&nbsp;</span>
-                Gust: <span :class="{ 'text-alert': Number(msg.gust_strength) >= 15 }">
+                Wind:
+                <span>
+                  <strong :class="{ 'text-alert': msg.wind_strength >= 15 }">{{ msg.wind_strength }}</strong>
+                  m/s;&nbsp;
+                </span>
+                Gust:
+                <span :class="{ 'text-alert': Number(msg.gust_strength) >= 15 }">
                   {{ msg.gust_strength }}
-                </span> m/s
+                </span>
+                m/s
               </p>
             </template>
 
             <!-- 2. КАРТКА ПІКОВИХ ГОДИН -->
             <template v-else-if="msg.type === 'peak'">
-              <h6 class="mb-0 text-dark">{{ msg.title }}</h6>
+              <h6 class="mb-0 text-dark">{{ msg.title }} <span class="small text-muted">({{ msg.date }})</span></h6>
               <p class="text-muted my-auto">
                 Time range: <strong>{{ msg.formatted_time_range }}</strong>
               </p>

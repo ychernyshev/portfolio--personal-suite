@@ -91,6 +91,10 @@ class WindEventSerializer(serializers.ModelSerializer):
 
 
 class SystemEventSerializer(serializers.ModelSerializer):
+    date = serializers.SerializerMethodField()
+    formatted_hour = serializers.SerializerMethodField()
+    formatted_time_range = serializers.SerializerMethodField()
+
     wind_records = WindEventSerializer(many=True, read_only=True)
     peak_records = PeakEventSerializer(many=True, read_only=True)
 
@@ -114,12 +118,51 @@ class SystemEventSerializer(serializers.ModelSerializer):
         model = SystemEventModel
         fields = [
             'id', 'date', 'payload', 'created_at', 'updated_at',
+            'formatted_hour', 'formatted_time_range',
             'title', 'text', 'level', 'msg_type', 'event_time',
             'wind_strength', 'gust_strength', 'wind_direction',
             'wind_speed', 'wind_gust', 'peak_time_range',
             'wind_records', 'peak_records', 'created_at'
         ]
         read_only_fields = ['user']
+
+    def get_date(self, obj):
+        # 1. Знаходимо сиру дату з доступних джерел
+        raw_date = None
+        if hasattr(obj, 'daily_event') and obj.daily_event and obj.daily_event.date:
+            raw_date = obj.daily_event.date
+        elif hasattr(obj, 'date') and obj.date:
+            raw_date = obj.date
+        elif obj.created_at:
+            raw_date = obj.created_at.date()
+
+        if not raw_date:
+            return None
+
+        # 2. Отримуємо користувача та його налаштування
+        user = getattr(obj, 'user', None)
+        if not user and 'request' in self.context:
+            user = self.context['request'].user
+
+        lang = 'uk'
+        if user and hasattr(user, 'settings') and user.settings:
+            lang = (user.settings.language or 'uk').lower()
+
+        # 3. Розподіл за стандартами
+        # Тільки чіткий американський варіант отримує MM/DD/YYYY
+        if lang == 'en-us':
+            return raw_date.strftime('%m/%d/%Y')
+
+        # Британська англійська (en-GB), українська та інші використовують DD.MM.YYYY (або DD/MM/YYYY)
+        return raw_date.strftime('%d.%m.%Y')
+
+    def get_formatted_hour(self, obj):
+        peak = obj.peak_records.first()
+        return peak.formatted_hour if peak else None
+
+    def get_formatted_time_range(self, obj):
+        peak = obj.peak_records.first()
+        return peak.formatted_time_range if peak else None
 
     def get_title(self, obj):
         if obj.wind_records.exists():
