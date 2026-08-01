@@ -35,6 +35,7 @@ from calculator.models import (
     PanelsArrayModel,
     UserProfileSettingsModel,
     SystemEventModel, )
+from calculator.services.PanelPowerCalculationService import PanelPowerCalculationService
 from calculator.services.data_export import export_data_logic
 from calculator.services.data_import import import_data_logic
 from calculator.services.weather_service import WeatherForecastService
@@ -391,6 +392,8 @@ class SolarYearAnalyticsAPIView(APIView):
 
 
 class SolarMonthAnalyticsAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, *args, **kwargs):
         try:
             today = date.today()
@@ -405,7 +408,7 @@ class SolarMonthAnalyticsAPIView(APIView):
 
             total_days = end_date.day
 
-            actual_qs = DataEntryLineModel.objects.filter(date__range=(start_date, today))
+            actual_qs = DataEntryLineModel.objects.filter(user=request.user, date__range=(start_date, today))
             actual_dict = {
                 q.date.day: round(float(q.full_day_power) / 1000.0, 2)
                 for q in actual_qs if q.full_day_power is not None
@@ -415,59 +418,37 @@ class SolarMonthAnalyticsAPIView(APIView):
             forecast_dict = {q.date.day: float(q.predicted_kwh) for q in forecast_qs if q.predicted_kwh is not None}
 
             api_forecast_dict = {}
-            if today < end_date:
-                system_factor = 3.45 * 0.23 * 0.85
 
-                api_url = "https://api.open-meteo.com/v1/forecast"
-                params = {
-                    "latitude": 49.8383,
-                    "longitude": 24.0232,
-                    "hourly": "shortwave_radiation",
-                    "timezone": "auto",
-                    "forecast_days": 16
-                }
+            if today <= end_date:
+                try:
+                    user_settings = UserProfileSettingsModel.objects.get(user=request.user)
+                    if user_settings.latitude is not None and user_settings.longitude is not None:
+                        service = WeatherForecastService()
+                        raw_data = service._fetch_raw_weather_from_api(user_settings.latitude, user_settings.longitude)
 
-                response = requests.get(api_url, params=params, timeout=10)
-                if response.status_code == 200:
-                    api_data = response.json()
-                    rad_data = api_data.get('hourly', {}).get('shortwave_radiation', [])
-                    times = api_data.get('hourly', {}).get('time', [])
+                        if raw_data:
+                            calibration_factor = service._calculate_calibration_factor()
+                            calc_service = PanelPowerCalculationService()
 
-                    total_real = 0.0
-                    total_pred_db = 0.0
+                            radiation_data = raw_data.get('hourly', {}).get('shortwave_radiation', [])
+                            times = raw_data.get('hourly', {}).get('time', [])
 
-                    for day_idx in actual_dict.keys():
-                        if day_idx in forecast_dict and forecast_dict[day_idx] > 0:
-                            total_real += actual_dict[day_idx]
-                            total_pred_db += forecast_dict[day_idx]
+                            total_hourly_wh, _ = calc_service.get_total_forecast(
+                                radiation_data, calibration_factor, request.user
+                            )
 
-                    calibration_factor = 1.0
-                    if total_pred_db > 0 and total_real > 0:
-                        calibration_factor = total_real / total_pred_db
+                            temp_daily_wh = {}
+                            for idx, time_str in enumerate(times):
+                                dt = datetime.fromisoformat(time_str).date()
+                                if dt.month == month and dt.year == year:
+                                    if idx < len(total_hourly_wh):
+                                        temp_daily_wh[dt.day] = temp_daily_wh.get(dt.day, 0.0) + total_hourly_wh[idx]
 
-                    base_system_factor = 3.45 * 0.23 * 0.85
-
-                    calibrated_factor = base_system_factor * calibration_factor
-
-                    for i in range(min(len(times), len(rad_data))):
-                        if rad_data[i] is None:
-                            continue
-
-                        dt = datetime.strptime(times[i][:10], "%Y-%m-%d").date()
-
-                        if dt.month == month and dt.year == year:
-                            day_num = dt.day
-                            wh = float(rad_data[i]) * calibrated_factor
-
-                            if day_num not in api_forecast_dict:
-                                api_forecast_dict[day_num] = 0.0
-                            api_forecast_dict[day_num] += wh
-
-                    for day_num in list(api_forecast_dict.keys()):
-                        if api_forecast_dict[day_num] <= 0:
-                            del api_forecast_dict[day_num]
-                        else:
-                            api_forecast_dict[day_num] = round(api_forecast_dict[day_num] / 1000, 2)
+                            for day_num, total_wh in temp_daily_wh.items():
+                                if total_wh > 0:
+                                    api_forecast_dict[day_num] = round(total_wh / 1000.0, 2)
+                except Exception as ex:
+                    print(f"Error fetching live forecast in analytics: {ex}")
 
             labels = []
             actual_power = []
@@ -500,6 +481,119 @@ class SolarMonthAnalyticsAPIView(APIView):
 
         except Exception as e:
             return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# DEPRECATED
+# class SolarMonthAnalyticsAPIView(APIView):
+#     def get(self, request, *args, **kwargs):
+#         try:
+#             today = date.today()
+#             year = today.year
+#             month = today.month
+#
+#             start_date = date(year, month, 1)
+#             if month == 12:
+#                 end_date = date(year + 1, 1, 1) - timedelta(days=1)
+#             else:
+#                 end_date = date(year, month + 1, 1) - timedelta(days=1)
+#
+#             total_days = end_date.day
+#
+#             actual_qs = DataEntryLineModel.objects.filter(date__range=(start_date, today))
+#             actual_dict = {
+#                 q.date.day: round(float(q.full_day_power) / 1000.0, 2)
+#                 for q in actual_qs if q.full_day_power is not None
+#             }
+#
+#             forecast_qs = SolarForecastRecordModel.objects.filter(date__range=(start_date, today))
+#             forecast_dict = {q.date.day: float(q.predicted_kwh) for q in forecast_qs if q.predicted_kwh is not None}
+#
+#             api_forecast_dict = {}
+#             if today < end_date:
+#                 system_factor = 3.45 * 0.23 * 0.85
+#
+#                 api_url = "https://api.open-meteo.com/v1/forecast"
+#                 params = {
+#                     "latitude": 49.8383,
+#                     "longitude": 24.0232,
+#                     "hourly": "shortwave_radiation",
+#                     "timezone": "auto",
+#                     "forecast_days": 16
+#                 }
+#
+#                 response = requests.get(api_url, params=params, timeout=10)
+#                 if response.status_code == 200:
+#                     api_data = response.json()
+#                     rad_data = api_data.get('hourly', {}).get('shortwave_radiation', [])
+#                     times = api_data.get('hourly', {}).get('time', [])
+#
+#                     total_real = 0.0
+#                     total_pred_db = 0.0
+#
+#                     for day_idx in actual_dict.keys():
+#                         if day_idx in forecast_dict and forecast_dict[day_idx] > 0:
+#                             total_real += actual_dict[day_idx]
+#                             total_pred_db += forecast_dict[day_idx]
+#
+#                     calibration_factor = 1.0
+#                     if total_pred_db > 0 and total_real > 0:
+#                         calibration_factor = total_real / total_pred_db
+#
+#                     base_system_factor = 3.45 * 0.23 * 0.85
+#
+#                     calibrated_factor = base_system_factor * calibration_factor
+#
+#                     for i in range(min(len(times), len(rad_data))):
+#                         if rad_data[i] is None:
+#                             continue
+#
+#                         dt = datetime.strptime(times[i][:10], "%Y-%m-%d").date()
+#
+#                         if dt.month == month and dt.year == year:
+#                             day_num = dt.day
+#                             wh = float(rad_data[i]) * calibrated_factor
+#
+#                             if day_num not in api_forecast_dict:
+#                                 api_forecast_dict[day_num] = 0.0
+#                             api_forecast_dict[day_num] += wh
+#
+#                     for day_num in list(api_forecast_dict.keys()):
+#                         if api_forecast_dict[day_num] <= 0:
+#                             del api_forecast_dict[day_num]
+#                         else:
+#                             api_forecast_dict[day_num] = round(api_forecast_dict[day_num] / 1000, 2)
+#
+#             labels = []
+#             actual_power = []
+#             forecast_power = []
+#
+#             for day in range(1, total_days + 1):
+#                 labels.append(day)
+#
+#                 if day <= today.day:
+#                     actual_power.append(actual_dict.get(day, None))
+#                 else:
+#                     actual_power.append(None)
+#
+#                 if day in api_forecast_dict:
+#                     forecast_power.append(api_forecast_dict[day])
+#                 elif day in forecast_dict:
+#                     forecast_power.append(round(forecast_dict[day], 2))
+#                 else:
+#                     forecast_power.append(None)
+#
+#             result = {
+#                 "status": "success",
+#                 "month_name": today.strftime("%B"),
+#                 "labels": labels,
+#                 "actual_power": actual_power,
+#                 "forecast_power": forecast_power
+#             }
+#
+#             return Response(result, status=status.HTTP_200_OK)
+#
+#         except Exception as e:
+#             return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class SolarComparisonAPIView(APIView):
