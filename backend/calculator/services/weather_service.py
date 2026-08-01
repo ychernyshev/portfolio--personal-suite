@@ -198,6 +198,7 @@ class WeatherForecastService:
             f"shortwave_radiation,direct_radiation,diffuse_radiation,wind_speed_10m,"
             f"wind_gusts_10m,wind_direction_10m,weather_code"
             f"&daily=sunrise,sunset&timezone=auto"
+            f"&forecast_days=16"
         )
         try:
             response = requests.get(url, timeout=10)
