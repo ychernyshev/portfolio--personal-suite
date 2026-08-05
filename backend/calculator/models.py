@@ -123,16 +123,15 @@ class DataEntryLineModel(models.Model):
 
             base_power = 0
 
+            # IF THE AFTERNOON AND EVENING CHARGE IS EQUAL
+            if self.evening_data_charge == self.afternoon_data_charge:
+                power_from_meters = self._evening_to_afternoon_price(self.evening_data_price, self.afternoon_data_price)
+                print(power_from_meters)
+                return power_from_meters + usb_power
+
             # IF THE AFTERNOON AND EVENING CHARGE IS EQUAL IN POWER AND USED ELECTRICITY
             if self.evening_data_charge == self.afternoon_data_charge and self.afternoon_data_price == self.afternoon_data_price:
                 return 0
-
-            # IF THE AFTERNOON AND EVENING CHARGE IS EQUAL
-            if self.evening_data_charge == self.afternoon_data_charge:
-                base_power = self._price_to_power(self.evening_data_price, self.afternoon_data_price)
-            # if self.evening_data_charge == self.afternoon_data_charge:
-            #     power_from_meters = self._evening_to_afternoon_price(self.evening_data_price, self.afternoon_data_price)
-            #     return power_from_meters + usb_power
 
             # IF THE AFTERNOON CHARGE IS EGUAL ZERO
             if self.afternoon_data_charge == 0:
