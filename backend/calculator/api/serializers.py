@@ -127,7 +127,6 @@ class SystemEventSerializer(serializers.ModelSerializer):
         read_only_fields = ['user']
 
     def get_date(self, obj):
-        # 1. Знаходимо сиру дату з доступних джерел
         raw_date = None
         if hasattr(obj, 'daily_event') and obj.daily_event and obj.daily_event.date:
             raw_date = obj.daily_event.date
@@ -139,7 +138,6 @@ class SystemEventSerializer(serializers.ModelSerializer):
         if not raw_date:
             return None
 
-        # 2. Отримуємо користувача та його налаштування
         user = getattr(obj, 'user', None)
         if not user and 'request' in self.context:
             user = self.context['request'].user
@@ -148,12 +146,9 @@ class SystemEventSerializer(serializers.ModelSerializer):
         if user and hasattr(user, 'settings') and user.settings:
             lang = (user.settings.language or 'uk').lower()
 
-        # 3. Розподіл за стандартами
-        # Тільки чіткий американський варіант отримує MM/DD/YYYY
         if lang == 'en-us':
             return raw_date.strftime('%m/%d/%Y')
 
-        # Британська англійська (en-GB), українська та інші використовують DD.MM.YYYY (або DD/MM/YYYY)
         return raw_date.strftime('%d.%m.%Y')
 
     def get_formatted_hour(self, obj):
