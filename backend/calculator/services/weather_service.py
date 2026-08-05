@@ -154,6 +154,9 @@ class WeatherForecastService:
             code = weather_h.get('weather_code', [0])[safe_h]
             wind_dir = weather_h.get('wind_direction_10m', [0])[safe_h]
 
+            today_hourly_wh = total_hourly_wh[:24] if len(total_hourly_wh) >= 24 else total_hourly_wh
+            today_peak_hour = today_hourly_wh.index(max(today_hourly_wh)) if today_hourly_wh else 0
+
             result_dict = {
                 "predicted_total_kwh": round(sum(total_hourly_wh) / 1000, 2),
                 "predicted_savings": round((sum(total_hourly_wh) / 1000) * current_tariff, 2),
@@ -164,7 +167,8 @@ class WeatherForecastService:
                 "weather_condition": wmo_codes.get(code, "Unknown"),
                 "weather_code": code,
                 "calibration_factor": round(calibration_factor, 2),
-                "peak_hour": total_hourly_wh.index(max(total_hourly_wh)) if total_hourly_wh else 0,
+                "peak_hour": today_peak_hour,
+                # "peak_hour": total_hourly_wh.index(max(total_hourly_wh)) if total_hourly_wh else 0,
                 "wind_direction": wind_dir,
             }
 
@@ -391,6 +395,18 @@ class WeatherForecastService:
 
         today = timezone.localtime(timezone.now()).date()
 
+        target_index = None
+        for i, ts in enumerate(timestamps):
+            dt = datetime.datetime.strptime(ts, '%Y-%m-%dT%H:%M')
+            aware_dt = timezone.make_aware(dt)
+            if aware_dt.date() == today and aware_dt.hour == peak_hour:
+                target_index = i
+                break
+
+        if target_index is None or target_index >= len(timestamps):
+            print("DEBUG PEAK: Could not find today's peak hour in timestamps")
+            return
+
         daily_event, _ = SystemEventModel.objects.update_or_create(
             date=today,
             user=user,
@@ -404,11 +420,11 @@ class WeatherForecastService:
             }
         )
 
-        peak_start_str = timestamps[peak_hour]
+        peak_start_str = timestamps[target_index]
         peak_start_dt = datetime.datetime.strptime(peak_start_str, '%Y-%m-%dT%H:%M')
         peak_start_aware = timezone.make_aware(peak_start_dt)
 
-        end_index = peak_hour + 1
+        end_index = target_index + 1
         peak_end_aware = None
         if end_index < len(timestamps):
             peak_end_dt = datetime.datetime.strptime(timestamps[end_index], '%Y-%m-%dT%H:%M')
