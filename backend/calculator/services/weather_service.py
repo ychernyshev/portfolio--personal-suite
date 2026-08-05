@@ -59,7 +59,7 @@ class WeatherForecastService:
     #     yesterday = today - datetime.timedelta(days=1)
     #     start_date = datetime.date(yesterday.year, yesterday.month, 1)
     #     if yesterday < start_date:
-    #         return 0.3
+    #         return 1
     #
     #     actual_qs = DataEntryLineModel.objects.filter(date__range=(start_date, yesterday))
     #     forecast_qs = SolarForecastRecordModel.objects.filter(date__range=(start_date, yesterday))
@@ -74,14 +74,14 @@ class WeatherForecastService:
     #
     #     common_days = set(actual_dict.keys()).intersection(set(forecast_dict.keys()))
     #     if not common_days:
-    #         return 0.3
+    #         return 1
     #
     #     total_real = sum(actual_dict[day] for day in common_days) / 1000.0
     #     total_pred = sum(forecast_dict[day] for day in common_days)
     #
     #     print(f"DEBUG CALIBRATION: total_real={total_real}, total_pred={total_pred}")
     #
-    #     return (total_real / total_pred) if total_pred > 0 else 0.3
+    #     return (total_real / total_pred) if total_pred > 0 else 1
 
     #3 for last 14 days
     def _calculate_calibration_factor(self):
@@ -142,6 +142,8 @@ class WeatherForecastService:
             total_hourly_wh, detailed_reports = calc_service.get_total_forecast(
                 radiation_data, calibration_factor, user
             )
+
+            total_hourly_wh = [h * calibration_factor for h in total_hourly_wh]
 
             weather_h = data.get('hourly', {})
             wmo_codes = {0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast", 45: "Fog",
