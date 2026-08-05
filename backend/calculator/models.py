@@ -161,12 +161,19 @@ class DataEntryLineModel(models.Model):
             #     return base_power + usb_power
 
             # IF THE EVENING CHARGE IS BIGGER THAN AFTERNOON
-            if self.evening_data_charge > self.afternoon_data_charge:
-                meters_diff = (self.evening_data_price - self.afternoon_data_price)
-                power_from_meters = (meters_diff / self.power_tariff) * 1000 if self.power_tariff > 0 else 0
-                battery_diff = (self.evening_data_charge - self.afternoon_data_charge) * self.ONE_POWER_UNIT
-                total_power = power_from_meters + battery_diff
-                return total_power + usb_power
+            if 0 < self.afternoon_data_charge < self.evening_data_charge:
+                base_power = (self.evening_data_charge - self.afternoon_data_charge) * self.ONE_POWER_UNIT + round(
+                    (((self.evening_data_price - self.afternoon_data_price) * 100) / self.one_tenth_of_tariff) * 100, 2)
+                return base_power + usb_power
+            #DEPRECATED
+            # if self.evening_data_charge > self.afternoon_data_charge:
+            #     meters_diff = (self.evening_data_price - self.afternoon_data_price)
+            #     power_from_meters = (meters_diff / self.power_tariff) * 1000 if self.power_tariff > 0 else 0
+            #     print('power_from_meters: ', power_from_meters)
+            #     battery_diff = (self.evening_data_charge - self.afternoon_data_charge) * self.ONE_POWER_UNIT
+            #     print('battery_diff: ', battery_diff)
+            #     total_power = power_from_meters + battery_diff
+            #     return total_power + usb_power
             # if self.evening_data_charge > self.afternoon_data_charge:
             #     meters_diff = (self.evening_data_price - self.afternoon_data_price)
             #     power_from_meters = (meters_diff / self.power_tariff) * 1000
@@ -175,26 +182,19 @@ class DataEntryLineModel(models.Model):
             #     total_power = power_from_meters + battery_diff + (self.extra_power or 0)
             #     return total_power + usb_power
 
+            # IF THE AFTERNOON CHARGE BIGGER THEN EVENING
+            if 0 < self.afternoon_data_charge > self.evening_data_charge:
+                power_meters = self._price_to_power(self.evening_data_price, self.afternoon_data_price)
+                power_battery = (self.afternoon_data_charge - self.evening_data_charge) * self.ONE_POWER_UNIT
+                base_power = power_meters - power_battery
+                return base_power + usb_power
+
             # IF PRICES ARE EQUAL (AFTERNOON == EVENING, MORNIN == EVENING)
             if self.afternoon_data_price == self.evening_data_price or self.morning_data_price == self.evening_data_price:
                 base_power = (self.evening_data_charge - self.afternoon_data_charge) * self.ONE_POWER_UNIT
                 return base_power + usb_power
             # if self.afternoon_data_price == self.evening_data_price or self.morning_data_price == self.evening_data_price:
             #     base_power = (self.evening_data_charge - self.afternoon_data_charge) * self.ONE_POWER_UNIT
-
-            # INTERMEDIATE CASE: STANDARD CHARGE GROWTH
-            if 0 < self.afternoon_data_charge < self.evening_data_charge:
-                base_power = (self.evening_data_charge - self.afternoon_data_charge) * self.ONE_POWER_UNIT + round(
-                    (((self.evening_data_price - self.afternoon_data_price) * 100) / self.one_tenth_of_tariff) * 100, 2)
-                return base_power + usb_power
-
-            # IF THE AFTERNOON CHARGE BIGGER THEN EVENING
-            if 0 < self.afternoon_data_charge > self.evening_data_charge:
-                if 0 < self.afternoon_data_charge > self.evening_data_charge:
-                    power_meters = self._price_to_power(self.evening_data_price, self.afternoon_data_price)
-                    power_battery = (self.afternoon_data_charge - self.evening_data_charge) * self.ONE_POWER_UNIT
-                    base_power = power_meters - power_battery
-                    return base_power + usb_power
 
             return self.FALLBACK_COST
         except(TypeError, ZeroDivisionError):
