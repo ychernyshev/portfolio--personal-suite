@@ -345,7 +345,6 @@ class WeatherConditionModel(models.Model):
 # ====================================================================
 # WEATHER MODELS GROUP
 # ====================================================================
-
 class SolarForecastRecordModel(models.Model):
     date = models.DateField(verbose_name="Forecast date", unique=True, default=timezone.now)
     predicted_kwh = models.FloatField(verbose_name="Forecast (kWh)")
@@ -528,7 +527,6 @@ class CurrentTariffModel(models.Model):
 # ====================================================================
 # USER HARDWARE GROUP
 # ====================================================================
-
 class PanelsArrayModel(models.Model):
     name = models.CharField(max_length=100, verbose_name="Name of the array")
     peak_power_kwp = models.FloatField(blank=True, null=True, default=0, verbose_name='Peak power (kWp)')

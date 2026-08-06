@@ -97,7 +97,7 @@ export const useNotificationStore = defineStore('notifications', () => {
                     }
                 });
 
-                messages.value = formattedMessages.slice(0, 8);
+                messages.value = formattedMessages.slice(0, 5);
             }
         } catch (e) {
             console.error("Помилка завантаження повідомлень з бази даних", e);

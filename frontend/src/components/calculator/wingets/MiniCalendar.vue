@@ -7,7 +7,7 @@ import 'v-calendar/style.css';
 const props = defineProps({
   recordedDates: {
     type: Array,
-    default: () => [new Date(2026, 2, 10), new Date(2026, 2, 15)] // Приклад
+    default: () => [new Date(2026, 2, 10), new Date(2026, 2, 15)]
   }
 });
 
@@ -15,9 +15,7 @@ const emit = defineEmits(['date-selected']);
 
 const selectedDate = ref(new Date());
 
-// Налаштування точок та виділення сьогоднішнього дня
 const attributes = computed(() => [
-  // Виділення сьогодні
   {
     key: 'today',
     highlight: {
@@ -26,7 +24,6 @@ const attributes = computed(() => [
     },
     dates: new Date(),
   },
-  // Зелені точки для днів з даними
   {
     dot: 'green',
     dates: props.recordedDates,
@@ -34,7 +31,6 @@ const attributes = computed(() => [
 ]);
 
 const handleDayClick = (day) => {
-  // Передаємо подію вгору до батьківського компонента
   emit('date-selected', day);
 };
 </script>
@@ -56,7 +52,6 @@ const handleDayClick = (day) => {
 </template>
 
 <style scoped>
-/* Кастомізація під твій фіолетовий колір */
 :deep(.vc-purple) {
   --vc-accent-500: #6f42c1;
   --vc-accent-600: #59359a;
@@ -69,7 +64,6 @@ const handleDayClick = (day) => {
 }
 
 :deep(.vc-pane-container) {
-  //background-color: white;
   padding: .5rem;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   backdrop-filter: blur(10px) saturate(180%);
@@ -77,7 +71,6 @@ const handleDayClick = (day) => {
   box-shadow: .2rem .3rem 1rem #e0e5ec;
 }
 
-/* Прибираємо стандартні обводки кнопок при фокусі */
 :deep(.vc-day-content:focus) {
   background-color: rgba(111, 66, 193, 0.1) !important;
   box-shadow: none !important;
@@ -90,8 +83,8 @@ const handleDayClick = (day) => {
 
 :deep(.vc-title) {
   background: transparent;
-  color: gray;
-  font-weight: 600;
+  color: var(--purple);
+  font-weight: 500;
   text-transform: capitalize;
 }
 

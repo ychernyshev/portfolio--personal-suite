@@ -9,6 +9,7 @@ import backendApi from "../../services/calculator/backendApi.js";
 import {useNotificationStore} from "../../../store/useNotificationStore.js";
 import {storeToRefs} from "pinia";
 import SunriseSunsetTimeWidget from "@/components/calculator/wingets/SunriseSunsetTimeWidget.vue";
+import MiniCalendar from "@/components/calculator/wingets/MiniCalendar.vue";
 
 const entries = ref([]);
 const activeTab = ref('power');
@@ -78,7 +79,8 @@ onMounted(() => {
         </div>
         <messages-stack ref="messagesRef" />
       </div>
-      <div class="col-xxl-12 p-0">
+      <div class="col-12 p-0">
+        <mini-calendar class="mb-0"/>
         <sunrise-sunset-time-widget />
       </div>
     </div>
