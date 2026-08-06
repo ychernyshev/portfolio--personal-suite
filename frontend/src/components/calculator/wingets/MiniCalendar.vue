@@ -47,7 +47,45 @@ const handleDayClick = (day) => {
         trim-weeks
         locale="uk"
         title-position="left"
-    />
+    >
+    <template #header="{
+        monthLabel,
+        yearLabel,
+        pages,
+        attributes,
+        movePrev,
+        moveNext,
+        hasPrevPage,
+        hasNextPage
+      }">
+      <div class="d-flex justify-content-between align-items-center px-1 mb-2">
+        <!-- Назва місяця/року (або залишаємо стандартний стиль заголовка) -->
+        <div class="vc-title" style="color: var(--purple); font-weight: 500; text-transform: capitalize;">
+          {{ monthLabel }} {{ yearLabel }}
+        </div>
+
+        <!-- Кнопки навігації зі стрілками, до яких застосовано ВАШ існуючий клас -->
+        <div class="d-flex gap-1">
+          <button
+              type="button"
+              class="your-existing-class-here"
+              :disabled="!hasPrevPage"
+              @click="movePrev"
+          >
+            &lt;
+          </button>
+          <button
+              type="button"
+              class="your-existing-class-here"
+              :disabled="!hasNextPage"
+              @click="moveNext"
+          >
+            &gt;
+          </button>
+        </div>
+      </div>
+    </template>
+    </DatePicker>
   </div>
 </template>
 
@@ -72,13 +110,12 @@ const handleDayClick = (day) => {
 }
 
 :deep(.vc-day-content:focus) {
-  background-color: rgba(111, 66, 193, 0.1) !important;
   box-shadow: none !important;
 }
 
 :deep(.vc-header) {
   margin-bottom: 10px;
-  padding: 0;
+  padding: 0 40px 0 20px;
 }
 
 :deep(.vc-title) {
@@ -92,5 +129,55 @@ const handleDayClick = (day) => {
   position: relative;
   overflow: visible;
   height: 100%;
+}
+:deep(.vc-arrow) {
+  flex-shrink: 0;
+  background: linear-gradient(#f4f7fe, #eaf0fe);
+  border-radius: 8px;
+  border: none;
+  color: var(--purple);
+  display: flex;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  box-shadow:
+      4px 5px 22px var(--lighter-blue-3),
+      -4px -5px 22px var(--shadow-light);
+  transition: all 0.2s ease;
+}
+
+:deep(.vc-arrow:hover) {
+  background: rgba(111, 66, 193, 0.05);
+  box-shadow: inset .1rem .1rem .3rem #e0e5ec, inset -.1rem -.1rem .3rem #fff;
+}
+
+:deep(.vc-arrow:disabled) {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+:deep(.vc-day-content.is-selected),
+:deep(.vc-highlight) {
+  background: linear-gradient(#f4f7fe, #eaf0fe);
+  color: var(--purple);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid var(--dark-gray-rgba);
+}
+
+:deep(.vc-highlight-content-solid) {
+  --vc-highlight-solid-content-color: var(--purple) !important;
+}
+
+:deep(.vc-day-content:hover) {
+  background-color: transparent !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}
+
+:deep(.vc-day-content.active) {
+  background-color: var(--purple);
+  color: black;
 }
 </style>
