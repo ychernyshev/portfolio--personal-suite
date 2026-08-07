@@ -59,7 +59,7 @@ class WeatherForecastService:
     #     yesterday = today - datetime.timedelta(days=1)
     #     start_date = datetime.date(yesterday.year, yesterday.month, 1)
     #     if yesterday < start_date:
-    #         return 0.3
+    #         return 1
     #
     #     actual_qs = DataEntryLineModel.objects.filter(date__range=(start_date, yesterday))
     #     forecast_qs = SolarForecastRecordModel.objects.filter(date__range=(start_date, yesterday))
@@ -74,14 +74,14 @@ class WeatherForecastService:
     #
     #     common_days = set(actual_dict.keys()).intersection(set(forecast_dict.keys()))
     #     if not common_days:
-    #         return 0.3
+    #         return 1
     #
     #     total_real = sum(actual_dict[day] for day in common_days) / 1000.0
     #     total_pred = sum(forecast_dict[day] for day in common_days)
     #
     #     print(f"DEBUG CALIBRATION: total_real={total_real}, total_pred={total_pred}")
     #
-    #     return (total_real / total_pred) if total_pred > 0 else 0.3
+    #     return (total_real / total_pred) if total_pred > 0 else 1
 
     #3 for last 14 days
     def _calculate_calibration_factor(self):
@@ -143,6 +143,8 @@ class WeatherForecastService:
                 radiation_data, calibration_factor, user
             )
 
+            total_hourly_wh = [h * calibration_factor for h in total_hourly_wh]
+
             weather_h = data.get('hourly', {})
             wmo_codes = {0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast", 45: "Fog",
                          95: "Thunderstorm"}
@@ -154,6 +156,9 @@ class WeatherForecastService:
             code = weather_h.get('weather_code', [0])[safe_h]
             wind_dir = weather_h.get('wind_direction_10m', [0])[safe_h]
 
+            today_hourly_wh = total_hourly_wh[:24] if len(total_hourly_wh) >= 24 else total_hourly_wh
+            today_peak_hour = today_hourly_wh.index(max(today_hourly_wh)) if today_hourly_wh else 0
+
             result_dict = {
                 "predicted_total_kwh": round(sum(total_hourly_wh) / 1000, 2),
                 "predicted_savings": round((sum(total_hourly_wh) / 1000) * current_tariff, 2),
@@ -164,12 +169,14 @@ class WeatherForecastService:
                 "weather_condition": wmo_codes.get(code, "Unknown"),
                 "weather_code": code,
                 "calibration_factor": round(calibration_factor, 2),
-                "peak_hour": total_hourly_wh.index(max(total_hourly_wh)) if total_hourly_wh else 0,
+                "peak_hour": today_peak_hour,
+                # "peak_hour": total_hourly_wh.index(max(total_hourly_wh)) if total_hourly_wh else 0,
                 "wind_direction": wind_dir,
             }
 
             cache.set(cache_key, result_dict, 3600)
-            self.save_forecast_to_db(result_dict, data)
+            self.save_forecast_to_db(total_hourly_wh, data, calibration_factor)
+            # self.save_forecast_to_db(result_dict, data)
             self.check_and_log_wind_alert(data, user=user)
 
             self.check_and_log_peak_events(data, result_dict.get('peak_hour'), user=user)
@@ -227,7 +234,7 @@ class WeatherForecastService:
 
     # END
 
-    def save_forecast_to_db(self, forecast_data, raw_api_data):
+    def save_forecast_to_db(self, total_hourly_wh, raw_api_data, calibration_factor=1.0):
         try:
             today = timezone.localtime(timezone.now()).date()
             sunrise_dt, sunset_dt = self.convert_iso_to_datetime(raw_api_data)
@@ -241,12 +248,17 @@ class WeatherForecastService:
             max_gust = max(wind_gusts) if wind_gusts else None
             avg_direction = int(sum(wind_directions) / len(wind_directions)) if wind_directions else None
 
+            # Вираховуємо сьогоднішні показники з масиву погодинних ват-годин
+            today_wh = total_hourly_wh[:24] if len(total_hourly_wh) >= 24 else total_hourly_wh
+            today_kwh = round(sum(today_wh) / 1000.0, 2)
+            peak_hour_idx = today_wh.index(max(today_wh)) if today_wh else 0
+
             SolarForecastRecordModel.objects.update_or_create(
                 date=today,
                 defaults={
-                    'predicted_kwh': forecast_data.get('predicted_total_kwh', 0.0),
-                    'predicted_savings': forecast_data.get('predicted_savings', 0.0),
-                    'peak_hour': forecast_data.get('peak_hour', 0),
+                    'predicted_kwh': today_kwh,
+                    'predicted_savings': round(today_kwh * CurrentTariffModel.load().power_tariff, 2),
+                    'peak_hour': peak_hour_idx,
                     'sunrise': sunrise_dt,
                     'sunset': sunset_dt,
                     'wind_speed_10m': avg_speed,
@@ -301,6 +313,81 @@ class WeatherForecastService:
         except Exception as e:
             print(f"DB loading error: {e}")
             return False
+
+    # def save_forecast_to_db(self, forecast_data, raw_api_data):
+    #     try:
+    #         today = timezone.localtime(timezone.now()).date()
+    #         sunrise_dt, sunset_dt = self.convert_iso_to_datetime(raw_api_data)
+    #
+    #         hourly_raw = raw_api_data.get('hourly', {})
+    #         wind_speeds = hourly_raw.get('wind_speed_10m', [])
+    #         wind_gusts = hourly_raw.get('wind_gusts_10m', [])
+    #         wind_directions = hourly_raw.get('wind_direction_10m', [])
+    #
+    #         avg_speed = round(sum(wind_speeds) / len(wind_speeds), 1) if wind_speeds else None
+    #         max_gust = max(wind_gusts) if wind_gusts else None
+    #         avg_direction = int(sum(wind_directions) / len(wind_directions)) if wind_directions else None
+    #
+    #         SolarForecastRecordModel.objects.update_or_create(
+    #             date=today,
+    #             defaults={
+    #                 'predicted_kwh': forecast_data.get('predicted_total_kwh', 0.0),
+    #                 'predicted_savings': forecast_data.get('predicted_savings', 0.0),
+    #                 'peak_hour': forecast_data.get('peak_hour', 0),
+    #                 'sunrise': sunrise_dt,
+    #                 'sunset': sunset_dt,
+    #                 'wind_speed_10m': avg_speed,
+    #                 'wind_gusts_10m': max_gust,
+    #                 'wind_direction_10m': avg_direction,
+    #             }
+    #         )
+    #
+    #         hourly = raw_api_data.get('hourly', {})
+    #         timestamps = hourly.get('time', [])
+    #         if not timestamps:
+    #             return True
+    #
+    #         temps = hourly.get('temperature_2m', [])
+    #         codes = hourly.get('weather_code', [])
+    #         clouds = hourly.get('cloud_cover', [])
+    #         humidities = hourly.get('relative_humidity_2m', [])
+    #         surface_pressure = hourly.get('surface_pressure', [])
+    #         shortwave = hourly.get('shortwave_radiation', [])
+    #         direct = hourly.get('direct_radiation', [])
+    #         diffuse = hourly.get('diffuse_radiation', [])
+    #
+    #         parsed_timestamps = []
+    #         for ts in timestamps:
+    #             naive_dt = datetime.datetime.strptime(ts, '%Y-%m-%dT%H:%M')
+    #             parsed_timestamps.append(timezone.make_aware(naive_dt))
+    #
+    #         WeatherDataModel.objects.filter(timestamp__in=parsed_timestamps).delete()
+    #
+    #         weather_objects = []
+    #         for i in range(len(timestamps)):
+    #             def get_val(arr, idx):
+    #                 return arr[idx] if idx < len(arr) else None
+    #
+    #             weather_objects.append(
+    #                 WeatherDataModel(
+    #                     timestamp=parsed_timestamps[i],
+    #                     temperature=get_val(temps, i),
+    #                     condition_code=str(get_val(codes, i)) if get_val(codes, i) is not None else "0",
+    #                     cloud_cover=get_val(clouds, i),
+    #                     humidity=get_val(humidities, i),
+    #                     surface_pressure=get_val(surface_pressure, i),
+    #                     shortwave_radiation=get_val(shortwave, i) or 0.0,
+    #                     direct_radiation=get_val(direct, i) or 0.0,
+    #                     diffuse_radiation=get_val(diffuse, i) or 0.0,
+    #                 )
+    #             )
+    #
+    #         WeatherDataModel.objects.bulk_create(weather_objects)
+    #         return True
+    #
+    #     except Exception as e:
+    #         print(f"DB loading error: {e}")
+    #         return False
 
     def check_and_log_wind_alert(self, raw_api_data, user=None):
         if not user:
@@ -391,6 +478,18 @@ class WeatherForecastService:
 
         today = timezone.localtime(timezone.now()).date()
 
+        target_index = None
+        for i, ts in enumerate(timestamps):
+            dt = datetime.datetime.strptime(ts, '%Y-%m-%dT%H:%M')
+            aware_dt = timezone.make_aware(dt)
+            if aware_dt.date() == today and aware_dt.hour == peak_hour:
+                target_index = i
+                break
+
+        if target_index is None or target_index >= len(timestamps):
+            print("DEBUG PEAK: Could not find today's peak hour in timestamps")
+            return
+
         daily_event, _ = SystemEventModel.objects.update_or_create(
             date=today,
             user=user,
@@ -404,11 +503,11 @@ class WeatherForecastService:
             }
         )
 
-        peak_start_str = timestamps[peak_hour]
+        peak_start_str = timestamps[target_index]
         peak_start_dt = datetime.datetime.strptime(peak_start_str, '%Y-%m-%dT%H:%M')
         peak_start_aware = timezone.make_aware(peak_start_dt)
 
-        end_index = peak_hour + 1
+        end_index = target_index + 1
         peak_end_aware = None
         if end_index < len(timestamps):
             peak_end_dt = datetime.datetime.strptime(timestamps[end_index], '%Y-%m-%dT%H:%M')
