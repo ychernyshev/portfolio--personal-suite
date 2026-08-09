@@ -11,9 +11,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       manifest: {
-        name: 'Solar Power Calculator',
-        short_name: 'SolarCalc',
-        description: 'Solar energy calculator and forecasting',
+        name: 'Yevhenii Chernyshev showcase',
+        short_name: 'Showcase',
+        description: 'Portfolio, blogs, contacts',
         theme_color: '#3456ad',
         background_color: '#ffffff',
         display: 'standalone',
