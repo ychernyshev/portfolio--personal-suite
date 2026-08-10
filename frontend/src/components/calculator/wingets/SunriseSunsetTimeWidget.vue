@@ -35,7 +35,7 @@ onMounted(() => {
         </svg>
         <div class="info">
           <span class="label text-end">Sunrise</span>
-          <span class="time">{{ formatTime(currentForecast.sunrise) }}</span>
+          <span class="time time-value">{{ formatTime(currentForecast.sunrise) }}</span>
         </div>
       </div>
 
@@ -43,11 +43,11 @@ onMounted(() => {
       <div class="d-flex flex-column">
         <span class="label text-center">Day Length</span>
         <span class="length-value">
-          <span class="time">
+          <span class="time time-value">
             {{ formatDayLength(currentForecast.day_length).h }}
           </span>
           <span class="small text-success mr-1">h</span>
-          <span class="time">
+          <span class="time time-value">
             {{ formatDayLength(currentForecast.day_length).m }}
           </span>
           <span class="small text-success">m</span>
@@ -58,7 +58,7 @@ onMounted(() => {
       <div class="time-block d-flex align-items-end bg-white pl-3 pr-3 p-2 border-bottom-right-2">
         <div class="info">
           <span class="label text-start">Sunset</span>
-          <span class="time">{{ formatTime(currentForecast.sunset) }}</span>
+          <span class="time time-value">{{ formatTime(currentForecast.sunset) }}</span>
         </div>
         <svg xmlns="http://www.w3.org/2000/svg"
              width="30" height="30"
@@ -132,5 +132,15 @@ onMounted(() => {
   font-size: 0.85rem;
   color: #7b8a9b;
   padding: 4px 0;
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .time-value {
+    font-size: 0.8rem
+  }
+
+  .p-xl-0-custom {
+    padding: 0 0 0 0.1rem;
+  }
 }
 </style>
