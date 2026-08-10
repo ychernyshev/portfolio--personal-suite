@@ -52,7 +52,7 @@ const handleSave = async (newData) => {
             <div class="col-12 col-sm-12 col-md-4 col-xl-12 pl-0 pr-0 pt-3 pb-3 pl-xl-2 pr-xl-2">
               <div class="btn-group w-100" role="group" aria-label="Basic example">
                 <input
-                    class="form-control form-control neomorphic border-top border-start w-50 h-100 p-2 border-radius-bottom-end-lg-0 border-radius-top-end-lg-0"
+                    class="form-control form-control neomorphic border-top border-start w-50 h-100 p-2 border-radius-bottom-end-lg-0 border-radius-top-end-lg-0 p-xl-0-custom data-button-value"
                     style="border-bottom-right-radius: 0; border-top-right-radius: 0;"
                     id="formFileSm"
                     placeholder="Select the CSV file to import"
@@ -67,12 +67,12 @@ const handleSave = async (newData) => {
 <!--                       style="border-bottom-right-radius: 0; border-top-right-radius: 0;">-->
 <!--                  <span class="my-auto">{{ fileName || "Select the CSV file to import" }}</span>-->
 <!--                </label>-->
-                <button class="btn btn-secondary c-border neomorphic btn-import p-2"
+                <button class="btn btn-secondary c-border neomorphic btn-import p-2 p-xl-0-custom data-button-value"
                         id="inputGroupFileAddon04"
                         type="button"
                         @click="importData">Import data
                 </button>
-                <button type="button" @click="exportData" class="btn btn-secondary c-border btn-export neomorphic p-2">Export
+                <button type="button" @click="exportData" class="btn btn-secondary c-border btn-export neomorphic p-2 p-xl-0-custom data-button-value">Export
                   data
                 </button>
               </div>
@@ -88,8 +88,8 @@ const handleSave = async (newData) => {
          aria-label="Basic example">
       <button type="button"
               @click="store.setView(store.currentView === 'form' ? 'table' : 'form')"
-              class="btn btn-primary c-border w-50 d-flex align-items-center justify-content-center">
-        <svg v-if="store.currentView !== 'form'" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+              class="btn btn-primary c-border w-50 p-xl-0-custom d-flex align-items-center justify-content-center">
+        <svg v-if="store.currentView !== 'form'" xmlns="http://www.w3.org/2000/svg" width="23" height="23"
              fill="currentColor" class="bi bi-plus"
              viewBox="0 0 16 16">
           <path
@@ -100,12 +100,12 @@ const handleSave = async (newData) => {
           <path
               d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 2h-4v3h4zm0 4h-4v3h4zm0 4h-4v3h3a1 1 0 0 0 1-1zm-5 3v-3H6v3zm-5 0v-3H1v2a1 1 0 0 0 1 1zm-4-4h4V8H1zm0-4h4V4H1zm5-3v3h4V4zm4 4H6v3h4z"/>
         </svg>
-        <span class="ms-1">{{ store.currentView === 'form' ? 'Records table' : 'Add Record' }}</span>
+        <span class="ms-1 data-button-value">{{ store.currentView === 'form' ? 'Records table' : 'Add Record' }}</span>
       </button>
       <button
           type="button"
           @click="store.toggleCharts()"
-          class="btn btn-success w-50"
+          class="btn btn-success w-50 p-xl-0-custom"
           :class="{ 'is-active': store.isChartsExpanded }"
           title="Toggle analytics panel"
       >
@@ -123,14 +123,14 @@ const handleSave = async (newData) => {
                 d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07"/>
         </svg>
 
-        <span class="ms-2">
+        <span class="ms-2 data-button-value">
           {{ store.isChartsExpanded ? "Hide Charts" : "Show Charts" }}
         </span>
       </button>
     </div>
     <div data-v-09d6a0f5="" class="col-12 col-md-12 col-xl-3 mb-2">
       <div data-v-09d6a0f5="" class="row setup-data-section p-2 pe-1 pt-2 pb-2 pt-md-0 pb-md-0">
-        <div data-v-09d6a0f5="" class="col-10 col-xl-10 p-0 pr-2 pl-md-2">
+        <div data-v-09d6a0f5="" class="col-10 col-xl-10 p-0 pr-2 pl-md-2 data-button-value">
           <pagination/>
         </div>
         <div data-v-09d6a0f5="" class="col-2 col-md-2 p-0 pb-md-1 pb-xl-1">
@@ -248,9 +248,19 @@ const handleSave = async (newData) => {
 
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1200px) and (max-width: 1399px) {
   .data-button-value {
-    font-size: 0.8rem;
+    font-size: 0.8rem
+  }
+
+  .p-xl-0-custom {
+    padding: 0 0 0 0.1rem;
+  }
+}
+
+@media (min-width: 1400px) {
+  .data-button-value {
+    font-size: 1rem
   }
 }
 </style>
