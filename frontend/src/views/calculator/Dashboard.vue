@@ -51,7 +51,7 @@
   <wake-up-loader :is-visible="isLoading" @cancel="isLoading = false" />
   <main class="main-content">
     <div class="widgets-container">
-      <div class="card border-0 neomorphic">
+      <div class="card border-0 neomorphic" >
         <div class="row">
           <div class="col-6">
             <stat-widget
@@ -72,7 +72,9 @@
           </div>
         </div>
       </div>
-      <weather-widget />
+      <div class="card neomorphic p-3 border-0">
+        <weather-widget />
+      </div>
       <div class="card border-0 neomorphic d-flex">
         <month-stats/>
       </div>
@@ -90,7 +92,6 @@
 </template>
 
 <style scoped>
-/* Твої стилі залишаються без змін */
 .main-content { grid-area: content; }
 .widgets-container {
   max-width: 100%;
@@ -102,7 +103,31 @@
 .widgets-container .card:nth-child(1) { grid-column: span 2; width: 100%; }
 .widgets-container .card:nth-child(2) { grid-column: span 2; width: 100%; }
 .widgets-container .card:nth-child(3) { grid-column: span 2; width: 100%; }
-@media (min-width: 1200px) {
+
+@media (min-width: 1200px) and (max-width: 1599px) {
+  .widgets-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .widgets-container > .card:nth-child(2) {
+    order: -1;
+    grid-column: span 2;
+  }
+
+  .widgets-container > .card:nth-child(1) {
+    order: 0;
+    grid-column: 1 / span 1;
+  }
+
+  .widgets-container > .card:nth-child(3) {
+    order: 1;
+    grid-column: 2 / span 1;
+  }
+}
+
+@media (min-width: 1600px) {
   .widgets-container { grid-template-columns: repeat(4, 1fr); }
   .widgets-container .card:nth-child(1) { grid-column: span 1; width: 100%; }
   .widgets-container .card:nth-child(2) { grid-column: span 2; width: 100%; }
