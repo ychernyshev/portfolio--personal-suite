@@ -5,6 +5,7 @@ import backendApi from "../../services/calculator/backendApi.js";
 import WeatherIcon from "./WeatherIcon.vue";
 import {useNotificationStore} from "../../../store/useNotificationStore.js";
 import {useCalculatorStore} from "../../../store/useCalculatorStore.js";
+import ButtonComp from "@/components/personal/ButtonComp.vue";
 
 const emit = defineEmits(["entry-added"]);
 
@@ -135,7 +136,7 @@ onMounted(fetchWeather);
     <div class="card-body card-light pl-3 pr-3 pb-2">
       <form @submit.prevent="submitForm">
         <div class="row mt-1">
-          <div class="col-12 col-md-6 mt-3">
+          <div class="col-12 col-md-6">
             <label class="form-label">Date</label>
             <input
                 type="date"
@@ -148,7 +149,7 @@ onMounted(fetchWeather);
               This date already has a record. Please choose another.
             </div>
           </div>
-          <div class="col-12 col-md-6 mt-3">
+          <div class="col-12 col-md-6">
             <label class="form-label">System Power</label>
             <select v-model="formData.power" class="form-select">
               <option value="200">200</option>
@@ -175,7 +176,7 @@ onMounted(fetchWeather);
             </div>
           </div>
           <div class="col-12 col-md-4 border-md-end p-0">
-            <div class="time-section mb-2 p-3">
+            <div class="time-section pt-3 pl-3 pr-3">
               <h6 class="text-success fw-bold mb-3">Morning</h6>
                 <div class="input-group w-100 mb-2">
                   <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted p-0 pl-2">
@@ -212,8 +213,8 @@ onMounted(fetchWeather);
                 </div>
             </div>
           </div>
-          <div class="col-12 col-md-4 border-md-end p-0">
-            <div class="time-section mb-2 p-3">
+          <div class="col-12 col-md-4 border-md-end p-0 pb-3 d-flex flex-column justify-content-center">
+            <div class="time-section pt-3 pl-3 pr-3">
               <h6 class="text-primary fw-bold mb-3">Afternoon</h6>
               <div class="input-group w-100 mb-2">
                   <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted p-0 pl-2">
@@ -250,9 +251,12 @@ onMounted(fetchWeather);
                 <span class="input-group-text bg-transparent border-0 small text-muted pe-2 alt-icons">₴</span>
               </div>
             </div>
+            <button-comp title="" class="btn btn-white p-1 pt-0 mt-0 d-none d-lg-block">
+              <span class="small text-info-emphasis">Add a new electricity meter row</span>
+            </button-comp>
           </div>
           <div class="col-12 col-md-4 p-0">
-            <div class="time-section mb-2 p-3">
+            <div class="time-section pt-3 pl-3 pr-3">
               <h6 class="text-purple fw-bold mb-3">Evening</h6>
               <div class="input-group w-100 mb-2">
                   <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted p-0 pl-2">
@@ -286,12 +290,18 @@ onMounted(fetchWeather);
                     v-model="formData.evening_data_price"
                 >
                 <span class="input-group-text bg-transparent border-0 small text-muted pe-2 alt-icons">₴</span>
+                <button-comp title="" class="input-group-text ml-3 text-purple bg-transparent d-lg-none">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
+                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                  </svg>
+                </button-comp>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="row">
+        <div class="row pt-0">
           <div class="col-12 col-xl-4 p-0 pr-2">
             <div class="time-section pl-3 pr-3">
               <label class="form-label d-block text-center">
