@@ -34,8 +34,15 @@ class DataEntryLineModel(models.Model):
     # --- ПОЛЯ ---
     date = models.DateField(verbose_name='Дата')
     power = models.CharField(choices=POWER, max_length=3, default='600', verbose_name='Потужність системи')
-    weather = models.ManyToManyField('WeatherConditionModel', db_index=True, related_name='weather',
+    weather = models.ManyToManyField('WeatherConditionModel',
+                                     db_index=True,
+                                     related_name='weather',
                                      verbose_name='Погода')
+    weather_scores = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name='Weather score'
+    )
 
     morning_data_charge = models.IntegerField(verbose_name='Ранковий рівень заряду')
     morning_data_price = models.FloatField(verbose_name='Вартість використаної енергії на ранок')

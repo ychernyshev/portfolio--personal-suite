@@ -37,6 +37,49 @@ class DataEntrySerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['full_day_power', 'full_day_cost', 'power_tariff']
 
+    def get_weather_details(self, obj):
+        scores = obj.weather_scores or {}
+        return [
+            {
+                "id": condition.id,
+                "name": condition.name,
+                "score": scores.get(str(condition.id), 3)
+            }
+            for condition in obj.weather.all()
+        ]
+
+    def create(self, validated_data):
+        weather_data = validated_data.pop('weather', {})
+
+        instance = super().create(validated_data)
+
+        if weather_data:
+            # weather_data приходитиме як {"1": 4, "2": 5} де ключі — це ID погоди
+            weather_ids = list(weather_data.keys())
+            # Перетворюємо ключі на рядки для JSONField
+            scores_dict = {str(k): int(v) for k, v in weather_data.items()}
+
+            instance.weather.set(weather_ids)
+            instance.weather_scores = scores_dict
+            instance.save()
+
+        return instance
+
+    def update(self, instance, validated_data):
+        weather_data = validated_data.pop('weather', {})
+
+        instance = super().update(instance, validated_data)
+
+        if weather_data is not None:
+            weather_ids = list(weather_data.keys())
+            scores_dict = {str(k): int(v) for k, v in weather_data.items()}
+
+            instance.weather.set(weather_ids)
+            instance.weather_scores = scores_dict
+            instance.save()
+
+        return instance
+
 
 class WeatherDataSerializer(serializers.ModelSerializer):
     class Meta:
