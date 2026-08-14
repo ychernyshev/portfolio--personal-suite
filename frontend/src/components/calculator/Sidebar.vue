@@ -77,7 +77,7 @@ onMounted(() => {
           </svg>
           <span>No messages yet...</span>
         </div>
-        <messages-stack ref="messagesRef" />
+        <messages-stack ref="messagesRef" class="custom-position" />
       </div>
       <div class="col-12 p-0">
         <mini-calendar class="mb-0"/>
@@ -113,6 +113,12 @@ onMounted(() => {
       padding: 0.5rem 1rem;
       width: auto;
       min-height: auto;
+    }
+  }
+
+  @media (min-width: 1200px) and (max-width: 1399px) {
+    .custom-position {
+      margin-top: -12rem;
     }
   }
 </style>

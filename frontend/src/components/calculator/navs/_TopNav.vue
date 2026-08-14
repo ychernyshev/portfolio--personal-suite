@@ -4,7 +4,7 @@
 </script>
 
 <template>
-  <header class="header row">
+  <header class="header row mb-0">
     <div class="col-xl-3 col-xs-12 col-sm-12 col-md-12 logo-container">
       <div class="logo">Solar Power Calculator</div>
     </div>

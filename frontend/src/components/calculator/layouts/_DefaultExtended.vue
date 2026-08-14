@@ -65,7 +65,7 @@
 
   @media (min-width: 1200px) {
     .dashboard-grid {
-      grid-template-columns: 3fr 1fr;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
       grid-template-rows: auto 1fr;
       grid-template-areas:
         "header header"
@@ -73,6 +73,10 @@
       ;
       gap: 30px;
       padding: 20px;
+    }
+
+    .dashboard-grid > * {
+      min-width: 0;
     }
   }
 

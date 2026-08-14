@@ -46,85 +46,83 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="card neomorphic p-3 border-0">
-    <div class="row">
-      <div class="col-sm-12 col-md-6 col-xl-6 border-sm-end-0 border-md-end-1 d-flex flex-column justify-content-center">
+  <div class="row">
+    <div class="col-sm-12 col-md-6 col-xl-6 border-sm-end-0 border-md-end-1 d-flex flex-column justify-content-center">
 
-        <div v-if="isLocationDenied" class="w-100">
-          <p class="title-text my-auto text-start text-purple d-flex flex-row justify-content-between align-items-center mb-3">
-            Forecast: Today
-          </p>
-          <LocationRequiredPlaceholder/>
-        </div>
+      <div v-if="isLocationDenied" class="w-100">
+        <p class="title-text my-auto text-start text-purple d-flex flex-row justify-content-between align-items-center mb-3">
+          Forecast: Today
+        </p>
+        <LocationRequiredPlaceholder/>
+      </div>
 
-        <div v-else-if="!loading && forecast" class="w-100">
-          <p class="title-text my-auto text-start text-purple d-flex flex-row justify-content-between align-items-center">
-            Forecast: Today
-            <span>
-              <icons-map
-                  v-if="forecast"
-                  :wmoCode="forecast.weather_code"
-                  class="weather-icon mr-1"
-              />
-              <span class="text-muted small mb-1 text-end sky-condition">{{ forecast.weather_condition }}</span>
-            </span>
-          </p>
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="energy-block">
-              <p class="text-sky-blue-4 huge-number">{{ forecast.predicted_total_kwh }} <span class="unit-text">kWh</span></p>
-              <p class="text-success mb-0 savings-text">+{{ forecast.predicted_savings }} UAH savings</p>
+      <div v-else-if="!loading && forecast" class="w-100">
+        <p class="title-text my-auto text-start text-purple d-flex flex-row justify-content-between align-items-center">
+          Forecast: Today
+          <span>
+            <icons-map
+                v-if="forecast"
+                :wmoCode="forecast.weather_code"
+                class="weather-icon mr-1"
+            />
+            <span class="text-muted small mb-1 text-end sky-condition">{{ forecast.weather_condition }}</span>
+          </span>
+        </p>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="energy-block">
+            <p class="text-sky-blue-4 huge-number">{{ forecast.predicted_total_kwh }} <span class="unit-text">kWh</span></p>
+            <p class="text-success mb-0 savings-text">+{{ forecast.predicted_savings }} UAH savings</p>
+          </div>
+
+          <div class="text-muted small temp-block">
+            <div class="text-end peak-time">
+              Peak: {{ forecast.peak_hour }}:00
             </div>
+            <h2 class="mb-0 temperature">{{ forecast.current_temp }}°C</h2>
 
-            <div class="text-muted small temp-block">
-              <div class="text-end peak-time">
-                Peak: {{ forecast.peak_hour }}:00
-              </div>
-              <h2 class="mb-0 temperature">{{ forecast.current_temp }}°C</h2>
-
-              <div class="sky-condition"
-                   :class="{'badge bg-danger-subtle text-danger border border-danger-subtle p-1 rounded-3 text-end animation-pulse': windSpeedAlert.isDangerous}">
-                <div
-                    class="d-flex flex-column align-items-end"
-                    :class="{ 'text-danger fw-bold': windSpeedAlert.isDangerous, 'text-muted': !windSpeedAlert.isDangerous }"
-                    style="line-height: 1.3rem">
-                  <span v-if="windSpeedAlert.isDangerous">⚠ Strong wind! </span>
-                  <span>
-                    <span class="fw-medium">
-                      Wind:
-                      <span class="fw-bold">{{ windSpeedAlert.speed }}</span>
-                      m/s
-                    </span>
-                  </span>
+            <div class="sky-condition"
+                 :class="{'badge bg-danger-subtle text-danger border border-danger-subtle p-1 rounded-3 text-end animation-pulse': windSpeedAlert.isDangerous}">
+              <div
+                  class="d-flex flex-column align-items-end"
+                  :class="{ 'text-danger fw-bold': windSpeedAlert.isDangerous, 'text-muted': !windSpeedAlert.isDangerous }"
+                  style="line-height: 1.3rem">
+                <span v-if="windSpeedAlert.isDangerous">⚠ Strong wind! </span>
+                <span>
                   <span class="fw-medium">
-                    Gusts:
-                    <span class="fw-bold">{{ windSpeedAlert.maxGust }}</span>
+                    Wind:
+                    <span class="fw-bold">{{ windSpeedAlert.speed }}</span>
                     m/s
                   </span>
+                </span>
+                <span class="fw-medium">
+                  Gusts:
+                  <span class="fw-bold">{{ windSpeedAlert.maxGust }}</span>
+                  m/s
+                </span>
 
-                  <div class="wind-direction">
-                    <span
-                        class="arrow fw-bold mr-1"
-                        :class="getWindDirectionData(forecast.wind_direction).style"
-                        :style="{ transform: `rotate(${forecast.wind_direction}deg)`, display: 'inline-block', transition: 'transform 0.5s ease' }"
-                    >
-                      ↑
-                    </span>
-                    <span>{{ getWindDirectionData(forecast.wind_direction).label }}</span>
-                  </div>
+                <div class="wind-direction">
+                  <span
+                      class="arrow fw-bold mr-1"
+                      :class="getWindDirectionData(forecast.wind_direction).style"
+                      :style="{ transform: `rotate(${forecast.wind_direction}deg)`, display: 'inline-block', transition: 'transform 0.5s ease' }"
+                  >
+                    ↑
+                  </span>
+                  <span>{{ getWindDirectionData(forecast.wind_direction).label }}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        <div v-else class="h-100 d-flex justify-content-center align-items-center py-4">
-          <span class="text-muted">Loading forecast...</span>
-        </div>
       </div>
 
-      <div class="col-sm-12 col-md-6 col-xl-6">
-        <weather-during-the-day-chart />
+      <div v-else class="h-100 d-flex justify-content-center align-items-center py-4">
+        <span class="text-muted">Loading forecast...</span>
       </div>
+    </div>
+
+    <div class="col-sm-12 col-md-6 col-xl-6">
+      <weather-during-the-day-chart />
     </div>
   </div>
 </template>

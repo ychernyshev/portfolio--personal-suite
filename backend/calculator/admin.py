@@ -10,7 +10,8 @@ from .models import (
     PanelsArrayModel,
     SystemEventModel,
     UserProfileSettingsModel,
-    PeakEventModel, WindEventModel,
+    PeakEventModel,
+    WindEventModel,
 )
 
 
@@ -18,16 +19,16 @@ from .models import (
 @admin.register(DataEntryLineModel)
 class DataEntryLineAdmin(admin.ModelAdmin):
     list_display = [
-        'date', 'display_power', 'get_weather',
+        'date', 'display_power',
+        'get_weather', 'weather_scores',
         'display_morning_charge', 'display_morning_price',
         'display_afternoon_charge', 'display_afternoon_price',
         'display_evening_charge', 'display_evening_price',
         'display_extra_power', 'display_full_day_power',
-        'display_full_day_cost', 'display_power_tariff'
+        'display_full_day_cost', 'display_power_tariff',
     ]
 
     def get_weather(self, obj):
-        # беремо name з кожного WeatherCondition
         return ', '.join([item.name for item in obj.weather.all()])
 
     get_weather.short_description = "Погода"
