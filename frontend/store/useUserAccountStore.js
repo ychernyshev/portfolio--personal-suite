@@ -8,6 +8,7 @@ export const useUserAccountStore = defineStore('userAccount', () => {
   const currentUser = ref('');
   const currentLanguage = ref('');
   const currentCurrency = ref('');
+  const receiveDataMethod = ref('');
   const message = ref({});
   const error = ref({});
   const loading = ref(false);
@@ -96,14 +97,56 @@ export const useUserAccountStore = defineStore('userAccount', () => {
       const data = response.data.results || response.data;
 
       if (data && (Array.isArray(data) ? data.length > 0 : true)) {
-        const langData = Array.isArray(data) ? data[0] : data;
+        const currencyData = Array.isArray(data) ? data[0] : data;
 
-        currentCurrency.value = langData.currency;
+        currentCurrency.value = currencyData.currency;
       } else {
         currentCurrency.value = "UAH";
       }
     } catch (err) {
       console.error("Error fetching currency:", err);
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  // ====================================================================
+  // RECEIVE DATA METHOD
+  // ====================================================================
+  const setUserReceiveDataMethod = async (currValue) => {
+    try {
+      loading.value = true;
+
+      const response = await backendApi.patch('/calculator/user_settings/', {
+        receive_data_method: currValue
+      });
+
+      receiveDataMethod.value = response.data.receive_data_method;
+      message.value = { text: 'Receive data method saved successfully!', type: 'success' };
+    } catch (err) {
+      message.value = { text: 'Error saving default receive data method.', type: 'danger' };
+      console.error("Error saving receive data method:", err);
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  const fetchUserReceiveDataMethod = async () => {
+    loading.value = true;
+
+    try {
+      const response = await backendApi.get('/calculator/user_settings/');
+      const data = response.data.results || response.data;
+
+      if (data && (Array.isArray(data) ? data.length > 0 : true)) {
+        const methodData = Array.isArray(data) ? data[0] : data;
+
+        receiveDataMethod.value = methodData.receive_data_method;
+      } else {
+        receiveDataMethod.value = 'manual';
+      }
+    } catch (err) {
+      console.error("Error fetching receive data method:", err);
     } finally {
       loading.value = false;
     }
@@ -115,10 +158,13 @@ export const useUserAccountStore = defineStore('userAccount', () => {
     loading,
     currentLanguage,
     currentCurrency,
+    receiveDataMethod,
     fetchUserProfile,
     setUserLanguage,
     fetchUserLanguage,
     setUserCurrency,
     fetchUserCurrency,
+    setUserReceiveDataMethod,
+    fetchUserReceiveDataMethod,
   };
 });

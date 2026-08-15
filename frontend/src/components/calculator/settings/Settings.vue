@@ -6,6 +6,7 @@
   import UserTimezone from "@/components/calculator/settings/UserTimezone.vue";
   import LanguageSetup from "@/components/calculator/settings/LanguageSetup.vue";
   import CurrencySetup from "@/components/calculator/settings/CurrencySetup.vue";
+  import ReceiveDataMethodSetup from "@/components/calculator/settings/ReceiveDataMethodSetup.vue";
 </script>
 
 <template>
@@ -77,6 +78,17 @@
                   aria-selected="false">Currency
           </button>
         </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link nav-title"
+                  id="getting-data-method-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#getting-data-method"
+                  type="button"
+                  role="tab"
+                  aria-controls="getting-data-method"
+                  aria-selected="false">Receive data
+          </button>
+        </li>
       </ul>
     </div>
     <div class="row mx-auto">
@@ -105,6 +117,10 @@
           <div class="tab-pane fade" id="pills-currency" role="tabpanel" aria-labelledby="pills-currency-tab"
                tabindex="0">
             <currency-setup />
+          </div>
+          <div class="tab-pane fade" id="getting-data-method" role="tabpanel" aria-labelledby="getting-data-method-tab"
+               tabindex="0">
+            <receive-data-method-setup />
           </div>
         </div>
       </div>
