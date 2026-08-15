@@ -9,6 +9,8 @@ export const useUserAccountStore = defineStore('userAccount', () => {
   const currentLanguage = ref('');
   const currentCurrency = ref('');
   const receiveDataMethod = ref('');
+  const isAutomaticActive = ref(false);
+  const voucherInput = ref('');
   const message = ref({});
   const error = ref({});
   const loading = ref(false);
@@ -113,19 +115,26 @@ export const useUserAccountStore = defineStore('userAccount', () => {
   // ====================================================================
   // RECEIVE DATA METHOD
   // ====================================================================
-  const setUserReceiveDataMethod = async (currValue) => {
+  const setUserReceiveDataMethod = async (currValue, voucherCode = '') => {
     try {
       loading.value = true;
 
       const response = await backendApi.patch('/calculator/user_settings/', {
-        receive_data_method: currValue
+        receive_data_method: currValue,
+        authorization_code: voucherCode
       });
 
       receiveDataMethod.value = response.data.receive_data_method;
-      message.value = { text: 'Receive data method saved successfully!', type: 'success' };
+      isAutomaticActive.value = response.data.is_automatic_active || false;
+
+      message.value = { text: 'Settings saved successfully!', type: 'success' };
+      return true;
     } catch (err) {
-      message.value = { text: 'Error saving default receive data method.', type: 'danger' };
+      // Here the backend may return an error of type: "Invalid authorization code"
+      const errorMsg = err.response?.data?.authorization_code?.[0] || 'Error saving receive data method.';
+      message.value = { text: errorMsg, type: 'danger' };
       console.error("Error saving receive data method:", err);
+      return false;
     } finally {
       loading.value = false;
     }
