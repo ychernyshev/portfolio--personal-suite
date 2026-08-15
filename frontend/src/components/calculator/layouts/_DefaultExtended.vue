@@ -65,20 +65,37 @@
 
   @media (min-width: 1200px) {
     .dashboard-grid {
+      display: grid;
       grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
-      grid-template-rows: auto 1fr;
+      grid-template-rows: auto 1fr; /* верхня частина + залишок */
       grid-template-areas:
-        "header header"
-        "content sidebar"
-      ;
+    "header header"
+    "content sidebar";
       gap: 30px;
       padding: 20px;
+      height: 100vh; /* головний контейнер займає весь екран */
     }
 
     .dashboard-grid > * {
       min-width: 0;
+      min-height: 0; /* критично для правильного розподілу */
     }
   }
 
   @media (min-width: 1400px) {}
 </style>
+
+<!--.dashboard-grid {-->
+<!--grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);-->
+<!--grid-template-rows: auto 1fr;-->
+<!--grid-template-areas:-->
+<!--"header header"-->
+<!--"content sidebar"-->
+<!--;-->
+<!--gap: 30px;-->
+<!--padding: 20px;-->
+<!--}-->
+
+<!--.dashboard-grid > * {-->
+<!--min-width: 0;-->
+<!--}-->
