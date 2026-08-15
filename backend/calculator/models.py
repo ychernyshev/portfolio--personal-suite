@@ -445,6 +445,8 @@ class UserProfileSettingsModel(models.Model):
     timezone = models.CharField(max_length=64, blank=True, default='', verbose_name='Timezone')
     language = models.CharField(max_length=64, blank=True, default='en', verbose_name='Language')
     currency = models.CharField(max_length=3, blank=True, default='UAH', verbose_name='Currency')
+    is_automatic_active = models.BooleanField(default=False)
+    license_expires_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f'Settings for {self.user.username}'
