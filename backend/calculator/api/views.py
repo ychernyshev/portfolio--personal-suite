@@ -150,13 +150,30 @@ class DataExportView(APIView):
 
 
 class DataEntryViewSet(viewsets.ModelViewSet):
-    queryset = DataEntryLineModel.objects.all().order_by('-date')
     serializer_class = DataEntrySerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return DataEntryLineModel.objects.filter(user=self.request.user).order_by('-date')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
     @action(detail=False, methods=['post'], url_path='import')
     def import_data(self, request):
-        result = import_data_logic(request.FILES.get('file'))
+        result = import_data_logic(request.FILES.get('file'), user=request.user)
         return Response(result, status=status.HTTP_201_CREATED)
+
+
+# DEPRECATED
+# class DataEntryViewSet(viewsets.ModelViewSet):
+#     queryset = DataEntryLineModel.objects.all().order_by('-date')
+#     serializer_class = DataEntrySerializer
+#
+#     @action(detail=False, methods=['post'], url_path='import')
+#     def import_data(self, request):
+#         result = import_data_logic(request.FILES.get('file'))
+#         return Response(result, status=status.HTTP_201_CREATED)
 
 
 class CurrentTariffViewSet(viewsets.ReadOnlyModelViewSet):

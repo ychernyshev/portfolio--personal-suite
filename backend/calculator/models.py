@@ -331,10 +331,33 @@ class DataEntryLineModel(models.Model):
             current_tariff_obj = CurrentTariffModel.load()
             self.power_tariff = current_tariff_obj.power_tariff
 
-        self.full_day_power = self._calculate_full_day_power()
-        self.full_day_cost = self._calculate_full_day_cost()
+        is_automatic_mode = False
+        if self.user:
+            try:
+                settings = UserProfileSettingsModel.objects.get(user=self.user)
+                if settings.receive_data_method == 'automatic' and settings.is_automatic_active:
+                    is_automatic_mode = True
+            except UserProfileSettingsModel.DoesNotExist:
+                pass
+
+        if is_automatic_mode:
+            pass
+        else:
+            self.full_day_power = self._calculate_full_day_power()
+            self.full_day_cost = self._calculate_full_day_cost()
 
         super().save(*args, **kwargs)
+
+    # DEPRECATED
+    # def save(self, *args, **kwargs):
+    #     if not self.pk:
+    #         current_tariff_obj = CurrentTariffModel.load()
+    #         self.power_tariff = current_tariff_obj.power_tariff
+    #
+    #     self.full_day_power = self._calculate_full_day_power()
+    #     self.full_day_cost = self._calculate_full_day_cost()
+    #
+    #     super().save(*args, **kwargs)
 
     class Meta:
         ordering = ['-date']

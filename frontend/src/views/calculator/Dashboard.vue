@@ -80,7 +80,7 @@
       </div>
     </div>
 
-    <section class="table-section neomorphic pl-4 pr-4 ">
+    <section class="table-section neomorphic pl-4 pr-4">
       <records-table-controllers />
 
       <records-table v-if="currentView === 'table'" :entries="entries" />
