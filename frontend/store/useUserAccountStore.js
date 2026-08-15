@@ -115,13 +115,13 @@ export const useUserAccountStore = defineStore('userAccount', () => {
   // ====================================================================
   // RECEIVE DATA METHOD
   // ====================================================================
-  const setUserReceiveDataMethod = async (currValue, voucherCode = '') => {
+  const setUserReceiveDataMethod = async (currValue, authCode = '') => {
     try {
       loading.value = true;
 
       const response = await backendApi.patch('/calculator/user_settings/', {
         receive_data_method: currValue,
-        authorization_code: voucherCode
+        authorization_code: authCode
       });
 
       receiveDataMethod.value = response.data.receive_data_method;

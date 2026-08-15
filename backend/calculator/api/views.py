@@ -654,7 +654,7 @@ class UserProfileSettingsAPIView(RetrieveUpdateAPIView):
         if new_method == 'automatic' and not instance.is_automatic_active:
             if not authorization_code:
                 return Response(
-                    {"voucher_code": ["Voucher code is required for automatic mode."]},
+                    {"authorization_code": ["Voucher code is required for automatic mode."]},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
@@ -663,7 +663,7 @@ class UserProfileSettingsAPIView(RetrieveUpdateAPIView):
 
                 if not is_valid:
                     return Response(
-                        {"voucher_code": ["Invalid, expired, or already used authorization code."]},
+                        {"authorization_code": ["Invalid, expired, or already used authorization code."]},
                         status=status.HTTP_400_BAD_REQUEST
                     )
 
