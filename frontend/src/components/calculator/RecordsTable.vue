@@ -59,13 +59,13 @@ const currentPage = ref(1);
                         </template>
                         <span v-else class="text-muted text-center c-border small">not discovered</span>
                       </td>
-                      <td class="text-center c-border d-none d-md-table-cell" v-if="entry.morning_data_charge > 0 || entry.morning_data_price">{{ entry.morning_data_charge }}% - {{ entry.morning_data_price }} UAH</td>
+                      <td class="text-center c-border d-none d-md-table-cell" v-if="entry.morning_data_charge > 0 || entry.morning_data_price">{{ entry.morning_data_charge }}% - {{ entry.morning_data_price.toFixed(1) }} UAH</td>
                       <td class="text-center d-none d-md-table-cell small" v-else-if="entry.afternoon_data_charge && entry.evening_data_charge"><span class="bg-body-tertiary p-2 rounded-1 small text-upper text-success-2">not tracked</span></td>
                       <td class="text-center d-none d-md-table-cell small" v-else><span class="bg-body-tertiary p-2 rounded-1 small text-upper text-warning-2">no generation</span></td>
-                      <td class="text-center d-none d-xl-table-cell" v-if="entry.afternoon_data_charge > 0 || entry.afternoon_data_price">{{ entry.afternoon_data_charge }}% - {{ entry.afternoon_data_price }}</td>
+                      <td class="text-center d-none d-xl-table-cell" v-if="entry.afternoon_data_charge > 0 || entry.afternoon_data_price">{{ entry.afternoon_data_charge }}% - {{ entry.afternoon_data_price.toFixed(1) }}</td>
                       <td class="text-center d-none d-xl-table-cell small" v-else-if="!entry.morning_data_charge && !entry.evening_data_charge"><span class="bg-body-tertiary p-2 rounded-1 small text-upper text-warning-2">no generation</span></td>
                       <td class="text-center d-none d-xl-table-cell small" v-else><span class="bg-body-tertiary p-2 rounded-1 small text-upper text-success-2">not tracked</span></td>
-                      <td class="text-center d-none d-md-table-cell" v-if="entry.evening_data_charge > 0 || entry.evening_data_price">{{ entry.evening_data_charge }}% - {{ entry.evening_data_price }} UAH</td>
+                      <td class="text-center d-none d-md-table-cell" v-if="entry.evening_data_charge > 0 || entry.evening_data_price">{{ entry.evening_data_charge }}% - {{ entry.evening_data_price.toFixed(1) }} UAH</td>
                       <td class="text-center d-none d-md-table-cell small" v-else><span class="bg-body-tertiary p-2 rounded-1 small text-upper text-warning-2">no generation</span></td>
                       <td class="text-center" v-if="entry.full_day_power > 0"><span class="badge bg-gradient-blue-1 text-light p-2 w-100">{{ entry.full_day_power.toFixed(2) }}W</span></td>
                       <td class="text-center small" v-else><span class="bg-body-tertiary p-2 rounded-1 small text-upper text-warning-2">no generation</span></td>
