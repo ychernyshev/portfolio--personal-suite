@@ -468,6 +468,11 @@ class UserProfileSettingsModel(models.Model):
     timezone = models.CharField(max_length=64, blank=True, default='', verbose_name='Timezone')
     language = models.CharField(max_length=64, blank=True, default='en', verbose_name='Language')
     currency = models.CharField(max_length=3, blank=True, default='UAH', verbose_name='Currency')
+    receive_data_method = models.CharField(
+        max_length=20,
+        default='manual',
+        choices=[('manual', 'Manual'), ('automatic', 'Automatic')]
+    )
     is_automatic_active = models.BooleanField(default=False)
     license_expires_at = models.DateTimeField(null=True, blank=True)
 

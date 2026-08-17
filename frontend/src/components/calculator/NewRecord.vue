@@ -61,8 +61,15 @@ const submitForm = async () => {
     const weatherIds = Object.keys(formData.value.weather).map(Number);
     const weatherScores = { ...formData.value.weather };
 
+    const sumMorningPrice = formData.value.morning_data_price.reduce((acc, val) => acc + (Number(val) || 0), 0);
+    const sumAfternoonPrice = formData.value.afternoon_data_price.reduce((acc, val) => acc + (Number(val) || 0), 0);
+    const sumEveningPrice = formData.value.evening_data_price.reduce((acc, val) => acc + (Number(val) || 0), 0);
+
     const payload = {
       ...formData.value,
+      morning_data_price: sumMorningPrice,
+      afternoon_data_price: sumAfternoonPrice,
+      evening_data_price: sumEveningPrice,
       weather: weatherIds,
       weather_scores: weatherScores,
     };
@@ -209,7 +216,6 @@ onMounted(fetchWeather);
                 <span class="input-group-text bg-transparent border-0 small text-muted pe-2 alt-icons">%</span>
               </div>
 
-              <!-- Динамічний вивід рядків ціни -->
               <div v-for="(priceItem, pIndex) in formData.morning_data_price" :key="'morning-price-' + pIndex" class="input-group w-100 mb-2">
                   <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted p-0 pl-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#f1c40f" viewBox="0 0 16 16">
@@ -249,7 +255,6 @@ onMounted(fetchWeather);
                 <span class="input-group-text bg-transparent border-0 small text-muted pe-2 alt-icons">%</span>
               </div>
 
-              <!-- Динамічний вивід рядків ціни -->
               <div v-for="(priceItem, pIndex) in formData.afternoon_data_price" :key="'afternoon-price-' + pIndex" class="input-group w-100 mb-2">
                   <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted p-0 pl-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#f1c40f" viewBox="0 0 16 16">
@@ -292,7 +297,6 @@ onMounted(fetchWeather);
                 <span class="input-group-text bg-transparent border-0 small text-muted pe-2 alt-icons">%</span>
               </div>
 
-              <!-- Динамічний вивід рядків ціни -->
               <div v-for="(priceItem, pIndex) in formData.evening_data_price" :key="'evening-price-' + pIndex" class="input-group w-100 mb-2">
                   <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted p-0 pl-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#f1c40f" viewBox="0 0 16 16">
