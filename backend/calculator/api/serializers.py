@@ -32,6 +32,13 @@ class DataEntrySerializer(serializers.ModelSerializer):
     empty_day_message = serializers.ReadOnlyField(source='get_empty_day_message')
     weather_details = WeatherConditionSerializer(source='weather', many=True, read_only=True)
 
+    weather = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=WeatherConditionModel.objects.all(),
+        required=False
+    )
+    weather_scores = serializers.JSONField(required=False, allow_null=True)
+
     class Meta:
         model = DataEntryLineModel
         fields = '__all__'
@@ -49,33 +56,31 @@ class DataEntrySerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        weather_data = validated_data.pop('weather', {})
+        weather_conditions = validated_data.pop('weather', [])
+        weather_scores_data = validated_data.pop('weather_scores', {})
 
         instance = super().create(validated_data)
 
-        if weather_data:
-            # weather_data приходитиме як {"1": 4, "2": 5} де ключі — це ID погоди
-            weather_ids = list(weather_data.keys())
-            # Перетворюємо ключі на рядки для JSONField
-            scores_dict = {str(k): int(v) for k, v in weather_data.items()}
+        if weather_conditions:
+            instance.weather.set(weather_conditions)
 
-            instance.weather.set(weather_ids)
-            instance.weather_scores = scores_dict
+        if weather_scores_data:
+            instance.weather_scores = {str(k): int(v) for k, v in weather_scores_data.items()}
             instance.save()
 
         return instance
 
     def update(self, instance, validated_data):
-        weather_data = validated_data.pop('weather', {})
+        weather_conditions = validated_data.pop('weather', None)
+        weather_scores_data = validated_data.pop('weather_scores', None)
 
         instance = super().update(instance, validated_data)
 
-        if weather_data is not None:
-            weather_ids = list(weather_data.keys())
-            scores_dict = {str(k): int(v) for k, v in weather_data.items()}
+        if weather_conditions is not None:
+            instance.weather.set(weather_conditions)
 
-            instance.weather.set(weather_ids)
-            instance.weather_scores = scores_dict
+        if weather_scores_data is not None:
+            instance.weather_scores = {str(k): int(v) for k, v in weather_scores_data.items()}
             instance.save()
 
         return instance

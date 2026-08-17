@@ -106,7 +106,6 @@ class WeatherForecastService:
             if q.predicted_kwh is not None
         }
 
-        # Знаходимо спільні дати, які є і в фактах, і в прогнозах за цей період
         common_dates = set(actual_dict.keys()).intersection(set(forecast_dict.keys()))
         if not common_dates:
             return 1.0

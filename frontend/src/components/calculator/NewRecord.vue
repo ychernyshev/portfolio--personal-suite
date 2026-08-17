@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup>
 import {ref, onMounted, computed} from "vue";
-import backendApi from "../../services/calculator/backendApi.js";
+import backendApi from "@/services/backendApi";
 import WeatherIcon from "./WeatherIcon.vue";
 import {useNotificationStore} from "../../../store/useNotificationStore.js";
 import {useCalculatorStore} from "../../../store/useCalculatorStore.js";
@@ -58,7 +58,16 @@ const toggleWeather = (id) => {
 
 const submitForm = async () => {
   try {
-    await backendApi.post("calculator/entries/", formData.value);
+    const weatherIds = Object.keys(formData.value.weather).map(Number);
+    const weatherScores = { ...formData.value.weather };
+
+    const payload = {
+      ...formData.value,
+      weather: weatherIds,
+      weather_scores: weatherScores,
+    };
+
+    await backendApi.post("calculator/entries/", payload);
     await store.fetchStats();
     await store.fetchEntries(1);
     notificationStore.addNotification({
