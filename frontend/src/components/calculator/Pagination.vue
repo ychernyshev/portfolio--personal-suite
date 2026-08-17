@@ -1,54 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //
 <script setup>
-// import {onMounted} from "vue";
-//
-// const props = defineProps(["current", "total"]);
-// const emit = defineEmits(["goToPage"]);
-//
-// const changePage = (page) => {
-//   if (page >= 1 && page <= props.total) {
-//     emit("goToPage", page);
-//   }
-// };
-
-import backendApi from "../../services/calculator/backendApi.js";
-import {onMounted, ref} from "vue";
-
 import { useCalculatorStore } from "../../../store/useCalculatorStore";
 const store = useCalculatorStore();
-
-const entries = ref([]);
-const totalPages = ref(1);
-const currentPage = ref(1);
-const loading = ref(true);
-
-
-
-// Entries and pagination
-const fetchEntries = async (page = 1) => {
-  try {
-    loading.value = true;
-    const response = await backendApi.get(`calculator/entries/?page=${page}`);
-    entries.value = response.data.results;
-    currentPage.value = page;
-    totalPages.value = Math.ceil(response.data.count / 10);
-  } catch (error) {
-    error.value = "Cannot load data from backend";
-  } finally {
-    loading.value = false;
-  }
-};
 
 const changePage = (page) => {
   if (page >= 1 && page <= totalPages) {
     currentPage.value = page;
   }
 }
-
-onMounted(() => {
-  fetchEntries();
-})
 </script>
 
 <template>
