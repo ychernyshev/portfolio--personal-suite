@@ -64,7 +64,7 @@ export const useMovementOfTheSunStore = defineStore('messages', {
             const queryDate = date || this.getCurrentDateTimeISO();
 
             try {
-                const response = await backendApi.get(`calculator/sunrise-sunset-time?date=${queryDate}/`);
+                const response = await backendApi.get(`calculator/sunrise-sunset-time/?date=${queryDate}/`);
                 this.messages = response.data;
             } catch (error) {
                 console.error("Messages error:", error);

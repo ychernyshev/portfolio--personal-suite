@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup>
 import {ref, onMounted, computed} from "vue";
-import backendApi from "@/services/backendApi";
+import backendApi from "@/services/backendApi.ts";
 import WeatherIcon from "./WeatherIcon.vue";
 import {useNotificationStore} from "../../../store/useNotificationStore.js";
 import {useCalculatorStore} from "../../../store/useCalculatorStore.js";
@@ -52,7 +52,7 @@ const toggleWeather = (id) => {
   if (formData.value.weather[id] !== undefined) {
     delete formData.value.weather[id];
   } else {
-    formData.value.weather[id] = 3; // Початковий бал за замовчуванням
+    formData.value.weather[id] = 3;
   }
 };
 
