@@ -1,25 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup>
 
-import {computed, onMounted, ref} from "vue";
-import SavingsChart from "./charts/SavingsChart.vue";
-import PowerChart from "./charts/PowerChart.vue";
+import {computed, ref} from "vue";
 import MessagesStack from "./MessagesStack.vue";
-import backendApi from "../../services/calculator/backendApi.js";
 import {useNotificationStore} from "../../../store/useNotificationStore.js";
 import {storeToRefs} from "pinia";
 import SunriseSunsetTimeWidget from "@/components/calculator/wingets/SunriseSunsetTimeWidget.vue";
 import MiniCalendar from "@/components/calculator/wingets/MiniCalendar.vue";
+import {useCalculatorStore} from "../../../store/useCalculatorStore.js";
 
-const entries = ref([]);
-const activeTab = ref('power');
-const error = ref(null);
-const loading = ref(true);
-const totalPages = ref(1);
-const currentPage = ref(1);
-
-
-
+const calculatorStore = useCalculatorStore();
+const { entries } = storeToRefs(calculatorStore);
 
 // Messages
 const notificationStore = useNotificationStore();
@@ -46,24 +37,6 @@ const chartValues = computed(() => {
 const chartCosts = computed(() => {
   return entries.value.map((item) => item.full_day_cost);
 });
-
-const fetchEntries = async(page = 1) => {
-  try {
-    loading.value = true;
-    const response = await backendApi.get(`calculator/entries/?page=${page}`);
-    entries.value = response.data.results;
-    currentPage.value = page;
-    totalPages.value = Math.ceil(response.data.count / 10);
-  } catch(error) {
-    loading.value = error;
-  } finally {
-    loading.value = false;
-  }
-}
-
-onMounted(() => {
-  fetchEntries();
-})
 </script>
 
 <template>
