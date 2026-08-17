@@ -132,5 +132,18 @@
   .widgets-container .card:nth-child(1) { grid-column: span 1; width: 100%; }
   .widgets-container .card:nth-child(2) { grid-column: span 2; width: 100%; }
   .widgets-container .card:nth-child(3) { grid-column: span 1; width: 100%; }
+
+  .main-content {
+    grid-area: content;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .table-section {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 20px;
+  }
 }
 </style>

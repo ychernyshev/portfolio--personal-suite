@@ -150,13 +150,30 @@ class DataExportView(APIView):
 
 
 class DataEntryViewSet(viewsets.ModelViewSet):
-    queryset = DataEntryLineModel.objects.all().order_by('-date')
     serializer_class = DataEntrySerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return DataEntryLineModel.objects.filter(user=self.request.user).order_by('-date')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
     @action(detail=False, methods=['post'], url_path='import')
     def import_data(self, request):
-        result = import_data_logic(request.FILES.get('file'))
+        result = import_data_logic(request.FILES.get('file'), user=request.user)
         return Response(result, status=status.HTTP_201_CREATED)
+
+
+# DEPRECATED
+# class DataEntryViewSet(viewsets.ModelViewSet):
+#     queryset = DataEntryLineModel.objects.all().order_by('-date')
+#     serializer_class = DataEntrySerializer
+#
+#     @action(detail=False, methods=['post'], url_path='import')
+#     def import_data(self, request):
+#         result = import_data_logic(request.FILES.get('file'))
+#         return Response(result, status=status.HTTP_201_CREATED)
 
 
 class CurrentTariffViewSet(viewsets.ReadOnlyModelViewSet):
@@ -642,6 +659,54 @@ class UserProfileSettingsAPIView(RetrieveUpdateAPIView):
     def get_object(self):
         obj, created = UserProfileSettingsModel.objects.get_or_create(user=self.request.user)
         return obj
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+
+        data = request.data.copy()
+        new_method = data.get('receive_data_method')
+        authorization_code = data.get('authorization_code')
+
+        if new_method == 'automatic' and not instance.is_automatic_active:
+            if not authorization_code:
+                return Response(
+                    {"authorization_code": ["Voucher code is required for automatic mode."]},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            try:
+                is_valid, expires_at = self._verify_voucher_with_license_server(authorization_code, request.user)
+
+                if not is_valid:
+                    return Response(
+                        {"authorization_code": ["Invalid, expired, or already used authorization code."]},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
+                data['is_automatic_active'] = True
+                data['license_expires_at'] = expires_at
+
+            except Exception as e:
+                return Response(
+                    {"error": "Licensing server error", "details": str(e)},
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE
+                )
+
+        serializer = self.get_serializer(instance, data=data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
+
+    def _verify_voucher_with_license_server(self, authorization_code, user):
+        # Activation code verification stub
+        if authorization_code.startswith("AU-") and len(authorization_code) >= 25:
+            # Success request imitation
+            expires_at = timezone.now() + timedelta(days=365)
+            return True, expires_at
+
+        return False, None
 
 
 class SystemEventAPIView(ListAPIView):

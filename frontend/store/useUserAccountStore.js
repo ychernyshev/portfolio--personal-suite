@@ -8,6 +8,9 @@ export const useUserAccountStore = defineStore('userAccount', () => {
   const currentUser = ref('');
   const currentLanguage = ref('');
   const currentCurrency = ref('');
+  const receiveDataMethod = ref('');
+  const isAutomaticActive = ref(false);
+  const voucherInput = ref('');
   const message = ref({});
   const error = ref({});
   const loading = ref(false);
@@ -96,14 +99,63 @@ export const useUserAccountStore = defineStore('userAccount', () => {
       const data = response.data.results || response.data;
 
       if (data && (Array.isArray(data) ? data.length > 0 : true)) {
-        const langData = Array.isArray(data) ? data[0] : data;
+        const currencyData = Array.isArray(data) ? data[0] : data;
 
-        currentCurrency.value = langData.currency;
+        currentCurrency.value = currencyData.currency;
       } else {
         currentCurrency.value = "UAH";
       }
     } catch (err) {
       console.error("Error fetching currency:", err);
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  // ====================================================================
+  // RECEIVE DATA METHOD
+  // ====================================================================
+  const setUserReceiveDataMethod = async (currValue, authCode = '') => {
+    try {
+      loading.value = true;
+
+      const response = await backendApi.patch('/calculator/user_settings/', {
+        receive_data_method: currValue,
+        authorization_code: authCode
+      });
+
+      receiveDataMethod.value = response.data.receive_data_method;
+      isAutomaticActive.value = response.data.is_automatic_active || false;
+
+      message.value = { text: 'Settings saved successfully!', type: 'success' };
+      return true;
+    } catch (err) {
+      // Here the backend may return an error of type: "Invalid authorization code"
+      const errorMsg = err.response?.data?.authorization_code?.[0] || 'Error saving receive data method.';
+      message.value = { text: errorMsg, type: 'danger' };
+      console.error("Error saving receive data method:", err);
+      return false;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  const fetchUserReceiveDataMethod = async () => {
+    loading.value = true;
+
+    try {
+      const response = await backendApi.get('/calculator/user_settings/');
+      const data = response.data.results || response.data;
+
+      if (data && (Array.isArray(data) ? data.length > 0 : true)) {
+        const methodData = Array.isArray(data) ? data[0] : data;
+
+        receiveDataMethod.value = methodData.receive_data_method;
+      } else {
+        receiveDataMethod.value = 'manual';
+      }
+    } catch (err) {
+      console.error("Error fetching receive data method:", err);
     } finally {
       loading.value = false;
     }
@@ -115,10 +167,13 @@ export const useUserAccountStore = defineStore('userAccount', () => {
     loading,
     currentLanguage,
     currentCurrency,
+    receiveDataMethod,
     fetchUserProfile,
     setUserLanguage,
     fetchUserLanguage,
     setUserCurrency,
     fetchUserCurrency,
+    setUserReceiveDataMethod,
+    fetchUserReceiveDataMethod,
   };
 });

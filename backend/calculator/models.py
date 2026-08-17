@@ -149,8 +149,10 @@ class DataEntryLineModel(models.Model):
 
                 if self.morning_data_charge > self.evening_data_charge:
                     base_power = raw_meters_power - battery_power
+                    return base_power + usb_power
                 else:
                     base_power = raw_meters_power + battery_power
+                    return base_power + usb_power
             # if self.afternoon_data_charge == 0:
             #     raw_meters_power = round((((
             #                                        self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE) * 100) / self.one_tenth_of_tariff) * 100,
@@ -331,10 +333,33 @@ class DataEntryLineModel(models.Model):
             current_tariff_obj = CurrentTariffModel.load()
             self.power_tariff = current_tariff_obj.power_tariff
 
-        self.full_day_power = self._calculate_full_day_power()
-        self.full_day_cost = self._calculate_full_day_cost()
+        is_automatic_mode = False
+        if self.user:
+            try:
+                settings = UserProfileSettingsModel.objects.get(user=self.user)
+                if settings.receive_data_method == 'automatic' and settings.is_automatic_active:
+                    is_automatic_mode = True
+            except UserProfileSettingsModel.DoesNotExist:
+                pass
+
+        if is_automatic_mode:
+            pass
+        else:
+            self.full_day_power = self._calculate_full_day_power()
+            self.full_day_cost = self._calculate_full_day_cost()
 
         super().save(*args, **kwargs)
+
+    # DEPRECATED
+    # def save(self, *args, **kwargs):
+    #     if not self.pk:
+    #         current_tariff_obj = CurrentTariffModel.load()
+    #         self.power_tariff = current_tariff_obj.power_tariff
+    #
+    #     self.full_day_power = self._calculate_full_day_power()
+    #     self.full_day_cost = self._calculate_full_day_cost()
+    #
+    #     super().save(*args, **kwargs)
 
     class Meta:
         ordering = ['-date']
@@ -445,6 +470,13 @@ class UserProfileSettingsModel(models.Model):
     timezone = models.CharField(max_length=64, blank=True, default='', verbose_name='Timezone')
     language = models.CharField(max_length=64, blank=True, default='en', verbose_name='Language')
     currency = models.CharField(max_length=3, blank=True, default='UAH', verbose_name='Currency')
+    receive_data_method = models.CharField(
+        max_length=20,
+        default='manual',
+        choices=[('manual', 'Manual'), ('automatic', 'Automatic')]
+    )
+    is_automatic_active = models.BooleanField(default=False)
+    license_expires_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f'Settings for {self.user.username}'
