@@ -149,8 +149,10 @@ class DataEntryLineModel(models.Model):
 
                 if self.morning_data_charge > self.evening_data_charge:
                     base_power = raw_meters_power - battery_power
+                    return base_power + usb_power
                 else:
                     base_power = raw_meters_power + battery_power
+                    return base_power + usb_power
             # if self.afternoon_data_charge == 0:
             #     raw_meters_power = round((((
             #                                        self.evening_data_price - self.morning_data_price - self.MORNING_CORRECTION_PRICE) * 100) / self.one_tenth_of_tariff) * 100,
