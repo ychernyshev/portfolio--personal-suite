@@ -75,7 +75,7 @@ onMounted(fetchHistory);
   background: rgba(111, 66, 193, 0.1);
 }
 
-/* Додатковий стиль для таблиці, щоб вона вписувалася в неоморфізм */
+
 .table thead th {
   font-weight: 600;
   border: none;
