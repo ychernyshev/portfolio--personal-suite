@@ -113,7 +113,7 @@ class WeatherDataAdmin(admin.ModelAdmin):
 
 @admin.register(PanelsArrayModel)
 class PanelsArrayAdmin(admin.ModelAdmin):
-    list_display = ['name', 'peak_power_kwp', 'area', 'angle', 'azimuth', 'efficiency', 'user']
+    list_display = ['name', 'peak_power_wh', 'area', 'angle', 'azimuth', 'efficiency', 'user']
 
 
 class PeakEventInline(admin.TabularInline):
