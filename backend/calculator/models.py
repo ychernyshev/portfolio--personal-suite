@@ -568,7 +568,7 @@ class CurrentTariffModel(models.Model):
 # ====================================================================
 class PanelsArrayModel(models.Model):
     name = models.CharField(max_length=100, verbose_name="Name of the array")
-    peak_power_wh = models.FloatField(blank=True, null=True, default=0, verbose_name='Peak power (Wp)')
+    peak_power_wh = models.IntegerField(blank=True, null=True, default=0, verbose_name='Peak power (Wp)')
     area = models.FloatField(verbose_name='Panel(s) area')
     angle = models.FloatField(verbose_name='Panel(s) angle of inclination of the panel')
     azimuth = models.FloatField(verbose_name='Panel(s) azimuth')
