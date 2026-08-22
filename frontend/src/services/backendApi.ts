@@ -36,6 +36,13 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
+        if (originalRequest.url && originalRequest.url.includes('auth/jwt/refresh/')) {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            window.location.href = `/login?next=${window.location.pathname}`;
+            return Promise.reject(error);
+        }
+
         if (error.response?.status === 401 && !originalRequest._retry) {
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {
