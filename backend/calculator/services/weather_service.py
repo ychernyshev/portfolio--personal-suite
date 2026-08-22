@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 import datetime
+from zoneinfo import ZoneInfo
 
 from django.core.cache import cache
 from django.utils import timezone
@@ -87,8 +88,6 @@ class WeatherForecastService:
     def _calculate_calibration_factor(self):
         today = datetime.date.today()
         yesterday = today - datetime.timedelta(days=1)
-
-        # Беремо період за останні 14 днів до вчорашнього дня
         start_date = yesterday - datetime.timedelta(days=14)
 
         actual_qs = DataEntryLineModel.objects.filter(date__range=(start_date, yesterday))
@@ -267,7 +266,6 @@ class WeatherForecastService:
             else:
                 safe_h = min(now_user.hour, len(wind_speeds) - 1) if wind_speeds else 0
 
-            # Дістаємо показники вітру для точного індексу поточної години
             current_speed = round(wind_speeds[safe_h]) if safe_h < len(wind_speeds) and wind_speeds[
                 safe_h] is not None else None
             current_gust = round(wind_gusts[safe_h]) if safe_h < len(wind_gusts) and wind_gusts[
