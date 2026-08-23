@@ -676,25 +676,3 @@ class PeakEventModel(models.Model):
                 name='unique_peak_event_per_user_day'
             )
         ]
-
-
-# DEPRECATED
-class SystemMessage(models.Model):
-    LEVEL_CHOICES = (
-        ('info', 'Info'),
-        ('warning', 'Warning'),
-        ('danger', 'Danger'),
-        ('success', 'Success'),
-    )
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    level = models.CharField(max_length=10, choices=LEVEL_CHOICES, default='info')
-    title = models.CharField(max_length=150)
-    text = models.TextField()
-
-    msg_type = models.CharField(max_length=50, default='weather')
-
-    event_date = models.DateField(db_index=True, auto_now_add=True)
-
-    class Meta:
-        ordering = ['-created_at']
