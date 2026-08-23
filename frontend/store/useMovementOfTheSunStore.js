@@ -13,12 +13,34 @@ export const useMovementOfTheSunStore = defineStore('messages', {
             return state.messages?.results?.[0] || state.messages || null;
         },
 
+        // windSpeedAlert: (bindings) => {
+        //     const forecast = bindings.currentForecast;
+        //     if (!forecast) return null;
+        //
+        //     const maxGust = forecast.wind_gusts_10m !== undefined ? forecast.wind_gusts_10m : 0.0;
+        //     const speed = forecast.wind_speed_10m !== undefined ? forecast.wind_speed_10m : 0.0;
+        //     const direction = forecast.wind_direction_10m !== undefined ? forecast.wind_direction_10m : 0;
+        //
+        //     return {
+        //         speed,
+        //         maxGust,
+        //         direction,
+        //         isDangerous: maxGust >= 15.0
+        //     };
+        // },
+
         windSpeedAlert: (bindings) => {
             const forecast = bindings.currentForecast;
             if (!forecast) return null;
 
-            const maxGust = forecast.wind_gusts_10m !== undefined ? forecast.wind_gusts_10m : 0.0;
-            const speed = forecast.wind_speed_10m !== undefined ? forecast.wind_speed_10m : 0.0;
+            const gustsArray = Array.isArray(forecast.wind_gusts_10m) ? forecast.wind_gusts_10m : [forecast.wind_gusts_10m];
+            const speedsArray = Array.isArray(forecast.wind_speed_10m) ? forecast.wind_speed_10m : [forecast.wind_speed_10m];
+
+            const todayGusts = gustsArray.slice(0, 24);
+            const todaySpeeds = speedsArray.slice(0, 24);
+
+            const maxGust = todayGusts.length ? Math.max(...todayGusts.filter(v => v != null)) : 0.0;
+            const speed = todaySpeeds.length ? Math.max(...todaySpeeds.filter(v => v != null)) : 0.0;
             const direction = forecast.wind_direction_10m !== undefined ? forecast.wind_direction_10m : 0;
 
             return {

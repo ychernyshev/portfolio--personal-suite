@@ -1,7 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 import datetime
+from zoneinfo import ZoneInfo
 
 from django.core.cache import cache
+from django.db.models import Model
 from django.utils import timezone
 
 from calculator.models import (
@@ -11,7 +13,7 @@ from calculator.models import (
     DataEntryLineModel,
     SystemEventModel,
     PeakEventModel,
-    WindEventModel,
+    WindEventModel, PanelsArrayModel,
 )
 from calculator.services.PanelPowerCalculationService import PanelPowerCalculationService
 
@@ -87,8 +89,6 @@ class WeatherForecastService:
     def _calculate_calibration_factor(self):
         today = datetime.date.today()
         yesterday = today - datetime.timedelta(days=1)
-
-        # Беремо період за останні 14 днів до вчорашнього дня
         start_date = yesterday - datetime.timedelta(days=14)
 
         actual_qs = DataEntryLineModel.objects.filter(date__range=(start_date, yesterday))
@@ -97,7 +97,7 @@ class WeatherForecastService:
         actual_dict = {
             q.date: float(q.full_day_power)
             for q in actual_qs
-            if q.full_day_power is not None and q.full_day_power > 0
+            if q.full_day_power is not None and float(q.full_day_power) > 0
         }
 
         forecast_dict = {
@@ -155,12 +155,13 @@ class WeatherForecastService:
             code = weather_h.get('weather_code', [0])[safe_h]
             wind_dir = weather_h.get('wind_direction_10m', [0])[safe_h]
 
-            today_hourly_wh = total_hourly_wh[:24] if len(total_hourly_wh) >= 24 else total_hourly_wh
-            today_peak_hour = today_hourly_wh.index(max(today_hourly_wh)) if today_hourly_wh else 0
+            today_day_watt = total_hourly_wh[:24] if len(total_hourly_wh) >= 24 else total_hourly_wh
+            prepared_day_watt = (sum(today_day_watt) / 1000) * PanelsArrayModel.objects.filter(user=user).count()
+            today_peak_hour = today_day_watt.index(max(today_day_watt)) if today_day_watt else 0
 
             result_dict = {
-                "predicted_total_kwh": round(sum(total_hourly_wh) / 1000, 2),
-                "predicted_savings": round((sum(total_hourly_wh) / 1000) * current_tariff, 2),
+                "predicted_total_kwh": round(prepared_day_watt, 2),
+                "predicted_savings": round(prepared_day_watt * current_tariff, 2),
                 "hourly_forecast_wh": [round(h, 2) for h in total_hourly_wh],
                 "detailed_arrays": detailed_reports,
                 "status": "success",
@@ -205,6 +206,7 @@ class WeatherForecastService:
             f"wind_gusts_10m,wind_direction_10m,weather_code"
             f"&daily=sunrise,sunset&timezone=auto"
             f"&forecast_days=16"
+            f"&wind_speed_unit=ms"
         )
         try:
             response = requests.get(url, timeout=10)
@@ -233,7 +235,7 @@ class WeatherForecastService:
 
     # END
 
-    def save_forecast_to_db(self, total_hourly_wh, raw_api_data, calibration_factor=1.0):
+    def save_forecast_to_db(self, total_hourly_wh, raw_api_data, calibration_factor=1.0, user=None):
         try:
             today = timezone.localtime(timezone.now()).date()
             sunrise_dt, sunset_dt = self.convert_iso_to_datetime(raw_api_data)
@@ -243,11 +245,36 @@ class WeatherForecastService:
             wind_gusts = hourly_raw.get('wind_gusts_10m', [])
             wind_directions = hourly_raw.get('wind_direction_10m', [])
 
-            avg_speed = round(sum(wind_speeds) / len(wind_speeds), 1) if wind_speeds else None
-            max_gust = max(wind_gusts) if wind_gusts else None
-            avg_direction = int(sum(wind_directions) / len(wind_directions)) if wind_directions else None
+            # avg_speed = round(sum(wind_speeds) / len(wind_speeds), 1) if wind_speeds else None
+            # max_gust = max(wind_gusts) if wind_gusts else None
+            # avg_direction = int(sum(wind_directions) / len(wind_directions)) if wind_directions else None
 
-            # Вираховуємо сьогоднішні показники з масиву погодинних ват-годин
+            user_settings = getattr(user, 'settings', None) if user else None
+            user_tz_name = getattr(user_settings, 'timezone', None) or 'Europe/Kyiv'
+
+            try:
+                user_tz = ZoneInfo(user_tz_name)
+            except Exception:
+                user_tz = timezone.utc
+
+            now_user = datetime.datetime.now(user_tz)
+            current_target_str = now_user.strftime('%Y-%m-%dT%H:00')
+
+            timestamps = hourly_raw.get('time', [])
+            safe_h = 0
+
+            if current_target_str in timestamps:
+                safe_h = timestamps.index(current_target_str)
+            else:
+                safe_h = min(now_user.hour, len(wind_speeds) - 1) if wind_speeds else 0
+
+            current_speed = round(wind_speeds[safe_h]) if safe_h < len(wind_speeds) and wind_speeds[
+                safe_h] is not None else None
+            current_gust = round(wind_gusts[safe_h]) if safe_h < len(wind_gusts) and wind_gusts[
+                safe_h] is not None else None
+            current_direction = int(wind_directions[safe_h]) if safe_h < len(wind_directions) and wind_directions[
+                safe_h] is not None else None
+
             today_wh = total_hourly_wh[:24] if len(total_hourly_wh) >= 24 else total_hourly_wh
             today_kwh = round(sum(today_wh) / 1000.0, 2)
             peak_hour_idx = today_wh.index(max(today_wh)) if today_wh else 0
@@ -260,9 +287,12 @@ class WeatherForecastService:
                     'peak_hour': peak_hour_idx,
                     'sunrise': sunrise_dt,
                     'sunset': sunset_dt,
-                    'wind_speed_10m': avg_speed,
-                    'wind_gusts_10m': max_gust,
-                    'wind_direction_10m': avg_direction,
+                    'wind_speed_10m': current_speed,
+                    'wind_gusts_10m': current_gust,
+                    'wind_direction_10m': current_direction,
+                    # 'wind_speed_10m': avg_speed,
+                    # 'wind_gusts_10m': max_gust,
+                    # 'wind_direction_10m': avg_direction,
                 }
             )
 
@@ -401,7 +431,16 @@ class WeatherForecastService:
         wind_direction = hourly_raw.get('wind_direction_10m', [])
         timestamps = hourly_raw.get('time', [])
 
+        if not timestamps or not wind_speeds:
+            return
+
         today = timezone.localtime(timezone.now()).date()
+
+        # Беремо тільки перші 24 години (сьогоднішній день із 384 годин)
+        today_hours_count = min(24, len(timestamps))
+
+        today_wind_speeds = wind_speeds[:today_hours_count]
+        today_wind_gusts = wind_gusts[:today_hours_count]
 
         daily_event, _ = SystemEventModel.objects.update_or_create(
             date=today,
@@ -412,53 +451,145 @@ class WeatherForecastService:
                     "message": "Strong wind detected",
                     "level": "warning",
                     "category": "warning",
-                    "max_wind_speed": max(wind_speeds) if wind_speeds else None,
-                    "max_wind_gust": max(wind_gusts) if wind_gusts else None,
+                    "max_wind_speed": max(today_wind_speeds) if today_wind_speeds else None,
+                    "max_wind_gust": max(today_wind_gusts) if today_wind_gusts else None,
                 }
             }
         )
 
-        for i in range(len(wind_speeds)):
+        for i in range(today_hours_count):
             dt = datetime.datetime.fromisoformat(timestamps[i])
             aware_dt = timezone.make_aware(dt)
-
-            if aware_dt.date() != today:
-                continue
 
             max_wind = wind_speeds[i]
             max_gust = wind_gusts[i]
 
+            if max_wind is None or max_gust is None:
+                continue
+
             if max_wind >= threshold or max_gust >= threshold:
-                time_str = timestamps[i]
-                title_str = f'Wind alert at '
+                time_str = dt.strftime("%H:%M")
+                title_str = f'Wind alert at {time_str}'
 
-                if not WindEventModel.objects.filter(
-                        daily_event=daily_event,
-                        title__icontains=time_str
-                ).exists():
-                    event_data = {
-                        'wind': max_wind,
-                        'gust': max_gust,
-                        'direction': wind_direction[i] if i < len(wind_direction) else None,
-                        'status': 'CRITICAL' if (max_wind >= threshold and max_gust >= threshold) else 'WARNING'
+                current_direction = [wind_direction[i]] if i < len(wind_direction) and wind_direction[
+                    i] is not None else []
+
+                WindEventModel.objects.update_or_create(
+                    daily_event=daily_event,
+                    user=user,
+                    event_timestamp=aware_dt,
+                    defaults={
+                        'category': 'WARNING',
+                        'title': title_str,
+                        'message': f"Wind {max_wind} m/s, Gust {max_gust} m/s",
+                        'event_time': dt.time(),
+                        'wind_strength': max_wind,
+                        'gust_strength': max_gust,
+                        'wind_direction': current_direction,
+                        'is_persistent': True,
                     }
+                )
+                print(f"✅ DEBUG WIND: Logged wind event for today at {time_str} (Wind: {max_wind})")
 
-                    WindEventModel.objects.update_or_create(
-                        daily_event=daily_event,
-                        user=user,
-                        event_timestamp=aware_dt,
-                        defaults={
-                            'category': 'WARNING',
-                            'title': title_str,
-                            'message': f"Wind {max_wind} m/s, Gust {max_gust} m/s",
-                            'wind_time': dt.strftime("%H:%M"),
-                            'wind_strength': max_wind,
-                            'gust_strength': max_gust,
-                            'wind_direction': wind_direction,
-                            'is_persistent': True,
-                            'user': user
-                        }
-                    )
+    # def check_and_log_wind_alert(self, raw_api_data, user=None):
+    #     if not user:
+    #         print("DEBUG WIND: User not transferred, skipping wind alerts.")
+    #         return
+    #
+    #     threshold = 15.0
+    #
+    #     hourly_raw = raw_api_data.get('hourly', {})
+    #     wind_speeds = hourly_raw.get('wind_speed_10m', [])
+    #     wind_gusts = hourly_raw.get('wind_gusts_10m', [])
+    #     wind_direction = hourly_raw.get('wind_direction_10m', [])
+    #     timestamps = hourly_raw.get('time', [])
+    #
+    #     today = timezone.localtime(timezone.now()).date()
+    #
+    #     daily_event, _ = SystemEventModel.objects.update_or_create(
+    #         date=today,
+    #         user=user,
+    #         defaults={
+    #             "payload": {
+    #                 "title": "Wind alert",
+    #                 "message": "Strong wind detected",
+    #                 "level": "warning",
+    #                 "category": "warning",
+    #                 "max_wind_speed": max(wind_speeds) if wind_speeds else None,
+    #                 "max_wind_gust": max(wind_gusts) if wind_gusts else None,
+    #             }
+    #         }
+    #     )
+
+        # for i in range(len(wind_speeds)):
+        #     dt = datetime.datetime.fromisoformat(timestamps[i])
+        #     aware_dt = timezone.make_aware(dt)
+        #
+        #     if aware_dt.date() != today:
+        #         continue
+        #
+        #     max_wind = wind_speeds[i]
+        #     max_gust = wind_gusts[i]
+        #
+        #     if max_wind is None or max_gust is None:
+        #         continue
+        #
+        #     if max_wind >= threshold or max_gust >= threshold:
+        #         time_str = dt.strftime("%H:%M")
+        #         title_str = f'Wind alert at {time_str}'
+        #
+        #         current_direction = [wind_direction[i]] if i < len(wind_direction) and wind_direction[
+        #             i] is not None else []
+        #
+        #         WindEventModel.objects.update_or_create(
+        #             daily_event=daily_event,
+        #             user=user,
+        #             event_timestamp=aware_dt,
+        #             defaults={
+        #                 'category': 'WARNING',
+        #                 'title': title_str,
+        #                 'message': f"Wind {max_wind} m/s, Gust {max_gust} m/s",
+        #                 'event_time': dt.time(),
+        #                 'wind_strength': max_wind,
+        #                 'gust_strength': max_gust,
+        #                 'wind_direction': current_direction,
+        #                 'is_persistent': True,
+        #                 'user': user,
+        #             }
+        #         )
+
+
+
+
+
+
+                # if not WindEventModel.objects.filter(
+                #         daily_event=daily_event,
+                #         event_timestamp=aware_dt
+                # ).exists():
+                #     event_data = {
+                #         'wind': max_wind,
+                #         'gust': max_gust,
+                #         'direction': wind_direction[i] if i < len(wind_direction) else None,
+                #         'status': 'CRITICAL' if (max_wind >= threshold and max_gust >= threshold) else 'WARNING'
+                #     }
+                #
+                #     WindEventModel.objects.update_or_create(
+                #         daily_event=daily_event,
+                #         user=user,
+                #         event_timestamp=aware_dt,
+                #         defaults={
+                #             'category': 'WARNING',
+                #             'title': title_str,
+                #             'message': f"Wind {max_wind} m/s, Gust {max_gust} m/s",
+                #             'wind_time': dt.strftime("%H:%M"),
+                #             'wind_strength': max_wind,
+                #             'gust_strength': max_gust,
+                #             'wind_direction': wind_direction,
+                #             'is_persistent': True,
+                #             'user': user
+                #         }
+                #     )
 
     def check_and_log_peak_events(self, raw_api_data, peak_hour, user=None):
         if not user:

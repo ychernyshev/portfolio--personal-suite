@@ -25,6 +25,11 @@ const onDatePicked = (day) => {
 };
 
 const getWindDirectionData = (degrees) => {
+  const numDegrees = Number(degrees);
+  if (isNaN(numDegrees)) {
+    return { label: 'N/A', arrow: '—', style: 'text-muted' };
+  }
+
   const directions = [
     { label: 'North', arrow: '↑', style: 'text-primary' },
     { label: 'North-East', arrow: '↗', style: 'text-primary-emphasis' },
@@ -36,7 +41,7 @@ const getWindDirectionData = (degrees) => {
     { label: 'North-West', arrow: '↖', style: 'text-primary-emphasis' }
   ];
 
-  const index = Math.round((degrees % 360) / 45) % 8;
+  const index = Math.round((numDegrees % 360) / 45) % 8;
   return directions[index];
 };
 
@@ -104,7 +109,7 @@ onMounted(() => {
                   <span
                       class="arrow fw-bold mr-1"
                       :class="getWindDirectionData(forecast.wind_direction).style"
-                      :style="{ transform: `rotate(${forecast.wind_direction}deg)`, display: 'inline-block', transition: 'transform 0.5s ease' }"
+                      :style="{ transform: `rotate(${forecast.wind_direction || 0}deg)`, display: 'inline-block', transition: 'transform 0.5s ease' }"
                   >
                     ↑
                   </span>

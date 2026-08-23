@@ -27,16 +27,6 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='SystemEventModel',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField(blank=True, db_index=True, null=True, unique=True)),
-                ('payload', models.JSONField(blank=True, default=dict)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-            ],
-        ),
-        migrations.CreateModel(
             name='WindEventModel',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
@@ -60,4 +50,20 @@ class Migration(migrations.Migration):
             name='daily_event',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='peak_records', to='calculator.systemeventmodel'),
         ),
+        migrations.AddField(
+            model_name='systemeventmodel',
+            name='date',
+            field=models.DateField(blank=True, db_index=True, null=True, unique=True),
+        ),
+        migrations.AlterField(
+            model_name='systemeventmodel',
+            name='payload',
+            field=models.JSONField(blank=True, default=dict),
+        ),
+        migrations.AddField(
+            model_name='systemeventmodel',
+            name='updated_at',
+            field=models.DateTimeField(auto_now=True),
+        ),
+
     ]

@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='systemeventmodel',
             name='level',
-            field=models.CharField(choices=[('SUCC', 'Success'), ('INFO', 'Info'), ('WARN', 'Warn'), ('ERR', 'Error')], default='2026-07-11 13:00:00', max_length=10),
+            field=models.CharField(choices=[('SUCC', 'Success'), ('INFO', 'Info'), ('WARN', 'Warn'), ('ERR', 'Error')], default='2026-07-11 13:00:00', max_length=20),
             preserve_default=False,
         ),
         migrations.AddField(
@@ -54,8 +54,5 @@ class Migration(migrations.Migration):
             model_name='systemeventmodel',
             name='user',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
-        ),
-        migrations.DeleteModel(
-            name='SystemEvent',
         ),
     ]

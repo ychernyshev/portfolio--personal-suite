@@ -5,6 +5,26 @@ import math
 from calculator.models import PanelsArrayModel
 
 class PanelPowerCalculationService:
+#     def calculate_array_production(self, array, radiation_data, calibration_factor, cloud_cover_data=None):
+#         efficiency = array.efficiency
+#         if efficiency > 1.0:
+#             efficiency = efficiency / 100.0
+#
+#         array_factor = array.area * efficiency * 0.85 * calibration_factor
+#         tilt_factor = math.cos(math.radians(abs(array.angle - 30)))
+#
+#         production = []
+#         for i, rad in enumerate(radiation_data):
+#             cloud_factor = 1.0
+#             if cloud_cover_data and i < len(cloud_cover_data):
+#                 cloud_cover = cloud_cover_data[i] or 0.0
+#                 cloud_factor = max(0.1, 1.0 - (cloud_cover / 100.0) * 0.75)
+#
+#             hourly_val = rad * array_factor * tilt_factor * cloud_factor
+#             production.append(round(hourly_val, 2))
+#
+#         return production
+
     def calculate_array_production(self, array, radiation_data, calibration_factor):
         efficiency = array.efficiency
         if efficiency > 1.0:

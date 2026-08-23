@@ -19,19 +19,19 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
             ],
         ),
-        migrations.CreateModel(
-            name='SystemEvent',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('category', models.CharField(choices=[('FORECAST', 'Solar Forecast'), ('REPORT', 'Analytics Report'), ('NOTIFICATION', 'System Notification'), ('WARNING', 'Warning')], max_length=20)),
-                ('level', models.CharField(choices=[('SUCC', 'Success'), ('INFO', 'Info'), ('WARN', 'Warn'), ('ERR', 'Error')], max_length=10)),
-                ('payload', models.JSONField(default=dict, help_text='Complex data')),
-                ('title', models.CharField(max_length=255)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'ordering': ['-created_at'],
-            },
-        ),
+        # migrations.CreateModel(
+        #     name='SystemEvent',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('category', models.CharField(choices=[('FORECAST', 'Solar Forecast'), ('REPORT', 'Analytics Report'), ('NOTIFICATION', 'System Notification'), ('WARNING', 'Warning')], max_length=20)),
+        #         ('level', models.CharField(choices=[('SUCC', 'Success'), ('INFO', 'Info'), ('WARN', 'Warn'), ('ERR', 'Error')], max_length=10)),
+        #         ('payload', models.JSONField(default=dict, help_text='Complex data')),
+        #         ('title', models.CharField(max_length=255)),
+        #         ('created_at', models.DateTimeField(auto_now_add=True)),
+        #         ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+        #     ],
+        #     options={
+        #         'ordering': ['-created_at'],
+        #     },
+        # ),
     ]
