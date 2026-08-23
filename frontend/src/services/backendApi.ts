@@ -35,6 +35,16 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
+        const refreshToken = localStorage.getItem('refresh_token');
+
+        if (!refreshToken) {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            if (!window.location.pathname.includes('/login')) {
+                window.location.href = `/login?next=${window.location.pathname}`;
+            }
+            return Promise.reject(error);
+        }
 
         if (originalRequest.url && originalRequest.url.includes('auth/jwt/refresh/')) {
             localStorage.removeItem('access_token');
@@ -44,6 +54,13 @@ api.interceptors.response.use(
         }
 
         if (error.response?.status === 401 && !originalRequest._retry) {
+            if (originalRequest.url && originalRequest.url.includes('auth/jwt/refresh/')) {
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                window.location.href = `/login?next=${window.location.pathname}`;
+                return Promise.reject(error);
+            }
+
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {
                     failedQueue.push({ resolve, reject });
