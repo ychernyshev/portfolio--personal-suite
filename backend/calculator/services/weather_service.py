@@ -3,6 +3,7 @@ import datetime
 from zoneinfo import ZoneInfo
 
 from django.core.cache import cache
+from django.db.models import Model
 from django.utils import timezone
 
 from calculator.models import (
@@ -12,7 +13,7 @@ from calculator.models import (
     DataEntryLineModel,
     SystemEventModel,
     PeakEventModel,
-    WindEventModel,
+    WindEventModel, PanelsArrayModel,
 )
 from calculator.services.PanelPowerCalculationService import PanelPowerCalculationService
 
@@ -154,12 +155,13 @@ class WeatherForecastService:
             code = weather_h.get('weather_code', [0])[safe_h]
             wind_dir = weather_h.get('wind_direction_10m', [0])[safe_h]
 
-            today_hourly_wh = total_hourly_wh[:24] if len(total_hourly_wh) >= 24 else total_hourly_wh
-            today_peak_hour = today_hourly_wh.index(max(today_hourly_wh)) if today_hourly_wh else 0
+            today_day_watt = total_hourly_wh[:24] if len(total_hourly_wh) >= 24 else total_hourly_wh
+            prepared_day_watt = (sum(today_day_watt) / 1000) * PanelsArrayModel.objects.filter(user=user).count()
+            today_peak_hour = today_day_watt.index(max(today_day_watt)) if today_day_watt else 0
 
             result_dict = {
-                "predicted_total_kwh": round(sum(total_hourly_wh) / 1000, 2),
-                "predicted_savings": round((sum(total_hourly_wh) / 1000) * current_tariff, 2),
+                "predicted_total_kwh": round(prepared_day_watt, 2),
+                "predicted_savings": round(prepared_day_watt * current_tariff, 2),
                 "hourly_forecast_wh": [round(h, 2) for h in total_hourly_wh],
                 "detailed_arrays": detailed_reports,
                 "status": "success",
