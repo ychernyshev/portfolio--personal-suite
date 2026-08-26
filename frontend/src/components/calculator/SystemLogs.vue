@@ -21,26 +21,26 @@ const { messages } = storeToRefs(notificationStore);
 
           <div class="container-fluid">
             <div class="row mb-3 text-purple fw-bold p-2">
-              <div class="col-12 col-lg-2">
+              <div class="col-3 col-lg-2">
                 Event date
               </div>
-              <div class="col-12 col-lg-2">
+              <div class="col-2 col-lg-2">
                 Event type
               </div>
-              <div class="col-12 col-lg-8">
+              <div class="col-7 col-lg-8">
                 Message description
               </div>
             </div>
             <div class="row mb-2 bg-white p-2" v-for="msg in messages" :key="msg.id">
-              <div class="col-12 col-lg-2 fw-bold">
+              <div class="col-3 col-lg-2 fw-bold">
                 {{ msg.date }}
               </div>
-              <div class="col-12 col-lg-2 fw-bold">
+              <div class="col-2 col-lg-2 fw-bold">
                 <span :class="{'text-success-1': msg.type === 'peak', 'text-alert': msg.type === 'wind'}">
                   {{ msg.type }}
                 </span>
               </div>
-              <div class="col-12 col-lg-8">
+              <div class="col-7 col-lg-8">
                 {{ msg.title }}:
                 <span v-if="msg.type === 'wind'">
                   <span class="fw-bold">{{ msg.event_time.substring(0, 5) }}</span>. Wind strength:
