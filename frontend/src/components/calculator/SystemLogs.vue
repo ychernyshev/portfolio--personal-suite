@@ -28,7 +28,7 @@ const { messages } = storeToRefs(notificationStore);
                 Event type
               </div>
               <div class="col-7 col-lg-8">
-                Message description
+                Event description
               </div>
             </div>
             <div class="row mb-2 bg-white p-2" v-for="msg in messages" :key="msg.id">
