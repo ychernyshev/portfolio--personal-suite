@@ -47,7 +47,13 @@
               <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.6.6 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0z"/>
             </svg>
           </button-comp>
-          <button-comp title="" class="neomorphic right-angle p-2 p-sm-3 p-md-4 p-xl-2 text-purple">
+          <button-comp
+              title=""
+              class="neomorphic right-angle p-2 p-sm-3 p-md-4 p-xl-2 text-purple"
+              data-bs-toggle="modal"
+              href="#CalendarModal"
+              role="button"
+              aria-label="Full period analytics">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-text-indent-left additional-button-icon" viewBox="0 0 16 16">
               <path d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m.646 2.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L4.293 8 2.646 6.354a.5.5 0 0 1 0-.708M7 6.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m0 3a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m-5 3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"/>
             </svg>
