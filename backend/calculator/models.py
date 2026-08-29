@@ -33,7 +33,8 @@ class DataEntryLineModel(models.Model):
 
     # --- ПОЛЯ ---
     date = models.DateField(verbose_name='Дата')
-    power = models.CharField(choices=POWER, max_length=3, default='600', verbose_name='Потужність системи')
+    # power = models.CharField(choices=POWER, max_length=3, default='600', verbose_name='Потужність системи')
+    power = models.IntegerField(verbose_name='Solar system power')
     weather = models.ManyToManyField('WeatherConditionModel',
                                      db_index=True,
                                      related_name='weather',
@@ -347,6 +348,13 @@ class DataEntryLineModel(models.Model):
         else:
             self.full_day_power = self._calculate_full_day_power()
             self.full_day_cost = self._calculate_full_day_cost()
+
+        if self.user:
+            total_panels_power = sum(
+                array.area * array.efficiency * 1000
+                for array in PanelsArrayModel.objects.filter(user=self.user)
+            )
+            self.power = total_panels_power
 
         super().save(*args, **kwargs)
 
