@@ -103,6 +103,7 @@ const nextMonth = () => {
                @click="nextMonth"
                :disabled="!canGoNext"
                :class="{ 'opacity-40 cursor-not-allowed': !canGoNext }" />
+  <button-comp type="button" title="Today" class="neomorphic ml-4 p-2 pl-3 pr-3 border text-purple fw-lighter" :disabled="!canGoNext" style="font-size: clamp(1.1rem, 0.8vh, 0.8rem)" />
 </template>
 
 <style scoped>
