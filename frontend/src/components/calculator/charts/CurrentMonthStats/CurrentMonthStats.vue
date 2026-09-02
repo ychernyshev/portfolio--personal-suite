@@ -3,6 +3,7 @@
   import MonthGenerationChart from "@/components/calculator/charts/CurrentMonthStats/MonthGenerationChart.vue";
   import backendApi from "@/services/backendApi.js";
   import {onMounted, ref} from "vue";
+  import ChooseMonth from "@/components/calculator/timemachine/ChooseMonth.vue";
 
   const monthGenerationGraphiData = ref();
   const errorMsg = ref("");
@@ -30,9 +31,14 @@
       <div class="modal-content neomorphic p-0">
         <div class="modal-body ps-2 pe-2 pb-0">
           <div class="row pt-1 pe-2">
-            <div class="d-flex flex-row justify-content-end">
-              <p class="small text-purple my-auto">Analytics for the current month with a generation power forecast and actual power generation</p>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="d-flex flex-row justify-content-between">
+              <div class="display-flex flex-row justify-content-center align-items-center ml-3">
+                <choose-month />
+              </div>
+              <div class="display-flex flex-row">
+                <p class="small text-purple my-auto mr-5">Analytics for the current month with a generation power forecast and actual power generation</p>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
             </div>
           </div>
           <month-generation-chart
