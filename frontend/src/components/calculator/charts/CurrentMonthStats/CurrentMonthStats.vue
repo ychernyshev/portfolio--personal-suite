@@ -6,6 +6,7 @@
   import ChooseMonth from "@/components/calculator/timemachine/ChooseMonth.vue";
   import {useDateRangeStore} from "../../../../../store/useDateRangeStore.js";
   import {storeToRefs} from "pinia";
+  import LayersOfYears from "@/components/calculator/charts/CurrentMonthStats/LayersOfYears.vue";
 
   const dateRangeStore = useDateRangeStore();
   const { monthGenerationChartData, selectedYear, selectedMonth, errorMsg, errorClass } = storeToRefs(dateRangeStore);
@@ -31,8 +32,9 @@
             <div class="d-flex flex-row justify-content-between">
               <div class="display-flex flex-row justify-content-center align-items-center ml-3">
                 <choose-month />
+                <layers-of-years />
               </div>
-              <div class="display-flex flex-row">
+              <div class="display-flex flex-row align-items-center">
                 <p class="small text-purple my-auto mr-5">Analytics for the current month with a generation power forecast and actual power generation</p>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
