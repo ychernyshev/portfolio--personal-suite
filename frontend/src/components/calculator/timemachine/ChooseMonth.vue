@@ -1,11 +1,15 @@
 <script setup>
 import ButtonComp from "@/components/personal/ButtonComp.vue";
-import {computed, ref} from "vue";
-import {useCalculatorStore} from "../../../../store/useCalculatorStore.js";
+import {computed, onMounted, ref} from "vue";
+import {useDateRangeStore} from "../../../../store/useDateRangeStore.js";
 import {storeToRefs} from "pinia";
 
-const CalculatorStore = useCalculatorStore();
-const {entries} = storeToRefs(CalculatorStore);
+const DateRangeStore = useDateRangeStore();
+const {dateRange} = storeToRefs(DateRangeStore);
+
+onMounted(() => {
+  DateRangeStore.fetchDateRange();
+});
 
 const now = new Date()
 const currentYear = now.getFullYear()
@@ -15,25 +19,38 @@ const activeYear = ref(currentYear)
 const activeMonth = ref(currentMonth)
 
 const minDataDate = computed(() => {
-  if (!entries.value || entries.value.length === 0) {
-    const now = new Date()
-    return { year: now.getFullYear(), month: now.getMonth() }
+  if (!dateRange.value || !dateRange.value.min) {
+    return { year: currentYear, month: currentMonth }
   }
 
-  const earliestEntry = entries.value.reduce((min, entry) => {
-    return new Date(entry.date) < new Date(min.date) ? entry : min
-  }, entries.value[0])
-
-  const dateObj = new Date(earliestEntry.date)
+  const dateObj = new Date(dateRange.value.min)
   return {
     year: dateObj.getFullYear(),
     month: dateObj.getMonth()
   }
 })
 
+const maxDataDate = computed(() => {
+  const current = { year: currentYear, month: currentMonth }
+  if (!dateRange.value || !dateRange.value.max) {
+    return current
+  }
+
+  const maxObj = new Date(dateRange.value.max)
+  const maxFromDb = { year: maxObj.getFullYear(), month: maxObj.getMonth() }
+
+  const totalMaxDb = maxFromDb.year * 12 + maxFromDb.month
+  const totalCurrent = current.year * 12 + current.month
+
+  return totalMaxDb > totalCurrent ? maxFromDb : current
+})
+
 const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
 const currentMonthName = computed(() => monthNames[activeMonth.value])
+const formattedDate = computed(() => {
+  return `${monthNames[activeMonth.value]} ${activeYear.value}`
+})
 
 const canGoPrev = computed(() => {
   const totalMonthsActive = activeYear.value * 12 + activeMonth.value
@@ -43,8 +60,8 @@ const canGoPrev = computed(() => {
 
 const canGoNext = computed(() => {
   const totalMonthsActive = activeYear.value * 12 + activeMonth.value
-  const totalMonthsCurrent = currentYear * 12 + currentMonth
-  return totalMonthsActive < totalMonthsCurrent
+  const totalMonthsMax = maxDataDate.value.year * 12 + maxDataDate.value.month
+  return totalMonthsActive < totalMonthsMax
 })
 
 const prevMonth = () => {
@@ -75,7 +92,7 @@ const nextMonth = () => {
                @click="prevMonth"
                :disabled="!canGoPrev"
                :class="{ 'opacity-40 cursor-not-allowed': !canGoPrev }" />
-  <span class="ml-3 mr-3">{{ currentMonthName }}</span>
+  <span class="ml-3 mr-3">{{ formattedDate }}</span>
   <button-comp type="button"
                title=">>"
                class="neomorphic text-purple p-1 pl-3 pr-3"
