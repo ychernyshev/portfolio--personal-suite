@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 import json
 import os
+from calendar import monthrange
 from datetime import datetime, date, timedelta
 
 import requests
@@ -412,32 +413,42 @@ class SolarYearAnalyticsAPIView(APIView):
 class SolarMonthAnalyticsAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    _cached_raw_weather = None
+
     def get(self, request, *args, **kwargs):
         try:
             today = date.today()
-            year = today.year
-            month = today.month
+
+            try:
+                year = int(request.GET.get('year', today.year))
+                month = int(request.GET.get('month', today.month))
+            except (ValueError, TypeError):
+                year = today.year
+                month = today.month
 
             start_date = date(year, month, 1)
-            if month == 12:
-                end_date = date(year + 1, 1, 1) - timedelta(days=1)
-            else:
-                end_date = date(year, month + 1, 1) - timedelta(days=1)
+            _, last_day = monthrange(year, month)
+            end_date = date(year, month, last_day)
+            total_days = last_day
 
-            total_days = end_date.day
+            effective_today = today if (year == today.year and month == today.month) else end_date
+            if (year, month) > (today.year, today.month):
+                effective_today = date(year, month, 1) - timedelta(days=1)
 
-            actual_qs = DataEntryLineModel.objects.filter(user=request.user, date__range=(start_date, today))
+            actual_qs = DataEntryLineModel.objects.filter(user=request.user, date__range=(start_date, effective_today))
             actual_dict = {
                 q.date.day: round(float(q.full_day_power) / 1000.0, 2)
                 for q in actual_qs if q.full_day_power is not None
             }
 
-            forecast_qs = SolarForecastRecordModel.objects.filter(date__range=(start_date, today))
+            forecast_qs = SolarForecastRecordModel.objects.filter(date__range=(start_date, end_date))
             forecast_dict = {q.date.day: float(q.predicted_kwh) for q in forecast_qs if q.predicted_kwh is not None}
 
             api_forecast_dict = {}
 
-            if today <= end_date:
+            is_current_or_future_month = (year > today.year) or (year == today.year and month >= today.month)
+
+            if is_current_or_future_month:
                 try:
                     user_settings = UserProfileSettingsModel.objects.get(user=request.user)
                     if user_settings.latitude is not None and user_settings.longitude is not None:
@@ -475,7 +486,9 @@ class SolarMonthAnalyticsAPIView(APIView):
             for day in range(1, total_days + 1):
                 labels.append(day)
 
-                if day <= today.day:
+                current_loop_date = date(year, month, day)
+
+                if current_loop_date <= effective_today:
                     actual_power.append(actual_dict.get(day, None))
                 else:
                     actual_power.append(None)
@@ -489,7 +502,7 @@ class SolarMonthAnalyticsAPIView(APIView):
 
             result = {
                 "status": "success",
-                "month_name": today.strftime("%B"),
+                "month_name": start_date.strftime("%B"),
                 "labels": labels,
                 "actual_power": actual_power,
                 "forecast_power": forecast_power
@@ -499,6 +512,98 @@ class SolarMonthAnalyticsAPIView(APIView):
 
         except Exception as e:
             return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# DEPRACATED
+# class SolarMonthAnalyticsAPIView(APIView):
+#     permission_classes = [IsAuthenticated]
+#
+#     def get(self, request, *args, **kwargs):
+#         try:
+#             today = date.today()
+#             year = today.year
+#             month = today.month
+#
+#             start_date = date(year, month, 1)
+#             if month == 12:
+#                 end_date = date(year + 1, 1, 1) - timedelta(days=1)
+#             else:
+#                 end_date = date(year, month + 1, 1) - timedelta(days=1)
+#
+#             total_days = end_date.day
+#
+#             actual_qs = DataEntryLineModel.objects.filter(user=request.user, date__range=(start_date, today))
+#             actual_dict = {
+#                 q.date.day: round(float(q.full_day_power) / 1000.0, 2)
+#                 for q in actual_qs if q.full_day_power is not None
+#             }
+#
+#             forecast_qs = SolarForecastRecordModel.objects.filter(date__range=(start_date, today))
+#             forecast_dict = {q.date.day: float(q.predicted_kwh) for q in forecast_qs if q.predicted_kwh is not None}
+#
+#             api_forecast_dict = {}
+#
+#             if today <= end_date:
+#                 try:
+#                     user_settings = UserProfileSettingsModel.objects.get(user=request.user)
+#                     if user_settings.latitude is not None and user_settings.longitude is not None:
+#                         service = WeatherForecastService()
+#                         raw_data = service._fetch_raw_weather_from_api(user_settings.latitude, user_settings.longitude)
+#
+#                         if raw_data:
+#                             calibration_factor = service._calculate_calibration_factor()
+#                             calc_service = PanelPowerCalculationService()
+#
+#                             radiation_data = raw_data.get('hourly', {}).get('shortwave_radiation', [])
+#                             times = raw_data.get('hourly', {}).get('time', [])
+#
+#                             total_hourly_wh, _ = calc_service.get_total_forecast(
+#                                 radiation_data, calibration_factor, request.user
+#                             )
+#
+#                             temp_daily_wh = {}
+#                             for idx, time_str in enumerate(times):
+#                                 dt = datetime.fromisoformat(time_str).date()
+#                                 if dt.month == month and dt.year == year:
+#                                     if idx < len(total_hourly_wh):
+#                                         temp_daily_wh[dt.day] = temp_daily_wh.get(dt.day, 0.0) + total_hourly_wh[idx]
+#
+#                             for day_num, total_wh in temp_daily_wh.items():
+#                                 if total_wh > 0:
+#                                     api_forecast_dict[day_num] = round(total_wh / 1000.0, 2)
+#                 except Exception as ex:
+#                     print(f"Error fetching live forecast in analytics: {ex}")
+#
+#             labels = []
+#             actual_power = []
+#             forecast_power = []
+#
+#             for day in range(1, total_days + 1):
+#                 labels.append(day)
+#
+#                 if day <= today.day:
+#                     actual_power.append(actual_dict.get(day, None))
+#                 else:
+#                     actual_power.append(None)
+#
+#                 if day in api_forecast_dict:
+#                     forecast_power.append(api_forecast_dict[day])
+#                 elif day in forecast_dict:
+#                     forecast_power.append(round(forecast_dict[day], 2))
+#                 else:
+#                     forecast_power.append(None)
+#
+#             result = {
+#                 "status": "success",
+#                 "month_name": today.strftime("%B"),
+#                 "labels": labels,
+#                 "actual_power": actual_power,
+#                 "forecast_power": forecast_power
+#             }
+#
+#             return Response(result, status=status.HTTP_200_OK)
+#
+#         except Exception as e:
+#             return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # DEPRECATED

@@ -2,27 +2,24 @@
 <script setup>
   import MonthGenerationChart from "@/components/calculator/charts/CurrentMonthStats/MonthGenerationChart.vue";
   import backendApi from "@/services/backendApi.js";
-  import {onMounted, ref} from "vue";
+  import {computed, onMounted, ref} from "vue";
   import ChooseMonth from "@/components/calculator/timemachine/ChooseMonth.vue";
+  import {useDateRangeStore} from "../../../../../store/useDateRangeStore.js";
+  import {storeToRefs} from "pinia";
 
-  const monthGenerationGraphiData = ref();
-  const errorMsg = ref("");
-  const errorClass = ref("");
+  const dateRangeStore = useDateRangeStore();
+  const { monthGenerationChartData, selectedYear, selectedMonth, errorMsg, errorClass } = storeToRefs(dateRangeStore);
 
-  const getMonthGeneration = async () => {
-    try {
-      const response = await backendApi('calculator/power_generation_month_analytics/');
-      monthGenerationGraphiData.value = response.data;
-    } catch (error) {
-      console.log(error);
-      errorMsg.value = "No data is being received from the server.";
-      errorClass.value = "alert-warning";
-    }
-  }
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-  onMounted(() => {
-    getMonthGeneration();
-  })
+  const currentGraphTitle = computed(() => {
+    return `${monthNames[selectedMonth.value]} ${selectedYear.value}`;
+  });
+
+  onMounted(async () => {
+    await dateRangeStore.fetchDateRange();
+    await dateRangeStore.getMonthGeneration();
+  });
 </script>
 
 <template>
@@ -42,11 +39,11 @@
             </div>
           </div>
           <month-generation-chart
-              v-if="monthGenerationGraphiData"
-              month-name="Current Month"
-              :labels="monthGenerationGraphiData.labels"
-              :actual-power="monthGenerationGraphiData.actual_power"
-              :forecast-power="monthGenerationGraphiData.forecast_power"
+              v-if="monthGenerationChartData"
+              :month-name="currentGraphTitle"
+              :labels="monthGenerationChartData.labels"
+              :actual-power="monthGenerationChartData.actual_power"
+              :forecast-power="monthGenerationChartData.forecast_power"
           />
 
           <div v-else-if="!errorMsg" class="text-center p-5 text-secondary">

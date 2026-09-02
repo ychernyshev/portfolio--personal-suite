@@ -64,6 +64,8 @@ const canGoNext = computed(() => {
   return totalMonthsActive < totalMonthsMax
 })
 
+const dateRangeStore = useDateRangeStore();
+
 const prevMonth = () => {
   if (!canGoPrev.value) return
   if (activeMonth.value === 0) {
@@ -72,6 +74,7 @@ const prevMonth = () => {
   } else {
     activeMonth.value--
   }
+  dateRangeStore.setSelectedPeriod(activeYear.value, activeMonth.value);
 }
 
 const nextMonth = () => {
@@ -82,6 +85,7 @@ const nextMonth = () => {
   } else {
     activeMonth.value++
   }
+  dateRangeStore.setSelectedPeriod(activeYear.value, activeMonth.value);
 }
 </script>
 
