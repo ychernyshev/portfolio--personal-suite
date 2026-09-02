@@ -47,7 +47,6 @@ const maxDataDate = computed(() => {
 
 const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
-const currentMonthName = computed(() => monthNames[activeMonth.value])
 const formattedDate = computed(() => {
   return `${monthNames[activeMonth.value]} ${activeYear.value}`
 })
@@ -87,6 +86,16 @@ const nextMonth = () => {
   }
   dateRangeStore.setSelectedPeriod(activeYear.value, activeMonth.value);
 }
+
+const isCurrentMonth = computed(() => {
+  return activeYear.value === now.getFullYear() && activeMonth.value === now.getMonth()
+})
+
+const goToCurrentMonth = () => {
+  activeYear.value = now.getFullYear()
+  activeMonth.value = now.getMonth()
+  dateRangeStore.setSelectedPeriod(activeYear.value, activeMonth.value)
+}
 </script>
 
 <template>
@@ -103,7 +112,13 @@ const nextMonth = () => {
                @click="nextMonth"
                :disabled="!canGoNext"
                :class="{ 'opacity-40 cursor-not-allowed': !canGoNext }" />
-  <button-comp type="button" title="Today" class="neomorphic ml-4 p-2 pl-3 pr-3 border text-purple fw-lighter" :disabled="!canGoNext" style="font-size: clamp(1.1rem, 0.8vh, 0.8rem)" />
+  <button-comp type="button"
+               title="Today"
+               @click="goToCurrentMonth"
+               class="neomorphic ml-4 p-2 pl-3 pr-3 border text-purple fw-lighter"
+               :class="{ 'opacity-40 cursor-not-allowed': isCurrentMonth }"
+               :disabled="isCurrentMonth"
+               style="font-size: clamp(1.1rem, 0.8vh, 0.8rem)" />
 </template>
 
 <style scoped>
