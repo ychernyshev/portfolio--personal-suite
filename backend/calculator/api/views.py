@@ -4,6 +4,7 @@ import os
 from datetime import datetime, date, timedelta
 
 import requests
+from django.db.models import Min, Max
 from django.http import JsonResponse
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
@@ -819,3 +820,18 @@ class SystemEventAPIView(ListAPIView):
 #
 #         status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
 #         return Response(serializer.data, status=status_code)
+
+
+class CalculatorDateRangeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        date_range = DataEntryLineModel.objects.filter(user=request.user).aggregate(
+            min_date=Min('date'),
+            max_date=Max('date')
+        )
+
+        return Response({
+            'min_date': date_range['min_date'],
+            'max_date': date_range['max_date']
+        })
