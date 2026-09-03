@@ -46,7 +46,20 @@
               :labels="monthGenerationChartData.labels"
               :actual-power="monthGenerationChartData.actual_power"
               :forecast-power="monthGenerationChartData.forecast_power"
+              :last-year-power="monthGenerationChartData.last_year_power"
+              :two-years-ago-power="monthGenerationChartData.two_years_ago_power"
+              :last-year-label="monthGenerationChartData.last_year_label"
+              :two-years-ago-label="monthGenerationChartData.two_years_ago_label"
           />
+
+<!--          DEPRECATED-->
+<!--          <month-generation-chart-->
+<!--              v-if="monthGenerationChartData"-->
+<!--              :month-name="currentGraphTitle"-->
+<!--              :labels="monthGenerationChartData.labels"-->
+<!--              :actual-power="monthGenerationChartData.actual_power"-->
+<!--              :forecast-power="monthGenerationChartData.forecast_power"-->
+<!--          />-->
 
           <div v-else-if="!errorMsg" class="text-center p-5 text-secondary">
             Analytics loading...
