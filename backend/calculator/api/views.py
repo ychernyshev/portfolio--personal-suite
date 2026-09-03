@@ -426,10 +426,24 @@ class SolarMonthAnalyticsAPIView(APIView):
                 year = today.year
                 month = today.month
 
+            compare_last_year = request.GET.get('compare_last_year') == 'true'
+            compare_two_years_ago = request.GET.get('compare_two_years_ago') == 'true'
+
             start_date = date(year, month, 1)
             _, last_day = monthrange(year, month)
             end_date = date(year, month, last_day)
             total_days = last_day
+
+            def get_month_actuals(target_year, target_month):
+                s_date = date(target_year, target_month, 1)
+                _, l_day = monthrange(target_year, target_month)
+                e_date = date(target_year, target_month, l_day)
+
+                qs = DataEntryLineModel.objects.filter(user=request.user, date__range=(s_date, e_date))
+                data_dict = {q.date.day: round(float(q.full_day_power) / 1000.0, 2) for q in qs if
+                             q.full_day_power is not None}
+
+                return [data_dict.get(d, None) for d in range(1, total_days + 1)]
 
             effective_today = today if (year == today.year and month == today.month) else end_date
             if (year, month) > (today.year, today.month):
@@ -479,34 +493,66 @@ class SolarMonthAnalyticsAPIView(APIView):
                 except Exception as ex:
                     print(f"Error fetching live forecast in analytics: {ex}")
 
-            labels = []
-            actual_power = []
-            forecast_power = []
+            labels = list(range(1, total_days + 1))
+            actual_power = [actual_dict.get(d, None) if date(year, month, d) <= effective_today else None for d in
+                            labels]
+            forecast_power = [api_forecast_dict.get(d, forecast_dict.get(d, None)) for d in labels]
 
-            for day in range(1, total_days + 1):
-                labels.append(day)
+            # DEPRECATED
+            # labels = []
+            # actual_power = []
+            # forecast_power = []
 
-                current_loop_date = date(year, month, day)
+            # for day in range(1, total_days + 1):
+            #     labels.append(day)
+            #
+            #     current_loop_date = date(year, month, day)
+            #
+            #     if current_loop_date <= effective_today:
+            #         actual_power.append(actual_dict.get(day, None))
+            #     else:
+            #         actual_power.append(None)
+            #
+            #     if day in api_forecast_dict:
+            #         forecast_power.append(api_forecast_dict[day])
+            #     elif day in forecast_dict:
+            #         forecast_power.append(round(forecast_dict[day], 2))
+            #     else:
+            #         forecast_power.append(None)
 
-                if current_loop_date <= effective_today:
-                    actual_power.append(actual_dict.get(day, None))
-                else:
-                    actual_power.append(None)
+            ly_start = date(year - 1, month, 1)
+            _, ly_last = monthrange(year - 1, month)
+            ly_end = date(year - 1, month, ly_last)
+            has_ly_data = DataEntryLineModel.objects.filter(
+                user=request.user, date__range=(ly_start, ly_end), full_day_power__isnull=False
+            ).exists()
 
-                if day in api_forecast_dict:
-                    forecast_power.append(api_forecast_dict[day])
-                elif day in forecast_dict:
-                    forecast_power.append(round(forecast_dict[day], 2))
-                else:
-                    forecast_power.append(None)
+            tya_start = date(year - 2, month, 1)
+            _, tya_last = monthrange(year - 2, month)
+            tya_end = date(year - 2, month, tya_last)
+            has_tya_data = DataEntryLineModel.objects.filter(
+                user=request.user, date__range=(tya_start, tya_end), full_day_power__isnull=False
+            ).exists()
 
             result = {
                 "status": "success",
                 "month_name": start_date.strftime("%B"),
                 "labels": labels,
                 "actual_power": actual_power,
-                "forecast_power": forecast_power
+                "forecast_power": forecast_power,
+                "has_last_year_data": has_ly_data,
+                "has_two_years_ago_data": has_tya_data,
             }
+
+            if compare_last_year:
+                ly = year - 1
+                result["last_year_label"] = f"Actual {ly}"
+                result["last_year_power"] = get_month_actuals(ly, month)
+
+            if compare_two_years_ago:
+                tya = year - 2
+                result["two_years_ago_label"] = f"Actual {tya}"
+                result["two_years_ago_power"] = get_month_actuals(tya, month)
 
             return Response(result, status=status.HTTP_200_OK)
 
