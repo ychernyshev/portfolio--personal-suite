@@ -29,15 +29,26 @@
       <div class="modal-content neomorphic p-0">
         <div class="modal-body ps-2 pe-2 pb-0">
           <div class="row pt-1 pe-2">
-            <div class="d-flex flex-row justify-content-between">
-              <div class="display-flex flex-row justify-content-center align-items-center ml-3">
+            <div class="row justify-content-center justify-content-lg-start align-items-center m-0">
+              <div class="col-12 col-md-6 col-xl-3 d-flex justify-content-center justify-content-lg-start align-items-center mb-3 mb-lg-0">
                 <choose-month />
+              </div>
+              <div class="col-12 col-md-6 col-xl-3 d-flex justify-content-center justify-content-lg-start mb-3 mb-lg-0">
                 <layers-of-years />
               </div>
-              <div class="display-flex flex-row align-items-center">
-                <p class="small text-purple my-auto mr-5">Analytics for the current month with a generation power forecast and actual power generation</p>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <div class="col-12 col-xl-6 d-flex justify-content-end m-0">
+                <div class="display-flex flex-row align-items-center">
+                  <p class="small text-purple my-auto mr-5">Analytics for the current month with a generation power forecast and actual power generation</p>
+                  <button type="button" class="btn-close p-0" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
               </div>
+            </div>
+            <div class="d-flex flex-row justify-content-between">
+              <div class="display-flex flex-row justify-content-center align-items-center ml-3">
+
+
+              </div>
+
             </div>
           </div>
           <month-generation-chart

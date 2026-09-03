@@ -13,7 +13,7 @@
 </script>
 
 <template>
-  <div class="neomorphic ml-4 p-1 pt-2 pb-2 pl-3"
+  <div class="neomorphic ml-lg-4 p-1 pt-2 pb-2 pl-3"
        :class="[!hasLastYearData ? 'text-muted opacity-50 item-transition' : 'item-transition']">
     <div class="form-check form-check-inline">
       <input class="form-check-input"
