@@ -3,9 +3,13 @@ from datetime import date
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import Sum, Avg
+from django.db.models import Sum, Avg, Model
 from django.db.models.functions import TruncMonth
 from django.utils import timezone
+
+
+def get_power_tariff():
+        return CurrentTariffModel.load().power_tariff
 
 # ====================================================================
 # MODEL 2: ENTRIES
@@ -61,7 +65,7 @@ class DataEntryLineModel(models.Model):
     full_day_power = models.FloatField(blank=True, verbose_name='Вироблена потужність за день')
     full_day_cost = models.FloatField(blank=True, null=True, verbose_name='Вартість виробленої енергії за день')
 
-    power_tariff = models.FloatField(verbose_name='Вартість за Кв')
+    power_tariff = models.FloatField(verbose_name='Вартість за Кв', default=get_power_tariff)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, verbose_name='User')
 
