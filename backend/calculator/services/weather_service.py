@@ -143,7 +143,6 @@ class WeatherForecastService:
             )
 
             total_hourly_wh = [h * calibration_factor for h in total_hourly_wh]
-            print('total_hourly_wh = [h * calibration_factor for h in total_hourly_wh]', sum(total_hourly_wh[:24]))
 
             weather_h = data.get('hourly', {})
             wmo_codes = {0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast", 45: "Fog",
