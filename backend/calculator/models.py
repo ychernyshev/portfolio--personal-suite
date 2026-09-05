@@ -354,11 +354,17 @@ class DataEntryLineModel(models.Model):
             self.full_day_cost = self._calculate_full_day_cost()
 
         if self.user:
-            total_panels_power = sum(
-                array.area * array.efficiency * 1000
-                for array in PanelsArrayModel.objects.filter(user=self.user)
-            )
-            self.power = total_panels_power
+            total_panels_power = 0.0
+            for array in PanelsArrayModel.objects.filter(user=self.user):
+                area = array.area if array.area is not None else 0.0
+                eff = array.efficiency if array.efficiency is not None else 0.0
+
+                if eff > 1.0:
+                    eff = eff / 100.0
+
+                total_panels_power += area * eff * 1000
+
+            self.power = round(total_panels_power, 2)
 
         super().save(*args, **kwargs)
 
