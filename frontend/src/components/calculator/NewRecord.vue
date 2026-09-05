@@ -11,6 +11,7 @@ const emit = defineEmits(["entry-added"]);
 
 // Messages
 const messageRef = ref(null);
+const useCustomPower = ref(false);
 const notificationStore = useNotificationStore();
 const store = useCalculatorStore();
 const handleMessage = (payload) => {
@@ -157,7 +158,7 @@ onMounted(fetchWeather);
     <div class="card-body card-light pl-3 pr-3 pb-2">
       <form @submit.prevent="submitForm">
         <div class="row mt-1">
-          <div class="col-12 col-md-2">
+          <div class="col-12 col-lg-2">
             <div class="d-flex flex-row align-items-center">
               <label class="form-label m-0 p-0 fw-bold text-info-emphasis">Date:</label>
               <input
@@ -168,8 +169,35 @@ onMounted(fetchWeather);
                   required
               />
             </div>
-            <div v-if="isDuplicateDate" class="invalid-feedback d-block" style="font-size: 0.8rem;">
+          </div>
+          <div class="col-12 col-lg-6 my-auto text-start">
+            <div v-if="isDuplicateDate" class="invalid-feedback d-block fw-normal" style="font-size: 0.8rem;">
               This date already has a record. Please choose another.
+            </div>
+          </div>
+          <div class="col-12 col-lg-4">
+            <div class="row h-100">
+              <div class="col-4">
+                <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Set power"
+                    v-if="useCustomPower"
+                >
+              </div>
+              <div class="col-8 d-flex ilign-items-center">
+                <div class="form-check d-flex flex-row align-items-center">
+                  <input
+                      class="form-check-input my-auto"
+                      type="checkbox"
+                      v-model="useCustomPower"
+                      id="checkDefault"
+                  >
+                  <label class="form-check-label p-0" for="checkDefault">
+                    Use custom solar system power
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
 <!--          <div class="col-12 col-md-6">-->
