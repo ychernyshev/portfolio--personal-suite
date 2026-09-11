@@ -143,3 +143,50 @@ This project adheres to semantic versioning where possible.
     - Fixed conversion from watt-hours to kilowatt-hours (kWh) and applied the correct panel array multiplier (PanelsArrayModel).
     - Ensured correct display of realistic daily generation in the dashboard widget.
 
+## [2.13.0] - multi-year analytics, automated solar power calculation & UI refinements
+
+✨ New Features & Components
+
+    Added the CalendarModal component and configured its basic view.
+
+    Created the LayersOfYears component with checkboxes to overlay charts for the same month of previous years (last year and the year before last) on top of the current month.
+
+    Added a new API endpoint and Pinia store useDateRangeStore to manage years, months, and period transitions.
+
+    Added a "Today" button to the ChooseMonth component with auto-blocking when the current calendar month is already displayed.
+
+    Extended the message stack in the sidebar to 10 items.
+
+    Moved the mini-calendar from the sidebar inside the CalendarModal component.
+
+📊 Analytics & Backend Logic
+
+    Refactored SolarMonthAnalyticsAPIView to support dynamic year and month parameters using monthrange (accounting for leap years).
+
+    Implemented historical boundary validation for real power and weather API queries.
+
+    Added has_last_year_data and has_two_years_ago_data flags to the JSON response to control comparison layers on the frontend.
+
+    Renamed the power model field to system_power in DataEntryLineModel, admin, and serializers, with migration execution.
+
+    Updated the save() method in the model: saves manual system power if specified by the user, otherwise automatically calculates power based on the user's panel area and efficiency settings.
+
+⚡ Solar Calculator & Data Processing
+
+    Separated wind information from peak generation data.
+
+    Added None checks and default zero values for solar radiation and cloudiness in calculate_array_production to protect against TypeError exceptions when Open-Meteo returns empty data.
+
+    Updated the new entry form: removed static power selectors and added support for entering custom system_power with required=False in the serializer.
+
+🎨 Design & Style Updates
+
+    Changed the text color to #2ecc71 (text-success-1) if the current month's energy generation percentage exceeds the previous month.
+
+    Optimized the CurrentMonthStats component control panel for screens starting from 410 px.
+
+    Changed the system logs modal window size from modal-xxl to modal-xl and renamed the "Message description" column to "Event description".
+
+    Applied bold font (font-weight: bold) to timestamps across all system logs.
+
+    Updated wind indicators: gray color and bold styling for wind speeds below 15 m/s; green for standard events and orange for warnings.
