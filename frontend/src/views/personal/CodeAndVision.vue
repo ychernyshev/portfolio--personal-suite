@@ -10,6 +10,7 @@ import dashboardAdd from '../../assets/personal/images/showcase/solar_power_calc
 import dashboardSettings from '../../assets/personal/images/showcase/solar_power_calculator/dasboard-settings.png';
 import dashboardIndicators from '../../assets/personal/images/showcase/solar_power_calculator/dasboard-indicators.png';
 import dashboardMobile from '../../assets/personal/images/showcase/solar_power_calculator/dasboard-mobile.png';
+import currentMothMultyYearsChart from '../../assets/personal/images/showcase/solar_power_calculator/current-month-multy-years-chart.png';
 
 console.log('Image test:', dashboardMain);
 
@@ -70,6 +71,10 @@ const projects: Project[] = [
       {
         path: dashboardMobile,
         title: 'Observation from the any device',
+      },
+      {
+        path: currentMothMultyYearsChart,
+        title: 'Use the month chart and analyse the current month with the historical data',
       }
     ]
   }
@@ -284,11 +289,11 @@ const projects: Project[] = [
   .update-title {
     color: var(--p-light-3);
     background-color: var(--p-darker-1);
-    font-size: clamp(1.2rem, 1.2vw, 1.6rem);
+    font-size: clamp(1.2rem, 1.1vw, 1.6rem);
   }
 
   .update-data {
-    font-size: clamp(1.2rem, 1.2vw, 1.6rem);
+    font-size: clamp(1.2rem, 0.9vw, 1.6rem);
   }
 
   .badge-future {
