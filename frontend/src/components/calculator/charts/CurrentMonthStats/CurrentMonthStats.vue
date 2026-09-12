@@ -36,9 +36,14 @@
               <div class="col-12 col-md-6 col-xl-3 d-flex justify-content-center justify-content-lg-start mb-3 mb-lg-0">
                 <layers-of-years />
               </div>
-              <div class="col-12 col-xl-6 d-flex justify-content-end m-0">
+              <div class="col-12 col-md-6 col-xl-2 d-flex flex-column justify-content-center justify-content-lg-start mb-3 mb-lg-0">
+<!--                <span class="small">solar system power: </span>-->
+<!--                <span class="small text-success-2">last month power gain: </span>-->
+<!--                <span class="small text-warning-2">last year power drop: </span>-->
+              </div>
+              <div class="col-12 col-xl-4 d-flex justify-content-end m-0">
                 <div class="display-flex flex-row align-items-center">
-                  <p class="small text-purple my-auto mr-5">Analytics for the current month with a generation power forecast and actual power generation, with a layered power generation chart for the same month in the last or/and the year before last</p>
+                  <p class="small text-purple my-auto mr-2 text-justify">Analytics for the current month with a generation power forecast and actual power generation, with a layered power generation chart for the same month in the last or/and the year before last</p>
                   <button type="button" class="btn-close p-0" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
               </div>
