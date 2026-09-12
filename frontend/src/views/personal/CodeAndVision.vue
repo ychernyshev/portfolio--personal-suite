@@ -47,7 +47,7 @@ const projects: Project[] = [
     description: "A web application dashboard that calculates solar power generation and cost savings. The app allows adding the accumulated charging level in percentages and the current power cost from energy meters. These parameters need to be entered 2-3 times per day, as the app calculates the power that the solar system generates throughout the day and how much money this power costs",
     unit: "\"Created for myself to explore and analyze the capacity and productivity of my own solar power station\"",
     status: "MVP",
-    last_update: "26.04.2026",
+    last_update: "12.09.2026",
     key_futures: ['Reactive UI', 'Real-time calculations'],
     techStack: ['django', 'vue', 'js', 'bootstrap'],
     images: [
