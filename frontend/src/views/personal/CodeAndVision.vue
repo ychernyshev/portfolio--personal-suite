@@ -202,7 +202,7 @@ const projects: Project[] = [
                 <span v-else-if="project.status === 'In Development'" class="bg-warning rounded-2 project-status-badge p-2 text-center small">In Development</span>
                 <div class="col-12 update-wrapper mt-3 mt-xl-2">
                   <span class="update-title rounded-2 p-1 p-xl-2">Last update:</span>
-                  <span class="update-data fw-bold p-1 p-xl-2">{{ project.last_update }}</span>
+                  <span class="update-data text-info fw-bold p-1 p-xl-2">{{ project.last_update }}</span>
                 </div>
                 <div class="col-md-5 mt-xl-2 mt-3 mt-xl-0 badge-future">
                   <span class="badge bg-secondary text-start p-2 mt-xl-1" v-for="future in project.key_futures" :key="future">
