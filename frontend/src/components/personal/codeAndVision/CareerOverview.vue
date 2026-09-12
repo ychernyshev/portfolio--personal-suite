@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup lang="ts">
 
-import ButtonComp from "@/components/personal/ButtonComp.vue";
+import ButtonComp from "@/components/personal/supportComponents/ButtonComp.vue";
 import CareerTimeline from "@/components/personal/codeAndVision/CareerTimeline.vue";
 import CollapsedForm from "@/components/personal/contacts/CollapsedForm.vue";
 </script>

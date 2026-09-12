@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import MailReply from "@/components/personal/user/dashboard/mail/MailReply.vue";
 import MailForward from "@/components/personal/user/dashboard/mail/MailForward.vue";
-import ButtonComp from "@/components/personal/ButtonComp.vue";
+import ButtonComp from "@/components/personal/supportComponents/ButtonComp.vue";
 import MarkAsUnreadBtn from "@/components/personal/user/dashboard/mail/buttons/MarkAsUnreadBtn.vue";
 import MoveToArchiveBtn from "@/components/personal/user/dashboard/mail/buttons/MoveToArchiveBtn.vue";
 import MoveToSpamBtn from "@/components/personal/user/dashboard/mail/buttons/MoveToSpamBtn.vue";

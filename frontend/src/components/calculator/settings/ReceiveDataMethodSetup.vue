@@ -2,7 +2,7 @@
 import { useUserAccountStore } from "../../../../store/useUserAccountStore";
 import { storeToRefs } from "pinia";
 import { onMounted, ref, watch } from "vue";
-import ButtonComp from "@/components/personal/ButtonComp.vue";
+import ButtonComp from "@/components/personal/supportComponents/ButtonComp.vue";
 
 const userReceiveDataMethodStore = useUserAccountStore();
 const { receiveDataMethod, isAutomaticActive } = storeToRefs(userReceiveDataMethodStore);

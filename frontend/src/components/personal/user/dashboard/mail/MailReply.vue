@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup lang="ts">
 import {ref, watch} from "vue";
-import ButtonComp from "@/components/personal/ButtonComp.vue";
+import ButtonComp from "@/components/personal/supportComponents/ButtonComp.vue";
 import backendApi from "@/services/backendApi.ts";
 
 const props = defineProps<{

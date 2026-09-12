@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref, onMounted} from "vue";
 import backendApi from "@/services/backendApi.ts";
-import ButtonComp from "@/components/personal/ButtonComp.vue";
+import ButtonComp from "@/components/personal/supportComponents/ButtonComp.vue";
 
 const tariff = ref(0);
 const lastUpdated = ref("");

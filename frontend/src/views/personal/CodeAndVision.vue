@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup lang="ts">
-import ButtonComp from "@/components/personal/ButtonComp.vue";
+import ButtonComp from "@/components/personal/supportComponents/ButtonComp.vue";
 import ImageSlider from "@/components/personal/ImageSlider.vue";
-import TechIconsLib from "@/components/personal/TechIconsLib.vue";
+import TechIconsLib from "@/components/personal/supportComponents/TechIconsLib.vue";
 import GitHubRepoInfo from "@/components/personal/GitHubRepoInfo.vue";
 
 import dashboardMain from '../../assets/personal/images/showcase/solar_power_calculator/dasboard-main.png';
