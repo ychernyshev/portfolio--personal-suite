@@ -1,5 +1,5 @@
 <script setup>
-import ButtonComp from "@/components/personal/ButtonComp.vue";
+import ButtonComp from "@/components/personal/supportComponents/ButtonComp.vue";
 import {computed, onMounted, ref} from "vue";
 import {useDateRangeStore} from "../../../../store/useDateRangeStore.js";
 import {storeToRefs} from "pinia";

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup>
-  import ButtonComp from "@/components/personal/ButtonComp.vue";
+  import ButtonComp from "@/components/personal/supportComponents/ButtonComp.vue";
 </script>
 
 <template>

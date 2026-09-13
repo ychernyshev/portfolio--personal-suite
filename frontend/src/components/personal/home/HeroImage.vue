@@ -3,7 +3,7 @@
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 
-import ButtonComp from "../ButtonComp.vue";
+import ButtonComp from "../supportComponents/ButtonComp.vue";
 
 const router = useRouter();
 

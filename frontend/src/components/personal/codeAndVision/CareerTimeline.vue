@@ -2,8 +2,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { timeline, type CareerItem } from '@/static-data/careerData';
-import TechIconsLib from '@/components/personal/TechIconsLib.vue';
-import ButtonComp from "@/components/personal/ButtonComp.vue";
+import TechIconsLib from '@/components/personal/supportComponents/TechIconsLib.vue';
+import ButtonComp from "@/components/personal/supportComponents/ButtonComp.vue";
 
 const scrollToExperience = (id: string) => {
   const element = document.getElementById(id);

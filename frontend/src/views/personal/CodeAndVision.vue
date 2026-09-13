@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup lang="ts">
-import ButtonComp from "@/components/personal/ButtonComp.vue";
+import ButtonComp from "@/components/personal/supportComponents/ButtonComp.vue";
 import ImageSlider from "@/components/personal/ImageSlider.vue";
-import TechIconsLib from "@/components/personal/TechIconsLib.vue";
+import TechIconsLib from "@/components/personal/supportComponents/TechIconsLib.vue";
 import GitHubRepoInfo from "@/components/personal/GitHubRepoInfo.vue";
 
 import dashboardMain from '../../assets/personal/images/showcase/solar_power_calculator/dasboard-main.png';
@@ -10,6 +10,7 @@ import dashboardAdd from '../../assets/personal/images/showcase/solar_power_calc
 import dashboardSettings from '../../assets/personal/images/showcase/solar_power_calculator/dasboard-settings.png';
 import dashboardIndicators from '../../assets/personal/images/showcase/solar_power_calculator/dasboard-indicators.png';
 import dashboardMobile from '../../assets/personal/images/showcase/solar_power_calculator/dasboard-mobile.png';
+import currentMothMultyYearsChart from '../../assets/personal/images/showcase/solar_power_calculator/current-month-multy-years-chart.png';
 
 console.log('Image test:', dashboardMain);
 
@@ -47,7 +48,7 @@ const projects: Project[] = [
     description: "A web application dashboard that calculates solar power generation and cost savings. The app allows adding the accumulated charging level in percentages and the current power cost from energy meters. These parameters need to be entered 2-3 times per day, as the app calculates the power that the solar system generates throughout the day and how much money this power costs",
     unit: "\"Created for myself to explore and analyze the capacity and productivity of my own solar power station\"",
     status: "MVP",
-    last_update: "26.04.2026",
+    last_update: "12.09.2026",
     key_futures: ['Reactive UI', 'Real-time calculations'],
     techStack: ['django', 'vue', 'js', 'bootstrap'],
     images: [
@@ -70,6 +71,10 @@ const projects: Project[] = [
       {
         path: dashboardMobile,
         title: 'Observation from the any device',
+      },
+      {
+        path: currentMothMultyYearsChart,
+        title: 'Use the month chart and analyse the current month with the historical data',
       }
     ]
   }
@@ -197,7 +202,7 @@ const projects: Project[] = [
                 <span v-else-if="project.status === 'In Development'" class="bg-warning rounded-2 project-status-badge p-2 text-center small">In Development</span>
                 <div class="col-12 update-wrapper mt-3 mt-xl-2">
                   <span class="update-title rounded-2 p-1 p-xl-2">Last update:</span>
-                  <span class="update-data fw-bold p-1 p-xl-2">{{ project.last_update }}</span>
+                  <span class="update-data text-info fw-bold p-1 p-xl-2">{{ project.last_update }}</span>
                 </div>
                 <div class="col-md-5 mt-xl-2 mt-3 mt-xl-0 badge-future">
                   <span class="badge bg-secondary text-start p-2 mt-xl-1" v-for="future in project.key_futures" :key="future">
@@ -284,11 +289,11 @@ const projects: Project[] = [
   .update-title {
     color: var(--p-light-3);
     background-color: var(--p-darker-1);
-    font-size: clamp(1.2rem, 1.2vw, 1.6rem);
+    font-size: clamp(1.2rem, 1.1vw, 1.6rem);
   }
 
   .update-data {
-    font-size: clamp(1.2rem, 1.2vw, 1.6rem);
+    font-size: clamp(1.2rem, 0.9vw, 1.6rem);
   }
 
   .badge-future {

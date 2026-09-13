@@ -3,7 +3,7 @@
   import { onMounted } from "vue";
   import { storeToRefs } from "pinia";
   import { useOpenMeteoForecastStore } from "../../../../store/useOpenMeteoForecastStore.js";
-  import ButtonComp from "@/components/personal/ButtonComp.vue";
+  import ButtonComp from "@/components/personal/supportComponents/ButtonComp.vue";
 
   const store = useOpenMeteoForecastStore();
   const { browserLat, browserLon, dbLat, dbLon, loading, isLocationDenied } = storeToRefs(store);

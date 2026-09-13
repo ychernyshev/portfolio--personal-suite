@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup lang="ts">
 import CvButton from "@/components/personal/home/CvButton.vue";
-import TechIconsLib from "@/components/personal/TechIconsLib.vue";
+import TechIconsLib from "@/components/personal/supportComponents/TechIconsLib.vue";
 import HeroImage from "@/components/personal/home/HeroImage.vue";
 import CareerOverview from "@/components/personal/codeAndVision/CareerOverview.vue";
 

@@ -5,7 +5,7 @@ import backendApi from "@/services/backendApi.ts";
 import WeatherIcon from "./WeatherIcon.vue";
 import {useNotificationStore} from "../../../store/useNotificationStore.js";
 import {useCalculatorStore} from "../../../store/useCalculatorStore.js";
-import ButtonComp from "@/components/personal/ButtonComp.vue";
+import ButtonComp from "@/components/personal/supportComponents/ButtonComp.vue";
 
 const emit = defineEmits(["entry-added"]);
 

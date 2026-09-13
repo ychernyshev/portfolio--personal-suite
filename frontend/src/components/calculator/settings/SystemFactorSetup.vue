@@ -1,5 +1,5 @@
 <script setup>
-import ButtonComp from "@/components/personal/ButtonComp.vue";
+import ButtonComp from "@/components/personal/supportComponents/ButtonComp.vue";
 import {useUserAccountStore} from "../../../../store/useUserAccountStore.js";
 import {storeToRefs} from "pinia";
 import {computed, onMounted, ref} from "vue";

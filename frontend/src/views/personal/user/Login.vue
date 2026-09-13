@@ -3,7 +3,7 @@
   import { ref, reactive } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import backendApi from "@/services/backendApi.ts";
-  import ButtonComp from "@/components/personal/ButtonComp.vue";
+  import ButtonComp from "@/components/personal/supportComponents/ButtonComp.vue";
   import {useMailStore} from "@/services/personal/useMailStore.js";
 
   const messageStore = useMailStore();

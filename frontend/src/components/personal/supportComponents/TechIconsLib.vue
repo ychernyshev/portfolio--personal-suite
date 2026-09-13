@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup lang="ts">
-import TechPopover from "@/components/personal/TechPopover.vue";
+import TechPopover from "@/components/personal/supportComponents/TechPopover.vue";
 
 interface Icon {
   id: string;
