@@ -438,7 +438,7 @@ const projects: Project[] = [
     }
   }
 
-  @media (min-width: 1200px) {
+  @media (min-width: 1280px) {
     .project-description-wrapper {
       justify-content: center;
     }
