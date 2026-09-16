@@ -147,8 +147,13 @@ class DataEntryLineModel(models.Model):
 
             # IF THE AFTERNOON CHARGE IS EGUAL ZERO
             if self.afternoon_data_charge == 0:
-                raw_meters_power = self._price_to_power(self.evening_data_price,
-                                                        self.morning_data_price + self.MORNING_CORRECTION_PRICE)
+                if self.morning_data_charge > self.evening_data_charge:
+                    raw_meters_power = self._price_to_power(self.evening_data_price,
+                                                            self.morning_data_price)
+
+                if self.morning_data_charge < self.evening_data_charge:
+                    raw_meters_power = self._price_to_power(self.evening_data_price,
+                                                            self.morning_data_price)
                 battery_power = (
                                             abs(self.evening_data_charge - self.morning_data_charge) - self.MORNING_CORRECTION_CHARGE) * self.ONE_POWER_UNIT
 
