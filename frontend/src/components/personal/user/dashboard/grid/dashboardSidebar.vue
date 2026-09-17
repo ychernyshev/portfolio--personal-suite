@@ -2,9 +2,43 @@
 <script setup lang="ts">
   import DashboardFooter from "@/components/personal/user/dashboard/DashboardFooter.vue";
 
+  interface MainLinks {
+    id: number;
+    name: string;
+    url: string;
+    icon: string;
+  }
+
+  const mainLinks: MainLinks[] = [
+    {
+      id: 1,
+      name: "Main",
+      url: "/user/dashboard",
+      icon: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-house-door-fill\" viewBox=\"0 0 16 16\">\n" +
+          "                <path d=\"M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5\"/>\n" +
+          "              </svg>"
+    },
+    {
+      id: 2,
+      name: "Portfolio",
+      url: "/",
+      icon: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-brush-fill\" viewBox=\"0 0 16 16\">\n" +
+          "  <path d=\"M15.825.12a.5.5 0 0 1 .132.584c-1.53 3.43-4.743 8.17-7.095 10.64a6.1 6.1 0 0 1-2.373 1.534c-.018.227-.06.538-.16.868-.201.659-.667 1.479-1.708 1.74a8.1 8.1 0 0 1-3.078.132 4 4 0 0 1-.562-.135 1.4 1.4 0 0 1-.466-.247.7.7 0 0 1-.204-.288.62.62 0 0 1 .004-.443c.095-.245.316-.38.461-.452.394-.197.625-.453.867-.826.095-.144.184-.297.287-.472l.117-.198c.151-.255.326-.54.546-.848.528-.739 1.201-.925 1.746-.896q.19.012.348.048c.062-.172.142-.38.238-.608.261-.619.658-1.419 1.187-2.069 2.176-2.67 6.18-6.206 9.117-8.104a.5.5 0 0 1 .596.04\"/>\n" +
+          "</svg>"
+    },
+    {
+      id: 3,
+      name: "Solar Power Calculator",
+      url: "/calculator/",
+      icon: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-sun-fill\" viewBox=\"0 0 16 16\">\n" +
+          "  <path d=\"M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708\"/>\n" +
+          "</svg>"
+    },
+  ]
+
   interface MailBox {
     id: number;
-    title: string;
+    name: string;
     url: string;
     icon: string;
   }
@@ -12,7 +46,7 @@
   const mailBox: MailBox[] = [
     {
       id: 1,
-      title: "Inbox",
+      name: "Inbox",
       url: "/user/dashboard/mail_hub",
       icon: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-eye-fill\"\n" +
           "                   viewBox=\"0 0 16 16\">\n" +
@@ -22,7 +56,7 @@
     },
     {
       id: 2,
-      title: "New mail",
+      name: "New mail",
       url: "/user/dashboard",
       icon: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-envelope-at-fill\" viewBox=\"0 0 16 16\">\n" +
           "  <path d=\"M2 2A2 2 0 0 0 .05 3.555L8 8.414l7.95-4.859A2 2 0 0 0 14 2zm-2 9.8V4.698l5.803 3.546zm6.761-2.97-6.57 4.026A2 2 0 0 0 2 14h6.256A4.5 4.5 0 0 1 8 12.5a4.49 4.49 0 0 1 1.606-3.446l-.367-.225L8 9.586zM16 9.671V4.697l-5.803 3.546.338.208A4.5 4.5 0 0 1 12.5 8c1.414 0 2.675.652 3.5 1.671\"/>\n" +
@@ -44,13 +78,10 @@
     <div class="collapse navbar-collapse  w-auto" id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <router-link to="/user/dashboard" class="nav-link" exact-active-class="active">
-            <div class="shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
-                <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5"/>
-              </svg>
+          <router-link v-for="item in mainLinks" :key="item.id" :to="item.url" class="nav-link" exact-active-class="active">
+            <div class="shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center" v-html="item.icon">
             </div>
-            <span class="nav-link-text ms-1">Main</span>
+            <span class="nav-link-text ms-1">{{ item.name }}</span>
           </router-link>
         </li>
         <li class="nav-item mt-3">
@@ -60,7 +91,7 @@
           <router-link v-for="(item, index) in mailBox" :key="item.id" :to="item.url" class="nav-link" exact-active-class="active">
             <div class="shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center p-1" v-html="item.icon">
             </div>
-            <span class="nav-link-text ms-1">{{ item.title }}</span>
+            <span class="nav-link-text ms-1">{{ item.name }}</span>
           </router-link>
         </li>
         <hr style="border-bottom: dashed 1px" />
