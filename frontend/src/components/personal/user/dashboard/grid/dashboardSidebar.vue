@@ -1,7 +1,26 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 <script setup lang="ts">
+  import DashboardFooter from "@/components/personal/user/dashboard/DashboardFooter.vue";
 
-import DashboardFooter from "@/components/personal/user/dashboard/DashboardFooter.vue";
+  interface MailBox {
+    id: number;
+    title: string;
+    url: string;
+    icon: string;
+  }
+
+  const mailBox: MailBox[] = [
+    {
+      id: 1,
+      title: "Inbox",
+      url: "/user/dashboard/mail_hub",
+      icon: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-eye-fill\"\n" +
+          "                   viewBox=\"0 0 16 16\">\n" +
+          "                <path d=\"M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0\"/>\n" +
+          "                <path d=\"M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7\"/>\n" +
+          "              </svg>"
+    }
+  ]
 </script>
 
 <template>
@@ -29,15 +48,10 @@ import DashboardFooter from "@/components/personal/user/dashboard/DashboardFoote
           <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Mail Hub</h6>
         </li>
         <li class="nav-item">
-          <router-link to="/user/dashboard/mail_hub" class="nav-link" exact-active-class="active">
-            <div class="shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center p-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill"
-                   viewBox="0 0 16 16">
-                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
-                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
-              </svg>
+          <router-link v-for="(item, index) in mailBox" :key="item.id" :to="item.url" class="nav-link" exact-active-class="active">
+            <div class="shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center p-1" v-html="item.icon">
             </div>
-            <span class="nav-link-text ms-1">Inbox</span>
+            <span class="nav-link-text ms-1">{{ item.title }}</span>
           </router-link>
         </li>
       </ul>
