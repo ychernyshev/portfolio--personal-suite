@@ -15,6 +15,10 @@ const adminPageRoutes: RouteRecordRaw = {
             path: "/user/dashboard/mail_hub",
             component: () => import("@/components/personal/user/dashboard/mail/Inbox.vue"),
         },
+        {
+            path: "/user/dashboard/new_mail",
+            component: () => import("@/components/personal/user/dashboard/mail/NewMail.vue"),
+        }
     ],
 }
 
